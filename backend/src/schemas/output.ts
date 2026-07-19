@@ -1,5 +1,29 @@
 import { z } from 'zod'
 
+// ── Narrative (LLM layer output) ──────────────────────────────────────────────
+export const SensitivityCalloutSchema = z.object({
+  site_id:  z.string(),
+  label:    z.string(),
+  callout:  z.string(),   // plain-English 1-sentence driver summary
+})
+
+export const UncertaintyFlagSchema = z.object({
+  site_id: z.string(),
+  field:   z.string(),
+  reason:  z.string(),
+})
+
+export const NarrativeSchema = z.object({
+  recommendation:        z.string(),            // investment-memo paragraph for rank-1
+  sensitivity_callouts:  z.array(SensitivityCalloutSchema), // 2–3 items
+  uncertainty_flags:     z.array(UncertaintyFlagSchema),
+  source:                z.enum(['watsonx', 'fallback', 'cache']),
+})
+
+export type NarrativeResult    = z.infer<typeof NarrativeSchema>
+export type SensitivityCallout = z.infer<typeof SensitivityCalloutSchema>
+export type UncertaintyFlag    = z.infer<typeof UncertaintyFlagSchema>
+
 const RangeSchema = z.object({
   npv_usd:          z.number(),
   levelized_per_kw: z.number(),
@@ -69,14 +93,14 @@ export const ProvenanceItemSchema = z.object({
 export type ProvenanceItem = z.infer<typeof ProvenanceItemSchema>
 
 export const OutputSchema = z.object({
-  request_id:     z.string().uuid(),
-  generated_at:   z.string(),
-  engine_version: z.string(),
-  ranking:        z.array(z.string()),
-  sites:          z.record(z.string(), SiteOutputSchema),
-  sensitivity:    z.array(SensitivityItemSchema),
-  flip_sentence:  z.string(),
-  narrative:      z.string(),
+  request_id:      z.string().uuid(),
+  generated_at:    z.string(),
+  engine_version:  z.string(),
+  ranking:         z.array(z.string()),
+  sites:           z.record(z.string(), SiteOutputSchema),
+  sensitivity:     z.array(SensitivityItemSchema),
+  flip_sentence:   z.string(),
+  narrative:       NarrativeSchema,
   data_provenance: z.array(ProvenanceItemSchema),
 })
 

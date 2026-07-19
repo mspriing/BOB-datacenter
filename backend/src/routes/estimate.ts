@@ -6,7 +6,7 @@ import type { EstimateInput } from '../schemas/input.js'
 
 export const estimateRouter = Router()
 
-estimateRouter.post('/', (req, res) => {
+estimateRouter.post('/', async (req, res) => {
   // 1. Validate input
   const parsed = InputSchema.safeParse(req.body)
   if (!parsed.success) {
@@ -19,9 +19,14 @@ estimateRouter.post('/', (req, res) => {
     request_id: parsed.data.request_id ?? uuidv4(),
   }
 
-  // 2. Run deterministic engine (stub returns hard-coded example output)
-  const output = runEngine(input)
+  try {
+    // 2. Run deterministic engine + narrative (LLM or fallback)
+    const output = await runEngine(input)
 
-  // 3. Respond
-  res.json(output)
+    // 3. Respond
+    res.json(output)
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    res.status(500).json({ error: 'Engine error', message: msg })
+  }
 })
