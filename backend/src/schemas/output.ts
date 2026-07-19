@@ -80,6 +80,8 @@ const SensitivityItemSchema = z.object({
   flip_value:      z.number(),
   pct_change:      z.number(),
   affected_sites:  z.array(z.string()),
+  /** True when no weighted-score flip occurs within the search range. */
+  stable:          z.boolean().optional(),
 })
 
 export const ProvenanceItemSchema = z.object({

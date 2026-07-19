@@ -101,6 +101,8 @@ export interface SensitivityItem {
   flip_value:     number
   pct_change:     number
   affected_sites: string[]
+  /** True when no weighted-score flip occurs within the search range. */
+  stable?:        boolean
 }
 
 export interface ProvenanceItem {
