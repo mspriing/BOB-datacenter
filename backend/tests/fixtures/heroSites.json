@@ -1,0 +1,26 @@
+{
+  "project": {
+    "name": "Hero Sites Engine Test",
+    "capacity_kw": 10000,
+    "design_pue": 1.4,
+    "lifetime_years": 15,
+    "discount_rate": 0.08
+  },
+  "sites": [
+    {
+      "site_id": "nova",
+      "label": "Northern Virginia",
+      "region_key": "us-va-northern"
+    },
+    {
+      "site_id": "ercot",
+      "label": "Texas ERCOT",
+      "region_key": "us-tx-ercot"
+    },
+    {
+      "site_id": "nordic",
+      "label": "Nordic Hydro",
+      "region_key": "eu-nordic-hydro"
+    }
+  ]
+}
