@@ -58,13 +58,15 @@ const SensitivityItemSchema = z.object({
   affected_sites:  z.array(z.string()),
 })
 
-const ProvenanceItemSchema = z.object({
+export const ProvenanceItemSchema = z.object({
   region_key:    z.string(),
   driver:        z.string(),
   value:         z.number(),
   source_url:    z.string(),
   last_verified: z.string(),
 })
+
+export type ProvenanceItem = z.infer<typeof ProvenanceItemSchema>
 
 export const OutputSchema = z.object({
   request_id:     z.string().uuid(),
