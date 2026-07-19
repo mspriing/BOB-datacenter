@@ -5,25 +5,30 @@ interface ScenarioToggleProps {
   onChange: (s: Scenario) => void
 }
 
-/**
- * Three-button toggle: Low / Base / High scenario.
- */
+const OPTIONS: Array<{ value: Scenario; label: string; sub: string }> = [
+  { value: 'low',  label: 'Low',  sub: 'optimistic' },
+  { value: 'base', label: 'Base', sub: 'expected'   },
+  { value: 'high', label: 'High', sub: 'stress'     },
+]
+
 export function ScenarioToggle({ scenario, onChange }: ScenarioToggleProps) {
-  const options: Scenario[] = ['low', 'base', 'high']
   return (
-    <div className="flex items-center gap-2 border border-gray-300 rounded-md p-1 bg-white w-fit">
-      {options.map((opt) => (
+    <div className="flex items-center gap-0 border border-ibm-cool-30 divide-x divide-ibm-cool-30">
+      {OPTIONS.map(opt => (
         <button
-          key={opt}
+          key={opt.value}
           type="button"
-          className={`px-4 py-1 text-sm font-medium rounded transition ${
-            scenario === opt
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+          onClick={() => onChange(opt.value)}
+          className={`px-4 py-2 text-sm transition-colors flex flex-col items-center leading-tight min-w-[72px] ${
+            scenario === opt.value
+              ? 'bg-ibm-blue text-white'
+              : 'bg-white text-ibm-cool-70 hover:bg-ibm-cool-10'
           }`}
-          onClick={() => onChange(opt)}
         >
-          {opt.charAt(0).toUpperCase() + opt.slice(1)}
+          <span className="font-semibold">{opt.label}</span>
+          <span className={`text-xs ${scenario === opt.value ? 'text-ibm-blue-light/80' : 'text-ibm-cool-40'}`}>
+            {opt.sub}
+          </span>
         </button>
       ))}
     </div>

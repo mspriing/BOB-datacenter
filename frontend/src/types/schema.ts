@@ -1,4 +1,4 @@
-// ── Input types ──────────────────────────────────────────────────────────────
+// ── Input types ───────────────────────────────────────────────────────────────
 
 export interface SiteOverrides {
   land_cost_per_acre_usd?:    number | null
@@ -43,7 +43,7 @@ export interface EstimateInput {
   sites:       SiteInput[]
 }
 
-// ── Output types ─────────────────────────────────────────────────────────────
+// ── Output types ──────────────────────────────────────────────────────────────
 
 export interface CostRange {
   npv_usd:          number
@@ -111,6 +111,27 @@ export interface ProvenanceItem {
   last_verified: string
 }
 
+// ── Narrative (LLM output) ────────────────────────────────────────────────────
+
+export interface SensitivityCallout {
+  site_id: string
+  label:   string
+  callout: string
+}
+
+export interface UncertaintyFlag {
+  site_id: string
+  field:   string
+  reason:  string
+}
+
+export interface NarrativeResult {
+  recommendation:       string
+  sensitivity_callouts: SensitivityCallout[]
+  uncertainty_flags:    UncertaintyFlag[]
+  source:               'watsonx' | 'fallback' | 'cache'
+}
+
 export interface EstimateOutput {
   request_id:      string
   generated_at:    string
@@ -119,9 +140,20 @@ export interface EstimateOutput {
   sites:           Record<string, SiteOutput>
   sensitivity:     SensitivityItem[]
   flip_sentence:   string
-  narrative:       string
+  narrative:       NarrativeResult
   data_provenance: ProvenanceItem[]
 }
 
-// ── Scenario toggle type ──────────────────────────────────────────────────────
+// ── UI helpers ────────────────────────────────────────────────────────────────
 export type Scenario = 'low' | 'base' | 'high'
+
+export const REGION_OPTIONS = [
+  { key: 'us-va-northern',    label: 'Northern Virginia (Loudoun Co.)' },
+  { key: 'us-tx-ercot',       label: 'Texas ERCOT (Hays County)' },
+  { key: 'eu-nordic-hydro',   label: 'Nordic Hydro (Luleå, Sweden)' },
+  { key: 'us-az-phoenix',     label: 'Phoenix, AZ' },
+  { key: 'us-tx-san-antonio', label: 'San Antonio, TX' },
+  { key: 'us-or-portland',    label: 'Portland, OR' },
+  { key: 'us-oh-columbus',    label: 'Columbus, OH' },
+  { key: 'us-ga-atlanta',     label: 'Atlanta, GA' },
+] as const
