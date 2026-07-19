@@ -261,6 +261,7 @@ describe('computeSensitivity', () => {
 })
 
 // ── runEngine integration — hero 3-site fixture ───────────────────────────────
+// All runEngine calls use forceFallback:true so tests never need LLM credentials.
 describe('runEngine (hero sites fixture)', () => {
   beforeEach(() => { _resetRegionsCache() })
 
@@ -279,29 +280,30 @@ describe('runEngine (hero sites fixture)', () => {
       { site_id: 'nordic', label: 'Nordic Hydro',        region_key: 'eu-nordic-hydro' },
     ],
   }
+  const opts = { forceFallback: true, skipCache: true }
 
-  it('returns a result with engine_version 0.2.0', () => {
-    const out = runEngine(input)
+  it('returns a result with engine_version 0.2.0', async () => {
+    const out = await runEngine(input, opts)
     expect(out.engine_version).toBe('0.2.0')
   })
 
-  it('ranking array contains all 3 site IDs', () => {
-    const out = runEngine(input)
+  it('ranking array contains all 3 site IDs', async () => {
+    const out = await runEngine(input, opts)
     expect(out.ranking).toHaveLength(3)
     expect(out.ranking).toContain('nova')
     expect(out.ranking).toContain('ercot')
     expect(out.ranking).toContain('nordic')
   })
 
-  it('Nordic Hydro is ranked #1 (cheapest total cost)', () => {
+  it('Nordic Hydro is ranked #1 (cheapest total cost)', async () => {
     // Nordic has by far the lowest power rate ($0.024 vs $0.068 VA / $0.038 TX)
     // Under default weights (50% cost) it should win.
-    const out = runEngine(input)
+    const out = await runEngine(input, opts)
     expect(out.sites['nordic'].rank).toBe(1)
   })
 
-  it('each site has positive CapEx components', () => {
-    const out = runEngine(input)
+  it('each site has positive CapEx components', async () => {
+    const out = await runEngine(input, opts)
     for (const sid of out.ranking) {
       const c = out.sites[sid].capex
       expect(c.land_usd).toBeGreaterThan(0)
@@ -310,8 +312,8 @@ describe('runEngine (hero sites fixture)', () => {
     }
   })
 
-  it('each site has positive annual OpEx components', () => {
-    const out = runEngine(input)
+  it('each site has positive annual OpEx components', async () => {
+    const out = await runEngine(input, opts)
     for (const sid of out.ranking) {
       const o = out.sites[sid].opex_annual
       expect(o.power_usd).toBeGreaterThan(0)
@@ -319,53 +321,53 @@ describe('runEngine (hero sites fixture)', () => {
     }
   })
 
-  it('npv_usd is negative for all sites', () => {
-    const out = runEngine(input)
+  it('npv_usd is negative for all sites', async () => {
+    const out = await runEngine(input, opts)
     for (const sid of out.ranking) {
       expect(out.sites[sid].finance.npv_usd).toBeLessThan(0)
     }
   })
 
-  it('low scenario NPV > high scenario NPV (less negative = cheaper)', () => {
-    const out = runEngine(input)
+  it('low scenario NPV > high scenario NPV (less negative = cheaper)', async () => {
+    const out = await runEngine(input, opts)
     for (const sid of out.ranking) {
       const r = out.sites[sid].finance.ranges
       expect(r.low.npv_usd).toBeGreaterThan(r.high.npv_usd)
     }
   })
 
-  it('weighted_score in [0,1] for all sites', () => {
-    const out = runEngine(input)
+  it('weighted_score in [0,1] for all sites', async () => {
+    const out = await runEngine(input, opts)
     for (const sid of out.ranking) {
       expect(out.sites[sid].weighted_score).toBeGreaterThanOrEqual(0)
       expect(out.sites[sid].weighted_score).toBeLessThanOrEqual(1)
     }
   })
 
-  it('sensitivity has at least one item', () => {
-    const out = runEngine(input)
+  it('sensitivity has at least one item', async () => {
+    const out = await runEngine(input, opts)
     expect(out.sensitivity.length).toBeGreaterThan(0)
   })
 
-  it('flip_sentence is a non-empty string', () => {
-    const out = runEngine(input)
+  it('flip_sentence is a non-empty string', async () => {
+    const out = await runEngine(input, opts)
     expect(typeof out.flip_sentence).toBe('string')
     expect(out.flip_sentence.length).toBeGreaterThan(10)
   })
 
-  it('data_provenance has one entry per (region_key, driver)', () => {
-    const out = runEngine(input)
+  it('data_provenance has one entry per (region_key, driver)', async () => {
+    const out = await runEngine(input, opts)
     const keys = out.data_provenance.map(p => `${p.region_key}::${p.driver}`)
     const unique = new Set(keys)
     expect(unique.size).toBe(keys.length)   // no duplicates
   })
 
-  it('Texas ERCOT power bill is lower than Northern Virginia power bill', () => {
-    const out = runEngine(input)
+  it('Texas ERCOT power bill is lower than Northern Virginia power bill', async () => {
+    const out = await runEngine(input, opts)
     expect(out.sites['ercot'].opex_annual.power_usd).toBeLessThan(out.sites['nova'].opex_annual.power_usd)
   })
 
-  it('overrides supersede region values', () => {
+  it('overrides supersede region values', async () => {
     const inputWithOverride = {
       ...input,
       sites: input.sites.map(s =>
@@ -374,7 +376,7 @@ describe('runEngine (hero sites fixture)', () => {
           : s
       ),
     }
-    const out = runEngine(inputWithOverride)
+    const out = await runEngine(inputWithOverride, opts)
     // ERCOT with near-zero power cost should easily be rank-1
     expect(out.sites['ercot'].rank).toBe(1)
   })
