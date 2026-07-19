@@ -1,0 +1,80 @@
+{
+  "us-az-phoenix": {
+    "label": "Phoenix, AZ",
+    "power_rate_usd_per_kwh":   { "value": 0.042, "source_url": "https://www.eia.gov/electricity/state/arizona/",       "last_verified": "2025-06" },
+    "water_rate_usd_per_kgal":  { "value": 3.80,  "source_url": "https://www.phoenix.gov/waterservices/rates",          "last_verified": "2025-04" },
+    "land_cost_per_acre_usd":   { "value": 85000, "source_url": "https://www.loopnet.com/",                             "last_verified": "2025-03" },
+    "construction_cost_per_kw": { "value": 8500,  "source_url": "https://www.construction-analytics.com/",             "last_verified": "2025-05" },
+    "staff_cost_index":         { "value": 1.02,  "source_url": "https://www.bls.gov/oes/current/oes_phx.htm",         "last_verified": "2025-01" },
+    "tax_rate":                 { "value": 0.048, "source_url": "https://azdor.gov/business/transaction-privilege-tax", "last_verified": "2025-06" },
+    "incentive_usd_per_kw":     { "value": 120,   "source_url": "https://www.azcommerce.com/incentives/",              "last_verified": "2025-02" },
+    "risk_score":               { "value": 3.2,   "source_url": "https://hazards.fema.gov/nri/",                       "last_verified": "2024-12" },
+    "renewable_pct":            { "value": 0.30,  "source_url": "https://www.eia.gov/state/arizona",                   "last_verified": "2025-05" },
+    "latency_ms_to_hub":        { "value": 14,    "source_url": "https://www.wondernetwork.com/pings/",                 "last_verified": "2025-04" }
+  },
+  "us-tx-san-antonio": {
+    "label": "San Antonio, TX",
+    "power_rate_usd_per_kwh":   { "value": 0.038, "source_url": "https://www.eia.gov/electricity/state/texas/",        "last_verified": "2025-06" },
+    "water_rate_usd_per_kgal":  { "value": 4.60,  "source_url": "https://www.saws.org/your-account/rates/",            "last_verified": "2025-04" },
+    "land_cost_per_acre_usd":   { "value": 62000, "source_url": "https://www.loopnet.com/",                            "last_verified": "2025-03" },
+    "construction_cost_per_kw": { "value": 8200,  "source_url": "https://www.construction-analytics.com/",            "last_verified": "2025-05" },
+    "staff_cost_index":         { "value": 0.97,  "source_url": "https://www.bls.gov/oes/current/oes_sat.htm",        "last_verified": "2025-01" },
+    "tax_rate":                 { "value": 0.000, "source_url": "https://comptroller.texas.gov/",                      "last_verified": "2025-06" },
+    "incentive_usd_per_kw":     { "value": 200,   "source_url": "https://gov.texas.gov/business/page/texas-enterprise-fund", "last_verified": "2025-02" },
+    "risk_score":               { "value": 5.1,   "source_url": "https://hazards.fema.gov/nri/",                       "last_verified": "2024-12" },
+    "renewable_pct":            { "value": 0.28,  "source_url": "https://www.eia.gov/state/texas",                    "last_verified": "2025-05" },
+    "latency_ms_to_hub":        { "value": 18,    "source_url": "https://www.wondernetwork.com/pings/",                "last_verified": "2025-04" }
+  },
+  "us-va-northern": {
+    "label": "Northern Virginia",
+    "power_rate_usd_per_kwh":   { "value": 0.068, "source_url": "https://www.eia.gov/electricity/state/virginia/",    "last_verified": "2025-06" },
+    "water_rate_usd_per_kgal":  { "value": 5.20,  "source_url": "https://www.novawater.org/rates",                    "last_verified": "2025-04" },
+    "land_cost_per_acre_usd":   { "value": 420000,"source_url": "https://www.loopnet.com/",                            "last_verified": "2025-03" },
+    "construction_cost_per_kw": { "value": 9100,  "source_url": "https://www.construction-analytics.com/",            "last_verified": "2025-05" },
+    "staff_cost_index":         { "value": 1.18,  "source_url": "https://www.bls.gov/oes/current/oes_wdc.htm",        "last_verified": "2025-01" },
+    "tax_rate":                 { "value": 0.060, "source_url": "https://www.tax.virginia.gov/",                       "last_verified": "2025-06" },
+    "incentive_usd_per_kw":     { "value": 50,    "source_url": "https://www.vedp.org/incentives",                    "last_verified": "2025-02" },
+    "risk_score":               { "value": 2.0,   "source_url": "https://hazards.fema.gov/nri/",                       "last_verified": "2024-12" },
+    "renewable_pct":            { "value": 0.20,  "source_url": "https://www.eia.gov/state/virginia",                 "last_verified": "2025-05" },
+    "latency_ms_to_hub":        { "value": 4,     "source_url": "https://www.wondernetwork.com/pings/",                "last_verified": "2025-04" }
+  },
+  "us-or-portland": {
+    "label": "Portland, OR",
+    "power_rate_usd_per_kwh":   { "value": 0.052, "source_url": "https://www.eia.gov/electricity/state/oregon/",      "last_verified": "2025-06" },
+    "water_rate_usd_per_kgal":  { "value": 6.80,  "source_url": "https://www.portlandoregon.gov/bes/rates",           "last_verified": "2025-04" },
+    "land_cost_per_acre_usd":   { "value": 150000,"source_url": "https://www.loopnet.com/",                            "last_verified": "2025-03" },
+    "construction_cost_per_kw": { "value": 9400,  "source_url": "https://www.construction-analytics.com/",            "last_verified": "2025-05" },
+    "staff_cost_index":         { "value": 1.08,  "source_url": "https://www.bls.gov/oes/current/oes_por.htm",        "last_verified": "2025-01" },
+    "tax_rate":                 { "value": 0.076, "source_url": "https://www.oregon.gov/dor/",                         "last_verified": "2025-06" },
+    "incentive_usd_per_kw":     { "value": 80,    "source_url": "https://www.oregonbusiness.org/incentives",          "last_verified": "2025-02" },
+    "risk_score":               { "value": 4.5,   "source_url": "https://hazards.fema.gov/nri/",                       "last_verified": "2024-12" },
+    "renewable_pct":            { "value": 0.71,  "source_url": "https://www.eia.gov/state/oregon",                   "last_verified": "2025-05" },
+    "latency_ms_to_hub":        { "value": 10,    "source_url": "https://www.wondernetwork.com/pings/",                "last_verified": "2025-04" }
+  },
+  "us-oh-columbus": {
+    "label": "Columbus, OH",
+    "power_rate_usd_per_kwh":   { "value": 0.059, "source_url": "https://www.eia.gov/electricity/state/ohio/",        "last_verified": "2025-06" },
+    "water_rate_usd_per_kgal":  { "value": 4.10,  "source_url": "https://www.columbus.gov/utilities/",                "last_verified": "2025-04" },
+    "land_cost_per_acre_usd":   { "value": 45000, "source_url": "https://www.loopnet.com/",                            "last_verified": "2025-03" },
+    "construction_cost_per_kw": { "value": 7900,  "source_url": "https://www.construction-analytics.com/",            "last_verified": "2025-05" },
+    "staff_cost_index":         { "value": 0.94,  "source_url": "https://www.bls.gov/oes/current/oes_col.htm",        "last_verified": "2025-01" },
+    "tax_rate":                 { "value": 0.055, "source_url": "https://tax.ohio.gov/",                               "last_verified": "2025-06" },
+    "incentive_usd_per_kw":     { "value": 160,   "source_url": "https://development.ohio.gov/incentives",            "last_verified": "2025-02" },
+    "risk_score":               { "value": 2.8,   "source_url": "https://hazards.fema.gov/nri/",                       "last_verified": "2024-12" },
+    "renewable_pct":            { "value": 0.14,  "source_url": "https://www.eia.gov/state/ohio",                     "last_verified": "2025-05" },
+    "latency_ms_to_hub":        { "value": 8,     "source_url": "https://www.wondernetwork.com/pings/",                "last_verified": "2025-04" }
+  },
+  "us-ga-atlanta": {
+    "label": "Atlanta, GA",
+    "power_rate_usd_per_kwh":   { "value": 0.063, "source_url": "https://www.eia.gov/electricity/state/georgia/",    "last_verified": "2025-06" },
+    "water_rate_usd_per_kgal":  { "value": 3.50,  "source_url": "https://www.atlantaga.gov/government/departments/watershed-management/rates", "last_verified": "2025-04" },
+    "land_cost_per_acre_usd":   { "value": 95000, "source_url": "https://www.loopnet.com/",                            "last_verified": "2025-03" },
+    "construction_cost_per_kw": { "value": 8000,  "source_url": "https://www.construction-analytics.com/",            "last_verified": "2025-05" },
+    "staff_cost_index":         { "value": 1.01,  "source_url": "https://www.bls.gov/oes/current/oes_atl.htm",       "last_verified": "2025-01" },
+    "tax_rate":                 { "value": 0.055, "source_url": "https://dor.georgia.gov/",                            "last_verified": "2025-06" },
+    "incentive_usd_per_kw":     { "value": 95,    "source_url": "https://www.georgia.org/competitive-advantages/incentives", "last_verified": "2025-02" },
+    "risk_score":               { "value": 3.8,   "source_url": "https://hazards.fema.gov/nri/",                       "last_verified": "2024-12" },
+    "renewable_pct":            { "value": 0.13,  "source_url": "https://www.eia.gov/state/georgia",                  "last_verified": "2025-05" },
+    "latency_ms_to_hub":        { "value": 7,     "source_url": "https://www.wondernetwork.com/pings/",                "last_verified": "2025-04" }
+  }
+}
