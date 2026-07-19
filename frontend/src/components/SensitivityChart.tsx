@@ -45,17 +45,25 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<
 export function SensitivityChart({ output }: SensitivityChartProps) {
   if (!output.sensitivity.length) return null
 
-  const data = [...output.sensitivity]
-    .sort((a, b) => a.pct_change - b.pct_change)   // most fragile at top
-    .map(s => ({
-      driver:        s.driver,
-      label:         driverLabel(s.driver),
-      pct:           +s.pct_change.toFixed(1),
-      current_value: s.current_value,
-      flip_value:    s.flip_value,
-    }))
+  // Split stable items from real flip items; stable items shown as text rows, not bars
+  const allSorted = [...output.sensitivity].sort((a, b) => {
+    if (a.stable && !b.stable) return 1
+    if (!a.stable && b.stable) return -1
+    return a.pct_change - b.pct_change
+  })
 
-  const maxPct = Math.max(...data.map(d => d.pct), 50)
+  const flipItems  = allSorted.filter(s => !s.stable)
+  const stableItems = allSorted.filter(s => s.stable)
+
+  const data = flipItems.map(s => ({
+    driver:        s.driver,
+    label:         driverLabel(s.driver),
+    pct:           +s.pct_change.toFixed(1),
+    current_value: s.current_value,
+    flip_value:    s.flip_value,
+  }))
+
+  const maxPct = data.length ? Math.max(...data.map(d => d.pct), 50) : 50
 
   return (
     <div className="card p-5">
@@ -68,6 +76,12 @@ export function SensitivityChart({ output }: SensitivityChartProps) {
       <p className="text-xs text-ibm-cool-50 mb-4">
         How far each driver must move before the #1 and #2 ranked sites swap
       </p>
+      {data.length === 0 && stableItems.length > 0 && (
+        <p className="text-xs text-ibm-green-50 mb-4">
+          No driver causes a ranking flip within ±200% — all drivers are stable.
+        </p>
+      )}
+      {data.length > 0 && (
       <ResponsiveContainer width="100%" height={Math.max(180, data.length * 52)}>
         <BarChart
           data={data}
@@ -103,6 +117,18 @@ export function SensitivityChart({ output }: SensitivityChartProps) {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
+      )}
+      {stableItems.length > 0 && (
+        <div className="mt-3 border-t border-ibm-cool-20 pt-3">
+          <p className="text-xs text-ibm-cool-50 mb-1 font-semibold uppercase tracking-wide">Stable drivers (no flip within ±200%)</p>
+          {stableItems.map(s => (
+            <div key={s.driver} className="flex items-center justify-between text-xs text-ibm-cool-50 py-0.5">
+              <span>{driverLabel(s.driver)}</span>
+              <span className="font-mono text-ibm-green-50">stable</span>
+            </div>
+          ))}
+        </div>
+      )}
       <div className="flex items-center gap-4 mt-3 text-xs text-ibm-cool-50">
         <ColorDot color="#da1e28" label="< 15% — fragile" />
         <ColorDot color="#ff832b" label="15–35% — watch" />

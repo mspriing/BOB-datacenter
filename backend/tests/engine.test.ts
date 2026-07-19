@@ -204,12 +204,22 @@ describe('rankSites', () => {
 
 // ── sensitivity.ts ────────────────────────────────────────────────────────────
 describe('computeSensitivity', () => {
-  // Nordic (cheap power) should be rank-1; NOVA (expensive power) rank-2
+  // Hero site parameters (matching regions.json values at 10 MW scale).
+  // Nordic wins rank-1 NOT purely on cost but via exceptional risk+renewables
+  // scores; its raw NPV is actually worse than ERCOT.  The old code found a
+  // "flip" at the current value (0% change) because it searched for an NPV
+  // cross-over, but Nordic was already more expensive on cost alone.
   const nordicCapex = {
     capacity_kw:              10_000,
     land_cost_per_acre_usd:   18_000,
     construction_cost_per_kw: 10_200,
     incentive_usd:            300_000,
+  }
+  const ercotCapex = {
+    capacity_kw:              10_000,
+    land_cost_per_acre_usd:   55_000,
+    construction_cost_per_kw: 8_200,
+    incentive_usd:            2_200_000,  // $220/kW × 10,000 kW
   }
   const novaCapex = {
     capacity_kw:              10_000,
@@ -217,11 +227,18 @@ describe('computeSensitivity', () => {
     construction_cost_per_kw: 9_100,
     incentive_usd:            500_000,
   }
+
   const nordicOpex = {
     capacity_kw: 10_000, design_pue: 1.4,
     power_rate_usd_per_kwh: 0.024, water_rate_usd_per_kgal: 1.10, wue: 1.03,
     staff_cost_index: 1.35, tax_rate: 0.022, tax_abatement_years: 0,
     current_year: 1, capex_total_usd: computeCapex(nordicCapex).total_usd,
+  }
+  const ercotOpex = {
+    capacity_kw: 10_000, design_pue: 1.4,
+    power_rate_usd_per_kwh: 0.038, water_rate_usd_per_kgal: 3.20, wue: 1.6,
+    staff_cost_index: 0.96, tax_rate: 0.019, tax_abatement_years: 10,
+    current_year: 1, capex_total_usd: computeCapex(ercotCapex).total_usd,
   }
   const novaOpex = {
     capacity_kw: 10_000, design_pue: 1.4,
@@ -230,32 +247,110 @@ describe('computeSensitivity', () => {
     current_year: 1, capex_total_usd: computeCapex(novaCapex).total_usd,
   }
 
-  it('returns at least one sensitivity item', () => {
-    const items = computeSensitivity(
-      { site_id: 'nordic', capexParams: nordicCapex, opexParams: nordicOpex, discount_rate: 0.08, lifetime_years: 15 },
-      { site_id: 'nova',   capexParams: novaCapex,   opexParams: novaOpex,   discount_rate: 0.08, lifetime_years: 15 },
-    )
+  // Non-cost scores from regions.json
+  const nordicScores = { risk_score: 1.2, renewable_pct: 0.97, latency_ms: 42 }
+  const ercotScores  = { risk_score: 5.8, renewable_pct: 0.42, latency_ms: 22 }
+  const novaScores   = { risk_score: 2.0, renewable_pct: 0.20, latency_ms: 4  }
+
+  const nordicParams = {
+    site_id: 'nordic', capexParams: nordicCapex, opexParams: nordicOpex,
+    discount_rate: 0.08, lifetime_years: 15, ...nordicScores,
+  }
+  const ercotParams = {
+    site_id: 'ercot',  capexParams: ercotCapex,  opexParams: ercotOpex,
+    discount_rate: 0.08, lifetime_years: 15, ...ercotScores,
+  }
+  const novaParams = {
+    site_id: 'nova',   capexParams: novaCapex,   opexParams: novaOpex,
+    discount_rate: 0.08, lifetime_years: 15, ...novaScores,
+  }
+
+  it('returns at least one sensitivity item (3-site context)', () => {
+    // Pass all 3 sites so the full-N ranking is used
+    const allSites = [nordicParams, ercotParams, novaParams]
+    const items = computeSensitivity(nordicParams, ercotParams, allSites)
     expect(items.length).toBeGreaterThan(0)
   })
 
-  it('flip_value > current_value when searching up', () => {
-    const items = computeSensitivity(
-      { site_id: 'nordic', capexParams: nordicCapex, opexParams: nordicOpex, discount_rate: 0.08, lifetime_years: 15 },
-      { site_id: 'nova',   capexParams: novaCapex,   opexParams: novaOpex,   discount_rate: 0.08, lifetime_years: 15 },
-    )
-    const powerItem = items.find(i => i.driver === 'power_rate_usd_per_kwh')
+  it('non-stable power_rate flip_value is strictly greater than current_value', () => {
+    const allSites = [nordicParams, ercotParams, novaParams]
+    const items = computeSensitivity(nordicParams, ercotParams, allSites)
+    const powerItem = items.find(i => i.driver === 'power_rate_usd_per_kwh' && !i.stable)
     if (powerItem) {
+      // Flip value must be meaningfully above current — this is the core regression
       expect(powerItem.flip_value).toBeGreaterThan(powerItem.current_value)
     }
   })
 
-  it('pct_change is positive', () => {
-    const items = computeSensitivity(
-      { site_id: 'nordic', capexParams: nordicCapex, opexParams: nordicOpex, discount_rate: 0.08, lifetime_years: 15 },
-      { site_id: 'nova',   capexParams: novaCapex,   opexParams: novaOpex,   discount_rate: 0.08, lifetime_years: 15 },
-    )
+  it('pct_change for all items is >= 0', () => {
+    const allSites = [nordicParams, ercotParams, novaParams]
+    const items = computeSensitivity(nordicParams, ercotParams, allSites)
     for (const item of items) {
       expect(item.pct_change).toBeGreaterThanOrEqual(0)
+    }
+  })
+
+  // ── Regression: the 0% bug ────────────────────────────────────────────────
+  // Nordic (rank-1 by weighted score) vs ERCOT (rank-2) in the 3-site context.
+  // Nordic's raw cost NPV is actually WORSE than ERCOT — it wins on non-cost
+  // dimensions (risk 1.2 vs 5.8, renewable 0.97 vs 0.42).
+  // Old code: searched only raw NPV in a 2-site comparison → converged at
+  // current value → 0% change.
+  // Fix: full-N-site weighted-score search → finds the real threshold.
+
+  it('REGRESSION: Nordic vs ERCOT power-rate flip is well above 0% in 3-site context', () => {
+    // Nordic wins rank-1 in the 3-site ranking, so use the 3-site allSites context
+    const allSites = [nordicParams, ercotParams, novaParams]
+    const items = computeSensitivity(nordicParams, ercotParams, allSites)
+    const powerItem = items.find(i => i.driver === 'power_rate_usd_per_kwh')
+    expect(powerItem).toBeDefined()
+    // Must require a meaningful rate increase — not 0%
+    // If it's stable (no flip within ±200%), pct_change = 200%
+    // If it's not stable, pct_change must be > 0
+    expect(powerItem!.pct_change).not.toBe(0)
+    if (powerItem && !powerItem.stable) {
+      expect(powerItem.pct_change).toBeGreaterThan(5)
+      expect(powerItem.flip_value).toBeGreaterThan(powerItem.current_value)
+    }
+  })
+
+  it('REGRESSION: flip_sentence for hero 3 sites does not read "+0.0% vs current"', async () => {
+    // Full engine run — flip_sentence must reference a meaningful threshold
+    const out = await runEngine(
+      {
+        request_id: '00000000-0000-0000-0000-000000000002',
+        project: {
+          name: 'Regression 0pct', capacity_kw: 10_000, design_pue: 1.4,
+          lifetime_years: 15, discount_rate: 0.08,
+        },
+        sites: [
+          { site_id: 'nova',   label: 'Northern Virginia', region_key: 'us-va-northern' },
+          { site_id: 'ercot',  label: 'Texas ERCOT',        region_key: 'us-tx-ercot'    },
+          { site_id: 'nordic', label: 'Nordic Hydro',        region_key: 'eu-nordic-hydro' },
+        ],
+      },
+      { forceFallback: true, skipCache: true },
+    )
+    // The flip sentence must not contain "+0.0%"
+    expect(out.flip_sentence).not.toMatch(/\+0\.0%/)
+    // If there's a sensitivity item it must have non-zero pct for the top driver
+    if (out.sensitivity.length > 0) {
+      const firstReal = out.sensitivity.find(s => !s.stable)
+      if (firstReal) {
+        expect(firstReal.pct_change).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it('Nordic vs NOVA (2-site): power-rate flip produces non-zero pct_change', () => {
+    // NOVA has far higher power rate AND higher land cost vs Nordic.
+    // In 2-site context Nordic wins on both cost and non-cost, so the power-rate
+    // flip must require a real increase (or be stable if non-cost edge is insuperable).
+    const allSites = [nordicParams, novaParams]
+    const items = computeSensitivity(nordicParams, novaParams, allSites)
+    for (const item of items.filter(i => !i.stable)) {
+      expect(item.pct_change).toBeGreaterThan(0)
+      expect(item.flip_value).not.toBeCloseTo(item.current_value, 3)
     }
   })
 })

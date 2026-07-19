@@ -94,11 +94,12 @@ describe('buildFallbackNarrative', () => {
     const out    = await getOutput()
     const result = buildFallbackNarrative(out, siteLabels)
     // Extract all dollar amounts from the recommendation
-    const dollarRE = /\$([\d.]+)([MBK]?)/g
+    // Regex handles plain numbers ($123), comma-formatted ($10,200) and suffixed ($1.5M)
+    const dollarRE = /\$([\d,]+\.?\d*)([MBK]?)/g
     const mentioned: number[] = []
     let m: RegExpExecArray | null
     while ((m = dollarRE.exec(result.recommendation)) !== null) {
-      const raw = parseFloat(m[1])
+      const raw = parseFloat(m[1].replace(/,/g, ''))
       const mult = m[2] === 'B' ? 1e9 : m[2] === 'M' ? 1e6 : m[2] === 'K' ? 1e3 : 1
       mentioned.push(raw * mult)
     }

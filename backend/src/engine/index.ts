@@ -197,49 +197,45 @@ export async function runEngine(
     ranking.push(r.site_id)
   }
 
-  // ── Sensitivity analysis (rank-1 vs rank-2) ──────────────────────────────
+  // ── Sensitivity analysis (rank-1, all sites as context) ───────────────────
   const rank1bundle = bundles.find((b) => b.site_id === ranking[0])!
   const rank2bundle = bundles.find((b) => b.site_id === ranking[1])!
 
-  const rank1SensParams: SensitivitySiteParams = {
-    site_id:        rank1bundle.site_id,
-    capexParams:    rank1bundle.capexParams,
-    opexParams:     rank1bundle.opexParams,
+  // Build SensitivitySiteParams for every site (the full-N context is required)
+  const allSensParams: SensitivitySiteParams[] = bundles.map((b) => ({
+    site_id:        b.site_id,
+    capexParams:    b.capexParams,
+    opexParams:     b.opexParams,
     discount_rate:  input.project.discount_rate,
     lifetime_years: input.project.lifetime_years,
-  }
-  const rank2SensParams: SensitivitySiteParams = {
-    site_id:        rank2bundle.site_id,
-    capexParams:    rank2bundle.capexParams,
-    opexParams:     rank2bundle.opexParams,
-    discount_rate:  input.project.discount_rate,
-    lifetime_years: input.project.lifetime_years,
-  }
+    risk_score:     b.risk_score,
+    renewable_pct:  b.renewable_pct,
+    latency_ms:     b.latency_ms,
+  }))
 
-  const sensitivity = computeSensitivity(rank1SensParams, rank2SensParams)
+  const rank1SensParams = allSensParams.find((s) => s.site_id === ranking[0])!
+  const rank2SensParams = allSensParams.find((s) => s.site_id === ranking[1])!
+
+  const sensitivity = computeSensitivity(rank1SensParams, rank2SensParams, allSensParams, weights)
 
   // ── Flip sentence ─────────────────────────────────────────────────────────
-  let flip_sentence = `${rank1bundle.label} ranks #1 under all base-case assumptions.`
-  if (sensitivity.length > 0) {
-    const top = sensitivity[0]
+  let flip_sentence = `${rank1bundle.label} ranks #1 and remains stable across all base-case driver ranges.`
+  // Use the first non-stable item for the flip sentence
+  const topFlip = sensitivity.find((s) => !s.stable)
+  if (topFlip) {
     const rank1Label = rank1bundle.label
     const rank2Label = rank2bundle.label
-    if (top.driver === 'power_rate_usd_per_kwh') {
+    if (topFlip.driver === 'power_rate_usd_per_kwh') {
       flip_sentence =
         `This ranking flips if ${rank1Label} power rates rise above ` +
-        `$${top.flip_value.toFixed(4)}/kWh ` +
-        `(+${top.pct_change.toFixed(1)}% vs. current $${top.current_value.toFixed(4)}/kWh), ` +
-        `at which point ${rank2Label} becomes the lower-cost option.`
-    } else if (top.driver === 'power_rate_usd_per_kwh (rank-2 drop)') {
-      flip_sentence =
-        `This ranking flips if ${rank2Label} power rates fall below ` +
-        `$${top.flip_value.toFixed(4)}/kWh ` +
-        `(${top.pct_change.toFixed(1)}% drop vs. current $${top.current_value.toFixed(4)}/kWh).`
-    } else if (top.driver === 'construction_cost_per_kw') {
+        `$${topFlip.flip_value.toFixed(4)}/kWh ` +
+        `(+${topFlip.pct_change.toFixed(1)}% vs. current $${topFlip.current_value.toFixed(4)}/kWh), ` +
+        `at which point ${rank2Label} becomes the preferred option.`
+    } else if (topFlip.driver === 'construction_cost_per_kw') {
       flip_sentence =
         `This ranking flips if ${rank1Label} construction costs exceed ` +
-        `$${Math.round(top.flip_value).toLocaleString()}/kW ` +
-        `(+${top.pct_change.toFixed(1)}% vs. current $${Math.round(top.current_value).toLocaleString()}/kW).`
+        `$${topFlip.flip_value.toFixed(0)}/kW ` +
+        `(+${topFlip.pct_change.toFixed(1)}% vs. current $${topFlip.current_value.toFixed(0)}/kW).`
     }
   }
 
