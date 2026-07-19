@@ -1,3 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  html {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-color: #f2f4f8;
+    color: #21272a;
+  }
+
+  ::-webkit-scrollbar         { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track   { background: #dde1e7; }
+  ::-webkit-scrollbar-thumb   { background: #878d96; border-radius: 3px; }
+}
+
+@layer components {
+  .field-label {
+    @apply block text-xs font-medium tracking-wide text-ibm-cool-60 mb-1 uppercase;
+  }
+  .field-input {
+    @apply w-full bg-white border border-ibm-cool-30 rounded-none px-3 py-2 text-sm text-ibm-cool-90
+           focus:outline-none focus:ring-2 focus:ring-ibm-blue focus:border-ibm-blue
+           transition-shadow placeholder:text-ibm-cool-40;
+  }
+  .field-select {
+    @apply field-input appearance-none cursor-pointer;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-ibm-blue hover:bg-ibm-blue-dark text-white
+           font-medium px-5 py-2.5 text-sm transition-colors cursor-pointer select-none;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 border border-ibm-cool-30 hover:bg-ibm-cool-10
+           text-ibm-cool-70 font-medium px-4 py-2 text-sm transition-colors cursor-pointer select-none;
+  }
+  .card {
+    @apply bg-white border border-ibm-cool-20 shadow-card;
+  }
+  .section-label {
+    @apply text-xs font-semibold tracking-widest uppercase text-ibm-cool-50;
+  }
+  .data-value {
+    @apply font-mono text-ibm-cool-90 font-medium;
+  }
+}
