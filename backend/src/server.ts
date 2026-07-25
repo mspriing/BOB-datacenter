@@ -1,7 +1,9 @@
+import 'dotenv/config'   // load backend/.env so WATSONX_* credentials reach the LLM layer
 import express from 'express'
 import cors from 'cors'
 import { estimateRouter } from './routes/estimate.js'
 import { healthRouter } from './routes/health.js'
+import { watsonxConfigFromEnv } from './llm/client.js'
 
 const app = express()
 
@@ -13,7 +15,9 @@ app.use('/estimate', estimateRouter)
 
 const PORT = process.env.PORT ?? 3001
 app.listen(PORT, () => {
+  const llm = watsonxConfigFromEnv() ? 'watsonx (live)' : 'deterministic fallback (no WATSONX_* credentials)'
   console.log(`BOB-datacenter backend listening on http://localhost:${PORT}`)
+  console.log(`Narrative layer: ${llm}`)
 })
 
 export { app }

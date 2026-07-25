@@ -18,6 +18,9 @@ import { buildNarrativePrompt } from './prompts.js'
 import { buildFallbackNarrative } from './fallback.js'
 import { cacheGet, cacheSet } from './cache.js'
 
+/** Granite returns the narrative body WITHOUT a `source` field — we add it. */
+const NarrativeModelSchema = NarrativeSchema.omit({ source: true })
+
 export interface NarrativeOptions {
   /** Skip watsonx even if env vars are present (for tests). */
   forceFallback?: boolean
@@ -53,7 +56,11 @@ export async function generateNarrative(
       // Extract the JSON block — model may emit trailing text
       const jsonMatch = raw.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
-        const parsed = NarrativeSchema.safeParse(JSON.parse(jsonMatch[0]))
+        // The prompt asks Granite for {recommendation, sensitivity_callouts,
+        // uncertainty_flags} WITHOUT a `source` field, so validate against the
+        // schema minus `source` and stamp source='watsonx' ourselves. (Parsing
+        // with the full NarrativeSchema would reject every valid model response.)
+        const parsed = NarrativeModelSchema.safeParse(JSON.parse(jsonMatch[0]))
         if (parsed.success) {
           const result: NarrativeResult = { ...parsed.data, source: 'watsonx' }
           if (!opts.skipCache) cacheSet(prompt, JSON.stringify(result))

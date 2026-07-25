@@ -142,15 +142,34 @@ cd frontend && npm run build
 
 ## Build status
 
-> **Current state:** Skeleton with stub `/estimate` endpoint.
-> Engine math (CapEx, OpEx, NPV, ranking, sensitivity) and watsonx narrative generation are in progress (see build order in docs/).
+> **Current state:** End-to-end working. `/estimate` runs the deterministic
+> engine and returns a full analysis with a watsonx/Granite narrative (or the
+> deterministic fallback when no credentials are configured). 66 backend tests
+> passing.
 
 | Module | Status |
 |---|---|
-| `/estimate` stub endpoint | ✅ Working |
+| `/estimate` endpoint (engine + narrative) | ✅ Working |
 | Zod input/output validation | ✅ Done |
-| `data/regions.json` (6 US regions) | ✅ Done |
+| `data/regions.json` | ✅ Done |
 | `docs/SCHEMA.md` | ✅ Done |
-| Deterministic cost engine | 🔄 Next |
-| watsonx/Granite integration | 🔄 Upcoming |
-| Full React results dashboard | ✅ Scaffolded |
+| Deterministic cost engine (CapEx/OpEx/NPV/rank/sensitivity) | ✅ Done + tested |
+| watsonx/Granite narrative + offline fallback | ✅ Done + tested |
+| React results dashboard | ✅ Done |
+
+### Verifying the watsonx (live) path
+
+The app silently uses the deterministic fallback whenever `WATSONX_*` credentials
+are missing or the call fails, so a working UI alone does **not** prove watsonx is
+in the loop. To confirm the live path:
+
+```bash
+cd backend
+cp ../.env.example .env      # then paste your IBM Cloud API key + project UUID
+npm install                  # picks up dotenv (new dependency)
+npm run watsonx:smoke        # one live Granite call — prints source = "watsonx" on success
+```
+
+`backend/.env` is loaded automatically by `npm run dev` (via `dotenv`). The
+Recommendation card in the UI shows the source badge ("IBM watsonx · Granite" vs
+"Deterministic template") so the demo makes the watsonx call visible on screen.
