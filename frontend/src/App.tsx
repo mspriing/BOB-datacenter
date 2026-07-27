@@ -6,7 +6,7 @@ import { RecommendationCard } from './components/RecommendationCard.tsx'
 import { CostBreakdownChart } from './components/CostBreakdownChart.tsx'
 import { SensitivityChart }   from './components/SensitivityChart.tsx'
 import { useEstimate }        from './hooks/useEstimate.ts'
-import type { SiteInput, Scenario } from './types/schema.ts'
+import type { SiteInput, Scenario, ProjectWeights } from './types/schema.ts'
 
 function App() {
   const { data, loading, error, submit, reset } = useEstimate()
@@ -19,8 +19,8 @@ function App() {
     designPUE: number,
     lifetimeYears: number,
     discountRate: number,
+    weights: ProjectWeights,
   ) {
-    // Build siteLabels map from form state
     await submit({
       project: {
         name:           projectName,
@@ -28,6 +28,7 @@ function App() {
         design_pue:     designPUE,
         lifetime_years: lifetimeYears,
         discount_rate:  discountRate,
+        weights,
       },
       sites,
     })

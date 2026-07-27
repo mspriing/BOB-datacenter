@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { SiteInput } from '../types/schema.ts'
+import type { SiteInput, ProjectWeights } from '../types/schema.ts'
 import { REGION_OPTIONS } from '../types/schema.ts'
 
 interface SiteFormProps {
@@ -10,6 +10,7 @@ interface SiteFormProps {
     designPUE: number,
     lifetimeYears: number,
     discountRate: number,
+    weights: ProjectWeights,
   ) => Promise<void>
   loading: boolean
 }
@@ -27,6 +28,21 @@ const DEFAULT_SITE = (index: number): SiteInput => ({
   free_text:  '',
 })
 
+const DEFAULT_WEIGHT_SLIDERS = { total_cost: 50, risk: 20, sustainability: 15, latency: 15 }
+
+function normaliseWeights(sliders: typeof DEFAULT_WEIGHT_SLIDERS): ProjectWeights {
+  const sum = sliders.total_cost + sliders.risk + sliders.sustainability + sliders.latency
+  if (sum === 0) {
+    return { total_cost: 0.25, risk: 0.25, sustainability: 0.25, latency: 0.25 }
+  }
+  return {
+    total_cost:     sliders.total_cost     / sum,
+    risk:           sliders.risk           / sum,
+    sustainability: sliders.sustainability / sum,
+    latency:        sliders.latency        / sum,
+  }
+}
+
 export function SiteForm({ onSubmit, loading }: SiteFormProps) {
   const [projectName, setProjectName] = useState('Site Selection Analysis')
   const [capacityKW, setCapacityKW]   = useState(10000)
@@ -35,6 +51,7 @@ export function SiteForm({ onSubmit, loading }: SiteFormProps) {
   const [discountRate, setDiscountRate] = useState(0.08)
   const [sites, setSites]             = useState<SiteInput[]>(HERO_SITES)
   const [activeTab, setActiveTab]     = useState(0)
+  const [weightSliders, setWeightSliders] = useState(DEFAULT_WEIGHT_SLIDERS)
 
   function updateSite(i: number, patch: Partial<SiteInput>) {
     setSites(prev => prev.map((s, idx) => idx === i ? { ...s, ...patch } : s))
@@ -60,7 +77,7 @@ export function SiteForm({ onSubmit, loading }: SiteFormProps) {
       site_id: s.site_id.trim() || `site-${String.fromCharCode(65 + i)}`,
       label:   s.label.trim()   || `Site ${String.fromCharCode(65 + i)}`,
     }))
-    await onSubmit(cleanedSites, projectName, capacityKW, designPUE, lifetimeYrs, discountRate)
+    await onSubmit(cleanedSites, projectName, capacityKW, designPUE, lifetimeYrs, discountRate, normaliseWeights(weightSliders))
   }
 
   return (
@@ -126,6 +143,64 @@ export function SiteForm({ onSubmit, loading }: SiteFormProps) {
               />
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ── Decision weights ─────────────────────────────────────────────────── */}
+      <div className="card px-6 py-5">
+        <div className="flex items-center justify-between mb-3">
+          <p className="section-label text-ibm-cool-60">Decision weights</p>
+          <button
+            type="button"
+            onClick={() => setWeightSliders(DEFAULT_WEIGHT_SLIDERS)}
+            className="text-xs text-ibm-blue hover:underline"
+          >
+            Reset to defaults
+          </button>
+        </div>
+        <div className="space-y-4">
+          {([
+            {
+              key: 'total_cost' as const,
+              label: 'Total cost',
+              helper: 'how much the cheapest fifteen year bill matters',
+            },
+            {
+              key: 'risk' as const,
+              label: 'Risk of disruption',
+              helper: 'flood, wind, wildfire and grid instability at that location',
+            },
+            {
+              key: 'sustainability' as const,
+              label: 'Clean power',
+              helper: 'share of the local grid running on renewables today',
+            },
+            {
+              key: 'latency' as const,
+              label: 'Distance to your users',
+              helper: 'round trip time to the nearest major network hub',
+            },
+          ] as const).map(({ key, label, helper }) => (
+            <div key={key}>
+              <div className="flex items-baseline justify-between mb-1">
+                <label htmlFor={`weight-${key}`} className="text-sm font-medium text-ibm-cool-80">
+                  {label}
+                  <span className="ml-2 font-normal text-xs text-ibm-cool-50">— {helper}</span>
+                </label>
+                <span className="font-mono text-xs text-ibm-cool-60 ml-4 shrink-0">{weightSliders[key]}</span>
+              </div>
+              <input
+                id={`weight-${key}`}
+                type="range"
+                min={0}
+                max={100}
+                step={5}
+                value={weightSliders[key]}
+                onChange={e => setWeightSliders(prev => ({ ...prev, [key]: Number(e.target.value) }))}
+                className="w-full accent-ibm-blue"
+              />
+            </div>
+          ))}
         </div>
       </div>
 
