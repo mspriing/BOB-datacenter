@@ -4,7 +4,12 @@
  * NPV  = −CapEx − Σ(OpEx_y / (1+r)^y)   for y = 1..lifetime_years
  *         (negative because it's a cost NPV — lower is better)
  *
- * Levelized cost per kW = |NPV| / capacity_kw
+ * Lifetime cost per kW = |NPV| / capacity_kw
+ *   (formerly "levelized cost per kW" — renamed because "levelized" conventionally
+ *    means $/MWh, not $/kW; this figure is the whole-life cost divided by capacity)
+ *
+ * CapEx per kW = capex.total_usd / capacity_kw
+ *   (construction cost intensity; comparable to published data-center build costs)
  *
  * Payback: year when cumulative avoided annual cost vs. worst-ranked
  * alternative exceeds CapEx delta. For a single-site absolute measure,
@@ -38,13 +43,14 @@ export interface FinanceParams {
 }
 
 export interface FinanceResult {
-  levelized_cost_per_kw: number
+  capex_per_kw:          number
+  lifetime_cost_per_kw:  number
   npv_usd:               number
   payback_years:         number
   ranges: {
-    low:  { npv_usd: number; levelized_per_kw: number }
-    base: { npv_usd: number; levelized_per_kw: number }
-    high: { npv_usd: number; levelized_per_kw: number }
+    low:  { npv_usd: number; lifetime_per_kw: number }
+    base: { npv_usd: number; lifetime_per_kw: number }
+    high: { npv_usd: number; lifetime_per_kw: number }
   }
 }
 
@@ -106,13 +112,14 @@ export function computeFinance(p: FinanceParams): FinanceResult {
   const highNPV = scenarioNPV(highCapexParams, highOpexParams, r, years)
 
   return {
-    levelized_cost_per_kw: round2(levelized),
+    capex_per_kw:          round2(p.capex.total_usd / p.capacity_kw),
+    lifetime_cost_per_kw:  round2(levelized),
     npv_usd:               round2(baseNPV),
     payback_years:         round1(payback),
     ranges: {
-      low:  { npv_usd: round2(lowNPV),  levelized_per_kw: round2(Math.abs(lowNPV)  / p.capacity_kw) },
-      base: { npv_usd: round2(baseNPV), levelized_per_kw: round2(levelized) },
-      high: { npv_usd: round2(highNPV), levelized_per_kw: round2(Math.abs(highNPV) / p.capacity_kw) },
+      low:  { npv_usd: round2(lowNPV),  lifetime_per_kw: round2(Math.abs(lowNPV)  / p.capacity_kw) },
+      base: { npv_usd: round2(baseNPV), lifetime_per_kw: round2(levelized) },
+      high: { npv_usd: round2(highNPV), lifetime_per_kw: round2(Math.abs(highNPV) / p.capacity_kw) },
     },
   }
 }

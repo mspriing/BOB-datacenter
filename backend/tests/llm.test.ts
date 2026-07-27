@@ -110,10 +110,10 @@ describe('buildFallbackNarrative', () => {
       Math.abs(rank1.capex.total_usd),
       Math.abs(rank1.opex_annual.total_usd),
       Math.abs(rank1.finance.npv_usd),
-      rank1.finance.levelized_cost_per_kw,
-      rank1.finance.ranges.low.levelized_per_kw,
-      rank1.finance.ranges.high.levelized_per_kw,
-      Math.abs(rank2.finance.levelized_cost_per_kw),
+      rank1.finance.lifetime_cost_per_kw,
+      rank1.finance.ranges.low.lifetime_per_kw,
+      rank1.finance.ranges.high.lifetime_per_kw,
+      Math.abs(rank2.finance.lifetime_cost_per_kw),
       // Sensitivity flip values are real engine numbers and appear in flip_sentence
       ...out.sensitivity.flatMap(s => [s.current_value, s.flip_value]),
     ]

@@ -25,14 +25,15 @@ export type SensitivityCallout = z.infer<typeof SensitivityCalloutSchema>
 export type UncertaintyFlag    = z.infer<typeof UncertaintyFlagSchema>
 
 const RangeSchema = z.object({
-  npv_usd:          z.number(),
-  levelized_per_kw: z.number(),
+  npv_usd:         z.number(),
+  lifetime_per_kw: z.number(),
 })
 
 const FinanceSchema = z.object({
-  levelized_cost_per_kw: z.number(),
-  npv_usd:               z.number(),
-  payback_years:         z.number(),
+  capex_per_kw:         z.number(),
+  lifetime_cost_per_kw: z.number(),
+  npv_usd:              z.number(),
+  payback_years:        z.number(),
   ranges: z.object({
     low:  RangeSchema,
     base: RangeSchema,

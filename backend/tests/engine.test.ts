@@ -154,7 +154,7 @@ describe('computeFinance', () => {
     expect(f.ranges.low.npv_usd).toBeGreaterThan(f.ranges.high.npv_usd)
   })
 
-  it('levelized cost per kW = |NPV| / capacity_kw', () => {
+  it('lifetime cost per kW = |NPV| / capacity_kw', () => {
     const f = computeFinance({
       lifetime_years: 15, discount_rate: 0.08,
       capacity_kw: 10_000,
@@ -164,7 +164,20 @@ describe('computeFinance', () => {
       construction_cost_low: 9_100, construction_cost_high: 12_000,
       incentive_usd: 300_000,
     })
-    expect(f.levelized_cost_per_kw).toBeCloseTo(Math.abs(f.npv_usd) / 10_000, 0)
+    expect(f.lifetime_cost_per_kw).toBeCloseTo(Math.abs(f.npv_usd) / 10_000, 0)
+  })
+
+  it('capex_per_kw = capex.total_usd / capacity_kw', () => {
+    const f = computeFinance({
+      lifetime_years: 15, discount_rate: 0.08,
+      capacity_kw: 10_000,
+      capex, opexBase: opex,
+      opexParamsBase: opexParams, capexParamsBase: capexParams,
+      power_rate_low: 0.018, power_rate_high: 0.036,
+      construction_cost_low: 9_100, construction_cost_high: 12_000,
+      incentive_usd: 300_000,
+    })
+    expect(f.capex_per_kw).toBeCloseTo(capex.total_usd / 10_000, 2)
   })
 })
 
@@ -551,5 +564,25 @@ describe('runEngine (hero sites fixture)', () => {
       f => f.site_id === 'nordic' && f.field === 'power_rate_usd_per_kwh'
     )
     expect(pf).toBeUndefined()
+  })
+
+  it('capex_per_kw equals capex.total_usd / capacity_kw for every site', async () => {
+    const out = await runEngine(input, opts)
+    for (const sid of out.ranking) {
+      const site = out.sites[sid]
+      expect(site.finance.capex_per_kw).toBeCloseTo(
+        site.capex.total_usd / input.project.capacity_kw,
+        2,
+      )
+    }
+  })
+
+  it('lifetime_cost_per_kw is strictly greater than capex_per_kw for every site', async () => {
+    // lifetime cost includes running costs on top of construction
+    const out = await runEngine(input, opts)
+    for (const sid of out.ranking) {
+      const f = out.sites[sid].finance
+      expect(f.lifetime_cost_per_kw).toBeGreaterThan(f.capex_per_kw)
+    }
   })
 })

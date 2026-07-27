@@ -103,14 +103,15 @@
       },
 
       "finance": {
-        "levelized_cost_per_kw": 1842,      // $/kW; NPV of total cost ÷ capacity_kw
+        "capex_per_kw":          12870,      // $/kW; total construction capital ÷ capacity. This is the figure comparable to published data-center build costs.
+        "lifetime_cost_per_kw":  1842,       // $/kW; NPV of total cost ÷ capacity_kw
         "npv_usd":               -198000000, // negative = cost NPV
         "payback_years":          7.4,
 
         "ranges": {
-          "low":  { "npv_usd": -178000000, "levelized_per_kw": 1640 },
-          "base": { "npv_usd": -198000000, "levelized_per_kw": 1842 },
-          "high": { "npv_usd": -231000000, "levelized_per_kw": 2140 }
+          "low":  { "npv_usd": -178000000, "lifetime_per_kw": 1640 },
+          "base": { "npv_usd": -198000000, "lifetime_per_kw": 1842 },
+          "high": { "npv_usd": -231000000, "lifetime_per_kw": 2140 }
         }
       },
 

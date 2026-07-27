@@ -71,7 +71,7 @@ function App() {
             <div className="mb-6">
               <h1 className="text-2xl font-semibold text-ibm-cool-90">Compare data-center sites</h1>
               <p className="text-ibm-cool-60 text-sm mt-1">
-                Add 2–4 candidate sites. The engine prices CapEx, OpEx, NPV, and levelized cost;
+                Add 2–4 candidate sites. The engine prices CapEx, OpEx, NPV, lifetime cost, and build cost per kW;
                 then generates a plain-English investment memo.
               </p>
             </div>

@@ -46,8 +46,8 @@ export interface EstimateInput {
 // ── Output types ──────────────────────────────────────────────────────────────
 
 export interface CostRange {
-  npv_usd:          number
-  levelized_per_kw: number
+  npv_usd:         number
+  lifetime_per_kw: number
 }
 
 export interface SiteCapex {
@@ -70,9 +70,10 @@ export interface SiteOpexAnnual {
 }
 
 export interface SiteFinance {
-  levelized_cost_per_kw: number
-  npv_usd:               number
-  payback_years:         number
+  capex_per_kw:         number
+  lifetime_cost_per_kw: number
+  npv_usd:              number
+  payback_years:        number
   ranges: {
     low:  CostRange
     base: CostRange

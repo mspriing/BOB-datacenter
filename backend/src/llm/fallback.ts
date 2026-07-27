@@ -67,20 +67,20 @@ export function buildFallbackNarrative(
   // ── Recommendation paragraph ────────────────────────────────────────────────
   const costGap = Math.abs(rank1.finance.npv_usd) - Math.abs(rank2.finance.npv_usd)
   const cheaper = costGap > 0 ? rank2Label : rank1Label   // whichever has lower absolute NPV cost
-  const pricedBetter = Math.abs(rank1.finance.levelized_cost_per_kw) < Math.abs(rank2.finance.levelized_cost_per_kw)
+  const pricedBetter = Math.abs(rank1.finance.lifetime_cost_per_kw) < Math.abs(rank2.finance.lifetime_cost_per_kw)
 
   const recommendation =
     `Based on a ${output.ranking.length}-site analysis, ${rank1Label} is the recommended site ` +
     `with a weighted composite score of ${rank1.weighted_score.toFixed(3)}, ` +
     `a total capital outlay of ${usd(rank1.capex.total_usd)}, and annual operating costs of ${usd(rank1.opex_annual.total_usd)}. ` +
     `The ${output.sites[rank1Id].finance.payback_years.toFixed(1)}-year base-case NPV is ${usd(rank1.finance.npv_usd)}, ` +
-    `yielding a levelized cost of ${usd(rank1.finance.levelized_cost_per_kw)}/kW ` +
+    `yielding a lifetime cost of ${usd(rank1.finance.lifetime_cost_per_kw)}/kW ` +
     (pricedBetter ? `— the most competitive figure among the evaluated candidates. ` : `— `) +
-    `Under low and high cost scenarios this spans ${usd(rank1.finance.ranges.low.levelized_per_kw)}/kW to ` +
-    `${usd(rank1.finance.ranges.high.levelized_per_kw)}/kW. ` +
+    `Under low and high cost scenarios this spans ${usd(rank1.finance.ranges.low.lifetime_per_kw)}/kW to ` +
+    `${usd(rank1.finance.ranges.high.lifetime_per_kw)}/kW. ` +
     `${output.flip_sentence} ` +
-    `${rank2Label} is the strongest alternative, with a levelized cost of ` +
-    `${usd(rank2.finance.levelized_cost_per_kw)}/kW and ${pct(rank2.non_cost_scores.renewable_pct)} renewable power availability.`
+    `${rank2Label} is the strongest alternative, with a lifetime cost of ` +
+    `${usd(rank2.finance.lifetime_cost_per_kw)}/kW and ${pct(rank2.non_cost_scores.renewable_pct)} renewable power availability.`
 
   // ── Sensitivity callouts — one per site ────────────────────────────────────
   const sensitivity_callouts: SensitivityCallout[] = output.ranking.map((sid) => {

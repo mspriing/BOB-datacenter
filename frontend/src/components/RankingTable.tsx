@@ -18,7 +18,8 @@ export function RankingTable({ output, scenario }: RankingTableProps) {
           <tr>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700">Rank</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700">Site</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-700">$/kW</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-700">Build cost / kW</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-700">Lifetime cost / kW</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700">NPV</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700">Payback (yr)</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700">Score</th>
@@ -39,7 +40,8 @@ export function RankingTable({ output, scenario }: RankingTableProps) {
                 <td className="px-4 py-2 text-sm">
                   {output.sites[siteId] ? siteId : siteId}
                 </td>
-                <td className="px-4 py-2 text-sm">{formatPerKW(range.levelized_per_kw)}</td>
+                <td className="px-4 py-2 text-sm">{formatPerKW(site.finance.capex_per_kw)}</td>
+                <td className="px-4 py-2 text-sm">{formatPerKW(range.lifetime_per_kw)}</td>
                 <td className="px-4 py-2 text-sm">{formatUSD(range.npv_usd)}</td>
                 <td className="px-4 py-2 text-sm">{site.finance.payback_years.toFixed(1)}</td>
                 <td className="px-4 py-2 text-sm">{site.weighted_score.toFixed(3)}</td>

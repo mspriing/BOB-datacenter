@@ -48,7 +48,13 @@ export function RankedSiteCards({ output, scenario, siteLabels }: RankedSiteCard
 
             {/* Primary metrics */}
             <div className="px-4 py-4 grid grid-cols-2 gap-x-4 gap-y-3 flex-1">
-              <Metric label="Levelized $/kW" value={formatPerKW(range.levelized_per_kw)} highlight={isWinner} />
+              <Metric label="Build cost / kW" value={formatPerKW(site.finance.capex_per_kw)} />
+              <Metric
+                label="Lifetime cost / kW"
+                value={formatPerKW(range.lifetime_per_kw)}
+                highlight={isWinner}
+                title="Everything the site costs over its full life, construction plus running costs, divided by its capacity. This is not the price of building it. Build cost per kW is shown separately above."
+              />
               <Metric label="NPV (total cost)" value={formatUSD(Math.abs(range.npv_usd))} />
               <Metric label="CapEx" value={formatUSD(site.capex.total_usd)} />
               <Metric label="Annual OpEx" value={formatUSD(site.opex_annual.total_usd)} />
@@ -81,12 +87,16 @@ export function RankedSiteCards({ output, scenario, siteLabels }: RankedSiteCard
   )
 }
 
-function Metric({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+function Metric({ label, value, highlight, title }: { label: string; value: string; highlight?: boolean; title?: string }) {
   return (
     <div>
       <div className="text-xs text-ibm-cool-50 uppercase tracking-wide font-medium">{label}</div>
-      <div className={`font-mono text-sm font-semibold mt-0.5 ${highlight ? 'text-ibm-blue' : 'text-ibm-cool-90'}`}>
+      <div
+        className={`font-mono text-sm font-semibold mt-0.5 ${highlight ? 'text-ibm-blue' : 'text-ibm-cool-90'}`}
+        title={title}
+      >
         {value}
+        {title && <span className="ml-1 text-xs text-ibm-cool-50 font-normal non-italic cursor-help">ⓘ</span>}
       </div>
     </div>
   )

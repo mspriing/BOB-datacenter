@@ -42,9 +42,9 @@ export function buildNarrativePrompt(output: EstimateOutput, siteLabels: Record<
       `  Annual OpEx: ${usd(s.opex_annual.total_usd)}`,
       `    Power: ${usd(s.opex_annual.power_usd)}  Water: ${usd(s.opex_annual.water_usd)}  Staff: ${usd(s.opex_annual.staff_usd)}`,
       `    Maintenance: ${usd(s.opex_annual.maintenance_usd)}  Taxes: ${usd(s.opex_annual.taxes_usd)}  Connectivity: ${usd(s.opex_annual.connectivity_usd)}`,
-      `  Finance (base): NPV ${usd(s.finance.npv_usd)}  Levelized ${usd(s.finance.levelized_cost_per_kw)}/kW  Payback ${round1(s.finance.payback_years)} yr`,
-      `  Finance low:  NPV ${usd(s.finance.ranges.low.npv_usd)}  Levelized ${usd(s.finance.ranges.low.levelized_per_kw)}/kW`,
-      `  Finance high: NPV ${usd(s.finance.ranges.high.npv_usd)}  Levelized ${usd(s.finance.ranges.high.levelized_per_kw)}/kW`,
+      `  Finance (base): NPV ${usd(s.finance.npv_usd)}  Lifetime cost ${usd(s.finance.lifetime_cost_per_kw)}/kW  Build cost ${usd(s.finance.capex_per_kw)}/kW  Payback ${round1(s.finance.payback_years)} yr`,
+      `  Finance low:  NPV ${usd(s.finance.ranges.low.npv_usd)}  Lifetime cost ${usd(s.finance.ranges.low.lifetime_per_kw)}/kW`,
+      `  Finance high: NPV ${usd(s.finance.ranges.high.npv_usd)}  Lifetime cost ${usd(s.finance.ranges.high.lifetime_per_kw)}/kW`,
       `  Risk score: ${s.non_cost_scores.risk_score}/10  Renewable: ${pct(s.non_cost_scores.renewable_pct)}  Latency: ${s.non_cost_scores.latency_ms} ms`,
     ].join('\n')
   }).join('\n\n')
@@ -58,7 +58,7 @@ export function buildNarrativePrompt(output: EstimateOutput, siteLabels: Record<
 STRICT RULES:
 1. You MUST cite ONLY the figures provided below. Do NOT invent, estimate, or round any numbers.
 2. Write in plain English suitable for a VP to copy into a board memo. No markdown, no bullet lists.
-3. Your RECOMMENDATION paragraph must be exactly one paragraph (4–6 sentences). It must name the winning site, state its total CapEx, annual OpEx, levelized cost per kW, and the flip condition.
+3. Your RECOMMENDATION paragraph must be exactly one paragraph (4–6 sentences). It must name the winning site, state its total CapEx, annual OpEx, lifetime cost per kW, and the flip condition. Never describe the lifetime cost per kW as a construction or build cost. They are different figures and both are provided.
 4. Your SENSITIVITY CALLOUTS must be exactly ${output.ranking.length} sentences, one per site, identifying the 1–2 dominant cost drivers for that site. Each sentence starts with the site name.
 5. Do NOT add any figures that are not in the DATA section below.
 
