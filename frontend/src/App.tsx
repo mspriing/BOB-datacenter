@@ -52,7 +52,6 @@ function App() {
             </svg>
             <div>
               <div className="text-sm font-semibold tracking-wide">BOB · Data-Center Site Copilot</div>
-              <div className="text-xs text-ibm-cool-40 font-mono">IBM AI Builders Challenge</div>
             </div>
           </div>
           {data && (
