@@ -167,12 +167,6 @@ function App() {
         )}
 
       </div>
-
-      <footer className="mt-16 border-t border-ibm-cool-20 py-4">
-        <p className="text-center text-xs text-ibm-cool-40 font-mono">
-          BOB-datacenter · IBM AI Builders Challenge 2025 · All figures computed deterministically; LLM cites engine numbers only
-        </p>
-      </footer>
     </div>
   )
 }
