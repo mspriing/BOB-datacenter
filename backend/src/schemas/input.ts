@@ -2,16 +2,18 @@ import { z } from 'zod'
 
 // ── Per-site overrides (all optional / nullable) ──────────────────────────────
 const OverridesSchema = z.object({
-  land_cost_per_acre_usd:    z.number().positive().nullable().optional(),
-  construction_cost_per_kw:  z.number().positive().nullable().optional(),
-  power_rate_usd_per_kwh:    z.number().positive().nullable().optional(),
-  water_rate_usd_per_kgal:   z.number().positive().nullable().optional(),
-  staff_cost_index:           z.number().positive().nullable().optional(),
-  tax_rate:                   z.number().min(0).max(1).nullable().optional(),
-  incentive_usd:              z.number().min(0).nullable().optional(),
-  risk_score:                 z.number().min(0).max(10).nullable().optional(),
-  renewable_pct:              z.number().min(0).max(1).nullable().optional(),
-  latency_ms_to_hub:          z.number().min(0).nullable().optional(),
+  land_cost_per_acre_usd:       z.number().positive().nullable().optional(),
+  construction_cost_per_kw:     z.number().positive().nullable().optional(),
+  power_rate_usd_per_kwh:       z.number().positive().nullable().optional(),
+  water_rate_usd_per_kgal:      z.number().positive().nullable().optional(),
+  staff_cost_index:              z.number().positive().nullable().optional(),
+  tax_rate:                      z.number().min(0).max(1).nullable().optional(),
+  incentive_usd:                 z.number().min(0).nullable().optional(),
+  risk_score:                    z.number().min(0).max(10).nullable().optional(),
+  renewable_pct:                 z.number().min(0).max(1).nullable().optional(),
+  low_carbon_pct:                z.number().min(0).max(1).nullable().optional(),
+  latency_ms_to_hub:             z.number().min(0).nullable().optional(),
+  grid_interconnection_years:    z.number().min(0).max(30).nullable().optional(),
 }).optional()
 
 // ── Single candidate site ─────────────────────────────────────────────────────
@@ -36,6 +38,10 @@ const ProjectSchema = z.object({
   name:           z.string().min(1),
   capacity_kw:    z.number().min(100).max(500_000),
   design_pue:     z.number().min(1.0).max(3.0),
+  // design_wue: water usage effectiveness (litres per kWh of cooling energy).
+  // This is a cooling-design assumption, NOT a regional lookup.
+  // Default 0.4 L/kWh; range 0.0–2.5.
+  design_wue:     z.number().min(0.0).max(2.5).optional().default(0.4),
   lifetime_years: z.number().int().min(5).max(40),
   discount_rate:  z.number().min(0.01).max(0.30),
   weights:        WeightsSchema,

@@ -61,9 +61,11 @@ const OpexAnnualSchema = z.object({
 })
 
 const NonCostScoresSchema = z.object({
-  risk_score:    z.number(),
-  renewable_pct: z.number(),
-  latency_ms:    z.number(),
+  risk_score:                 z.number().nullable(),
+  renewable_pct:              z.number().nullable(),
+  low_carbon_pct:             z.number().nullable(),
+  latency_ms:                 z.number().nullable(),
+  grid_interconnection_years: z.number().nullable(),
 })
 
 const SiteOutputSchema = z.object({
@@ -88,7 +90,7 @@ const SensitivityItemSchema = z.object({
 export const ProvenanceItemSchema = z.object({
   region_key:    z.string(),
   driver:        z.string(),
-  value:         z.number(),
+  value:         z.number().nullable(),
   source_url:    z.string(),
   last_verified: z.string(),
 })
@@ -104,6 +106,25 @@ export const ParsedFieldSchema = z.object({
 
 export type ParsedField = z.infer<typeof ParsedFieldSchema>
 
+// ── data_gaps — drivers that were null and excluded from scoring ──────────────
+export const DataGapSchema = z.object({
+  site_id: z.string(),
+  driver:  z.string(),
+  reason:  z.string(),
+})
+
+export type DataGap = z.infer<typeof DataGapSchema>
+
+// ── confidence — count of driver values by basis ──────────────────────────────
+export const ConfidenceSchema = z.object({
+  sourced: z.number().int().min(0),
+  modeled: z.number().int().min(0),
+  assumed: z.number().int().min(0),
+  missing: z.number().int().min(0),
+})
+
+export type Confidence = z.infer<typeof ConfidenceSchema>
+
 export const OutputSchema = z.object({
   request_id:      z.string().uuid(),
   generated_at:    z.string(),
@@ -116,6 +137,8 @@ export const OutputSchema = z.object({
   narrative:       NarrativeSchema,
   parsed_fields:   z.array(ParsedFieldSchema),
   data_provenance: z.array(ProvenanceItemSchema),
+  data_gaps:       z.array(DataGapSchema),
+  confidence:      ConfidenceSchema,
 })
 
 export type EstimateOutput = z.infer<typeof OutputSchema>

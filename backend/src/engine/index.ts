@@ -47,9 +47,11 @@ export async function runEngine(
     construction_cost_base: number
     construction_cost_low:  number
     construction_cost_high: number
-    risk_score:    number
-    renewable_pct: number
-    latency_ms:    number
+    risk_score:                   number | null
+    renewable_pct:                number | null
+    low_carbon_pct:               number | null
+    latency_ms:                   number | null
+    grid_interconnection_years:   number | null
     incentive_usd: number
   }
 
@@ -74,21 +76,23 @@ export async function runEngine(
     // Helper: resolve a driver value with precedence:
     //   1. explicit site.overrides (not null)
     //   2. parsed from free_text
-    //   3. regions.json baseline
+    //   3. regions.json baseline (may be null — null is a valid output)
     // When a parsed value is used, provenance is marked as user-supplied.
     function resolve(
       field: keyof typeof region,
       overrideVal: number | null | undefined,
-    ): number {
-      const driver = region[field] as { value: number; low?: number; high?: number; source_url: string; last_verified: string }
+    ): number | null {
+      const driver = region[field] as { value: number | null; low?: number | null; high?: number | null; source_url: string; last_verified: string } | undefined
+      if (!driver) return null
+
       const parsedVal = parsed?.overrides[field as keyof typeof parsed.overrides] ?? null
 
       const fromExplicit = overrideVal != null
       const fromParsed   = !fromExplicit && parsedVal != null
 
-      const val = fromExplicit ? overrideVal as number
-                : fromParsed   ? parsedVal as number
-                :                driver.value
+      const val: number | null = fromExplicit ? overrideVal as number
+                               : fromParsed   ? parsedVal as number
+                               :                driver.value
 
       const isInferred = fromParsed && (parsed!.inferred_fields.includes(field as string))
 
@@ -104,7 +108,7 @@ export async function runEngine(
         parsed_fields.push({
           site_id:  site.site_id,
           field:    field as string,
-          value:    val,
+          value:    val as number,
           inferred: isInferred,
         })
       }
@@ -112,28 +116,32 @@ export async function runEngine(
       return val
     }
 
-    const power_rate    = resolve('power_rate_usd_per_kwh',  ov.power_rate_usd_per_kwh)
-    const water_rate    = resolve('water_rate_usd_per_kgal', ov.water_rate_usd_per_kgal)
-    const wue           = region.wue.value
-    const land_cost     = resolve('land_cost_per_acre_usd',  ov.land_cost_per_acre_usd)
-    const construction  = resolve('construction_cost_per_kw',ov.construction_cost_per_kw)
-    const staff_index   = resolve('staff_cost_index',         ov.staff_cost_index)
-    const tax_rate      = resolve('tax_rate',                 ov.tax_rate)
-    const abatement     = region.tax_abatement_years.value
-    const incentive_per_kw = resolve('incentive_usd_per_kw', undefined)
+    const power_rate    = resolve('power_rate_usd_per_kwh',       ov.power_rate_usd_per_kwh)
+    const water_rate    = resolve('water_rate_usd_per_kgal',      ov.water_rate_usd_per_kgal)
+    const land_cost     = resolve('land_cost_per_acre_usd',       ov.land_cost_per_acre_usd)
+    const construction  = resolve('construction_cost_per_kw',     ov.construction_cost_per_kw)
+    const staff_index   = resolve('staff_cost_index',              ov.staff_cost_index)
+    const tax_rate      = resolve('tax_rate',                      ov.tax_rate)
+    const abatement     = region.tax_abatement_years.value ?? 0
+    const incentive_per_kw = resolve('incentive_usd_per_kw',      undefined)
     const incentive_usd = ov.incentive_usd != null
       ? ov.incentive_usd
       : (parsed?.overrides.incentive_usd != null
           ? parsed.overrides.incentive_usd
-          : incentive_per_kw * input.project.capacity_kw)
-    const risk          = resolve('risk_score',               ov.risk_score)
-    const renewable     = resolve('renewable_pct',            ov.renewable_pct)
-    const latency       = resolve('latency_ms_to_hub',        ov.latency_ms_to_hub)
+          : (incentive_per_kw ?? 0) * input.project.capacity_kw)
+    const risk          = resolve('risk_score',                    ov.risk_score)
+    const renewable     = resolve('renewable_pct',                 ov.renewable_pct)
+    const low_carbon    = resolve('low_carbon_pct',                ov.low_carbon_pct)
+    const latency       = resolve('latency_ms_to_hub',             ov.latency_ms_to_hub)
+    const grid_ix_years = resolve('grid_interconnection_years',    ov.grid_interconnection_years)
+
+    // design_wue comes from project (default 0.4 via Zod)
+    const design_wue = input.project.design_wue ?? 0.4
 
     const capexParams: CapexParams = {
       capacity_kw:              input.project.capacity_kw,
-      land_cost_per_acre_usd:   land_cost,
-      construction_cost_per_kw: construction,
+      land_cost_per_acre_usd:   land_cost ?? 0,
+      construction_cost_per_kw: construction ?? 0,
       incentive_usd:            incentive_usd,
     }
 
@@ -143,11 +151,11 @@ export async function runEngine(
     const opexParams: OpexParams = {
       capacity_kw:             input.project.capacity_kw,
       design_pue:              input.project.design_pue,
-      power_rate_usd_per_kwh:  power_rate,
-      water_rate_usd_per_kgal: water_rate,
-      wue,
-      staff_cost_index:        staff_index,
-      tax_rate,
+      power_rate_usd_per_kwh:  power_rate ?? 0,
+      water_rate_usd_per_kgal: water_rate ?? 0,
+      design_wue,
+      staff_cost_index:        staff_index ?? 1,
+      tax_rate:                tax_rate ?? 0,
       tax_abatement_years:     abatement,
       current_year:            1,             // Year 1 opex (abatement applies)
       capex_total_usd:         capex.total_usd,
@@ -159,15 +167,17 @@ export async function runEngine(
       capexParams,
       opexParams,
       provenance,
-      power_rate_base:        power_rate,
-      power_rate_low:         region.power_rate_usd_per_kwh.low  ?? power_rate * 0.85,
-      power_rate_high:        region.power_rate_usd_per_kwh.high ?? power_rate * 1.15,
-      construction_cost_base: construction,
-      construction_cost_low:  region.construction_cost_per_kw.low  ?? construction * 0.90,
-      construction_cost_high: region.construction_cost_per_kw.high ?? construction * 1.10,
-      risk_score:    risk,
-      renewable_pct: renewable,
-      latency_ms:    latency,
+      power_rate_base:        power_rate ?? 0,
+      power_rate_low:         region.power_rate_usd_per_kwh.low   ?? (power_rate ?? 0) * 0.85,
+      power_rate_high:        region.power_rate_usd_per_kwh.high  ?? (power_rate ?? 0) * 1.15,
+      construction_cost_base: construction ?? 0,
+      construction_cost_low:  region.construction_cost_per_kw.low  ?? (construction ?? 0) * 0.90,
+      construction_cost_high: region.construction_cost_per_kw.high ?? (construction ?? 0) * 1.10,
+      risk_score:                 risk,
+      renewable_pct:              renewable,
+      low_carbon_pct:             low_carbon,
+      latency_ms:                 latency,
+      grid_interconnection_years: grid_ix_years,
       incentive_usd,
     }
   }))
@@ -207,18 +217,20 @@ export async function runEngine(
       opex_annual:    opexYear1,
       finance,
       non_cost_scores: {
-        risk_score:    b.risk_score,
-        renewable_pct: b.renewable_pct,
-        latency_ms:    b.latency_ms,
+        risk_score:                 b.risk_score,
+        renewable_pct:              b.renewable_pct,
+        low_carbon_pct:             b.low_carbon_pct,
+        latency_ms:                 b.latency_ms,
+        grid_interconnection_years: b.grid_interconnection_years,
       },
     }
 
     rankInputs.push({
       site_id:       b.site_id,
       npv_usd:       finance.npv_usd,
-      risk_score:    b.risk_score,
-      renewable_pct: b.renewable_pct,
-      latency_ms:    b.latency_ms,
+      risk_score:    b.risk_score ?? 5,    // treat null as middle of the scale for ranking
+      renewable_pct: b.renewable_pct ?? 0,
+      latency_ms:    b.latency_ms ?? 50,   // treat null as penalizing latency
     })
   }
 
@@ -246,9 +258,9 @@ export async function runEngine(
     opexParams:     b.opexParams,
     discount_rate:  input.project.discount_rate,
     lifetime_years: input.project.lifetime_years,
-    risk_score:     b.risk_score,
-    renewable_pct:  b.renewable_pct,
-    latency_ms:     b.latency_ms,
+    risk_score:     b.risk_score ?? 5,
+    renewable_pct:  b.renewable_pct ?? 0,
+    latency_ms:     b.latency_ms ?? 50,
   }))
 
   const rank1SensParams = allSensParams.find((s) => s.site_id === ranking[0])!
@@ -314,6 +326,8 @@ export async function runEngine(
     },
     parsed_fields,
     data_provenance,
+    data_gaps:  [],
+    confidence: { sourced: 0, modeled: 0, assumed: 0, missing: 0 },
   }
 
   const narrative = await generateNarrative(partialOutput, siteLabels, narrativeOpts)

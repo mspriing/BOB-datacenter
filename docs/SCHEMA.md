@@ -16,6 +16,8 @@
     "name":           "string",      // e.g. "ACME Expansion Phase 2"
     "capacity_kw":    10000,         // IT load in kW; range 100–500000
     "design_pue":     1.4,           // power usage effectiveness target; range 1.0–3.0
+    "design_wue":     0.4,           // water usage effectiveness (litres/kWh of cooling); range 0.0–2.5
+                                     // design assumption set by the user — NOT a regional lookup
     "lifetime_years": 20,            // NPV horizon; range 5–40
     "discount_rate":  0.08,          // WACC, decimal; range 0.01–0.30
 
@@ -36,16 +38,18 @@
       "free_text":  "string | null", // optional messy description; LLM parses into overrides
 
       "overrides": {                 // any non-null field supersedes regions.json value
-        "land_cost_per_acre_usd":   null,
-        "construction_cost_per_kw": null,
-        "power_rate_usd_per_kwh":   null,
-        "water_rate_usd_per_kgal":  null,
-        "staff_cost_index":         null,
-        "tax_rate":                 null,
-        "incentive_usd":            null,
-        "risk_score":               null, // 0–10 (0=best)
-        "renewable_pct":            null, // 0–1
-        "latency_ms_to_hub":        null
+        "land_cost_per_acre_usd":      null,
+        "construction_cost_per_kw":    null,
+        "power_rate_usd_per_kwh":      null,
+        "water_rate_usd_per_kgal":     null,
+        "staff_cost_index":            null,
+        "tax_rate":                    null,
+        "incentive_usd":               null,
+        "risk_score":                  null, // 0–10 (0=best)
+        "renewable_pct":               null, // 0–1
+        "low_carbon_pct":              null, // 0–1; includes nuclear; see regions.json note
+        "latency_ms_to_hub":           null,
+        "grid_interconnection_years":  null  // years from request to energization; 0–30
       }
     }
   ]
@@ -116,9 +120,11 @@
       },
 
       "non_cost_scores": {
-        "risk_score":    3.2,  // 0=best, 10=worst
-        "renewable_pct": 0.68,
-        "latency_ms":    14
+        "risk_score":        3.2,  // 0=best, 10=worst
+        "renewable_pct":     0.68,
+        "low_carbon_pct":    0.72, // renewable_pct + nuclear share; null when not available
+        "latency_ms":        14,
+        "grid_interconnection_years": 3.2  // null when not available
       }
     }
     // … repeated for each submitted site_id
@@ -160,7 +166,28 @@
       "source_url":    "https://www.eia.gov/electricity/state/arizona/",
       "last_verified": "2025-06"
     }
-  ]
+  ],
+
+  // Drivers that were null for a site and therefore excluded from scoring.
+  // The affected driver is dropped from the weighted score; remaining weights
+  // are renormalised so the score stays on a 0–1 scale.
+  "data_gaps": [
+    {
+      "site_id": "site-A",
+      "driver":  "grid_interconnection_years",
+      "reason":  "no value in regions.json"
+    }
+  ],
+
+  // Counts of how every driver value used in this estimate was sourced.
+  // "missing" counts driver slots that were null and excluded from scoring.
+  // All four counts sum to (sites × drivers_per_site).
+  "confidence": {
+    "sourced": 31,
+    "modeled": 12,
+    "assumed":  4,
+    "missing":  5
+  }
 }
 ```
 
@@ -171,20 +198,60 @@
 ```jsonc
 {
   "us-az-phoenix": {
-    "label": "Phoenix, AZ",
-    "power_rate_usd_per_kwh":   { "value": 0.042, "source_url": "https://…", "last_verified": "2025-06" },
-    "water_rate_usd_per_kgal":  { "value": 4.20,  "source_url": "https://…", "last_verified": "2025-04" },
-    "land_cost_per_acre_usd":   { "value": 85000, "source_url": "https://…", "last_verified": "2025-03" },
-    "construction_cost_per_kw": { "value": 8500,  "source_url": "https://…", "last_verified": "2025-05" },
-    "staff_cost_index":         { "value": 1.02,  "source_url": "https://bls.gov/…", "last_verified": "2025-01" },
-    "tax_rate":                 { "value": 0.048, "source_url": "https://…", "last_verified": "2025-06" },
-    "incentive_usd_per_kw":     { "value": 120,   "source_url": "https://…", "last_verified": "2025-02" },
-    "risk_score":               { "value": 3.2,   "source_url": "https://fema.gov/…", "last_verified": "2024-12" },
-    "renewable_pct":            { "value": 0.68,  "source_url": "https://www.eia.gov/…", "last_verified": "2025-05" },
-    "latency_ms_to_hub":        { "value": 14,    "source_url": "https://…", "last_verified": "2025-04" }
+    "label":     "Phoenix, AZ",
+    "precision": "metro",           // "state" | "metro" | "international"
+                                    // tells the UI whether values are a state average or metro-level detail
+
+    "power_rate_usd_per_kwh": {
+      "value":         0.042,
+      "low":           0.036,
+      "high":          0.052,
+      "source_url":    "https://…",
+      "last_verified": "2025-06",
+      "basis":         "sourced",   // REQUIRED. One of:
+                                    //   "sourced"  = read directly from the source at source_url
+                                    //   "modeled"  = derived from other data; see "method"
+                                    //   "assumed"  = benchmark or placeholder; must be replaced
+      "method":        null         // OPTIONAL string. Required (non-null) when basis = "modeled".
+                                    // Describes the derivation or caveat in plain English.
+    },
+
+    // Every driver follows the same six-field shape shown above.
+
+    "water_rate_usd_per_kgal":  { ... },
+    "land_cost_per_acre_usd":   { ... },
+    "construction_cost_per_kw": { ... },
+    "construction_cost_per_mw": { ... },
+    "staff_cost_index":         { ... },
+    "tax_rate":                 { ... },
+    "tax_abatement_years":      { ... },
+    "incentive_usd_per_kw":     { ... },
+    "risk_score":               { ... },
+
+    // Renewable share — hydro + wind + solar + geothermal + biomass over total generation.
+    // Excludes nuclear. A site heavy on nuclear (e.g. Toronto, Paris) scores poorly here.
+    "renewable_pct": { ... },
+
+    // Low-carbon share — renewable_pct PLUS nuclear share.
+    // Toronto (≈50% nuclear) and Paris (≈65% nuclear) score far better on this metric.
+    // Both metrics are carried so the UI can show either or both.
+    "low_carbon_pct": { ... },
+
+    "latency_ms_to_hub": { ... },
+
+    // Grid interconnection wait time in years (request → energization).
+    // Source is the LBNL generator queue as a proxy for load connection wait;
+    // methodology caveat is in the "method" string on every value.
+    // null is a valid and correct output when data is unavailable.
+    "grid_interconnection_years": { ... }
   }
 }
 ```
+
+> **Note on `wue` (water usage effectiveness):** `wue` was removed from regions.json in this
+> revision. WUE is a property of cooling design, not location — the spread between two operators
+> in one city is wider than the spread between cities for one operator. Set `project.design_wue`
+> in the request body instead (default 0.4 L/kWh, range 0.0–2.5).
 
 ---
 
@@ -195,6 +262,7 @@
 | `sites` array length | 2–4 items |
 | `project.capacity_kw` | 100–500 000 |
 | `project.design_pue` | 1.0–3.0 |
+| `project.design_wue` | 0.0–2.5 (default 0.4) |
 | `project.lifetime_years` | 5–40 |
 | `project.discount_rate` | 0.01–0.30 |
 | `project.weights` sum | Must equal 1.0 (±0.001 tolerance) |
@@ -202,6 +270,10 @@
 | `region_key` | Must exist as a key in `data/regions.json` |
 | `overrides.risk_score` | 0–10 if provided |
 | `overrides.renewable_pct` | 0–1 if provided |
+| `overrides.low_carbon_pct` | 0–1 if provided |
+| `overrides.grid_interconnection_years` | 0–30 if provided |
+| `region.precision` | `"state"` \| `"metro"` \| `"international"` |
+| `driver.basis` | `"sourced"` \| `"modeled"` \| `"assumed"` (required on every driver) |
 
 ---
 

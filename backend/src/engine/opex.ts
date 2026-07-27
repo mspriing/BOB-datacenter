@@ -3,16 +3,16 @@
  *
  * Formulas:
  *   power_usd        = capacity_kw × pue × 8760 × power_rate_per_kwh
- *   water_usd        = capacity_kw × pue × 8760 × wue × (1 gal/kWh cooling) × water_rate_per_kgal / 1000
- *                      [wue = water usage effectiveness; gal of water per kWh of IT energy]
+ *   water_usd        = capacity_kw × (pue − 1) × 8760 × design_wue × water_rate_per_kgal / 1000
+ *                      [design_wue = litres of water per kWh of cooling energy (project-level design assumption)]
  *   staff_usd        = BASE_STAFF_COST_PER_KW × capacity_kw × staff_cost_index
  *   maintenance_usd  = capex_total × MAINTENANCE_RATE
  *   taxes_usd        = capex_total × effective_tax_rate  (0 during abatement years)
  *   connectivity_usd = BASE_CONNECTIVITY_PER_KW × capacity_kw
  *   total_usd        = sum of all above
  *
- * Water: 1 kWh of cooling ≈ 1 gallon of water evaporated in a cooling tower (industry rule of thumb).
- * Cooling kWh = IT_kWh × (pue − 1).  Water = cooling_kWh × wue × rate.
+ * Water: cooling_kWh × design_wue (L/kWh) → litres → convert to kgal (1 kgal = 3785.4 L) → × rate
+ * Note: design_wue is NOT read from regions.json; it is a project-level parameter set by the user.
  */
 
 export interface OpexParams {
@@ -20,7 +20,7 @@ export interface OpexParams {
   design_pue:              number
   power_rate_usd_per_kwh:  number
   water_rate_usd_per_kgal: number
-  wue:                     number   // water usage effectiveness (gal / kWh cooling)
+  design_wue:              number   // water usage effectiveness (litres / kWh cooling) — project-level design assumption
   staff_cost_index:        number   // multiplier vs. national baseline
   tax_rate:                number   // decimal (e.g. 0.055)
   tax_abatement_years:     number   // years from year-0 with zero property tax
@@ -43,6 +43,7 @@ const HOURS_PER_YEAR           = 8_760
 const BASE_STAFF_COST_PER_KW   = 280   // $/kW-year — national median fully-loaded DC ops
 const MAINTENANCE_RATE         = 0.015 // 1.5% of CapEx per year
 const BASE_CONNECTIVITY_PER_KW = 60    // $/kW-year — diverse fiber + dark fiber amortised
+const LITRES_PER_KGAL          = 3_785.4
 
 export function computeOpex(p: OpexParams): OpexResult {
   // Annual IT energy (kWh)
@@ -54,9 +55,9 @@ export function computeOpex(p: OpexParams): OpexResult {
 
   const power_usd = total_energy_kwh * p.power_rate_usd_per_kwh
 
-  // Water: cooling_kWh × wue (gal/kWh) → gallons → convert to kgal → × rate
-  const water_gallons = cooling_energy_kwh * p.wue
-  const water_usd     = (water_gallons / 1_000) * p.water_rate_usd_per_kgal
+  // Water: cooling_kWh × design_wue (L/kWh) → litres → kgal → × rate
+  const water_litres = cooling_energy_kwh * p.design_wue
+  const water_usd    = (water_litres / LITRES_PER_KGAL) * p.water_rate_usd_per_kgal
 
   const staff_usd        = p.capacity_kw * BASE_STAFF_COST_PER_KW * p.staff_cost_index
   const maintenance_usd  = p.capex_total_usd * MAINTENANCE_RATE

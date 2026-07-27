@@ -1,16 +1,18 @@
 // ── Input types ───────────────────────────────────────────────────────────────
 
 export interface SiteOverrides {
-  land_cost_per_acre_usd?:    number | null
-  construction_cost_per_kw?:  number | null
-  power_rate_usd_per_kwh?:    number | null
-  water_rate_usd_per_kgal?:   number | null
-  staff_cost_index?:           number | null
-  tax_rate?:                   number | null
-  incentive_usd?:              number | null
-  risk_score?:                 number | null
-  renewable_pct?:              number | null
-  latency_ms_to_hub?:          number | null
+  land_cost_per_acre_usd?:       number | null
+  construction_cost_per_kw?:     number | null
+  power_rate_usd_per_kwh?:       number | null
+  water_rate_usd_per_kgal?:      number | null
+  staff_cost_index?:              number | null
+  tax_rate?:                      number | null
+  incentive_usd?:                 number | null
+  risk_score?:                    number | null
+  renewable_pct?:                 number | null
+  low_carbon_pct?:                number | null
+  latency_ms_to_hub?:             number | null
+  grid_interconnection_years?:    number | null
 }
 
 export interface SiteInput {
@@ -32,6 +34,8 @@ export interface ProjectInput {
   name:           string
   capacity_kw:    number
   design_pue:     number
+  /** Water usage effectiveness (litres/kWh of cooling). Design assumption, not a regional lookup. Default 0.4. */
+  design_wue?:    number
   lifetime_years: number
   discount_rate:  number
   weights?:       ProjectWeights
@@ -82,9 +86,13 @@ export interface SiteFinance {
 }
 
 export interface NonCostScores {
-  risk_score:    number
-  renewable_pct: number
-  latency_ms:    number
+  risk_score:                 number | null
+  renewable_pct:              number | null
+  /** Low-carbon share (renewables + nuclear). null when not available. */
+  low_carbon_pct:             number | null
+  latency_ms:                 number | null
+  /** Grid interconnection wait in years. null when not available. */
+  grid_interconnection_years: number | null
 }
 
 export interface SiteOutput {
@@ -109,7 +117,7 @@ export interface SensitivityItem {
 export interface ProvenanceItem {
   region_key:    string
   driver:        string
-  value:         number
+  value:         number | null
   source_url:    string
   last_verified: string
 }
@@ -119,6 +127,21 @@ export interface ParsedField {
   field:    string
   value:    number
   inferred: boolean
+}
+
+/** A driver that was null for a site and excluded from its weighted score. */
+export interface DataGap {
+  site_id: string
+  driver:  string
+  reason:  string
+}
+
+/** Counts of driver values by provenance basis across all sites in this estimate. */
+export interface Confidence {
+  sourced: number
+  modeled: number
+  assumed: number
+  missing: number
 }
 
 // ── Narrative (LLM output) ────────────────────────────────────────────────────
@@ -154,6 +177,8 @@ export interface EstimateOutput {
   narrative:       NarrativeResult
   parsed_fields:   ParsedField[]
   data_provenance: ProvenanceItem[]
+  data_gaps:       DataGap[]
+  confidence:      Confidence
 }
 
 // ── UI helpers ────────────────────────────────────────────────────────────────

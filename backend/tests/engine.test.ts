@@ -66,7 +66,7 @@ describe('computeOpex', () => {
     design_pue:              1.4,
     power_rate_usd_per_kwh:  0.038,
     water_rate_usd_per_kgal: 3.20,
-    wue:                     1.6,
+    design_wue:              1.6,  // was wue; now a project-level design assumption
     staff_cost_index:        0.96,
     tax_rate:                0.019,
     tax_abatement_years:     10,
@@ -97,9 +97,9 @@ describe('computeOpex', () => {
     expect(r.total_usd).toBeCloseTo(sum, 1)
   })
 
-  it('Nordic hydro WUE 1.03 produces near-zero water cost vs Texas WUE 1.6', () => {
-    const nordicWater = computeOpex({ ...baseParams, wue: 1.03, water_rate_usd_per_kgal: 1.10 }).water_usd
-    const texasWater  = computeOpex({ ...baseParams, wue: 1.6,  water_rate_usd_per_kgal: 3.20 }).water_usd
+  it('low design_wue + low water rate produces lower water cost than high design_wue + high rate', () => {
+    const nordicWater = computeOpex({ ...baseParams, design_wue: 0.4,  water_rate_usd_per_kgal: 1.10 }).water_usd
+    const texasWater  = computeOpex({ ...baseParams, design_wue: 1.6,  water_rate_usd_per_kgal: 3.20 }).water_usd
     expect(nordicWater).toBeLessThan(texasWater)
   })
 })
@@ -118,7 +118,7 @@ describe('computeFinance', () => {
     design_pue:              1.4,
     power_rate_usd_per_kwh:  0.024,
     water_rate_usd_per_kgal: 1.10,
-    wue:                     1.03,
+    design_wue:              0.4,  // project-level design assumption (was wue)
     staff_cost_index:        1.35,
     tax_rate:                0.022,
     tax_abatement_years:     0,
@@ -243,19 +243,19 @@ describe('computeSensitivity', () => {
 
   const nordicOpex = {
     capacity_kw: 10_000, design_pue: 1.4,
-    power_rate_usd_per_kwh: 0.024, water_rate_usd_per_kgal: 1.10, wue: 1.03,
+    power_rate_usd_per_kwh: 0.024, water_rate_usd_per_kgal: 1.10, design_wue: 0.4,
     staff_cost_index: 1.35, tax_rate: 0.022, tax_abatement_years: 0,
     current_year: 1, capex_total_usd: computeCapex(nordicCapex).total_usd,
   }
   const ercotOpex = {
     capacity_kw: 10_000, design_pue: 1.4,
-    power_rate_usd_per_kwh: 0.038, water_rate_usd_per_kgal: 3.20, wue: 1.6,
+    power_rate_usd_per_kwh: 0.038, water_rate_usd_per_kgal: 3.20, design_wue: 0.4,
     staff_cost_index: 0.96, tax_rate: 0.019, tax_abatement_years: 10,
     current_year: 1, capex_total_usd: computeCapex(ercotCapex).total_usd,
   }
   const novaOpex = {
     capacity_kw: 10_000, design_pue: 1.4,
-    power_rate_usd_per_kwh: 0.068, water_rate_usd_per_kgal: 5.20, wue: 1.4,
+    power_rate_usd_per_kwh: 0.068, water_rate_usd_per_kgal: 5.20, design_wue: 0.4,
     staff_cost_index: 1.18, tax_rate: 0.060, tax_abatement_years: 0,
     current_year: 1, capex_total_usd: computeCapex(novaCapex).total_usd,
   }
