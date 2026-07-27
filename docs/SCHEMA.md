@@ -140,6 +140,16 @@
   // LLM-generated paragraph citing engine numbers — no new figures introduced
   "narrative": "string",
 
+  // Fields parsed out of free_text by the LLM/regex extractor, per site
+  "parsed_fields": [
+    {
+      "site_id":  "site-A",
+      "field":    "power_rate_usd_per_kwh",
+      "value":    0.068,
+      "inferred": true    // true when the LLM inferred the value rather than reading it verbatim
+    }
+  ],
+
   // Source citations for every regions.json value used in this estimate
   "data_provenance": [
     {

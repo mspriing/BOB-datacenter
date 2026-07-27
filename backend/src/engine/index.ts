@@ -6,7 +6,7 @@
 
 import { v4 as uuidv4 } from 'uuid'
 import type { EstimateInput } from '../schemas/input.js'
-import type { EstimateOutput, SiteOutput } from '../schemas/output.js'
+import type { EstimateOutput, SiteOutput, ParsedField } from '../schemas/output.js'
 import { loadRegions } from '../regions.js'
 import { computeCapex, type CapexParams } from './capex.js'
 import { computeOpex,  type OpexParams  } from './opex.js'
@@ -15,6 +15,7 @@ import { rankSites, type RankInput } from './rank.js'
 import { computeSensitivity, type SensitivitySiteParams } from './sensitivity.js'
 import type { ProvenanceItem } from '../schemas/output.js'
 import { generateNarrative, type NarrativeOptions } from '../llm/narrative.js'
+import { parseSiteDescription } from '../llm/parseInput.js'
 
 const ENGINE_VERSION = '0.2.0'
 
@@ -52,27 +53,62 @@ export async function runEngine(
     incentive_usd: number
   }
 
-  const bundles: SiteBundle[] = input.sites.map((site) => {
+  // ── parsed_fields accumulator ──────────────────────────────────────────────
+  const parsed_fields: ParsedField[] = []
+
+  const bundles: SiteBundle[] = await Promise.all(input.sites.map(async (site) => {
     const region = regions[site.region_key]
     if (!region) throw new Error(`Unknown region_key: ${site.region_key}`)
+
+    // Parse free_text (if provided) to get additional overrides
+    let parsed = null
+    if (site.free_text && site.free_text.trim().length > 0) {
+      parsed = await parseSiteDescription(site.free_text, {
+        forceFallback: narrativeOpts?.forceFallback ?? false,
+      })
+    }
 
     const ov = site.overrides ?? {}
     const provenance: ProvenanceItem[] = []
 
-    // Helper: resolve a driver value, prefer override, collect provenance
+    // Helper: resolve a driver value with precedence:
+    //   1. explicit site.overrides (not null)
+    //   2. parsed from free_text
+    //   3. regions.json baseline
+    // When a parsed value is used, provenance is marked as user-supplied.
     function resolve(
       field: keyof typeof region,
       overrideVal: number | null | undefined,
     ): number {
       const driver = region[field] as { value: number; low?: number; high?: number; source_url: string; last_verified: string }
-      const val = overrideVal != null ? overrideVal : driver.value
+      const parsedVal = parsed?.overrides[field as keyof typeof parsed.overrides] ?? null
+
+      const fromExplicit = overrideVal != null
+      const fromParsed   = !fromExplicit && parsedVal != null
+
+      const val = fromExplicit ? overrideVal as number
+                : fromParsed   ? parsedVal as number
+                :                driver.value
+
+      const isInferred = fromParsed && (parsed!.inferred_fields.includes(field as string))
+
       provenance.push({
         region_key:    site.region_key,
         driver:        field as string,
         value:         val,
-        source_url:    driver.source_url,
-        last_verified: driver.last_verified,
+        source_url:    fromParsed ? 'user-supplied description' : driver.source_url,
+        last_verified: fromParsed ? 'unverified'               : driver.last_verified,
       })
+
+      if (fromParsed) {
+        parsed_fields.push({
+          site_id:  site.site_id,
+          field:    field as string,
+          value:    val,
+          inferred: isInferred,
+        })
+      }
+
       return val
     }
 
@@ -87,7 +123,9 @@ export async function runEngine(
     const incentive_per_kw = resolve('incentive_usd_per_kw', undefined)
     const incentive_usd = ov.incentive_usd != null
       ? ov.incentive_usd
-      : incentive_per_kw * input.project.capacity_kw
+      : (parsed?.overrides.incentive_usd != null
+          ? parsed.overrides.incentive_usd
+          : incentive_per_kw * input.project.capacity_kw)
     const risk          = resolve('risk_score',               ov.risk_score)
     const renewable     = resolve('renewable_pct',            ov.renewable_pct)
     const latency       = resolve('latency_ms_to_hub',        ov.latency_ms_to_hub)
@@ -132,7 +170,7 @@ export async function runEngine(
       latency_ms:    latency,
       incentive_usd,
     }
-  })
+  }))
 
   // ── Compute per-site cost outputs ──────────────────────────────────────────
   const siteOutputs: Record<string, SiteOutput> = {}
@@ -274,6 +312,7 @@ export async function runEngine(
       uncertainty_flags:    [],
       source:               'fallback',
     },
+    parsed_fields,
     data_provenance,
   }
 

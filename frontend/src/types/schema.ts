@@ -113,6 +113,13 @@ export interface ProvenanceItem {
   last_verified: string
 }
 
+export interface ParsedField {
+  site_id:  string
+  field:    string
+  value:    number
+  inferred: boolean
+}
+
 // ── Narrative (LLM output) ────────────────────────────────────────────────────
 
 export interface SensitivityCallout {
@@ -144,6 +151,7 @@ export interface EstimateOutput {
   sensitivity:     SensitivityItem[]
   flip_sentence:   string
   narrative:       NarrativeResult
+  parsed_fields:   ParsedField[]
   data_provenance: ProvenanceItem[]
 }
 

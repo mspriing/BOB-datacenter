@@ -497,4 +497,59 @@ describe('runEngine (hero sites fixture)', () => {
     expect(out.site_labels['nova']).toBe('Northern Virginia')
     expect(out.site_labels['nordic']).toBe('Nordic Hydro')
   })
+
+  it('free_text power rate is picked up and used in the engine when no explicit override', async () => {
+    // Nordic baseline power rate is $0.024/kWh. We supply a free_text with $0.10/kWh.
+    // The engine should use $0.10, which should raise Nordic's power bill and push it down the ranking.
+    const baseOut  = await runEngine(input, opts)
+    const nordicBasePowerUsd = baseOut.sites['nordic'].opex_annual.power_usd
+
+    const withFreeText = {
+      ...input,
+      request_id: '00000000-0000-0000-0000-000000000004',
+      sites: input.sites.map(s =>
+        s.site_id === 'nordic'
+          ? { ...s, free_text: 'power negotiated at $0.10/kWh' }
+          : s
+      ),
+    }
+    const out = await runEngine(withFreeText, opts)
+    // Power bill should be significantly higher with the parsed rate
+    expect(out.sites['nordic'].opex_annual.power_usd).toBeGreaterThan(nordicBasePowerUsd)
+    // parsed_fields should include an entry for nordic's power_rate
+    const pf = out.parsed_fields.find(
+      f => f.site_id === 'nordic' && f.field === 'power_rate_usd_per_kwh'
+    )
+    expect(pf).toBeDefined()
+    expect(pf!.value).toBeCloseTo(0.10, 2)
+  })
+
+  it('explicit override wins over free_text when both supply a power rate', async () => {
+    const conflictInput = {
+      ...input,
+      request_id: '00000000-0000-0000-0000-000000000005',
+      sites: input.sites.map(s =>
+        s.site_id === 'nordic'
+          ? {
+              ...s,
+              free_text:  'power negotiated at $0.10/kWh',
+              overrides:  { power_rate_usd_per_kwh: 0.001 },  // explicit override wins
+            }
+          : s
+      ),
+    }
+    const out = await runEngine(conflictInput, opts)
+    // With explicit override of $0.001, Nordic power should be extremely cheap
+    // (far cheaper than even the free_text $0.10 would produce)
+    const baseOut = await runEngine(input, opts)
+    expect(out.sites['nordic'].opex_annual.power_usd).toBeLessThan(
+      baseOut.sites['nordic'].opex_annual.power_usd
+    )
+    // parsed_fields should NOT contain an entry for nordic's power_rate
+    // because the explicit override took precedence
+    const pf = out.parsed_fields.find(
+      f => f.site_id === 'nordic' && f.field === 'power_rate_usd_per_kwh'
+    )
+    expect(pf).toBeUndefined()
+  })
 })

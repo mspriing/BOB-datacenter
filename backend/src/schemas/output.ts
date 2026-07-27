@@ -94,6 +94,15 @@ export const ProvenanceItemSchema = z.object({
 
 export type ProvenanceItem = z.infer<typeof ProvenanceItemSchema>
 
+export const ParsedFieldSchema = z.object({
+  site_id:  z.string(),
+  field:    z.string(),
+  value:    z.number(),
+  inferred: z.boolean(),
+})
+
+export type ParsedField = z.infer<typeof ParsedFieldSchema>
+
 export const OutputSchema = z.object({
   request_id:      z.string().uuid(),
   generated_at:    z.string(),
@@ -104,6 +113,7 @@ export const OutputSchema = z.object({
   sensitivity:     z.array(SensitivityItemSchema),
   flip_sentence:   z.string(),
   narrative:       NarrativeSchema,
+  parsed_fields:   z.array(ParsedFieldSchema),
   data_provenance: z.array(ProvenanceItemSchema),
 })
 
