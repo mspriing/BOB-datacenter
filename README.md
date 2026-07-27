@@ -1,8 +1,48 @@
 # BOB-datacenter
 
-Data-center site-decision copilot for the **IBM AI Builders Challenge** (Wildcard: Intelligent Systems for the Future of Work).
+A site-decision copilot for data centers, built for the **IBM AI Builders Challenge** (Wildcard track: Intelligent Systems for the Future of Work).
 
-A site-selection professional inputs 2–4 candidate data-center sites; the tool ranks them, prices the real cost drivers, and writes a defensible recommendation.
+Give it two to four candidate locations. It prices the land, the power, the people and the natural hazard risk at each one, ranks them against priorities you set, and writes a recommendation that cites its own numbers.
+
+---
+
+## The problem
+
+A data center runs for fifteen years or longer. By the time the first rack is installed, most of what it will cost has already been decided by the choice of plot: the price of a kilowatt hour, how many years the utility takes to energize the site, what an electrician earns in that county, whether the ground floods, and what the local authority charges in property tax.
+
+Those figures live in five different public datasets, in five different formats, and they move every quarter. A team choosing a site either guesses, or pays a consultancy six figures and waits a month for a spreadsheet nobody outside the engagement can audit.
+
+Site selection is also not a pure cost question. The cheapest site is frequently the wrong one. In the worked example shipped with this repo, a Texas site builds for 22.5 percent less than a Swedish one and still loses, because its natural hazard score is 5.8 against 1.2 and its grid runs at 42 percent renewable against 97 percent. Any tool that answers "which is cheapest" has answered the wrong question.
+
+This tool does the arithmetic in the open. Every input is visible, every figure carries the URL it came from and the date it was checked, and the ranking changes as you change what you care about.
+
+---
+
+## Technical approach
+
+The design rule the whole project is built around: **the language model never generates a number.**
+
+Cost and financial math lives in `backend/src/engine/` as deterministic TypeScript under test. CapEx, OpEx, NPV, payback, the low and high scenarios, the weighted ranking and the sensitivity flip points are all plain code. 72 tests cover it. Running the same input twice returns the same answer, and any figure in the output can be traced to a line of arithmetic.
+
+IBM watsonx with the Granite 3 8B Instruct model does two jobs, neither of which involves inventing figures:
+
+1. **Reading messy input.** A user can paste a broker's note instead of filling in fields. Granite extracts the values it recognizes and maps them to the schema's override fields. When it is unavailable, a regex extractor takes over, so the feature never hard-fails. Anything pulled out of typed text is marked `user-supplied description` and `unverified` in the provenance table so it is never confused with a sourced figure.
+
+2. **Writing the recommendation.** Granite receives the engine's computed output and writes the ranked narrative and the sensitivity callouts. The prompt forbids introducing figures that are not in the engine output. When credentials are absent or the call fails, a deterministic template produces the same paragraph from the same numbers, and the interface shows which of the two produced what you are reading.
+
+The ranking itself is min-max normalization across four drivers, so each is scored 0 to 1 with 1 always best, then weighted by four user-set sliders and summed. Sensitivity works backwards from that: each cost driver is moved on its own, holding everything else still, until the top two sites swap, which yields the "this ranking flips if" sentence and tells you which input is worth verifying before you commit money.
+
+Every value in `data/regions.json` carries a `source_url` and a `last_verified` date. Electricity rates come from the EIA, wages from the BLS, hazard scores from FEMA's National Risk Index, and tax rates from county filings.
+
+---
+
+## How IBM Bob was used
+
+Bob wrote this codebase. Every file in `backend/src/` and `frontend/src/`, every test, and every commit came from directing Bob inside VS Code.
+
+The approach that worked was written work orders rather than conversation: name the file, the line, the symptom and the acceptance test, then have Bob commit each task separately. Bob plans the change, edits the files, runs `npm test` itself, and stops if the suite fails. The backend suite grew from 66 tests to 72 across the last two work orders, with Bob writing the new tests as part of each task.
+
+**[`docs/BOB.md`](docs/BOB.md) has the full record**, including session transcripts, the exact instructions given, the commit table, and two changes worth reading: wiring an orphaned free-text parser with correct provenance handling, and a twelve-file rename that fixed a cost figure which was arithmetically correct but named in a way that made it look wrong to anyone who has priced a data center.
 
 ---
 
@@ -45,14 +85,14 @@ cp .env.example backend/.env
 
 Open **two terminals**:
 
-**Terminal 1 — Backend**
+**Terminal 1, backend**
 ```bash
 cd backend
 npm run dev
 # → Listening on http://localhost:3001
 ```
 
-**Terminal 2 — Frontend**
+**Terminal 2, frontend**
 ```bash
 cd frontend
 npm run dev
@@ -69,6 +109,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 BOB-datacenter/
 ├── data/regions.json        ← cost-driver database (source_url + last_verified on every value)
 ├── docs/SCHEMA.md           ← canonical input/output schema (source of truth)
+├── docs/BOB.md              ← how IBM Bob was used, with session transcripts
 ├── backend/                 ← Node 20 + TypeScript + Express
 │   └── src/
 │       ├── engine/          ← deterministic cost/ranking math (NO LLM calls)
@@ -82,7 +123,9 @@ BOB-datacenter/
         └── types/schema.ts  ← TypeScript types mirroring docs/SCHEMA.md
 ```
 
-**Core rule:** The LLM layer never generates numbers. All cost/financial math is in `backend/src/engine/` as deterministic, tested, plain code.
+**Core rule:** The LLM layer never generates numbers. All cost and financial math is in `backend/src/engine/` as deterministic, tested, plain code.
+
+**Second rule:** `docs/SCHEMA.md` is the source of truth. Any API shape change is written there first, then into the Zod schema, then into the frontend type.
 
 ---
 
@@ -90,7 +133,7 @@ BOB-datacenter/
 
 ### `POST /estimate`
 
-Submit 2–4 candidate sites and receive a full cost analysis.
+Submit 2 to 4 candidate sites and receive a full cost analysis.
 
 Request and response shapes are documented in [`docs/SCHEMA.md`](docs/SCHEMA.md).
 
@@ -121,6 +164,16 @@ curl http://localhost:3001/health
 
 ---
 
+## Reading the output
+
+Two cost figures are reported per site and they are not the same thing.
+
+`capex_per_kw` is total construction capital divided by capacity. This is the number comparable to published data center build costs, typically $9,000 to $12,000 per kW.
+
+`lifetime_cost_per_kw` is everything the site costs over the full NPV horizon, construction plus running costs, divided by capacity. It is necessarily larger. It is the figure that decides the ranking, because a cheap site to build with expensive power is not a cheap site.
+
+---
+
 ## Development
 
 ### Run backend tests
@@ -142,9 +195,9 @@ cd frontend && npm run build
 
 ## Build status
 
-> **Current state:** End-to-end working. `/estimate` runs the deterministic
+> **Current state:** End to end working. `/estimate` runs the deterministic
 > engine and returns a full analysis with a watsonx/Granite narrative (or the
-> deterministic fallback when no credentials are configured). 66 backend tests
+> deterministic fallback when no credentials are configured). 72 backend tests
 > passing.
 
 | Module | Status |
@@ -155,6 +208,8 @@ cd frontend && npm run build
 | `docs/SCHEMA.md` | ✅ Done |
 | Deterministic cost engine (CapEx/OpEx/NPV/rank/sensitivity) | ✅ Done + tested |
 | watsonx/Granite narrative + offline fallback | ✅ Done + tested |
+| Free-text site parsing into overrides | ✅ Done + tested |
+| User-set decision weights | ✅ Done |
 | React results dashboard | ✅ Done |
 
 ### Verifying the watsonx (live) path
@@ -167,9 +222,9 @@ in the loop. To confirm the live path:
 cd backend
 cp ../.env.example .env      # then paste your IBM Cloud API key + project UUID
 npm install                  # picks up dotenv (new dependency)
-npm run watsonx:smoke        # one live Granite call — prints source = "watsonx" on success
+npm run watsonx:smoke        # one live Granite call, prints source = "watsonx" on success
 ```
 
 `backend/.env` is loaded automatically by `npm run dev` (via `dotenv`). The
-Recommendation card in the UI shows the source badge ("IBM watsonx · Granite" vs
+Recommendation card in the UI shows the source badge ("IBM watsonx, Granite" vs
 "Deterministic template") so the demo makes the watsonx call visible on screen.
