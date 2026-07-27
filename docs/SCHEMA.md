@@ -74,6 +74,9 @@
   // Ordered array of site_id strings, best → worst
   "ranking": ["site-A", "site-B"],
 
+  // Map of site_id to display label, one entry per submitted site
+  "site_labels": { "site-A": "Phoenix, AZ" },
+
   "sites": {
     "site-A": {
 

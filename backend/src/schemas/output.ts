@@ -99,6 +99,7 @@ export const OutputSchema = z.object({
   generated_at:    z.string(),
   engine_version:  z.string(),
   ranking:         z.array(z.string()),
+  site_labels:     z.record(z.string()),
   sites:           z.record(z.string(), SiteOutputSchema),
   sensitivity:     z.array(SensitivityItemSchema),
   flip_sentence:   z.string(),

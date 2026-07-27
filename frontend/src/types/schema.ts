@@ -139,6 +139,7 @@ export interface EstimateOutput {
   generated_at:    string
   engine_version:  string
   ranking:         string[]
+  site_labels:     Record<string, string>
   sites:           Record<string, SiteOutput>
   sensitivity:     SensitivityItem[]
   flip_sentence:   string

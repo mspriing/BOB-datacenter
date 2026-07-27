@@ -475,4 +475,26 @@ describe('runEngine (hero sites fixture)', () => {
     // ERCOT with near-zero power cost should easily be rank-1
     expect(out.sites['ercot'].rank).toBe(1)
   })
+
+  it('site_labels maps each submitted site_id to its display label', async () => {
+    const twoSiteInput = {
+      request_id: '00000000-0000-0000-0000-000000000003',
+      project: {
+        name: 'Two Site Test',
+        capacity_kw: 10_000,
+        design_pue: 1.4,
+        lifetime_years: 15,
+        discount_rate: 0.08,
+      },
+      sites: [
+        { site_id: 'nova',   label: 'Northern Virginia', region_key: 'us-va-northern' },
+        { site_id: 'nordic', label: 'Nordic Hydro',       region_key: 'eu-nordic-hydro' },
+      ],
+    }
+    const out = await runEngine(twoSiteInput, opts)
+    expect(out.site_labels).toBeDefined()
+    expect(Object.keys(out.site_labels)).toHaveLength(2)
+    expect(out.site_labels['nova']).toBe('Northern Virginia')
+    expect(out.site_labels['nordic']).toBe('Nordic Hydro')
+  })
 })

@@ -264,6 +264,7 @@ export async function runEngine(
     generated_at:   new Date().toISOString(),
     engine_version: ENGINE_VERSION,
     ranking,
+    site_labels:    siteLabels,
     sites: siteOutputs,
     sensitivity,
     flip_sentence,

@@ -12,15 +12,6 @@ function App() {
   const { data, loading, error, submit, reset } = useEstimate()
   const [scenario, setScenario] = useState<Scenario>('base')
 
-  // Build a label map once we have results
-  const siteLabels: Record<string, string> = {}
-  if (data) {
-    for (const sid of data.ranking) {
-      // Try to get the label from provenance → fallback to site_id
-      siteLabels[sid] = sid
-    }
-  }
-
   async function handleSubmit(
     sites: SiteInput[],
     projectName: string,
@@ -42,17 +33,7 @@ function App() {
     })
   }
 
-  // Derive labels from ranking order for display
-  const rankLabels: Record<string, string> = {}
-  if (data) {
-    // We don't store the form sites separately, so use provenance data_provenance
-    // and the ranking list to reconstruct. Fallback: use site_id as label.
-    for (const sid of data.ranking) {
-      // The recommendation text contains the label — parse from sensitivity_callouts
-      const callout = data.narrative.sensitivity_callouts.find(c => c.site_id === sid)
-      rankLabels[sid] = callout?.label ?? sid
-    }
-  }
+  const rankLabels = data?.site_labels ?? {}
 
   return (
     <div className="min-h-screen bg-ibm-cool-10">
