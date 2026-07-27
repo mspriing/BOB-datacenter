@@ -6,7 +6,7 @@
 
 import { v4 as uuidv4 } from 'uuid'
 import type { EstimateInput } from '../schemas/input.js'
-import type { EstimateOutput, SiteOutput, ParsedField } from '../schemas/output.js'
+import type { EstimateOutput, SiteOutput, ParsedField, DataGap, Confidence } from '../schemas/output.js'
 import { loadRegions } from '../regions.js'
 import { computeCapex, type CapexParams } from './capex.js'
 import { computeOpex,  type OpexParams  } from './opex.js'
@@ -55,8 +55,10 @@ export async function runEngine(
     incentive_usd: number
   }
 
-  // ── parsed_fields accumulator ──────────────────────────────────────────────
+  // ── parsed_fields, data_gaps, confidence accumulators ─────────────────────
   const parsed_fields: ParsedField[] = []
+  const data_gaps: DataGap[] = []
+  const confidence: Confidence = { sourced: 0, modeled: 0, assumed: 0, missing: 0 }
 
   const bundles: SiteBundle[] = await Promise.all(input.sites.map(async (site) => {
     const region = regions[site.region_key]
@@ -78,11 +80,12 @@ export async function runEngine(
     //   2. parsed from free_text
     //   3. regions.json baseline (may be null — null is a valid output)
     // When a parsed value is used, provenance is marked as user-supplied.
+    // Side-effects: populates provenance[], data_gaps[], and confidence counts.
     function resolve(
       field: keyof typeof region,
       overrideVal: number | null | undefined,
     ): number | null {
-      const driver = region[field] as { value: number | null; low?: number | null; high?: number | null; source_url: string; last_verified: string } | undefined
+      const driver = region[field] as { value: number | null; low?: number | null; high?: number | null; source_url: string; last_verified: string; basis?: string } | undefined
       if (!driver) return null
 
       const parsedVal = parsed?.overrides[field as keyof typeof parsed.overrides] ?? null
@@ -111,6 +114,20 @@ export async function runEngine(
           value:    val as number,
           inferred: isInferred,
         })
+      }
+
+      // Confidence counting — every resolved driver slot is counted once per site.
+      if (val === null) {
+        confidence.missing++
+      } else if (fromExplicit || fromParsed) {
+        // User-supplied override: count as sourced (user is the source)
+        confidence.sourced++
+      } else {
+        const basis = (driver as any).basis as string | undefined
+        if (basis === 'sourced')       confidence.sourced++
+        else if (basis === 'modeled')  confidence.modeled++
+        else if (basis === 'assumed')  confidence.assumed++
+        else                           confidence.missing++   // basis unknown
       }
 
       return val
@@ -225,13 +242,19 @@ export async function runEngine(
       },
     }
 
+    // Pass true nulls — rank.ts will exclude null dimensions and renormalise.
     rankInputs.push({
       site_id:       b.site_id,
       npv_usd:       finance.npv_usd,
-      risk_score:    b.risk_score ?? 5,    // treat null as middle of the scale for ranking
-      renewable_pct: b.renewable_pct ?? 0,
-      latency_ms:    b.latency_ms ?? 50,   // treat null as penalizing latency
+      risk_score:    b.risk_score,
+      renewable_pct: b.renewable_pct,
+      latency_ms:    b.latency_ms,
     })
+
+    // Record data_gaps for ranked dimensions that are null.
+    if (b.risk_score    === null) data_gaps.push({ site_id: b.site_id, driver: 'risk_score',    reason: 'no value in regions.json' })
+    if (b.renewable_pct === null) data_gaps.push({ site_id: b.site_id, driver: 'renewable_pct', reason: 'no value in regions.json' })
+    if (b.latency_ms    === null) data_gaps.push({ site_id: b.site_id, driver: 'latency_ms_to_hub', reason: 'no value in regions.json' })
   }
 
   // ── Rank sites ─────────────────────────────────────────────────────────────
@@ -258,9 +281,10 @@ export async function runEngine(
     opexParams:     b.opexParams,
     discount_rate:  input.project.discount_rate,
     lifetime_years: input.project.lifetime_years,
-    risk_score:     b.risk_score ?? 5,
-    renewable_pct:  b.renewable_pct ?? 0,
-    latency_ms:     b.latency_ms ?? 50,
+    // Sensitivity analysis requires concrete numbers; treat null as neutral midpoints.
+    risk_score:     b.risk_score     ?? 5,
+    renewable_pct:  b.renewable_pct  ?? 0,
+    latency_ms:     b.latency_ms     ?? 50,
   }))
 
   const rank1SensParams = allSensParams.find((s) => s.site_id === ranking[0])!
@@ -326,8 +350,8 @@ export async function runEngine(
     },
     parsed_fields,
     data_provenance,
-    data_gaps:  [],
-    confidence: { sourced: 0, modeled: 0, assumed: 0, missing: 0 },
+    data_gaps,
+    confidence,
   }
 
   const narrative = await generateNarrative(partialOutput, siteLabels, narrativeOpts)
