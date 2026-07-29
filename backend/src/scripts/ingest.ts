@@ -103,6 +103,51 @@ async function cachedFetch(url: string, filename: string): Promise<Buffer> {
 }
 
 /**
+ * Fetch the EUR/USD exchange rate from the ECB daily reference rates XML.
+ * Result is cached to data/raw/ keyed by date so a second run on the same day
+ * is free.  On failure, falls back to 1.09 and logs a warning.
+ *
+ * ECB source: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml
+ * The XML contains a Cube element per currency, e.g.:
+ *   <Cube currency='USD' rate='1.0923'/>
+ */
+async function fetchECBEurUsd(): Promise<{ rate: number; date: string }> {
+  const ECB_URL = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml'
+  const FALLBACK = { rate: 1.09, date: 'fallback' }
+
+  let xml: string
+  try {
+    // Cache file is date-stamped so it is re-fetched when the date changes.
+    const buf = await cachedFetch(ECB_URL, `ecb-eurusd-${TODAY}.xml`)
+    xml = buf.toString('utf-8')
+  } catch (e: any) {
+    console.log(`  ⚠  ECB EUR/USD fetch failed: ${e.message}; using fallback ${FALLBACK.rate}`)
+    return FALLBACK
+  }
+
+  // Extract the date from <Cube time='YYYY-MM-DD'>
+  const dateMatch = xml.match(/time=['"]([\d-]+)['"]/)
+  const rateDate  = dateMatch?.[1] ?? TODAY
+
+  // Extract USD rate from <Cube currency='USD' rate='...'/>
+  const rateMatch = xml.match(/currency=['"]USD['"]\s+rate=['"]([0-9.]+)['"]/) ??
+                    xml.match(/rate=['"]([0-9.]+)['"]\s+currency=['"]USD['"]/)
+  if (!rateMatch) {
+    console.log(`  ⚠  ECB XML: could not parse USD rate; using fallback ${FALLBACK.rate}`)
+    return { ...FALLBACK, date: rateDate }
+  }
+
+  const rate = parseFloat(rateMatch[1])
+  if (isNaN(rate) || rate <= 0) {
+    console.log(`  ⚠  ECB XML: invalid rate value "${rateMatch[1]}"; using fallback ${FALLBACK.rate}`)
+    return { ...FALLBACK, date: rateDate }
+  }
+
+  console.log(`    ECB EUR/USD: ${rate} (date ${rateDate})`)
+  return { rate, date: rateDate }
+}
+
+/**
  * Skip only when the field is already "sourced" from a *different* hand-collected
  * source that is not one of our own URLs.
  */
@@ -389,8 +434,8 @@ async function ingestInternationalPowerRates(regions: RegionsFile): Promise<void
   console.log(`    Eurostat prices found for: ${Object.keys(priceByGeo).join(', ')}`)
   console.log(`    NOTE: SG, JP, IN, BR, MX, CA have no Eurostat row — left null for manual entry`)
 
-  // EUR/kWh → USD/kWh at ~1.09 exchange rate
-  const EUR_TO_USD = 1.09
+  // EUR/kWh → USD/kWh using ECB daily reference rate
+  const { rate: EUR_TO_USD, date: rateDate } = await fetchECBEurUsd()
 
   for (const [key, geo] of Object.entries(EUROSTAT_GEO)) {
     const region = regions[key]
@@ -398,7 +443,7 @@ async function ingestInternationalPowerRates(regions: RegionsFile): Promise<void
     const eurKwh = priceByGeo[geo]
     if (eurKwh == null) { console.log(`    ⚠  No Eurostat price for ${key} (${geo})`); continue }
     write(region, 'power_rate_usd_per_kwh', eurKwh * EUR_TO_USD, null, null, SOURCE, 'sourced',
-      `Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD ${EUR_TO_USD}`)
+      `Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD ${EUR_TO_USD} (ECB reference rate ${rateDate})`)
   }
 }
 
