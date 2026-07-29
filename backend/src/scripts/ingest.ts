@@ -14,6 +14,7 @@
  * Pass EIA API key as EIA_API_KEY env var (free at https://www.eia.gov/opendata/).
  */
 
+import 'dotenv/config'
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
