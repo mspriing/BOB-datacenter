@@ -245,6 +245,9 @@ async function ingestUSGenerationMix(regions: RegionsFile): Promise<void> {
     const src   = String(row[srcIdx]   ?? '').toLowerCase().trim()
     const gen   = Number(row[genIdx])
     if (!state || isNaN(gen)) continue
+    // Skip the "Total" energy-source row — it is the sum of all individual fuel
+    // rows and including it would double-count the denominator.
+    if (/^total$/i.test(src)) continue
     if (!byState[state]) byState[state] = {}
     byState[state][src] = (byState[state][src] ?? 0) + gen
   }
