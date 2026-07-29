@@ -273,16 +273,52 @@ async function ingestUSGenerationMix(regions: RegionsFile): Promise<void> {
       `renewable share + nuclear ÷ total net generation; year ${maxYear}`)
   }
 
-  // Metros: inherit parent state value
+  // Metros: inherit parent state value.
+  // When a metro's renewable_pct is protected (hand-sourced from a different URL),
+  // do NOT overwrite it — and do NOT blindly copy the parent's low_carbon_pct either,
+  // because that would produce a low_carbon share lower than the region's own renewable
+  // share (two values from different sources at different vintages).
+  // Instead, derive low_carbon_pct as the region's own renewable_pct + the parent
+  // state's nuclear share (= parent.low_carbon_pct − parent.renewable_pct).  This is
+  // physically consistent: the nuclear that runs on the same state grid still reaches
+  // the metro, and using the parent nuclear share is the best available proxy.
   for (const [key, region] of Object.entries(regions)) {
     if (region.precision !== 'metro' || !key.startsWith('us-') || !region.parent_state) continue
     const parent = regions[region.parent_state]
     if (!parent) continue
-    for (const field of ['renewable_pct', 'low_carbon_pct'] as const) {
-      const pv = parent[field].value
+
+    const renewProtected = shouldSkip(region.renewable_pct, SOURCE)
+
+    // renewable_pct: only write if not already protected
+    if (!renewProtected) {
+      const pv = parent.renewable_pct.value
       if (pv !== null)
-        write(region, field, pv, null, null, SOURCE, 'modeled',
-          `state-level value (no metro breakdown); ${parent[field].method ?? ''}`.trim())
+        write(region, 'renewable_pct', pv, null, null, SOURCE, 'modeled',
+          `state-level value (no metro breakdown); ${parent.renewable_pct.method ?? ''}`.trim())
+    }
+
+    // low_carbon_pct:
+    if (renewProtected) {
+      // Region has a hand-sourced renewable_pct from a non-script URL.
+      // Derive low_carbon_pct = region.renewable_pct + parent nuclear share, so that
+      // low_carbon_pct ≥ renewable_pct is guaranteed.
+      const ownRen = region.renewable_pct.value
+      const parentLc  = parent.low_carbon_pct.value
+      const parentRen = parent.renewable_pct.value
+      if (ownRen !== null && parentLc !== null && parentRen !== null) {
+        const parentNuclear = parentLc - parentRen
+        const lc = Math.min(1, ownRen + Math.max(0, parentNuclear))
+        write(region, 'low_carbon_pct', lc, null, null, SOURCE, 'modeled',
+          `region renewable_pct is hand-sourced; low_carbon_pct = own renewable_pct (${ownRen.toFixed(4)}) + ` +
+          `parent state nuclear share (${Math.max(0, parentNuclear).toFixed(4)}); ` +
+          `parent nuclear derived from parent low_carbon_pct − parent renewable_pct; ` +
+          `${parent.low_carbon_pct.method ?? ''}`.trim())
+      }
+    } else {
+      const pv = parent.low_carbon_pct.value
+      if (pv !== null)
+        write(region, 'low_carbon_pct', pv, null, null, SOURCE, 'modeled',
+          `state-level value (no metro breakdown); ${parent.low_carbon_pct.method ?? ''}`.trim())
     }
   }
 }
