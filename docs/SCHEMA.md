@@ -280,3 +280,17 @@
 ## Frontend feature gate
 
 **No UI feature may be added that is not representable by this schema.** If a new field is needed, update this document first and get sign-off before writing code.
+
+---
+
+## GET /health
+
+Returns `200 OK` with a small JSON body:
+
+```json
+{ "status": "ok", "service": "bob-datacenter-backend" }
+```
+
+This endpoint is the **deployment health check** used by Render to decide whether the backend
+service is alive. Do not remove it and do not change the path — removing it will cause Render
+to mark the service as unhealthy and stop routing traffic to it.

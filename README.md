@@ -103,6 +103,48 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
+## Deployment
+
+The app deploys to **[Render](https://render.com)** from the `render.yaml` blueprint in the repo root.
+One `git push` provisions both services automatically.
+
+### Services
+
+| Service | Type | Render name |
+|---|---|---|
+| Backend | Node web service | `bob-backend` |
+| Frontend | Static site | `bob-frontend` |
+
+The two services wire themselves together: Render injects the backend URL into
+`VITE_API_URL` at frontend build time, and the frontend URL into `CORS_ORIGIN`
+on the backend at startup.
+
+### Secrets — enter in the Render dashboard
+
+Three secrets must be set manually in the Render dashboard (they are marked
+`sync: false` in `render.yaml` so they are never stored in the file):
+
+| Variable | Where to get it |
+|---|---|
+| `WATSONX_API_KEY` | IBM Cloud — API key for your watsonx.ai instance |
+| `WATSONX_PROJECT_ID` | IBM watsonx.ai project UUID |
+| `EIA_API_KEY` | [eia.gov/opendata](https://www.eia.gov/opendata/) — free registration |
+
+### Free-tier cold start
+
+Both services run on Render's free tier. The backend sleeps after roughly
+15 minutes of inactivity and takes up to about 50 seconds to wake on the
+first request. The frontend shows a notice after 3 seconds of waiting
+and the request times out cleanly after 90 seconds with a message to retry.
+
+### Live URL
+
+> **TODO:** replace this placeholder once the first deploy completes.
+>
+> Frontend: `https://bob-frontend.onrender.com`
+
+---
+
 ## Architecture
 
 ```
