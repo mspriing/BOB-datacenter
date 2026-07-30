@@ -683,9 +683,11 @@ describe('runEngine — missing data degradation', () => {
     const c = out.confidence
     const total = c.sourced + c.modeled + c.assumed + c.missing
 
-    // We have 2 sites × 12 resolve() calls each = 24 total slots.
-    // The exact split depends on regions.json but the sum must equal 24.
-    expect(total).toBe(24)
+    // We have 2 sites × 11 resolve() calls each = 22 total slots.
+    // (tax_abatement_years and incentive_usd_per_kw are no longer resolved from
+    //  regions.json — they are user-supplied overrides per work order 06.)
+    // The exact split depends on regions.json but the sum must equal 22.
+    expect(total).toBe(22)
     expect(c.sourced + c.modeled + c.assumed).toBeGreaterThan(0)
   })
 })

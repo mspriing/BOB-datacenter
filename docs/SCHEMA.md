@@ -44,12 +44,13 @@
         "water_rate_usd_per_kgal":     null,
         "staff_cost_index":            null,
         "tax_rate":                    null,
-        "incentive_usd":               null,
-        "risk_score":                  null, // 0–10 (0=best)
-        "renewable_pct":               null, // 0–1
-        "low_carbon_pct":              null, // 0–1; includes nuclear; see regions.json note
+        "incentive_usd":               null,   // total capital incentive (USD); user-supplied
+        "tax_abatement_years":         null,   // years of property-tax abatement; user-supplied; negotiated per deal
+        "risk_score":                  null,   // 0–10 (0=best)
+        "renewable_pct":               null,   // 0–1
+        "low_carbon_pct":              null,   // 0–1; includes nuclear; see regions.json note
         "latency_ms_to_hub":           null,
-        "grid_interconnection_years":  null  // years from request to energization; 0–30
+        "grid_interconnection_years":  null    // years from request to energization; 0–30
       }
     }
   ]

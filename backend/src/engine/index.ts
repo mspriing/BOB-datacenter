@@ -69,6 +69,13 @@ export async function runEngine(
     if (site.free_text && site.free_text.trim().length > 0) {
       parsed = await parseSiteDescription(site.free_text, {
         forceFallback: narrativeOpts?.forceFallback ?? false,
+        // Every other site's region, so a free-text description can never move
+        // this site onto a region already in the set. Without this the parser
+        // could return a region_key already in use and the engine would score
+        // that region twice, once against itself.
+        excludeRegionKeys: input.sites
+          .filter((s) => s.site_id !== site.site_id)
+          .map((s) => s.region_key),
       })
     }
 
@@ -139,13 +146,19 @@ export async function runEngine(
     const construction  = resolve('construction_cost_per_kw',     ov.construction_cost_per_kw)
     const staff_index   = resolve('staff_cost_index',              ov.staff_cost_index)
     const tax_rate      = resolve('tax_rate',                      ov.tax_rate)
-    const abatement     = region.tax_abatement_years.value ?? 0
-    const incentive_per_kw = resolve('incentive_usd_per_kw',      undefined)
+    // tax_abatement_years: user-supplied value (explicit override or parsed from free_text)
+    // takes precedence over the region default. The region value is kept as a baseline
+    // fallback but is NOT the authoritative figure — abatement is negotiated per deal.
+    const abatement: number =
+      ov.tax_abatement_years != null         ? ov.tax_abatement_years
+      : (parsed?.overrides.tax_abatement_years != null ? parsed.overrides.tax_abatement_years
+      : (region.tax_abatement_years?.value ?? 0))
+    // incentive_usd: similarly user-supplied; no longer derived from regional incentive_usd_per_kw.
     const incentive_usd = ov.incentive_usd != null
       ? ov.incentive_usd
       : (parsed?.overrides.incentive_usd != null
           ? parsed.overrides.incentive_usd
-          : (incentive_per_kw ?? 0) * input.project.capacity_kw)
+          : 0)
     const risk          = resolve('risk_score',                    ov.risk_score)
     const renewable     = resolve('renewable_pct',                 ov.renewable_pct)
     const low_carbon    = resolve('low_carbon_pct',                ov.low_carbon_pct)

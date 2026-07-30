@@ -111,14 +111,19 @@ describe('buildFallbackNarrative', () => {
       Math.abs(rank1.opex_annual.total_usd),
       Math.abs(rank1.finance.npv_usd),
       rank1.finance.lifetime_cost_per_kw,
+      rank1.finance.capex_per_kw,
       rank1.finance.ranges.low.lifetime_per_kw,
       rank1.finance.ranges.high.lifetime_per_kw,
       Math.abs(rank2.finance.lifetime_cost_per_kw),
+      Math.abs(rank2.finance.capex_per_kw),
       // Sensitivity flip values are real engine numbers and appear in flip_sentence
       ...out.sensitivity.flatMap(s => [s.current_value, s.flip_value]),
     ]
     for (const fig of mentioned) {
-      const match = engineNumbers.some(n => Math.abs(n - fig) / (Math.abs(n) || 1) < 0.02)
+      // Tolerance is 5% rather than 2% to accommodate the usd() formatter which rounds to
+      // the nearest K (e.g. $17,416/kW → "$17K" → parsed as 17000; delta = 2.4% vs actual).
+      // The intent of this test is to catch hallucinated figures, not exact arithmetic.
+      const match = engineNumbers.some(n => Math.abs(n - fig) / (Math.abs(n) || 1) < 0.05)
       expect(match, `Unexpected figure $${fig.toLocaleString()} in recommendation`).toBe(true)
     }
   })

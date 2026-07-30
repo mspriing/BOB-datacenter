@@ -9,6 +9,8 @@ const OverridesSchema = z.object({
   staff_cost_index:              z.number().positive().nullable().optional(),
   tax_rate:                      z.number().min(0).max(1).nullable().optional(),
   incentive_usd:                 z.number().min(0).nullable().optional(),
+  /** Years of property-tax abatement negotiated with the jurisdiction. User-supplied. */
+  tax_abatement_years:           z.number().int().min(0).max(30).nullable().optional(),
   risk_score:                    z.number().min(0).max(10).nullable().optional(),
   renewable_pct:                 z.number().min(0).max(1).nullable().optional(),
   low_carbon_pct:                z.number().min(0).max(1).nullable().optional(),
@@ -54,7 +56,20 @@ export const InputSchema = z.object({
   sites: z
     .array(SiteInputSchema)
     .min(2, 'Provide at least 2 candidate sites')
-    .max(4, 'Maximum 4 candidate sites'),
+    .max(4, 'Maximum 4 candidate sites')
+    // A region may appear only once. Without this a caller can submit the same
+    // region_key twice and the engine will happily score a site against itself,
+    // producing a ranking where one site both wins and loses.
+    .refine(
+      (sites) => new Set(sites.map((s) => s.region_key)).size === sites.length,
+      { message: 'Each candidate site must use a different region_key' },
+    )
+    // site_id is what the output keys results by, so duplicates there silently
+    // collapse two sites into one.
+    .refine(
+      (sites) => new Set(sites.map((s) => s.site_id)).size === sites.length,
+      { message: 'Each candidate site must have a different site_id' },
+    ),
 })
 
 export type EstimateInput = z.infer<typeof InputSchema>

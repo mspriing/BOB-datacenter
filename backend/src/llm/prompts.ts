@@ -106,10 +106,15 @@ Return ONLY valid JSON matching this schema (use null for any field you cannot d
     "water_rate_usd_per_kgal":  <number or null>,
     "staff_cost_index":          <number or null>,
     "tax_rate":                  <number or null>,
-    "incentive_usd":             <number or null>,
+    "incentive_usd":             <total capital incentive in USD, or null. Examples: "$2M of state money" → 2000000, "$500K grant" → 500000>,
+    "tax_abatement_years":       <integer years of property-tax abatement negotiated with the jurisdiction, or null. Examples: "five year abatement" → 5, "10-year tax holiday" → 10>,
     "risk_score":                <number 0-10 or null>,
     "renewable_pct":             <number 0-1 or null>,
     "latency_ms_to_hub":         <number or null>
   }
-}`
+}
+
+IMPORTANT: tax_abatement_years and incentive_usd are NEGOTIATED per deal, not published regional averages.
+Only extract them when the text explicitly mentions an abatement period or a specific incentive dollar amount.
+Do NOT infer or estimate them.`
 }
