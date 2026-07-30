@@ -59,13 +59,13 @@ export function RankedSiteCards({ output, scenario, siteLabels }: RankedSiteCard
               <Metric label="CapEx" value={formatUSD(site.capex.total_usd)} />
               <Metric label="Annual OpEx" value={formatUSD(site.opex_annual.total_usd)} />
               <Metric label="Payback" value={`${site.finance.payback_years.toFixed(1)} yr`} />
-              <Metric label="Renewable" value={`${(site.non_cost_scores.renewable_pct * 100).toFixed(0)}%`} />
+              <Metric label="Renewable" value={site.non_cost_scores.renewable_pct != null ? `${(site.non_cost_scores.renewable_pct * 100).toFixed(0)}%` : 'N/A'} />
             </div>
 
             {/* Scores strip */}
             <div className="border-t border-ibm-cool-20 px-4 py-2 grid grid-cols-3 gap-2 text-center">
-              <ScorePill label="Risk" value={`${site.non_cost_scores.risk_score.toFixed(1)}/10`}
-                warn={site.non_cost_scores.risk_score > 5} />
+              <ScorePill label="Risk" value={site.non_cost_scores.risk_score != null ? `${site.non_cost_scores.risk_score.toFixed(1)}/10` : 'N/A'}
+                warn={(site.non_cost_scores.risk_score ?? 0) > 5} />
               <ScorePill label="Latency" value={`${site.non_cost_scores.latency_ms} ms`} />
               <ScorePill label="Power cost"
                 value={formatUSD(site.opex_annual.power_usd) + '/yr'} />

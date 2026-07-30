@@ -65,7 +65,7 @@ export async function runEngine(
     if (!region) throw new Error(`Unknown region_key: ${site.region_key}`)
 
     // Parse free_text (if provided) to get additional overrides
-    let parsed = null
+    let parsed: import('../llm/parseInput.js').ParsedSiteInput | null = null
     if (site.free_text && site.free_text.trim().length > 0) {
       parsed = await parseSiteDescription(site.free_text, {
         forceFallback: narrativeOpts?.forceFallback ?? false,

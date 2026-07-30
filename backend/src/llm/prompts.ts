@@ -45,7 +45,7 @@ export function buildNarrativePrompt(output: EstimateOutput, siteLabels: Record<
       `  Finance (base): NPV ${usd(s.finance.npv_usd)}  Lifetime cost ${usd(s.finance.lifetime_cost_per_kw)}/kW  Build cost ${usd(s.finance.capex_per_kw)}/kW  Payback ${round1(s.finance.payback_years)} yr`,
       `  Finance low:  NPV ${usd(s.finance.ranges.low.npv_usd)}  Lifetime cost ${usd(s.finance.ranges.low.lifetime_per_kw)}/kW`,
       `  Finance high: NPV ${usd(s.finance.ranges.high.npv_usd)}  Lifetime cost ${usd(s.finance.ranges.high.lifetime_per_kw)}/kW`,
-      `  Risk score: ${s.non_cost_scores.risk_score}/10  Renewable: ${pct(s.non_cost_scores.renewable_pct)}  Latency: ${s.non_cost_scores.latency_ms} ms`,
+      `  Risk score: ${s.non_cost_scores.risk_score ?? 'N/A'}/10  Renewable: ${pct(s.non_cost_scores.renewable_pct ?? 0)}  Latency: ${s.non_cost_scores.latency_ms} ms`,
     ].join('\n')
   }).join('\n\n')
 

@@ -80,7 +80,7 @@ export function buildFallbackNarrative(
     `${usd(rank1.finance.ranges.high.lifetime_per_kw)}/kW. ` +
     `${output.flip_sentence} ` +
     `${rank2Label} is the strongest alternative, with a lifetime cost of ` +
-    `${usd(rank2.finance.lifetime_cost_per_kw)}/kW and ${pct(rank2.non_cost_scores.renewable_pct)} renewable power availability.`
+    `${usd(rank2.finance.lifetime_cost_per_kw)}/kW and ${pct(rank2.non_cost_scores.renewable_pct ?? 0)} renewable power availability.`
 
   // ── Sensitivity callouts — one per site ────────────────────────────────────
   const sensitivity_callouts: SensitivityCallout[] = output.ranking.map((sid) => {
@@ -90,7 +90,7 @@ export function buildFallbackNarrative(
     const callout =
       `${label}: ${drivers} drive most of the cost structure, ` +
       `accounting for the majority of the ${usd(s.finance.npv_usd)} base-case NPV; ` +
-      `renewable energy availability stands at ${pct(s.non_cost_scores.renewable_pct)} with a risk score of ${s.non_cost_scores.risk_score.toFixed(1)}/10.`
+      `renewable energy availability stands at ${pct(s.non_cost_scores.renewable_pct ?? 0)} with a risk score of ${(s.non_cost_scores.risk_score ?? 0).toFixed(1)}/10.`
     return { site_id: sid, label, callout }
   })
 
