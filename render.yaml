@@ -15,13 +15,10 @@ services:
         sync: false
       - key: EIA_API_KEY
         sync: false
-      # Restrict CORS to the deployed frontend; wired automatically by Render.
-      # Render sets this to https://<bob-frontend>.onrender.com at deploy time.
+      # Leave blank on first deploy: the server allows all origins when this is
+      # unset. After the frontend is live, paste its URL here to lock CORS down.
       - key: CORS_ORIGIN
-        fromService:
-          name: bob-frontend
-          type: web
-          property: url
+        sync: false
 
   # ── Frontend (static site) ───────────────────────────────────────────────────
   - type: web
@@ -31,10 +28,8 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
-      # Points the frontend at the deployed backend; wired automatically by Render.
-      # Render sets this to https://<bob-backend>.onrender.com at deploy time.
+      # Set this to the backend URL once the backend service is live, e.g.
+      # https://bob-backend-xxxx.onrender.com
+      # Vite inlines it at build time, so changing it triggers a rebuild.
       - key: VITE_API_URL
-        fromService:
-          name: bob-backend
-          type: web
-          property: url
+        sync: false
