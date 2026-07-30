@@ -1,0 +1,40 @@
+services:
+  # ── Backend ──────────────────────────────────────────────────────────────────
+  - type: web
+    name: bob-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    plan: free
+    envVars:
+      - key: WATSONX_API_KEY
+        sync: false
+      - key: WATSONX_PROJECT_ID
+        sync: false
+      - key: EIA_API_KEY
+        sync: false
+      # Restrict CORS to the deployed frontend; wired automatically by Render.
+      # Render sets this to https://<bob-frontend>.onrender.com at deploy time.
+      - key: CORS_ORIGIN
+        fromService:
+          name: bob-frontend
+          type: web
+          property: url
+
+  # ── Frontend (static site) ───────────────────────────────────────────────────
+  - type: web
+    name: bob-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      # Points the frontend at the deployed backend; wired automatically by Render.
+      # Render sets this to https://<bob-backend>.onrender.com at deploy time.
+      - key: VITE_API_URL
+        fromService:
+          name: bob-backend
+          type: web
+          property: url
