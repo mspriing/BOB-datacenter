@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { EstimateInput, EstimateOutput } from '../types/schema.ts'
+import { API_BASE } from '../config.ts'
 
 interface UseEstimateResult {
   data:    EstimateOutput | null
@@ -18,7 +19,7 @@ export function useEstimate(): UseEstimateResult {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/estimate', {
+      const res = await fetch(`${API_BASE}/api/estimate`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(input),
