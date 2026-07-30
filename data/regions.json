@@ -92,13 +92,13 @@
       "basis": "sourced"
     },
     "low_carbon_pct": {
-      "value": 0.163762145185697,
+      "value": 0.48184729657746606,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "state-level value (no metro breakdown); renewable share + nuclear ÷ total net generation; year 2024"
+      "method": "region renewable_pct is hand-sourced; low_carbon_pct = own renewable_pct (0.2000) + parent state nuclear share (0.2818); parent nuclear derived from parent low_carbon_pct − parent renewable_pct; renewable share + nuclear ÷ total net generation; year 2024"
     },
     "latency_ms_to_hub": {
       "value": 4,
@@ -447,13 +447,13 @@
       "basis": "sourced"
     },
     "low_carbon_pct": {
-      "value": 0.1742137363761632,
+      "value": 0.5791441173302194,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "state-level value (no metro breakdown); renewable share + nuclear ÷ total net generation; year 2024"
+      "method": "region renewable_pct is hand-sourced; low_carbon_pct = own renewable_pct (0.3000) + parent state nuclear share (0.2791); parent nuclear derived from parent low_carbon_pct − parent renewable_pct; renewable share + nuclear ÷ total net generation; year 2024"
     },
     "latency_ms_to_hub": {
       "value": 14,
@@ -566,13 +566,13 @@
       "basis": "sourced"
     },
     "low_carbon_pct": {
-      "value": 0.14526304431697865,
+      "value": 0.34816052048134416,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "state-level value (no metro breakdown); renewable share + nuclear ÷ total net generation; year 2024"
+      "method": "region renewable_pct is hand-sourced; low_carbon_pct = own renewable_pct (0.2800) + parent state nuclear share (0.0682); parent nuclear derived from parent low_carbon_pct − parent renewable_pct; renewable share + nuclear ÷ total net generation; year 2024"
     },
     "latency_ms_to_hub": {
       "value": 18,
@@ -685,13 +685,13 @@
       "basis": "sourced"
     },
     "low_carbon_pct": {
-      "value": 0.29157794338306087,
+      "value": 0.71,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "state-level value (no metro breakdown); renewable share + nuclear ÷ total net generation; year 2024"
+      "method": "region renewable_pct is hand-sourced; low_carbon_pct = own renewable_pct (0.7100) + parent state nuclear share (0.0000); parent nuclear derived from parent low_carbon_pct − parent renewable_pct; renewable share + nuclear ÷ total net generation; year 2024"
     },
     "latency_ms_to_hub": {
       "value": 10,
@@ -804,13 +804,13 @@
       "basis": "sourced"
     },
     "low_carbon_pct": {
-      "value": 0.07540675229311421,
+      "value": 0.2657261025694001,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "state-level value (no metro breakdown); renewable share + nuclear ÷ total net generation; year 2024"
+      "method": "region renewable_pct is hand-sourced; low_carbon_pct = own renewable_pct (0.1400) + parent state nuclear share (0.1257); parent nuclear derived from parent low_carbon_pct − parent renewable_pct; renewable share + nuclear ÷ total net generation; year 2024"
     },
     "latency_ms_to_hub": {
       "value": 8,
@@ -923,13 +923,13 @@
       "basis": "sourced"
     },
     "low_carbon_pct": {
-      "value": 0.20129106431657623,
+      "value": 0.47316163072608575,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "state-level value (no metro breakdown); renewable share + nuclear ÷ total net generation; year 2024"
+      "method": "region renewable_pct is hand-sourced; low_carbon_pct = own renewable_pct (0.1300) + parent state nuclear share (0.3432); parent nuclear derived from parent low_carbon_pct − parent renewable_pct; renewable share + nuclear ÷ total net generation; year 2024"
     },
     "latency_ms_to_hub": {
       "value": 7,
@@ -953,12 +953,12 @@
     "label": "Alabama, AL",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.07730000000000001,
+      "low": 0.0725,
+      "high": 0.07730000000000001,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -1043,7 +1043,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 67 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.04066730022784021,
+      "value": 0.08133460045568042,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1052,7 +1052,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.19630267489467765,
+      "value": 0.3926053497893553,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1083,12 +1083,12 @@
     "label": "Alaska, AK",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.2003,
+      "low": 0.1931,
+      "high": 0.2003,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -1173,7 +1173,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 30 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.14060296784727494,
+      "value": 0.2812059356945499,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1182,7 +1182,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.14060296784727494,
+      "value": 0.2812059356945499,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1213,12 +1213,12 @@
     "label": "Arizona, AZ",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.081,
+      "low": 0.079,
+      "high": 0.081,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -1303,7 +1303,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 15 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.03464167771105347,
+      "value": 0.06928335542210694,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1312,7 +1312,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.1742137363761632,
+      "value": 0.3484274727523264,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1343,12 +1343,12 @@
     "label": "Arkansas, AR",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.06709999999999999,
+      "low": 0.0661,
+      "high": 0.06709999999999999,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -1433,7 +1433,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 75 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.0319025065676582,
+      "value": 0.0638050131353164,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1442,7 +1442,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.15184224608158486,
+      "value": 0.30368449216316973,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1473,12 +1473,12 @@
     "label": "California, CA",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.2162,
+      "low": 0.21530000000000002,
+      "high": 0.2162,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -1563,7 +1563,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 58 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.14094092598981478,
+      "value": 0.2818818506636016,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1572,7 +1572,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.1838437604941196,
+      "value": 0.3676875192716084,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1603,12 +1603,12 @@
     "label": "Colorado, CO",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0907,
+      "low": 0.0862,
+      "high": 0.0907,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -1693,7 +1693,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 64 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.1645485646334394,
+      "value": 0.3290971292668788,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1702,7 +1702,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.1645485646334394,
+      "value": 0.3290971292668788,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1733,12 +1733,12 @@
     "label": "Connecticut, CT",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.18350000000000002,
+      "low": 0.17120000000000002,
+      "high": 0.18350000000000002,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -1823,7 +1823,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 9 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.010390221827676035,
+      "value": 0.02078044365535207,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1832,7 +1832,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.19883719262475455,
+      "value": 0.3976743852495091,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1863,12 +1863,12 @@
     "label": "Delaware, DE",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0964,
+      "low": 0.0849,
+      "high": 0.0964,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -1953,7 +1953,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 3 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.00461711214257674,
+      "value": 0.00923422428515348,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1962,7 +1962,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.00461711214257674,
+      "value": 0.00923422428515348,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -1993,12 +1993,12 @@
     "label": "Florida, FL",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.08839999999999999,
+      "low": 0.085,
+      "high": 0.08839999999999999,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -2083,7 +2083,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 67 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.005904526195167643,
+      "value": 0.011809052390335285,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2092,7 +2092,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.06049206829979025,
+      "value": 0.1209841365995805,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2123,12 +2123,12 @@
     "label": "Georgia, GA",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0781,
+      "low": 0.0721,
+      "high": 0.0781,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -2213,7 +2213,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 159 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.029710248339891894,
+      "value": 0.059420496467272384,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2222,7 +2222,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.20129106431657623,
+      "value": 0.4025821271933581,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2253,12 +2253,12 @@
     "label": "Hawaii, HI",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.3146,
+      "low": 0.3146,
+      "high": 0.34130000000000005,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -2343,7 +2343,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 5 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.06775476725795354,
+      "value": 0.13550953451590708,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2352,7 +2352,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.06775476725795354,
+      "value": 0.13550953451590708,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2383,12 +2383,12 @@
     "label": "Idaho, ID",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.07980000000000001,
+      "low": 0.07690000000000001,
+      "high": 0.07980000000000001,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -2473,7 +2473,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 44 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.3160200440838878,
+      "value": 0.6320400881677756,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2482,7 +2482,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.3160200440838878,
+      "value": 0.6320400881677756,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2513,12 +2513,12 @@
     "label": "Illinois, IL",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.1014,
+      "low": 0.0883,
+      "high": 0.1014,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -2603,7 +2603,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 102 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.06812929593274114,
+      "value": 0.13625859186548228,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2612,7 +2612,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.3362507059303718,
+      "value": 0.6725014118607436,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2643,12 +2643,12 @@
     "label": "Indiana, IN",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0889,
+      "low": 0.0815,
+      "high": 0.0889,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -2733,7 +2733,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 92 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.05602554584530988,
+      "value": 0.1120510928456323,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2742,7 +2742,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.05602554584530988,
+      "value": 0.1120510928456323,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2773,12 +2773,12 @@
     "label": "Iowa, IA",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.07200000000000001,
+      "low": 0.068,
+      "high": 0.07200000000000001,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -2863,7 +2863,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 99 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.3230361298275836,
+      "value": 0.6460722642395713,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2872,7 +2872,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.3230361298275836,
+      "value": 0.6460722642395713,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -2903,12 +2903,12 @@
     "label": "Kansas, KS",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0803,
+      "low": 0.07730000000000001,
+      "high": 0.0803,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -2993,7 +2993,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 105 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.25886273530705817,
+      "value": 0.5177254706141163,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3002,7 +3002,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.33862737473580345,
+      "value": 0.6772547494716069,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3033,12 +3033,12 @@
     "label": "Kentucky, KY",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0696,
+      "low": 0.065,
+      "high": 0.0696,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -3123,7 +3123,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 120 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.033664450122689635,
+      "value": 0.06732889974255592,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3132,7 +3132,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.033664450122689635,
+      "value": 0.06732889974255592,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3163,12 +3163,12 @@
     "label": "Louisiana, LA",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0623,
+      "low": 0.056100000000000004,
+      "high": 0.0623,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -3253,7 +3253,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 64 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.014368513002064235,
+      "value": 0.02873702600412847,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3262,7 +3262,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.08790378731944339,
+      "value": 0.17580757463888677,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3293,12 +3293,12 @@
     "label": "Maine, ME",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.155,
+      "low": 0.1246,
+      "high": 0.155,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -3383,7 +3383,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 16 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.23683820956791551,
+      "value": 0.47367643529655085,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3392,7 +3392,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.23683820956791551,
+      "value": 0.47367643529655085,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3423,12 +3423,12 @@
     "label": "Maryland, MD",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.125,
+      "low": 0.1001,
+      "high": 0.125,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -3513,7 +3513,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 24 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.038660369630990184,
+      "value": 0.07732073817064461,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3522,7 +3522,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.24648174253774893,
+      "value": 0.49296347811761454,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3553,12 +3553,12 @@
     "label": "Massachusetts, MA",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.1935,
+      "low": 0.1819,
+      "high": 0.1935,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -3643,7 +3643,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 14 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.04721346961933507,
+      "value": 0.09442694149607966,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3652,7 +3652,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.04721346961933507,
+      "value": 0.09442694149607966,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3683,12 +3683,12 @@
     "label": "Michigan, MI",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0859,
+      "low": 0.08259999999999999,
+      "high": 0.0859,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -3773,7 +3773,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 83 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.052459039874854195,
+      "value": 0.10491807932733319,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3782,7 +3782,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.15825918822498763,
+      "value": 0.31651837517574766,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3813,12 +3813,12 @@
     "label": "Minnesota, MN",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0932,
+      "low": 0.0915,
+      "high": 0.0932,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -3903,7 +3903,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 87 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.14347709954917484,
+      "value": 0.2869541990983497,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3912,7 +3912,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.244548574284777,
+      "value": 0.489097148569554,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -3943,12 +3943,12 @@
     "label": "Mississippi, MS",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0738,
+      "low": 0.0681,
+      "high": 0.0738,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -4033,7 +4033,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 82 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.010523708326260366,
+      "value": 0.02104741665252073,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4042,7 +4042,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.07940045990059676,
+      "value": 0.1588009198011935,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4073,12 +4073,12 @@
     "label": "Missouri, MO",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.08380000000000001,
+      "low": 0.0787,
+      "high": 0.08380000000000001,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -4163,7 +4163,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 115 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.059185166034125096,
+      "value": 0.11837033206825019,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4172,7 +4172,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.13788178099342796,
+      "value": 0.2757635619868559,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4203,12 +4203,12 @@
     "label": "Montana, MT",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0702,
+      "low": 0.0702,
+      "high": 0.0759,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -4293,7 +4293,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 56 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.2803982311760478,
+      "value": 0.5607964519178514,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4302,7 +4302,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.2803982311760478,
+      "value": 0.5607964519178514,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4333,12 +4333,12 @@
     "label": "Nebraska, NE",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.08,
+      "low": 0.0766,
+      "high": 0.08,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -4423,7 +4423,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 93 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.17668559248495583,
+      "value": 0.3533711897158311,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4432,7 +4432,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.25855374995203667,
+      "value": 0.5171075068490384,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4463,12 +4463,12 @@
     "label": "Nevada, NV",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0808,
+      "low": 0.0808,
+      "high": 0.0864,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -4553,7 +4553,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 17 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.06439415312986763,
+      "value": 0.12878830625973525,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4562,7 +4562,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.06439415312986763,
+      "value": 0.12878830625973525,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4593,12 +4593,12 @@
     "label": "New Hampshire, NH",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.16879999999999998,
+      "low": 0.16210000000000002,
+      "high": 0.16879999999999998,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -4683,7 +4683,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 10 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.07438256012055379,
+      "value": 0.14876511585080815,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4692,7 +4692,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.35996242462621836,
+      "value": 0.7199248280062895,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4723,12 +4723,12 @@
     "label": "New Jersey, NJ",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.139,
+      "low": 0.1193,
+      "high": 0.139,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -4813,7 +4813,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 21 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.0056465079618703675,
+      "value": 0.011293015923740735,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4822,7 +4822,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.23561467011891685,
+      "value": 0.4712293402378337,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4853,12 +4853,12 @@
     "label": "New Mexico, NM",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.059000000000000004,
+      "low": 0.054299999999999994,
+      "high": 0.059000000000000004,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -4943,7 +4943,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 33 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.1932134191160055,
+      "value": 0.3864268333648426,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4952,7 +4952,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.1932134191160055,
+      "value": 0.3864268333648426,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -4983,12 +4983,12 @@
     "label": "New York, NY",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0955,
+      "low": 0.0917,
+      "high": 0.0955,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -5073,7 +5073,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 62 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.13784960253630313,
+      "value": 0.275699204004133,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5082,7 +5082,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.24277234966356967,
+      "value": 0.4855446974454092,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5113,12 +5113,12 @@
     "label": "North Carolina, NC",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.078,
+      "low": 0.07769999999999999,
+      "high": 0.078,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -5203,7 +5203,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 100 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.02524075504509319,
+      "value": 0.05048151009018638,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5212,7 +5212,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.18583504545120588,
+      "value": 0.37167009090241176,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5243,12 +5243,12 @@
     "label": "North Dakota, ND",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.075,
+      "low": 0.0725,
+      "high": 0.075,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -5333,7 +5333,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 53 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.19765384235127545,
+      "value": 0.39530768934697413,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5342,7 +5342,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.19765384235127545,
+      "value": 0.39530768934697413,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5373,12 +5373,12 @@
     "label": "Ohio, OH",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0852,
+      "low": 0.071,
+      "high": 0.0852,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -5463,7 +5463,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 88 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.012543701008414163,
+      "value": 0.025087402016828325,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5472,7 +5472,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.07540675229311421,
+      "value": 0.15081350458622841,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5503,12 +5503,12 @@
     "label": "Oklahoma, OK",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.061500000000000006,
+      "low": 0.0584,
+      "high": 0.061500000000000006,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -5593,7 +5593,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 77 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.211971416281229,
+      "value": 0.4239428303091005,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5602,7 +5602,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.211971416281229,
+      "value": 0.4239428303091005,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5633,12 +5633,12 @@
     "label": "Oregon, OR",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0828,
+      "low": 0.0805,
+      "high": 0.0828,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -5723,7 +5723,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 36 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.29157794338306087,
+      "value": 0.5831558867661217,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5732,7 +5732,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.29157794338306087,
+      "value": 0.5831558867661217,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5763,12 +5763,12 @@
     "label": "Pennsylvania, PA",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.09359999999999999,
+      "low": 0.0787,
+      "high": 0.09359999999999999,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -5853,7 +5853,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 67 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.015459165188661502,
+      "value": 0.03091833031330954,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5862,7 +5862,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.17157695812115487,
+      "value": 0.34315391553184216,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5893,12 +5893,12 @@
     "label": "Rhode Island, RI",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.21739999999999998,
+      "low": 0.19699999999999998,
+      "high": 0.21739999999999998,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -5983,7 +5983,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 5 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.019309448567545125,
+      "value": 0.03861889713509025,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -5992,7 +5992,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.019309448567545125,
+      "value": 0.03861889713509025,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6023,12 +6023,12 @@
     "label": "South Carolina, SC",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0711,
+      "low": 0.0684,
+      "high": 0.0711,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -6113,7 +6113,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 46 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.02109231950634508,
+      "value": 0.04218463901269016,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6122,7 +6122,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.2886456080352994,
+      "value": 0.5772912160705987,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6153,12 +6153,12 @@
     "label": "South Dakota, SD",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0868,
+      "low": 0.0828,
+      "high": 0.0868,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -6243,7 +6243,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 66 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.3999215887087741,
+      "value": 0.7998431774175482,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6252,7 +6252,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.3999215887087741,
+      "value": 0.7998431774175482,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6283,12 +6283,12 @@
     "label": "Tennessee, TN",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0674,
+      "low": 0.0621,
+      "high": 0.0674,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -6373,7 +6373,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 95 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.061679663137596895,
+      "value": 0.12335932546539621,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6382,7 +6382,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.2729657756969373,
+      "value": 0.5459315478100837,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6413,12 +6413,12 @@
     "label": "Texas, TX",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0655,
+      "low": 0.061200000000000004,
+      "high": 0.0655,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -6503,7 +6503,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 254 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.11118278410638607,
+      "value": 0.22236556840903388,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6512,7 +6512,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.14526304431697865,
+      "value": 0.290526088890378,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6543,12 +6543,12 @@
     "label": "Utah, UT",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0843,
+      "low": 0.0786,
+      "high": 0.0843,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -6633,7 +6633,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 29 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.028865335541323877,
+      "value": 0.05773067026106718,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6642,7 +6642,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.028865335541323877,
+      "value": 0.05773067026106718,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6673,12 +6673,12 @@
     "label": "Vermont, VT",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.12390000000000001,
+      "low": 0.1158,
+      "high": 0.12390000000000001,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -6763,7 +6763,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 14 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.450864605684825,
+      "value": 0.90172921136965,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6772,7 +6772,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.450864605684825,
+      "value": 0.90172921136965,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6803,12 +6803,12 @@
     "label": "Virginia, VA",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.09449999999999999,
+      "low": 0.08990000000000001,
+      "high": 0.09449999999999999,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -6893,7 +6893,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 133 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.022838496896963996,
+      "value": 0.04567699379392799,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6902,7 +6902,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.163762145185697,
+      "value": 0.327524290371394,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -6933,12 +6933,12 @@
     "label": "Washington, WA",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0688,
+      "low": 0.0661,
+      "high": 0.0688,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -7023,7 +7023,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 39 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.3452687953870922,
+      "value": 0.6905375874023435,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7032,7 +7032,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.39393755396574465,
+      "value": 0.7878751040843569,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7063,12 +7063,12 @@
     "label": "West Virginia, WV",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.08109999999999999,
+      "low": 0.0781,
+      "high": 0.08109999999999999,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -7153,7 +7153,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 55 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.03332157455334655,
+      "value": 0.0666431491066931,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7162,7 +7162,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.03332157455334655,
+      "value": 0.0666431491066931,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7193,12 +7193,12 @@
     "label": "Wisconsin, WI",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0892,
+      "low": 0.08539999999999999,
+      "high": 0.0892,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -7283,7 +7283,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 72 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.03945484477083187,
+      "value": 0.07890969014609167,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7292,7 +7292,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.11717726652382114,
+      "value": 0.23435453484273774,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7323,12 +7323,12 @@
     "label": "Wyoming, WY",
     "precision": "state",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0866,
+      "low": 0.0796,
+      "high": 0.0866,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
+      "basis": "sourced",
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
@@ -7413,7 +7413,7 @@
       "method": "FEMA NRI Score composite; pop-weighted mean of 23 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.12304887079380347,
+      "value": 0.24609773856497277,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7422,7 +7422,7 @@
       "method": "sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.12304887079380347,
+      "value": 0.24609773856497277,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7453,13 +7453,13 @@
     "label": "Dallas-Fort Worth, TX",
     "precision": "metro",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0655,
+      "low": 0.061200000000000004,
+      "high": 0.0655,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -7543,7 +7543,7 @@
       "method": "FEMA NRI Score composite; county FIPS 48113; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.11118278410638607,
+      "value": 0.22236556840903388,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7552,7 +7552,7 @@
       "method": "state-level value (no metro breakdown); sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.14526304431697865,
+      "value": 0.290526088890378,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7584,13 +7584,13 @@
     "label": "Chicago, IL",
     "precision": "metro",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.1014,
+      "low": 0.0883,
+      "high": 0.1014,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -7674,7 +7674,7 @@
       "method": "FEMA NRI Score composite; county FIPS 17031; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.06812929593274114,
+      "value": 0.13625859186548228,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7683,7 +7683,7 @@
       "method": "state-level value (no metro breakdown); sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.3362507059303718,
+      "value": 0.6725014118607436,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7715,13 +7715,13 @@
     "label": "Salt Lake City, UT",
     "precision": "metro",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0843,
+      "low": 0.0786,
+      "high": 0.0843,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -7805,7 +7805,7 @@
       "method": "FEMA NRI Score composite; county FIPS 49035; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.028865335541323877,
+      "value": 0.05773067026106718,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7814,7 +7814,7 @@
       "method": "state-level value (no metro breakdown); sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.028865335541323877,
+      "value": 0.05773067026106718,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7846,13 +7846,13 @@
     "label": "Omaha, NE",
     "precision": "metro",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.08,
+      "low": 0.0766,
+      "high": 0.08,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -7936,7 +7936,7 @@
       "method": "FEMA NRI Score composite; county FIPS 31055; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.17668559248495583,
+      "value": 0.3533711897158311,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7945,7 +7945,7 @@
       "method": "state-level value (no metro breakdown); sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.25855374995203667,
+      "value": 0.5171075068490384,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -7977,13 +7977,13 @@
     "label": "Des Moines, IA",
     "precision": "metro",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.07200000000000001,
+      "low": 0.068,
+      "high": 0.07200000000000001,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -8067,7 +8067,7 @@
       "method": "FEMA NRI Score composite; county FIPS 19153; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.3230361298275836,
+      "value": 0.6460722642395713,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -8076,7 +8076,7 @@
       "method": "state-level value (no metro breakdown); sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.3230361298275836,
+      "value": 0.6460722642395713,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -8108,13 +8108,13 @@
     "label": "Reno, NV",
     "precision": "metro",
     "power_rate_usd_per_kwh": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0.0808,
+      "low": 0.0808,
+      "high": 0.0864,
+      "source_url": "https://api.eia.gov/v2/electricity/retail-sales/data?data[]=price&facets[sectorid][]=IND&frequency=annual&api_key=KEY",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -8198,7 +8198,7 @@
       "method": "FEMA NRI Score composite; county FIPS 32031; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
     },
     "renewable_pct": {
-      "value": 0.06439415312986763,
+      "value": 0.12878830625973525,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -8207,7 +8207,7 @@
       "method": "state-level value (no metro breakdown); sum of hydro + wind + solar + geothermal + biomass ÷ total net generation; year 2024"
     },
     "low_carbon_pct": {
-      "value": 0.06439415312986763,
+      "value": 0.12878830625973525,
       "low": null,
       "high": null,
       "source_url": "https://www.eia.gov/electricity/data/state/annual_generation_state.xls",
@@ -8239,13 +8239,13 @@
     "label": "Dublin, Ireland",
     "precision": "international",
     "power_rate_usd_per_kwh": {
-      "value": 0.17025800000000002,
+      "value": 0.17775559999999999,
       "low": null,
       "high": null,
       "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205?format=TSV&compressed=false",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.09"
+      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -8369,13 +8369,13 @@
     "label": "Amsterdam, Netherlands",
     "precision": "international",
     "power_rate_usd_per_kwh": {
-      "value": 0.100171,
+      "value": 0.10458219999999999,
       "low": null,
       "high": null,
       "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205?format=TSV&compressed=false",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.09"
+      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -8499,13 +8499,13 @@
     "label": "Frankfurt, Germany",
     "precision": "international",
     "power_rate_usd_per_kwh": {
-      "value": 0.12971,
+      "value": 0.135422,
       "low": null,
       "high": null,
       "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205?format=TSV&compressed=false",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.09"
+      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -8629,13 +8629,13 @@
     "label": "Slough, UK (London)",
     "precision": "international",
     "power_rate_usd_per_kwh": {
-      "value": 0.08948900000000001,
+      "value": 0.0934298,
       "low": null,
       "high": null,
       "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205?format=TSV&compressed=false",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.09"
+      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -8759,13 +8759,13 @@
     "label": "Paris, France",
     "precision": "international",
     "power_rate_usd_per_kwh": {
-      "value": 0.06627200000000001,
+      "value": 0.0691904,
       "low": null,
       "high": null,
       "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205?format=TSV&compressed=false",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.09"
+      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -8889,13 +8889,13 @@
     "label": "Luleå, Sweden",
     "precision": "international",
     "power_rate_usd_per_kwh": {
-      "value": 0.069651,
+      "value": 0.0727182,
       "low": null,
       "high": null,
       "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205?format=TSV&compressed=false",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.09"
+      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
@@ -9019,13 +9019,13 @@
     "label": "Oslo, Norway",
     "precision": "international",
     "power_rate_usd_per_kwh": {
-      "value": 0.044472000000000005,
+      "value": 0.0464304,
       "low": null,
       "high": null,
       "source_url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205?format=TSV&compressed=false",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.09"
+      "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
       "value": null,
