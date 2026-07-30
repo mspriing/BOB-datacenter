@@ -7,7 +7,8 @@ import { watsonxConfigFromEnv } from './llm/client.js'
 
 const app = express()
 
-app.use(cors())
+const corsOrigin = process.env.CORS_ORIGIN
+app.use(cors(corsOrigin ? { origin: corsOrigin } : undefined))
 app.use(express.json())
 
 app.use('/health', healthRouter)
