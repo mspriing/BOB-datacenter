@@ -9,7 +9,7 @@ import { useEstimate }        from './hooks/useEstimate.ts'
 import type { SiteInput, Scenario, ProjectWeights } from './types/schema.ts'
 
 function App() {
-  const { data, loading, error, submit, reset } = useEstimate()
+  const { data, loading, slowWarning, error, submit, reset } = useEstimate()
   const [scenario, setScenario] = useState<Scenario>('base')
 
   async function handleSubmit(
@@ -93,6 +93,12 @@ function App() {
             <div className="w-8 h-8 border-2 border-ibm-blue border-t-transparent rounded-full animate-spin" />
             <p className="text-sm font-medium">Running cost engine + generating narrative…</p>
             <p className="text-xs text-ibm-cool-40 font-mono">POST /estimate</p>
+            {slowWarning && (
+              <p className="text-xs text-ibm-cool-60 max-w-sm text-center border border-ibm-cool-20 bg-ibm-cool-10 px-4 py-2">
+                Waking up the server. The free hosting tier sleeps when idle, so the first request
+                after a quiet period takes up to a minute. Later requests are fast.
+              </p>
+            )}
           </div>
         )}
 
