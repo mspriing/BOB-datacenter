@@ -1,4 +1,4 @@
-# BOB-datacenter — Canonical Input / Output Schema
+# leepr — Canonical Input / Output Schema
 
 > **Source of truth.** Both `backend/src/schemas/` (Zod) and `frontend/src/types/schema.ts` are derived from this document. Update here first, then update the code.
 
@@ -289,7 +289,7 @@
 Returns `200 OK` with a small JSON body:
 
 ```json
-{ "status": "ok", "service": "bob-datacenter-backend" }
+{ "status": "ok", "service": "leepr-backend" }
 ```
 
 This endpoint is the **deployment health check** used by Render to decide whether the backend

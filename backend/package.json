@@ -1,5 +1,5 @@
 {
-  "name": "bob-datacenter-backend",
+  "name": "leepr-backend",
   "version": "0.1.0",
   "description": "Data-center site-decision copilot — backend",
   "type": "module",
