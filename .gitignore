@@ -4,3 +4,5 @@ dist/
 .env
 .bob/
 data/raw/
+
+*.timestamp-*.mjs
