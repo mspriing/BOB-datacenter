@@ -1,10 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import { createRoot } from 'react-dom/client'
+import App from './App'
+import './styles.css'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+// Backstop: if any scroll reveal fails to fire, force everything visible.
+setTimeout(() => document.documentElement.classList.add('force-visible'), 2500)
+
+createRoot(document.getElementById('root')!).render(<App />)

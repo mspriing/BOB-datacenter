@@ -1,184 +1,176 @@
-import { useState } from 'react'
-import { SiteForm }           from './components/SiteForm.tsx'
-import { RankedSiteCards }    from './components/RankedSiteCards.tsx'
-import { ScenarioToggle }     from './components/ScenarioToggle.tsx'
-import { RecommendationCard } from './components/RecommendationCard.tsx'
-import { CostBreakdownChart } from './components/CostBreakdownChart.tsx'
-import { SensitivityChart }   from './components/SensitivityChart.tsx'
-import { useEstimate }        from './hooks/useEstimate.ts'
-import type { SiteInput, Scenario, ProjectWeights } from './types/schema.ts'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import * as Tooltip from '@radix-ui/react-tooltip'
+import { Logo } from './components/Primitives'
+import { Footer } from './components/Footer'
+import { useReducedMotion } from './lib/useReducedMotion'
+import { isRoute, type Route } from './lib/routes'
+import { DEFAULT_WEIGHTS, type Projections, type Weights } from './lib/engine'
 
-function App() {
-  const { data, loading, slowWarning, error, submit, reset } = useEstimate()
-  const [scenario, setScenario] = useState<Scenario>('base')
+import { fetchEstimate, type EstimateOutput } from './lib/api'
+import { PROJECT } from './data/project'
+import { useSites } from './lib/useSites'
 
-  async function handleSubmit(
-    sites: SiteInput[],
-    projectName: string,
-    capacityKW: number,
-    designPUE: number,
-    lifetimeYears: number,
-    discountRate: number,
-    weights: ProjectWeights,
-  ) {
-    await submit({
-      project: {
-        name:           projectName,
-        capacity_kw:    capacityKW,
-        design_pue:     designPUE,
-        lifetime_years: lifetimeYears,
-        discount_rate:  discountRate,
-        weights,
-      },
-      sites,
-    })
-  }
+import { Home } from './screens/Home'
+import { Setup } from './screens/Setup'
+import { Running } from './screens/Running'
+import { Results } from './screens/Results'
+import { MapScreen } from './screens/MapScreen'
+import { DocPage } from './pages/DocPage'
 
-  const rankLabels = data?.site_labels ?? {}
+const NAV: Array<{ id: Route; label: string }> = [
+  { id: 'home', label: 'Start' },
+  { id: 'map', label: 'Map' },
+  { id: 'setup', label: 'Set up' },
+  { id: 'results', label: 'Results' },
+]
 
-  return (
-    <div className="min-h-screen bg-ibm-cool-10">
+const DOC_ROUTES: Route[] = [
+  'how-ranking-works', 'driver-meanings', 'cost-method', 'release-notes',
+  'all-regions', 'the-drivers', 'sources', 'known-gaps',
+  'request-region', 'report-figure', 'talk-to-team',
+]
 
-      {/* ── Top nav ───────────────────────────────────────────────────────── */}
-      <header className="bg-ibm-cool-100 text-white">
-        <div className="max-w-screen-xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            {/* IBM-style logo mark */}
-            <svg width="32" height="13" viewBox="0 0 32 13" fill="none" aria-hidden>
-              <rect width="32" height="2"   y="0"  fill="#0f62fe"/>
-              <rect width="32" height="2"   y="3.5" fill="#0f62fe"/>
-              <rect width="32" height="2"   y="7"  fill="#0f62fe"/>
-              <rect width="20" height="2"   y="10.5" x="6" fill="#0f62fe"/>
-            </svg>
-            <div>
-              <div className="text-sm font-semibold tracking-wide">leepr · data-center site copilot</div>
-            </div>
-          </div>
-          {data && (
-            <button onClick={reset} className="btn-ghost border-ibm-cool-60 text-ibm-cool-30 hover:bg-ibm-cool-90 text-xs">
-              ← New analysis
-            </button>
-          )}
-        </div>
-      </header>
-
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-8">
-
-        {/* ── Input form ─────────────────────────────────────────────────── */}
-        {!data && (
-          <div className="max-w-3xl mx-auto">
-            <div className="mb-6">
-              <h1 className="text-2xl font-semibold text-ibm-cool-90">Compare data-center sites</h1>
-              <p className="text-ibm-cool-60 text-sm mt-1">
-                Add 2–4 candidate sites. The engine prices CapEx, OpEx, NPV, lifetime cost, and build cost per kW;
-                then generates a plain-English investment memo.
-              </p>
-            </div>
-
-            <SiteForm onSubmit={handleSubmit} loading={loading} />
-
-            {error && (
-              <div className="mt-4 border-l-4 border-ibm-red bg-ibm-red/5 px-4 py-3">
-                <p className="text-sm font-semibold text-ibm-red">Request failed</p>
-                <p className="text-xs text-ibm-cool-70 mt-1 font-mono">{error}</p>
-                <p className="text-xs text-ibm-cool-50 mt-1">Is the backend running on port 3001?</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── Loading overlay ────────────────────────────────────────────── */}
-        {loading && !data && (
-          <div className="mt-8 flex flex-col items-center gap-4 text-ibm-cool-60">
-            <div className="w-8 h-8 border-2 border-ibm-blue border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm font-medium">Running cost engine + generating narrative…</p>
-            <p className="text-xs text-ibm-cool-40 font-mono">POST /estimate</p>
-            {slowWarning && (
-              <p className="text-xs text-ibm-cool-60 max-w-sm text-center border border-ibm-cool-20 bg-ibm-cool-10 px-4 py-2">
-                Waking up the server. The free hosting tier sleeps when idle, so the first request
-                after a quiet period takes up to a minute. Later requests are fast.
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* ── Results ────────────────────────────────────────────────────── */}
-        {data && (
-          <div className="space-y-6">
-
-            {/* Results header */}
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <h1 className="text-xl font-semibold text-ibm-cool-90">
-                  Analysis complete — {data.ranking.length} sites ranked
-                </h1>
-                <p className="text-xs text-ibm-cool-50 font-mono mt-0.5">
-                  engine {data.engine_version} · {new Date(data.generated_at).toLocaleTimeString()}
-                </p>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-ibm-cool-50 uppercase tracking-wide font-medium">Cost scenario</span>
-                <ScenarioToggle scenario={scenario} onChange={setScenario} />
-              </div>
-            </div>
-
-            {/* Ranked cards */}
-            <RankedSiteCards output={data} scenario={scenario} siteLabels={rankLabels} />
-
-            {/* Charts row */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <CostBreakdownChart output={data} scenario={scenario} siteLabels={rankLabels} />
-              <SensitivityChart output={data} />
-            </div>
-
-            {/* Recommendation */}
-            <RecommendationCard output={data} />
-
-            {/* Provenance accordion */}
-            <details className="card">
-              <summary className="px-5 py-3 cursor-pointer text-xs font-semibold uppercase tracking-wide text-ibm-cool-60 hover:bg-ibm-cool-10 select-none">
-                Data provenance ({data.data_provenance.length} sources)
-              </summary>
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs">
-                  <thead className="bg-ibm-cool-10 border-y border-ibm-cool-20">
-                    <tr>
-                      {['Region', 'Driver', 'Value', 'Source', 'Verified'].map(h => (
-                        <th key={h} className="px-4 py-2 text-left font-medium text-ibm-cool-60 uppercase tracking-wide">{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-ibm-cool-10">
-                    {data.data_provenance.map((p, i) => (
-                      <tr key={i} className="hover:bg-ibm-cool-10/50">
-                        <td className="px-4 py-2 font-mono text-ibm-cool-70">{p.region_key}</td>
-                        <td className="px-4 py-2 text-ibm-cool-60">{p.driver}</td>
-                        <td className="px-4 py-2 font-mono text-ibm-cool-80">{p.value}</td>
-                        <td className="px-4 py-2">
-                          <a href={p.source_url} target="_blank" rel="noreferrer"
-                             className="text-ibm-blue hover:underline truncate max-w-[200px] block">
-                            {p.source_url.replace(/^https?:\/\//, '').slice(0, 40)}…
-                          </a>
-                        </td>
-                        <td className="px-4 py-2 text-ibm-cool-50 font-mono">{p.last_verified}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </details>
-
-          </div>
-        )}
-
-      </div>
-
-      {/* ── Footer ────────────────────────────────────────────────────────── */}
-      <footer className="mt-12 border-t border-ibm-cool-20 py-4 text-center text-xs text-ibm-cool-40">
-        leepr — built with IBM Bob
-      </footer>
-    </div>
-  )
+function readHash(): Route {
+  const h = window.location.hash.replace(/^#\/?/, '')
+  return isRoute(h) ? h : 'home'
 }
 
-export default App
+export default function App() {
+  const [route, setRoute] = useState<Route>(() =>
+    typeof window === 'undefined' ? 'home' : readHash())
+  const [projections, setProjections] = useState<Projections>({})
+  const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS)
+  const [pinned, setPinned] = useState<string[]>([])
+  const reduced = useReducedMotion()
+
+
+  const go = useCallback((r: Route) => {
+    window.location.hash = '/' + r
+    setRoute(r)
+  }, [])
+
+  // The authoritative run. The client engine drives the sliders; this is the
+  // server's answer, and it owns provenance, gaps, confidence and the wording.
+  const [server, setServer] = useState<EstimateOutput | null>(null)
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [serverSlow, setServerSlow] = useState(false)
+  const [serverPending, setServerPending] = useState(false)
+  const runToken = useRef(0)
+
+  const { sites: candidateSites } = useSites(pinned)
+
+  const run = useCallback(() => {
+    const token = ++runToken.current
+    setServer(null); setServerError(null); setServerSlow(false); setServerPending(true)
+    go('running')
+    fetchEstimate({
+      project: {
+        name: PROJECT.name,
+        capacity_kw: PROJECT.capacityMw * 1000,
+        design_pue: PROJECT.pue,
+        design_wue: 0.4,
+        lifetime_years: PROJECT.lifetimeYears,
+        discount_rate: PROJECT.discountRate,
+        weights: {
+          total_cost: weights.cost, risk: weights.risk,
+          sustainability: weights.clean, latency: weights.distance,
+        },
+      },
+      sites: candidateSites.map((s, i) => ({
+        site_id: `site-${String.fromCharCode(65 + i)}`,
+        label: s.label,
+        region_key: s.key,
+      })),
+    }, () => { if (token === runToken.current) setServerSlow(true) })
+      .then(r => {
+        if (token !== runToken.current) return
+        setServer(r.data); setServerError(r.error); setServerPending(false)
+      })
+  }, [candidateSites, weights, go])
+
+  useEffect(() => {
+    const on = () => setRoute(readHash())
+    window.addEventListener('hashchange', on)
+    return () => window.removeEventListener('hashchange', on)
+  }, [])
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'auto' }) }, [route])
+
+  const togglePin = useCallback((key: string) => {
+    setPinned(p => p.includes(key) ? p.filter(k => k !== key) : p.length >= 3 ? p : [...p, key])
+  }, [])
+
+  const isDoc = DOC_ROUTES.includes(route)
+
+  return (
+    <Tooltip.Provider delayDuration={120} skipDelayDuration={300}>
+      <div className="relative z-[1] mx-auto max-w-[1380px] px-4 pb-16 sm:px-7">
+        <header className="flex flex-wrap items-center justify-between gap-4 py-5">
+          <button className="flex items-center gap-3.5 text-left" onClick={() => go('home')}
+            aria-label="Site Decision Copilot, back to the start">
+            <Logo />
+            <span>
+              <span className="block text-[15px] font-semibold tracking-[-.01em] text-ink">
+                Site Decision Copilot
+              </span>
+              <span className="block text-[13px] text-mid">
+                Whole life cost for data center sites
+              </span>
+            </span>
+          </button>
+          <nav aria-label="Screens"
+            className="flex items-center gap-1.5 rounded-full border border-line bg-white/80 p-1 shadow-[var(--shadow-sm)]">
+            {NAV.map(n => {
+              const active = route === n.id || (route === 'running' && n.id === 'results')
+              return (
+                <button key={n.id} onClick={() => go(n.id)}
+                  aria-current={active ? 'page' : undefined}
+                  className={`relative min-h-[36px] rounded-full px-4 text-[13.5px] font-medium transition-colors
+                    ${active ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
+                  {active && (
+                    <motion.span layoutId="navpill" className="absolute inset-0 rounded-full bg-bluex"
+                      transition={{ type: 'spring', stiffness: 420, damping: 36 }} />
+                  )}
+                  <span className="relative">{n.label}</span>
+                </button>
+              )
+            })}
+          </nav>
+        </header>
+
+        <main>
+          <AnimatePresence mode="wait">
+            <motion.div key={route}
+              initial={reduced ? undefined : { opacity: 0, y: 10 }}
+              animate={reduced ? undefined : { opacity: 1, y: 0 }}
+              exit={reduced ? undefined : { opacity: 0, y: -6 }}
+              transition={{ duration: 0.26, ease: [0.2, 0.8, 0.3, 1] }}>
+              {route === 'home' && <Home go={go} />}
+              {route === 'map' && (
+                <MapScreen pinned={pinned} onTogglePin={togglePin}
+                  onClear={() => setPinned([])} go={go} />
+              )}
+              {route === 'setup' && (
+                <Setup projections={projections} setProjections={setProjections}
+                  pinned={pinned} run={run} go={go} />
+              )}
+              {route === 'running' && (
+                <Running done={() => go('results')} pending={serverPending}
+                  slow={serverSlow} error={serverError} retry={run} />
+              )}
+              {route === 'results' && (
+                <Results projections={projections} setProjections={setProjections}
+                  weights={weights} setWeights={setWeights} pinned={pinned} go={go}
+                  server={server} serverError={serverError} />
+              )}
+              {isDoc && <DocPage route={route} go={go} />}
+            </motion.div>
+          </AnimatePresence>
+        </main>
+
+        <Footer go={go} />
+      </div>
+    </Tooltip.Provider>
+  )
+}
