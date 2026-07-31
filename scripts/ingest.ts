@@ -1087,7 +1087,7 @@ function countNulls(regions: RegionsFile): number {
 // ── Entry point ────────────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
-  console.log('=== BOB-datacenter data ingest ===\n')
+  console.log('=== leepr data ingest ===\n')
 
   const regions = loadRegions()
   const nullsBefore = countNulls(regions)

@@ -1,4 +1,6 @@
-# BOB-datacenter
+# leepr
+
+leepr: land, evaluation, environment, pricing.
 
 A site-decision copilot for data centers, built for the **IBM AI Builders Challenge** (Wildcard track: Intelligent Systems for the Future of Work).
 
@@ -112,8 +114,8 @@ One `git push` provisions both services automatically.
 
 | Service | Type | Render name |
 |---|---|---|
-| Backend | Node web service | `bob-backend` |
-| Frontend | Static site | `bob-frontend` |
+| Backend | Node web service | `leepr-backend` |
+| Frontend | Static site | `leepr-frontend` |
 
 The two services wire themselves together: Render injects the backend URL into
 `VITE_API_URL` at frontend build time, and the frontend URL into `CORS_ORIGIN`
@@ -141,14 +143,14 @@ and the request times out cleanly after 90 seconds with a message to retry.
 
 > **TODO:** replace this placeholder once the first deploy completes.
 >
-> Frontend: `https://bob-frontend.onrender.com`
+> Frontend: `https://leepr-frontend.onrender.com`
 
 ---
 
 ## Architecture
 
 ```
-BOB-datacenter/
+leepr/
 ├── data/regions.json        ← cost-driver database (source_url + last_verified on every value)
 ├── docs/SCHEMA.md           ← canonical input/output schema (source of truth)
 ├── docs/BOB.md              ← how IBM Bob was used, with session transcripts

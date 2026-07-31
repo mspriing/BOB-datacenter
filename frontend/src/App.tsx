@@ -51,7 +51,7 @@ function App() {
               <rect width="20" height="2"   y="10.5" x="6" fill="#0f62fe"/>
             </svg>
             <div>
-              <div className="text-sm font-semibold tracking-wide">BOB · Data-Center Site Copilot</div>
+              <div className="text-sm font-semibold tracking-wide">leepr · data-center site copilot</div>
             </div>
           </div>
           {data && (
@@ -172,6 +172,11 @@ function App() {
         )}
 
       </div>
+
+      {/* ── Footer ────────────────────────────────────────────────────────── */}
+      <footer className="mt-12 border-t border-ibm-cool-20 py-4 text-center text-xs text-ibm-cool-40">
+        leepr — built with IBM Bob
+      </footer>
     </div>
   )
 }
