@@ -1,0 +1,63 @@
+leepr — Data-center Site-Decision Copilot
+Copyright 2026 the leepr contributors
+
+This product includes or derives from the following third-party data sources.
+Each carries its own terms; see docs/DATA-SOURCES.md for the full record.
+
+  US Energy Information Administration (EIA) — electricity retail price data
+    https://www.eia.gov/opendata/
+    US federal government data; no copyright claimed (17 U.S.C. § 105).
+
+  US Bureau of Labor Statistics (BLS) — construction wage data
+    https://www.bls.gov/developers/
+    US federal government data; no copyright claimed (17 U.S.C. § 105).
+
+  FEMA National Risk Index — natural hazard composite scores
+    https://hazards.fema.gov/nri/
+    US federal government data; no copyright claimed (17 U.S.C. § 105).
+
+  Lawrence Berkeley National Laboratory (LBNL) — interconnection queue data
+    https://emp.lbl.gov/
+    Prepared by a US national laboratory under DOE contract; public release.
+
+  Eurostat — European electricity price statistics
+    https://ec.europa.eu/eurostat/
+    © European Union, 1995–2026. Reuse authorised under the Commission
+    Decision of 12 December 2011 (2011/833/EU) on reuse of Commission
+    documents, provided source is acknowledged.
+
+  Our World in Data — renewable electricity share
+    https://ourworldindata.org/
+    Data files: CC BY 4.0. Charts and written text: © Our World in Data.
+    Source acknowledged per licence terms.
+
+  ThinkHazard — natural hazard classification
+    https://www.thinkhazard.org/
+    © GFDRR / World Bank. Data: CC BY 4.0.
+
+  PeeringDB — network latency reference data
+    https://www.peeringdb.com/
+    Data: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+
+  Lincoln Institute of Land Policy — 50-State Property Tax Comparison Study
+    https://www.lincolninst.edu/
+    Small number of aggregate figures cited with attribution.
+    Full study © Lincoln Institute of Land Policy; not redistributed.
+
+  Turner & Townsend — Data Centre Construction Cost Index
+    https://www.turnerandtownsend.com/
+    Small number of index figures cited with attribution.
+    Full report © Turner & Townsend; not redistributed.
+
+  Individual utility tariff pages — electricity, water and property tax rates
+    See data/regions.json and data/manual-drivers.csv for per-value source URLs.
+    US federal and state government tariff schedules: public domain.
+    Third-party utility tariff pages: small number of figures cited with
+    attribution; no tariff document redistributed in full.
+
+  IBM Plex Sans and IBM Plex Mono — typefaces
+    https://github.com/IBM/plex
+    © IBM Corp. Licensed under the SIL Open Font License 1.1.
+    A copy of the OFL is available at https://scripts.sil.org/OFL.
+    (Fonts are loaded via Google Fonts CDN at runtime; no font files are
+    bundled in this repository.)
