@@ -1,7 +1,8 @@
 {
-  "name": "bob-datacenter-backend",
+  "name": "leepr-backend",
   "version": "0.1.0",
   "description": "Data-center site-decision copilot — backend",
+  "license": "Apache-2.0",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",

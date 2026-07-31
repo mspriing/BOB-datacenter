@@ -19,7 +19,7 @@ app.use('/api/estimate', estimateRouter)
 const PORT = process.env.PORT ?? 3001
 app.listen(PORT, () => {
   const llm = watsonxConfigFromEnv() ? 'watsonx (live)' : 'deterministic fallback (no WATSONX_* credentials)'
-  console.log(`BOB-datacenter backend listening on http://localhost:${PORT}`)
+  console.log(`leepr backend listening on http://localhost:${PORT}`)
   console.log(`Narrative layer: ${llm}`)
 })
 

@@ -1,7 +1,7 @@
 services:
   # ── Backend ──────────────────────────────────────────────────────────────────
   - type: web
-    name: bob-backend
+    name: leepr-backend
     runtime: node
     rootDir: backend
     buildCommand: npm install && npm run build
@@ -22,14 +22,14 @@ services:
 
   # ── Frontend (static site) ───────────────────────────────────────────────────
   - type: web
-    name: bob-frontend
+    name: leepr-frontend
     runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
       # Set this to the backend URL once the backend service is live, e.g.
-      # https://bob-backend-xxxx.onrender.com
+      # https://leepr-backend-xxxx.onrender.com
       # Vite inlines it at build time, so changing it triggers a rebuild.
       - key: VITE_API_URL
         sync: false
