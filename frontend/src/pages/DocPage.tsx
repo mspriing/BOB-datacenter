@@ -3,7 +3,7 @@ import { ArrowLeft, Mail, ExternalLink, Check } from 'lucide-react'
 import { Card, Chip } from '../components/Primitives'
 import { US_REGIONS, US_METROS, US_STATES } from '../data/usRegions'
 import { COVERAGE } from '../data/project'
-import { ROUTE_TITLES, CONTACT_EMAIL, FOOTER_GROUPS, type Route } from '../lib/routes'
+import { ROUTE_TITLES, CONTACT_URL, FOOTER_GROUPS, type Route } from '../lib/routes'
 
 /* ── shell ────────────────────────────────────────────────────────────────── */
 function groupOf(route: Route): string | null {
@@ -75,7 +75,7 @@ function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
   )
 }
 
-/* ── contact form, writes a mailto rather than posting anywhere ───────────── */
+/* ── contact form, opens a public issue rather than posting anywhere ─────── */
 function ContactForm({ subject, fields, blurb }: {
   subject: string
   fields: Array<{ id: string; label: string; placeholder?: string; area?: boolean }>
@@ -84,10 +84,10 @@ function ContactForm({ subject, fields, blurb }: {
   const [vals, setVals] = useState<Record<string, string>>({})
   const [copied, setCopied] = useState(false)
   const body = fields.map(f => `${f.label}:\n${vals[f.id] ?? ''}`).join('\n\n')
-  const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  const href = `${CONTACT_URL}?title=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 
   return (
-    <Card title={subject} note="Opens in your mail app">
+    <Card title={subject} note="Opens a public issue on the repository">
       <div className="space-y-4 p-5">
         <p className="text-[14.5px] leading-[1.6] text-mid">{blurb}</p>
         {fields.map(f => (
@@ -101,7 +101,7 @@ function ContactForm({ subject, fields, blurb }: {
           </label>
         ))}
         <div className="flex flex-wrap items-center gap-3 border-t border-[var(--line2)] pt-4">
-          <a className="btn btn-primary" href={href}>
+          <a className="btn btn-primary" href={href} target="_blank" rel="noreferrer">
             <Mail size={16} strokeWidth={2.2} aria-hidden />Send this
           </a>
           <button className="pill text-[13.5px]"
@@ -373,7 +373,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
     case 'the-drivers':
       return (
         <Page go={go} route={route} title={ROUTE_TITLES[route]} maxW="max-w-[1100px]"
-          lead="How well each of the thirteen drivers is filled across the 63 US regions, and how much of that is measured rather than derived.">
+          lead="How well each of the thirteen drivers is filled across the 63 US regions, and how much of that is measured rather than derived. These counts are read from a snapshot of the dataset taken on 30 July 2026 that ships inside this page, not from the live engine, so they move only when the snapshot is regenerated. Water, land, tax and interconnection read low here because the hand-collected figures for the 25 real markets are committed to the repository but have not yet been merged into the regional dataset.">
           <Card title="Coverage by driver" note="Across the 63 US regions">
             <Table head={['Driver', 'Filled', 'Sourced', 'Derived', 'Coverage']}
               // interconnection wait shows its count as placeholder rather than derived
@@ -481,7 +481,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
       return (
         <Page go={go} route={route} title={ROUTE_TITLES[route]}
           lead="Adding a region means finding a published figure for each of the thirteen drivers. Tell us which one you need and what you already have.">
-          <ContactForm subject="Region request, Site Decision Copilot"
+          <ContactForm subject="Region request, leepr"
             blurb="The more of the thirteen drivers you can point at a source for, the faster a region can be added. A region with only a power price is not much use, since the comparison would drop every other dimension."
             fields={[
               { id: 'region', label: 'Which region', placeholder: 'Metro, state or country' },
@@ -502,7 +502,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
         <Page go={go} route={route} title={ROUTE_TITLES[route]}
           lead="If a number here is wrong, this is the most useful thing you can send. Four faults in the ingest have already been found and fixed, and they are listed in the release notes."
         >
-          <ContactForm subject="Wrong figure, Site Decision Copilot"
+          <ContactForm subject="Wrong figure, leepr"
             blurb="Point at the region and the driver, say what the figure should be, and give a source if you have one. A report without a source is still worth sending, since it tells us where to look."
             fields={[
               { id: 'region', label: 'Region', placeholder: 'For example Northern Virginia' },
@@ -523,7 +523,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
       return (
         <Page go={go} route={route} title={ROUTE_TITLES[route]}
           lead="A short message reaches the people who build this. There is no support desk.">
-          <ContactForm subject="Site Decision Copilot"
+          <ContactForm subject="leepr"
             blurb="Questions about the method, the data, or using this on a real siting decision are all welcome. So is the argument that the whole approach is wrong."
             fields={[
               { id: 'about', label: 'What it is about' },

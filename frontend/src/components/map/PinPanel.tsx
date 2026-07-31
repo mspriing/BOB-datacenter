@@ -15,7 +15,7 @@ const P: ProjectParams = {
   designWue: 0.4,
 }
 
-/** The comparison Michael singled out: the three things a cost figure hides. */
+/** The comparison worth surfacing: the three things a cost figure hides. */
 function CompareBars({ icon, label, hint, rows, fmt }: {
   icon: React.ReactNode; label: string; hint: string
   rows: Array<{ name: string; v: number | null; max: number; good: boolean }>

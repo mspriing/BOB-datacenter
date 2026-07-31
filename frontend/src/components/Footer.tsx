@@ -8,7 +8,7 @@ export function Footer({ go }: { go: (r: Route) => void }) {
         <div>
           <div className="mb-3 flex items-center gap-3">
             <Logo />
-            <span className="text-[15px] font-semibold text-ink">Site Decision Copilot</span>
+            <span className="text-[15px] font-semibold text-ink">leepr</span>
           </div>
           <p className="max-w-[34ch] text-[13.5px] leading-[1.6] text-mid">
             Whole life siting costs for data centers, built from public data. Every figure
@@ -32,7 +32,7 @@ export function Footer({ go }: { go: (r: Route) => void }) {
         ))}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line py-6 text-[13px] text-mid">
-        <span>Site Decision Copilot, 2026. All rights reserved.</span>
+        <span>leepr, 2026. Apache 2.0 licensed.</span>
         <span className="max-w-[62ch]">
           Figures are estimates drawn from public sources and the assumptions you enter.
           They are not a valuation, a quote, or investment advice.

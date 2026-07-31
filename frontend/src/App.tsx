@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import { Logo } from './components/Primitives'
 import { Footer } from './components/Footer'
@@ -108,11 +108,11 @@ export default function App() {
       <div className="relative z-[1] mx-auto max-w-[1380px] px-4 pb-16 sm:px-7">
         <header className="flex flex-wrap items-center justify-between gap-4 py-5">
           <button className="flex items-center gap-3.5 text-left" onClick={() => go('home')}
-            aria-label="Site Decision Copilot, back to the start">
+            aria-label="leepr, back to the start">
             <Logo />
             <span>
               <span className="block text-[15px] font-semibold tracking-[-.01em] text-ink">
-                Site Decision Copilot
+                leepr
               </span>
               <span className="block text-[13px] text-mid">
                 Whole life cost for data center sites
@@ -140,12 +140,16 @@ export default function App() {
         </header>
 
         <main>
-          <AnimatePresence mode="wait">
-            <motion.div key={route}
-              initial={reduced ? undefined : { opacity: 0, y: 10 }}
-              animate={reduced ? undefined : { opacity: 1, y: 0 }}
-              exit={reduced ? undefined : { opacity: 0, y: -6 }}
-              transition={{ duration: 0.26, ease: [0.2, 0.8, 0.3, 1] }}>
+          {/*
+            The screen wrapper is a plain element on purpose. It used to be an
+            AnimatePresence in mode="wait", and on the deployed build the enter
+            animation never ran: each new screen mounted holding its `initial`
+            style of opacity 0, so changing route left the previous screen on
+            screen and the new one invisible. A page transition is not worth a
+            navigation that silently does nothing. Individual components keep
+            their own motion; only the route swap is unanimated.
+          */}
+          <div key={route} className={reduced ? undefined : 'route-enter'}>
               {route === 'home' && <Home go={go} />}
               {route === 'map' && (
                 <MapScreen pinned={pinned} onTogglePin={togglePin}
@@ -165,8 +169,7 @@ export default function App() {
                   server={server} serverError={serverError} />
               )}
               {isDoc && <DocPage route={route} go={go} />}
-            </motion.div>
-          </AnimatePresence>
+          </div>
         </main>
 
         <Footer go={go} />

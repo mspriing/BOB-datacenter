@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Lightbulb, Shield, Leaf, Gauge, SlidersHorizontal, X } from 'lucide-react'
 import * as Dialog from '@radix-ui/react-dialog'
 import {
@@ -133,15 +133,11 @@ export function Results({ projections, setProjections, pinned, go, server, serve
               {fromPins && <><Rule />from your pinned set</>}
             </span>
           </div>
-          <AnimatePresence mode="wait">
-            <motion.h1 key={leader.key}
-              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.28 }}
-              className="mb-1.5 bg-[linear-gradient(120deg,#0F1720_30%,#2B4A7E)] bg-clip-text
-                         text-[clamp(2.25rem,1.7rem+2.6vw,3.375rem)] font-semibold text-transparent">
-              {leader.label}
-            </motion.h1>
-          </AnimatePresence>
+          <h1 key={leader.key}
+            className="route-enter mb-1.5 bg-[linear-gradient(120deg,#0F1720_30%,#2B4A7E)] bg-clip-text
+                       text-[clamp(2.25rem,1.7rem+2.6vw,3.375rem)] font-semibold text-transparent">
+            {leader.label}
+          </h1>
           <p className="mb-7 text-[15px] text-mid">{leader.place}</p>
           {/* Stat row: single bordered container with internal dividers */}
           <div className="grid grid-cols-2 divide-x divide-y lg:grid-cols-4 lg:divide-y-0

@@ -42,5 +42,9 @@ export const FOOTER_GROUPS: Array<{ heading: string; links: Array<{ to: Route; l
 export const ALL_ROUTES = Object.keys(ROUTE_TITLES) as Route[]
 export const isRoute = (s: string): s is Route => (ALL_ROUTES as string[]).includes(s)
 
-/** The address the contact pages write to. Change in one place. */
-export const CONTACT_EMAIL = 'mspring823@gmail.com'
+/**
+ * Where the contact pages send people. Deliberately a public issue tracker and
+ * not a personal mailbox: this interface carries no individual's address.
+ * Change in one place.
+ */
+export const CONTACT_URL = 'https://github.com/mspriing/BOB-datacenter/issues/new'
