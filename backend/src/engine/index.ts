@@ -106,12 +106,18 @@ export async function runEngine(
 
       const isInferred = fromParsed && (parsed!.inferred_fields.includes(field as string))
 
+      const basisVal = fromParsed ? 'sourced'
+        : (driver.basis === 'sourced' || driver.basis === 'modeled' || driver.basis === 'assumed'
+            ? driver.basis as 'sourced' | 'modeled' | 'assumed'
+            : null)
+
       provenance.push({
         region_key:    site.region_key,
         driver:        field as string,
         value:         val,
         source_url:    fromParsed ? 'user-supplied description' : driver.source_url,
         last_verified: fromParsed ? 'unverified'               : driver.last_verified,
+        basis:         basisVal,
       })
 
       if (fromParsed) {
