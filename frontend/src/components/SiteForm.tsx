@@ -3,6 +3,8 @@ import type { SiteInput, ProjectWeights } from '../types/schema.ts'
 import { REGION_OPTIONS } from '../types/schema.ts'
 
 interface SiteFormProps {
+  sites:          SiteInput[]
+  onSitesChange:  (sites: SiteInput[]) => void
   onSubmit: (
     sites: SiteInput[],
     projectName: string,
@@ -15,7 +17,7 @@ interface SiteFormProps {
   loading: boolean
 }
 
-const HERO_SITES: SiteInput[] = [
+export const HERO_SITES: SiteInput[] = [
   { site_id: 'nova',   label: 'Northern Virginia', region_key: 'us-va-northern'  },
   { site_id: 'ercot',  label: 'Texas ERCOT',        region_key: 'us-tx-ercot'     },
   { site_id: 'nordic', label: 'Nordic Hydro',        region_key: 'eu-nordic-hydro' },
@@ -43,30 +45,29 @@ function normaliseWeights(sliders: typeof DEFAULT_WEIGHT_SLIDERS): ProjectWeight
   }
 }
 
-export function SiteForm({ onSubmit, loading }: SiteFormProps) {
+export function SiteForm({ sites, onSitesChange, onSubmit, loading }: SiteFormProps) {
   const [projectName, setProjectName] = useState('Site Selection Analysis')
   const [capacityKW, setCapacityKW]   = useState(10000)
   const [designPUE, setDesignPUE]     = useState(1.4)
   const [lifetimeYrs, setLifetimeYrs] = useState(15)
   const [discountRate, setDiscountRate] = useState(0.08)
-  const [sites, setSites]             = useState<SiteInput[]>(HERO_SITES)
   const [activeTab, setActiveTab]     = useState(0)
   const [weightSliders, setWeightSliders] = useState(DEFAULT_WEIGHT_SLIDERS)
 
   function updateSite(i: number, patch: Partial<SiteInput>) {
-    setSites(prev => prev.map((s, idx) => idx === i ? { ...s, ...patch } : s))
+    onSitesChange(sites.map((s, idx) => idx === i ? { ...s, ...patch } : s))
   }
 
   function addSite() {
     if (sites.length >= 4) return
     const newSite = DEFAULT_SITE(sites.length)
-    setSites(prev => [...prev, newSite])
+    onSitesChange([...sites, newSite])
     setActiveTab(sites.length)
   }
 
   function removeSite(i: number) {
     if (sites.length <= 2) return
-    setSites(prev => prev.filter((_, idx) => idx !== i))
+    onSitesChange(sites.filter((_, idx) => idx !== i))
     setActiveTab(Math.min(activeTab, sites.length - 2))
   }
 

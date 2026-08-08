@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SiteForm }           from './components/SiteForm.tsx'
+import { SiteForm, HERO_SITES } from './components/SiteForm.tsx'
 import { RankedSiteCards }    from './components/RankedSiteCards.tsx'
 import { ScenarioToggle }     from './components/ScenarioToggle.tsx'
 import { RecommendationCard } from './components/RecommendationCard.tsx'
@@ -11,6 +11,7 @@ import type { SiteInput, Scenario, ProjectWeights } from './types/schema.ts'
 function App() {
   const { data, loading, slowWarning, error, submit, reset } = useEstimate()
   const [scenario, setScenario] = useState<Scenario>('base')
+  const [sites, setSites] = useState<SiteInput[]>(HERO_SITES)
 
   async function handleSubmit(
     sites: SiteInput[],
@@ -55,7 +56,10 @@ function App() {
             </div>
           </div>
           {data && (
-            <button onClick={reset} className="btn-ghost border-ibm-cool-60 text-ibm-cool-30 hover:bg-ibm-cool-90 text-xs">
+            <button
+              onClick={() => { reset(); setSites(HERO_SITES) }}
+              className="btn-ghost border-ibm-cool-60 text-ibm-cool-30 hover:bg-ibm-cool-90 text-xs"
+            >
               ← New analysis
             </button>
           )}
@@ -75,7 +79,12 @@ function App() {
               </p>
             </div>
 
-            <SiteForm onSubmit={handleSubmit} loading={loading} />
+            <SiteForm
+              sites={sites}
+              onSitesChange={setSites}
+              onSubmit={handleSubmit}
+              loading={loading}
+            />
 
             {error && (
               <div className="mt-4 border-l-4 border-ibm-red bg-ibm-red/5 px-4 py-3">
