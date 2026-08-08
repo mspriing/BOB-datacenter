@@ -283,15 +283,21 @@ export function Results({ projections, setProjections, pinned, go, server, serve
                 </p>
               )}
             </div>
-            <div className="mt-6 flex items-start gap-3 border-t border-[var(--line2)] pt-5">
-              <span className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[8px]
-                bg-[linear-gradient(135deg,#0F62FE,#0043CE)] text-[12px] font-bold text-white
-                shadow-[0_3px_9px_-3px_rgba(15,98,254,.55)]">wx</span>
-              <p className="text-[13.5px] leading-[1.55] text-mid">
-                Written by watsonx running granite-3-8b-instruct. The model quotes the
-                engine&rsquo;s figures and never computes one itself.
-              </p>
-            </div>
+            {server && (
+              <div className="mt-6 flex items-start gap-3 border-t border-[var(--line2)] pt-5">
+                <span className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[8px]
+                  bg-[linear-gradient(135deg,#0F62FE,#0043CE)] text-[12px] font-bold text-white
+                  shadow-[0_3px_9px_-3px_rgba(15,98,254,.55)]">
+                  {server.narrative.source === 'watsonx' ? 'wx' : '≡'}
+                </span>
+                <p className="text-[13.5px] leading-[1.55] text-mid">
+                  {server.narrative.source === 'watsonx'
+                    ? <>Written by watsonx Granite. The model quotes the engine&rsquo;s figures and never computes one itself.</>
+                    : <>Written by the deterministic template — watsonx credentials were not available on this run. Every figure is still the engine&rsquo;s.</>
+                  }
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>

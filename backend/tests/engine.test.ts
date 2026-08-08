@@ -691,3 +691,109 @@ describe('runEngine — missing data degradation', () => {
     expect(c.sourced + c.modeled + c.assumed).toBeGreaterThan(0)
   })
 })
+// ── Part 2b: region-key coverage ─────────────────────────────────────────────
+// Every region_key that the frontend can produce must exist in data/regions.json.
+// This test reads the generated usRegions.ts as a plain text file (no bundling)
+// and compares against the live regions.json so a mis-matched ingest never ships.
+describe('region key coverage (Part 2b)', () => {
+  beforeEach(() => { _resetRegionsCache() })
+
+  it('every region_key in frontend/src/data/usRegions.ts exists in data/regions.json', async () => {
+    const { loadRegions } = await import('../src/regions.js')
+    const regions = loadRegions()
+    const fs = await import('node:fs')
+    const path = await import('node:path')
+    const { fileURLToPath } = await import('node:url')
+    const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+    const src = fs.readFileSync(
+      path.resolve(__dirname, '../../frontend/src/data/usRegions.ts'),
+      'utf8',
+    )
+    // Extract all "key":"..." values from the generated file
+    const matches = [...src.matchAll(/"key":"([^"]+)"/g)]
+    const keys = matches.map((m: RegExpMatchArray) => m[1])
+    expect(keys.length).toBeGreaterThan(0)
+
+    const missing = keys.filter((k: string) => !(k in regions))
+    expect(missing).toEqual([])
+  })
+
+  it('every region_key in defaultSites exists in data/regions.json', async () => {
+    const { loadRegions } = await import('../src/regions.js')
+    const regions = loadRegions()
+
+    const DEFAULT_KEYS = ['eu-nordic-hydro', 'us-tx-ercot', 'us-va-northern']
+    const missing = DEFAULT_KEYS.filter((k) => !(k in regions))
+    expect(missing).toEqual([])
+  })
+})
+
+// ── Part 2e: hero fixture exact scores + construction flip ────────────────────
+// The server engine must reproduce the published scores within 0.001,
+// and the ranking must flip when Nordic construction cost rises ~8%.
+describe('hero fixture exact scores and flip point (Part 2e)', () => {
+  beforeEach(() => { _resetRegionsCache() })
+
+  it('Nordic 0.672, ERCOT 0.622, NoVA 0.315 — ranking flips at ~8% construction increase', async () => {
+    const out = await runEngine({
+      request_id: '00000000-0000-0000-0000-000000000099',
+      project: {
+        name: 'Parity test',
+        capacity_kw: 10_000,
+        design_pue: 1.4,
+        design_wue: 0.4,
+        lifetime_years: 15,
+        discount_rate: 0.08,
+      },
+      sites: [
+        { site_id: 'nordic', label: 'Nordic Hydro',      region_key: 'eu-nordic-hydro' },
+        { site_id: 'ercot',  label: 'Texas ERCOT',        region_key: 'us-tx-ercot'     },
+        { site_id: 'nova',   label: 'Northern Virginia',  region_key: 'us-va-northern'  },
+      ],
+    }, { forceFallback: true, skipCache: true })
+
+    expect(out.sites['nordic'].weighted_score).toBeCloseTo(0.672, 2)
+    expect(out.sites['ercot'].weighted_score).toBeCloseTo(0.622, 2)
+    expect(out.sites['nova'].weighted_score).toBeCloseTo(0.315, 2)
+
+    expect(out.sites['nordic'].rank).toBe(1)
+    expect(out.sites['ercot'].rank).toBe(2)
+    expect(out.sites['nova'].rank).toBe(3)
+
+    // Ranking flips when Nordic construction cost rises by ~8%
+    const constructionFlip = out.sensitivity.find(
+      (s) => s.driver === 'construction_cost_per_kw' && !s.stable,
+    )
+    expect(constructionFlip).toBeDefined()
+    expect(constructionFlip!.pct_change).toBeGreaterThan(5)
+    expect(constructionFlip!.pct_change).toBeLessThan(15)
+  })
+
+  it('provenance includes basis field on every item from regions.json', async () => {
+    const out = await runEngine({
+      request_id: '00000000-0000-0000-0000-000000000098',
+      project: {
+        name: 'Basis test',
+        capacity_kw: 10_000,
+        design_pue: 1.4,
+        lifetime_years: 15,
+        discount_rate: 0.08,
+      },
+      sites: [
+        { site_id: 'nordic', label: 'Nordic Hydro', region_key: 'eu-nordic-hydro' },
+        { site_id: 'ercot',  label: 'Texas ERCOT',   region_key: 'us-tx-ercot'    },
+      ],
+    }, { forceFallback: true, skipCache: true })
+
+    const fromRegions = out.data_provenance.filter(
+      (p) => p.source_url !== 'user-supplied description',
+    )
+    expect(fromRegions.length).toBeGreaterThan(0)
+    for (const p of fromRegions) {
+      expect(['sourced', 'modeled', 'assumed']).toContain(p.basis)
+    }
+  })
+})
+
+

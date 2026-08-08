@@ -72,9 +72,10 @@ export default function App() {
         design_wue: 0.4,
         lifetime_years: PROJECT.lifetimeYears,
         discount_rate: PROJECT.discountRate,
+        // weights.cost/risk/clean/distance are integers (50,20,15,15); backend expects decimals.
         weights: {
-          total_cost: weights.cost, risk: weights.risk,
-          sustainability: weights.clean, latency: weights.distance,
+          total_cost: weights.cost / 100, risk: weights.risk / 100,
+          sustainability: weights.clean / 100, latency: weights.distance / 100,
         },
       },
       sites: candidateSites.map((s, i) => ({

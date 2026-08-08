@@ -93,6 +93,7 @@ export const ProvenanceItemSchema = z.object({
   value:         z.number().nullable(),
   source_url:    z.string(),
   last_verified: z.string(),
+  basis:         z.enum(['sourced', 'modeled', 'assumed']).nullable().optional(),
 })
 
 export type ProvenanceItem = z.infer<typeof ProvenanceItemSchema>
