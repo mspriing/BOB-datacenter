@@ -3,7 +3,8 @@ import { ArrowRight, MapPin, AlertTriangle } from 'lucide-react'
 import { Card, Field } from '../components/Primitives'
 import { ProjectionSliders } from '../components/ProjectionSliders'
 import { PROJECT } from '../data/project'
-import { US_REGIONS } from '../data/usRegions'
+import { ALL_REGIONS } from '../lib/useSites'
+import { gapsFor } from '../lib/engine'
 import { DEFAULT_SITES } from '../data/defaultSites'
 import { useSites } from '../lib/useSites'
 import type { Projections, ProjectParams } from '../lib/engine'
@@ -14,14 +15,17 @@ const P: ProjectParams = {
   lifetimeYears: PROJECT.lifetimeYears, discountRate: PROJECT.discountRate, designWue: 0.4,
 }
 
-export function Setup({ projections, setProjections, pinned, run, go }: {
+export function Setup({ projections, setProjections, pinned, chosen, setChosen, run, go }: {
   projections: Projections
   setProjections: (p: Projections) => void
   pinned: string[]
+  chosen: string[]
+  setChosen: (f: (c: string[]) => string[]) => void
   run: () => void
   go: (r: Route) => void
 }) {
-  const { sites, fromPins } = useSites(pinned)
+  const { sites, source } = useSites(pinned, chosen)
+  const fromPins = source === 'pins'
   const [freeText, setFreeText] = useState('')
 
   // Every selectable region, the published three first so the default set reads
@@ -30,12 +34,36 @@ export function Setup({ projections, setProjections, pinned, run, go }: {
     const seen = new Set<string>()
     const out: Array<{ key: string; label: string }> = []
     for (const s of DEFAULT_SITES) { out.push({ key: s.key, label: `${s.label}, ${s.place}` }); seen.add(s.key) }
-    for (const r of US_REGIONS) if (!seen.has(r.key)) out.push({ key: r.key, label: r.label })
+    for (const r of ALL_REGIONS) if (!seen.has(r.key)) out.push({ key: r.key, label: r.label })
     return out
   }, [])
 
-  const [chosen, setChosen] = useState<string[]>(() => sites.map(s => s.key))
   const active = fromPins ? sites.map(s => s.key) : chosen
+
+  // A region the dataset has not finished pricing must say so here, before the
+  // run, not afterwards. The browser's preview reads a missing cost as zero,
+  // which would quietly flatter an unpriced market into first place.
+  const PLAIN: Record<string, string> = {
+    power_rate_usd_per_kwh: 'power price',
+    construction_cost_per_kw: 'cost to build',
+    staff_cost_index: 'staff cost',
+    land_cost_per_acre_usd: 'land price',
+    tax_rate: 'tax rate',
+    water_rate_usd_per_kgal: 'water price',
+    risk_score: 'hazard exposure',
+    renewable_pct: 'renewable share',
+    latency_ms_to_hub: 'network distance',
+    grid_interconnection_years: 'grid wait',
+  }
+  const thin = active
+    .map(k => {
+      const r = ALL_REGIONS.find(x => x.key === k)
+      if (!r) return null
+      const missing = gapsFor(r).map(g => PLAIN[g] ?? g)
+      return missing.length ? { label: r.label, missing } : null
+    })
+    .filter((x): x is { label: string; missing: string[] } => !!x)
+
 
   // The duplicate guard. A region already in the set cannot be picked again,
   // which is the defect that had one site compared against itself.
@@ -153,6 +181,24 @@ export function Setup({ projections, setProjections, pinned, run, go }: {
                 The same region appears twice in the candidate set. Pick a different one before
                 running, otherwise the comparison would score a site against itself.
               </p>
+            </div>
+          )}
+
+          {thin.length > 0 && (
+            <div className="flex items-start gap-3 rounded-[12px] border border-[rgba(138,82,0,.28)]
+                            bg-[rgba(255,249,238,.9)] p-4">
+              <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-[var(--warn)]" aria-hidden />
+              <div className="text-[14px] leading-[1.6] text-[#5C3A00]">
+                <p className="mb-1.5">
+                  Some figures for these places have not been collected yet. The comparison will
+                  still run, but treat the ranking as partial until they are filled in.
+                </p>
+                <ul className="list-disc pl-5">
+                  {thin.map(t => (
+                    <li key={t.label}>{t.label}: missing {t.missing.join(', ')}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           )}
 

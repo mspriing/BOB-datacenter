@@ -9,6 +9,7 @@ import { DEFAULT_WEIGHTS, type Projections, type Weights } from './lib/engine'
 
 import { fetchEstimate, type EstimateOutput } from './lib/api'
 import { PROJECT } from './data/project'
+import { DEFAULT_SITES } from './data/defaultSites'
 import { useSites } from './lib/useSites'
 
 import { Home } from './screens/Home'
@@ -42,6 +43,9 @@ export default function App() {
   const [projections, setProjections] = useState<Projections>({})
   const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS)
   const [pinned, setPinned] = useState<string[]>([])
+  // The setup screen's candidate picks. This lives here, not inside Setup:
+  // when Setup owned it the run never saw it and always priced the default three.
+  const [chosen, setChosen] = useState<string[]>(() => DEFAULT_SITES.map(s => s.key))
   const reduced = useReducedMotion()
 
 
@@ -58,7 +62,7 @@ export default function App() {
   const [serverPending, setServerPending] = useState(false)
   const runToken = useRef(0)
 
-  const { sites: candidateSites } = useSites(pinned)
+  const { sites: candidateSites } = useSites(pinned, chosen)
 
   const run = useCallback(() => {
     const token = ++runToken.current
@@ -158,7 +162,7 @@ export default function App() {
               )}
               {route === 'setup' && (
                 <Setup projections={projections} setProjections={setProjections}
-                  pinned={pinned} run={run} go={go} />
+                  pinned={pinned} chosen={chosen} setChosen={setChosen} run={run} go={go} />
               )}
               {route === 'running' && (
                 <Running done={() => go('results')} pending={serverPending}
@@ -166,7 +170,7 @@ export default function App() {
               )}
               {route === 'results' && (
                 <Results projections={projections} setProjections={setProjections}
-                  weights={weights} setWeights={setWeights} pinned={pinned} go={go}
+                  weights={weights} setWeights={setWeights} pinned={pinned} chosen={chosen} go={go}
                   server={server} serverError={serverError} />
               )}
               {isDoc && <DocPage route={route} go={go} />}

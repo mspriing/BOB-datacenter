@@ -23,12 +23,13 @@ const P: ProjectParams = {
 }
 
 
-export function Results({ projections, setProjections, pinned, go, server, serverError }: {
+export function Results({ projections, setProjections, pinned, chosen, go, server, serverError }: {
   projections: Projections
   setProjections: (p: Projections) => void
   weights: Weights
   setWeights: (w: Weights) => void
   pinned: string[]
+  chosen: string[]
   go: (r: Route) => void
   /** The server's run. Null when it failed or has not returned. */
   server: EstimateOutput | null
@@ -36,7 +37,7 @@ export function Results({ projections, setProjections, pinned, go, server, serve
 }) {
   const [costCase, setCostCase] = useState('base')
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const { sites, fromPins } = useSites(pinned)
+  const { sites, source: siteSource } = useSites(pinned, chosen)
 
   const build = useMemo(() => (over?: { key: string; driver: any; mult: number }) => {
     const priced = sites.map(s => {
@@ -130,7 +131,7 @@ export function Results({ projections, setProjections, pinned, go, server, serve
               shadow-[0_3px_10px_-3px_rgba(15,98,254,.55)]">Recommended</span>
             <span className="text-[14px] text-mid">
               {PROJECT.name}<Rule />{PROJECT.capacityMw} MW<Rule />{PROJECT.lifetimeYears} years
-              {fromPins && <><Rule />from your pinned set</>}
+              {siteSource === 'pins' && <><Rule />from your pinned set</>}
             </span>
           </div>
           <h1 key={leader.key}
