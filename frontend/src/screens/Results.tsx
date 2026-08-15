@@ -23,12 +23,14 @@ const P: ProjectParams = {
 }
 
 
-export function Results({ projections, setProjections, pinned, go, server, serverError }: {
+export function Results({ projections, setProjections, pinned, selected, go, server, serverError }: {
   projections: Projections
   setProjections: (p: Projections) => void
   weights: Weights
   setWeights: (w: Weights) => void
   pinned: string[]
+  /** The setup picker's set, used whenever nothing is pinned. */
+  selected: string[]
   go: (r: Route) => void
   /** The server's run. Null when it failed or has not returned. */
   server: EstimateOutput | null
@@ -36,7 +38,7 @@ export function Results({ projections, setProjections, pinned, go, server, serve
 }) {
   const [costCase, setCostCase] = useState('base')
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const { sites, fromPins } = useSites(pinned)
+  const { sites, fromPins } = useSites(pinned, selected)
 
   const build = useMemo(() => (over?: { key: string; driver: any; mult: number }) => {
     const priced = sites.map(s => {
