@@ -3,24 +3,42 @@ import { US_REGIONS } from '../data/usRegions'
 import { DEFAULT_SITES, type NamedSite } from '../data/defaultSites'
 import { driversFor } from './engine'
 
+/** The keys the picker starts on, so the worked example still reproduces. */
+export const DEFAULT_SITE_KEYS = DEFAULT_SITES.map(s => s.key)
+
 /**
- * The candidate set. Pinned metros win; otherwise the three published sites,
- * so the worked example on the home page still reproduces.
+ * A region key becomes a priceable site. Published sites carry their own
+ * figures; everything else is priced off the regional dataset.
  */
-export function useSites(pinned: string[]): { sites: NamedSite[]; fromPins: boolean } {
+function siteFor(key: string): NamedSite | null {
+  const published = DEFAULT_SITES.find(s => s.key === key)
+  if (published) return published
+
+  const r = US_REGIONS.find(x => x.key === key)
+  if (!r) return null
+  return {
+    key: r.key,
+    label: r.label.replace(/,\s*[A-Z]{2}$/, ''),
+    place: r.label,
+    base: driversFor(r),
+  }
+}
+
+/**
+ * The candidate set. Pinned metros win, because pinning is the more specific
+ * gesture; otherwise whatever the setup picker holds. Both are resolved the
+ * same way, so a site selected in the picker prices exactly as it would if it
+ * had been pinned on the map.
+ */
+export function useSites(pinned: string[], selected: string[] = DEFAULT_SITE_KEYS):
+  { sites: NamedSite[]; fromPins: boolean } {
   return useMemo(() => {
     if (pinned.length >= 2) {
-      const sites = pinned
-        .map(k => US_REGIONS.find(r => r.key === k))
-        .filter((r): r is NonNullable<typeof r> => !!r)
-        .map(r => ({
-          key: r.key,
-          label: r.label.replace(/,\s*[A-Z]{2}$/, ''),
-          place: r.label,
-          base: driversFor(r),
-        }))
+      const sites = pinned.map(siteFor).filter((s): s is NamedSite => !!s)
       if (sites.length >= 2) return { sites, fromPins: true }
     }
+    const sites = selected.map(siteFor).filter((s): s is NamedSite => !!s)
+    if (sites.length >= 2) return { sites, fromPins: false }
     return { sites: DEFAULT_SITES, fromPins: false }
-  }, [pinned])
+  }, [pinned, selected])
 }

@@ -14,14 +14,17 @@ const P: ProjectParams = {
   lifetimeYears: PROJECT.lifetimeYears, discountRate: PROJECT.discountRate, designWue: 0.4,
 }
 
-export function Setup({ projections, setProjections, pinned, run, go }: {
+export function Setup({ projections, setProjections, pinned, selected, setSelected, run, go }: {
   projections: Projections
   setProjections: (p: Projections) => void
   pinned: string[]
+  /** The picker's set, owned by App so the run prices what is shown here. */
+  selected: string[]
+  setSelected: (f: (s: string[]) => string[]) => void
   run: () => void
   go: (r: Route) => void
 }) {
-  const { sites, fromPins } = useSites(pinned)
+  const { sites, fromPins } = useSites(pinned, selected)
   const [freeText, setFreeText] = useState('')
 
   // Every selectable region, the published three first so the default set reads
@@ -34,15 +37,14 @@ export function Setup({ projections, setProjections, pinned, run, go }: {
     return out
   }, [])
 
-  const [chosen, setChosen] = useState<string[]>(() => sites.map(s => s.key))
-  const active = fromPins ? sites.map(s => s.key) : chosen
+  const active = fromPins ? sites.map(s => s.key) : selected
 
   // The duplicate guard. A region already in the set cannot be picked again,
   // which is the defect that had one site compared against itself.
   const duplicates = active.filter((k, i) => active.indexOf(k) !== i)
 
   const setSlot = (i: number, key: string) =>
-    setChosen(c => c.map((v, j) => (j === i ? key : v)))
+    setSelected(c => c.map((v, j) => (j === i ? key : v)))
 
   return (
     <section className="pt-6 sm:pt-10">
@@ -102,7 +104,7 @@ export function Setup({ projections, setProjections, pinned, run, go }: {
               </div>
             ) : (
               <div className="divide-y divide-[var(--line2)]">
-                {chosen.map((key, i) => (
+                {selected.map((key, i) => (
                   <div key={i} className="flex flex-wrap items-end gap-4 p-5">
                     <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center
                                      rounded-[10px] border border-line bg-card2 text-[15px] font-bold text-mid">
@@ -124,18 +126,18 @@ export function Setup({ projections, setProjections, pinned, run, go }: {
                       <input className="field"
                         defaultValue={options.find(o => o.key === key)?.label.replace(/,.*$/, '')} />
                     </label>
-                    {chosen.length > 2 && (
-                      <button onClick={() => setChosen(c => c.filter((_, j) => j !== i))}
+                    {selected.length > 2 && (
+                      <button onClick={() => setSelected(c => c.filter((_, j) => j !== i))}
                         className="pill text-[13px]">Remove</button>
                     )}
                   </div>
                 ))}
-                {chosen.length < 4 && (
+                {selected.length < 4 && (
                   <div className="p-5">
                     <button className="pill text-[13.5px]"
                       onClick={() => {
                         const next = options.find(o => !active.includes(o.key))
-                        if (next) setChosen(c => [...c, next.key])
+                        if (next) setSelected(c => [...c, next.key])
                       }}>
                       Add another site
                     </button>

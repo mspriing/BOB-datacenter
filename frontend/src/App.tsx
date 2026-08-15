@@ -9,7 +9,7 @@ import { DEFAULT_WEIGHTS, type Projections, type Weights } from './lib/engine'
 
 import { fetchEstimate, type EstimateOutput } from './lib/api'
 import { PROJECT } from './data/project'
-import { useSites } from './lib/useSites'
+import { DEFAULT_SITE_KEYS, useSites } from './lib/useSites'
 
 import { Home } from './screens/Home'
 import { Setup } from './screens/Setup'
@@ -42,6 +42,10 @@ export default function App() {
   const [projections, setProjections] = useState<Projections>({})
   const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS)
   const [pinned, setPinned] = useState<string[]>([])
+  // The setup picker's set. It lives here rather than inside Setup because the
+  // run, the results and the sliders all price whatever is in it; when it was
+  // local to the screen, changing a region changed the dropdown and nothing else.
+  const [selected, setSelected] = useState<string[]>(DEFAULT_SITE_KEYS)
   const reduced = useReducedMotion()
 
 
@@ -58,7 +62,7 @@ export default function App() {
   const [serverPending, setServerPending] = useState(false)
   const runToken = useRef(0)
 
-  const { sites: candidateSites } = useSites(pinned)
+  const { sites: candidateSites } = useSites(pinned, selected)
 
   const run = useCallback(() => {
     const token = ++runToken.current
@@ -158,7 +162,8 @@ export default function App() {
               )}
               {route === 'setup' && (
                 <Setup projections={projections} setProjections={setProjections}
-                  pinned={pinned} run={run} go={go} />
+                  pinned={pinned} selected={selected} setSelected={setSelected}
+                  run={run} go={go} />
               )}
               {route === 'running' && (
                 <Running done={() => go('results')} pending={serverPending}
@@ -166,7 +171,8 @@ export default function App() {
               )}
               {route === 'results' && (
                 <Results projections={projections} setProjections={setProjections}
-                  weights={weights} setWeights={setWeights} pinned={pinned} go={go}
+                  weights={weights} setWeights={setWeights} pinned={pinned}
+                  selected={selected} go={go}
                   server={server} serverError={serverError} />
               )}
               {isDoc && <DocPage route={route} go={go} />}
