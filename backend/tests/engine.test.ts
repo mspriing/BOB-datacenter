@@ -10,7 +10,7 @@ import { computeOpex }     from '../src/engine/opex.js'
 import { computeFinance }  from '../src/engine/finance.js'
 import { rankSites }       from '../src/engine/rank.js'
 import { computeSensitivity } from '../src/engine/sensitivity.js'
-import { runEngine }        from '../src/engine/index.js'
+import { runEngine, UnpriceableError }        from '../src/engine/index.js'
 import { _resetRegionsCache } from '../src/regions.js'
 
 // ── capex.ts ─────────────────────────────────────────────────────────────────
@@ -594,66 +594,73 @@ describe('runEngine — missing data degradation', () => {
   const opts = { forceFallback: true, skipCache: true }
 
   /**
-   * 4c: A site with a null power_rate still produces a valid ranking,
-   * appears in data_gaps, and has a weighted_score in [0, 1].
+   * 4c: A site missing one of the four cost drivers is kept OUT of the ranking.
    *
-   * We use us-al (Alabama) which has null power_rate_usd_per_kwh in
-   * regions.json.  Construction cost is supplied via override so the
-   * engine has enough to compute capex and run.
+   * A missing cost has to become 0 before it can go into arithmetic, which
+   * makes an uncollected driver read as a free one. Cost carries the heaviest
+   * weight, so such a site would otherwise win the comparison outright. It is
+   * named in data_gaps and in unevaluable instead.
+   *
+   * us-al (Alabama) carries no land_cost_per_acre_usd in regions.json.
    */
-  it('site with null power_rate still produces a ranking and appears in data_gaps', async () => {
+  it('keeps a site with a missing cost driver out of the ranking and names the gap', async () => {
     const input = {
       request_id: '00000000-0000-0000-0000-000000000010',
       project: {
-        name: 'Null power rate test',
+        name: 'Missing cost driver test',
         capacity_kw: 10_000,
         design_pue: 1.4,
         lifetime_years: 15,
         discount_rate: 0.08,
       },
       sites: [
-        {
-          site_id: 'nova',
-          label: 'Northern Virginia',
-          region_key: 'us-va-northern',
-        },
-        {
-          site_id: 'alabama',
-          label: 'Alabama (null power rate)',
-          region_key: 'us-al',
-          // Provide construction so capex is non-zero; deliberately omit
-          // power_rate_usd_per_kwh to keep it null (testing the gap path).
-          overrides: {
-            construction_cost_per_kw: 8_500,
-          },
-        },
+        { site_id: 'nova',   label: 'Northern Virginia', region_key: 'us-va-northern' },
+        { site_id: 'ercot',  label: 'Texas ERCOT',       region_key: 'us-tx-ercot' },
+        { site_id: 'alabama', label: 'Alabama',          region_key: 'us-al' },
       ],
     }
 
     const out = await runEngine(input, opts)
 
-    // Both sites must be ranked
+    // The two priced sites are ranked. Alabama is not.
+    expect(out.ranking).toEqual(expect.arrayContaining(['nova', 'ercot']))
+    expect(out.ranking).not.toContain('alabama')
     expect(out.ranking).toHaveLength(2)
-    expect(out.ranking).toContain('nova')
-    expect(out.ranking).toContain('alabama')
 
-    // Alabama must have a valid weighted_score
-    const alabamaScore = out.sites['alabama'].weighted_score
-    expect(alabamaScore).toBeGreaterThanOrEqual(0)
-    expect(alabamaScore).toBeLessThanOrEqual(1)
+    // It is named, with the driver that is missing.
+    const entry = out.unevaluable.find((u) => u.site_id === 'alabama')
+    expect(entry).toBeDefined()
+    expect(entry!.missing_drivers).toContain('land_cost_per_acre_usd')
 
-    // Alabama's null power_rate is NOT in data_gaps (it is not a ranked
-    // dimension — cost comes from NPV which gracefully falls back to 0
-    // power cost).  The ranked null dimensions (risk/renewable/latency)
-    // ARE recorded when they are null.
-    // Alabama has non-null risk_score and renewable_pct from regions.json,
-    // so only latency_ms_to_hub should appear in data_gaps for alabama.
-    const alabamaGaps = out.data_gaps.filter(g => g.site_id === 'alabama')
-    const driverNames = alabamaGaps.map(g => g.driver)
-    expect(driverNames).toContain('latency_ms_to_hub')
-    for (const gap of alabamaGaps) {
-      expect(gap.reason).toBe('no value in regions.json')
+    // And the same gap is readable from data_gaps.
+    const gapDrivers = out.data_gaps.filter((g) => g.site_id === 'alabama').map((g) => g.driver)
+    expect(gapDrivers).toContain('land_cost_per_acre_usd')
+
+    // A fully priced site contributes nothing to unevaluable.
+    expect(out.unevaluable.map((u) => u.site_id)).not.toContain('nova')
+  })
+
+  /**
+   * 4c-ii: With fewer than two priced sites there is no comparison to publish,
+   * so the engine refuses rather than crowning a winner by default.
+   */
+  it('refuses to rank when fewer than two sites can be priced', async () => {
+    const input = {
+      request_id: '00000000-0000-0000-0000-000000000011',
+      project: {
+        name: 'Unpriceable test',
+        capacity_kw: 10_000,
+        design_pue: 1.4,
+        lifetime_years: 15,
+        discount_rate: 0.08,
+      },
+      sites: [
+        { site_id: 'nova',    label: 'Northern Virginia', region_key: 'us-va-northern' },
+        { site_id: 'alabama', label: 'Alabama',           region_key: 'us-al' },
+      ],
     }
+
+    await expect(runEngine(input, opts)).rejects.toThrow(UnpriceableError)
   })
 
   /**

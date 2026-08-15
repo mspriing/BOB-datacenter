@@ -11,7 +11,8 @@
     "test": "vitest run",
     "watsonx:smoke": "tsx src/scripts/watsonxSmoke.ts",
     "ingest": "tsx src/scripts/ingest.ts",
-    "ingest:parcels": "tsx src/scripts/ingestParcels.ts"
+    "ingest:parcels": "tsx src/scripts/ingestParcels.ts",
+    "ingest:manual": "tsx src/scripts/ingestManual.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

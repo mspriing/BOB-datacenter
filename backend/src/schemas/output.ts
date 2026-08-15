@@ -126,6 +126,18 @@ export const ConfidenceSchema = z.object({
 
 export type Confidence = z.infer<typeof ConfidenceSchema>
 
+// ── unevaluable — sites kept out of the ranking because they cannot be priced ─
+// A cost driver with no value has to become 0 before it can go into arithmetic,
+// which makes an uncollected cost read as a free one. Cost carries the heaviest
+// weight, so such a site would otherwise win the comparison outright.
+export const UnevaluableSiteSchema = z.object({
+  site_id:         z.string(),
+  label:           z.string(),
+  missing_drivers: z.array(z.string()),
+})
+
+export type UnevaluableSite = z.infer<typeof UnevaluableSiteSchema>
+
 export const OutputSchema = z.object({
   request_id:      z.string().uuid(),
   generated_at:    z.string(),
@@ -139,6 +151,7 @@ export const OutputSchema = z.object({
   parsed_fields:   z.array(ParsedFieldSchema),
   data_provenance: z.array(ProvenanceItemSchema),
   data_gaps:       z.array(DataGapSchema),
+  unevaluable:     z.array(UnevaluableSiteSchema),
   confidence:      ConfidenceSchema,
 })
 

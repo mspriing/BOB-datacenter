@@ -7462,31 +7462,31 @@
       "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
+      "value": 5.88,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://codelibrary.amlegal.com/codes/dallas/latest/dallas_tx/0-0-0-125173",
+      "last_verified": "2025-10",
+      "basis": "sourced",
+      "method": "Dallas Water Utilities, Dallas City Code Sec. 49-18.1(c)(2)(B), general (commercial) service usage charges. Three steps read off the page: up to 10,000 gal $5.32; above 10,000 gal $5.88; above 10,000 gal AND above 1.4 times the customer's own annual average monthly use $8.59. Took $5.88, the step that applies above 10,000 gal/month. Did NOT use the $8.59 step: it only triggers on seasonal peaking above 1.4x the customer's own average month, which a flat-load data center will not hit. Published per 1,000 gallons; no conversion. Effective date: the code page carries no 'eff.' note, only the amendment history ending at Ord. 33232, and the page is labeled '4/2026 Code (S-32) (current)'. Dallas resets utility rates each fiscal year on October 1, and the DWU rate insert for this schedule is titled 'City of Dallas utility fees effective October 1, 2025' (https://dallascityhall.com/departments/waterutilities/Documents/COD%20Rates%20Insert_Digital.pdf), so 2025-10 is used; that PDF itself could not be opened (robots/TLS blocked), so the effective date is inferred from its title rather than read inside it. Wastewater is billed separately under Sec. 49-18.2 on metered water volume; that section's rate is not on this page. Fort Worth is a separate utility and prices per CCF - not used."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 176471,
+      "low": 19971,
+      "high": 514851,
+      "source_url": "https://www.landsearch.com/properties/dallas-tx/filter/size%5Bmin%5D=10,tag=industrial",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "Aggregate of live listings (source type c). LandSearch, Dallas-Fort Worth radius, filtered to tag=industrial and size min 10 acres: 11 listings, all priced. Observed $/acre: Forney 194ac $19,971; Seagoville 39ac $51,282; Royse City 140ac $54,816; Ferris 83.9ac $64,997; Ferris 261ac $64,900; Sunnyvale 53.8ac $116,173; Hutchins 13ac $130,769; Seagoville 11.5ac $130,000; Farmersville 10ac $147,500; Wilmer 10.2ac $176,471; Celina 10.1ac $514,851. Low=cheapest (Forney), high=dearest (Celina). Value=$176,471 (Wilmer, southern DFW industrial corridor) = upper end of the clustered range; the Celina figure is a single small 10-acre lot in a north-DFW residential growth corridor and is excluded from value as an outlier per the method's warning about small-lot distortion. Asking prices, not closed trades, hence modeled."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 9540,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Dallas' = US$9.54/W. Conversion: 9.54 x 1000 = 9540 USD per kW of IT load. Dallas is T&T's only Texas market and is used here for the DFW metro."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -7507,22 +7507,22 @@
       "method": "state-level index; metro OES available but state used for consistency; mean annual wage for SOC 15-1244,47-2111,49-9071 indexed to national avg 1.00"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.0223,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.dallasecodev.org/614/Tax-Rate",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Dallas / Dallas County TX. Sum of all overlapping jurisdictions for a typical industrial parcel inside the City of Dallas and Dallas County, per the City of Dallas Office of Economic Development tax rate page (tax year 2025), rates per $100 of valuation: City of Dallas 0.698800 + Dallas County 0.215500 + Dallas ISD 0.993835 + Dallas College 0.106575 + Parkland Hospital District 0.212000 = 2.226885 total (the page states 'the total combined local tax rate is $2.226885 per $100 in valuation'). Texas appraises at 100% of market value, so effective rate = 2.226885/100 = 0.0222689, rounded 0.0223. Parcels in other ISDs within Dallas County will differ."
     },
     "tax_abatement_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 15,
+      "low": 10,
+      "high": 20,
+      "source_url": "https://comptroller.texas.gov/taxes/data-centers/index.php",
+      "last_verified": "2026-02",
+      "basis": "sourced",
+      "method": "Texas / Dallas-Fort Worth. INSTRUMENT: state SALES AND USE TAX EXEMPTION on qualifying data center equipment, not a property tax abatement (local sales tax is still due for the standard program). Tex. Tax Code Sec. 151.359: 10 years from certification for 200-249M USD capex, 15 years for 250M USD+ capex within 5 years, plus 20 qualifying jobs and 100,000 sq ft in a single building. Tex. Tax Code Sec. 151.3595 'qualifying large data center project': 20 years, 500M USD capex, 40 jobs, 20 MW contracted, 250,000 sq ft, and it exempts state AND local sales tax. Comptroller page last updated 20 Feb 2026. OBSERVED TERMS (the only observed US term data): the Comptroller's registry at https://comptroller.texas.gov/taxes/data-centers/data-center-lists.php was read for effective-to-end date spans. 5 facilities show full-term (non-revoked) spans: NADC 09/2013-09/2023 = 10 yr; LinkedIn Richardson 02/2014-02/2029 = 15 yr; State Farm Richardson 06/2015-06/2030 = 15 yr; Microsoft SAT09-SAT13 12/2015-12/2035 = 20 yr; Winner LLC 06/2015-06/2035 = 20 yr. Median = 15 years. Both DFW-market facilities in that set (LinkedIn Richardson, State Farm Richardson) are exactly 15 years, which is what this row records. Six further rows with end dates (Cedarvale, Cipher Black Pearl, Giga Texas, Hockley, Lonestar Taproot x2, TX11) show spans of 1 month to 4 years and were excluded as revocations/terminations, not scheduled expirations."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -7593,31 +7593,31 @@
       "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
+      "value": 4.89,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.chicago.gov/city/en/depts/fin/supp_info/utility-billing/water-and-sewer-rates.html",
+      "last_verified": "2025-06",
+      "basis": "sourced",
+      "method": "City of Chicago Department of Water Management, water rate history table. Most recent effective row on the page is 6/1/2025 (+4.00%); there is no 6/1/2026 row published as of this check. Headline 'Rate' column is $36.51 per 1,000 CUBIC FEET - recording that directly would overstate cost about 7.5x. Took the adjacent 'Approximate Water Cost' column, $4.89, which the City already states per 1,000 gallons, so no conversion was needed (cross-check: 36.51/7.4805 = 4.88). Flat rate: Chicago has no customer classes and no volume blocks, so a data center pays the same volumetric rate as everyone else. Sewer is billed on the same metered water volume at 100 percent of the water charge (since 1/1/2015) as a separate line item, so the combined volumetric cost is about $9.78 per 1,000 gallons."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 790110,
+      "low": 14821,
+      "high": 790110,
+      "source_url": "https://www.landsearch.com/properties/illinois/filter/size%5Bmin%5D=10,tag=industrial https://www.landsearch.com/properties/will-county-il/filter/size%5Bmin%5D=10,tag=industrial",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "Aggregate of live listings (source type c). LandSearch Illinois statewide, tag=industrial, size min 10 acres = 20 listings; filtered by hand to Chicago metro counties = 4: Frankfort (Will) 73.4ac $14,821; Geneva (Kane) 30ac $99,833; Cary (McHenry) 46ac $149,543; Elwood (Will) 27.3ac $790,110. Low and high are the min and max of those 4. Value=$790,110 - the Elwood parcel sits in the I-55/I-80 CenterPoint intermodal core, the submarket a large industrial or data center user would actually target, and the method directs use of the upper end rather than the average. Only 4 qualifying listings exist so the gap between $149,543 and $790,110 is unfilled; treat value as the serviced-core figure and $100k-$150k as the outer-collar figure. City-of-Chicago queries returned zero 10+ acre industrial listings (inventory there is sub-1-acre infill). For historical context CBRE put Chicago industrial land at $250,000/acre in 2017. Asking prices, hence modeled."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 11232,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Chicago' = US$11.232/W. Conversion: 11.232 x 1000 = 11232 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -7638,22 +7638,22 @@
       "method": "state-level index; metro OES available but state used for consistency; mean annual wage for SOC 15-1244,47-2111,49-9071 indexed to national avg 1.00"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.0243,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.civicfed.org/node/4141",
+      "last_verified": "2022",
+      "basis": "sourced",
+      "method": "Chicago / Cook County IL. This is the Lincoln Institute / MCFE 50-State Property Tax Comparison Study INDUSTRIAL effective tax rate series for Chicago, as reported and quoted by the Civic Federation: Chicago industrial effective rate 2.43% for a $1 million industrial property, versus a 53-city average of 1.35%; commercial for comparison is 4.01%. Taxes paid in 2022. Used the study figure rather than a derived Cook County calculation because Cook's statutory class 5B 25% assessment level combined with the state equalization factor overstates the realised burden relative to true market value. The Lincoln study PDF itself (https://go.lincolninst.edu/50-state-prop-tax-comparison-for-2025.pdf) could not be opened - the go.lincolninst.edu redirect returns no content to the fetcher, and the industrial appendix (Tables 4a/4b) of the mirrored full study sits beyond the fetch truncation window - so this live secondary page that prints the study's number is cited instead."
     },
     "tax_abatement_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 20,
+      "low": 20,
+      "high": 20,
+      "source_url": "https://dceo.illinois.gov/expandrelocate/incentives/datacenters.html",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "sourced",
+      "method": "Illinois / Chicago. INSTRUMENT: SALES TAX EXEMPTION certificate under the Illinois Data Centers Investment Program (20 ILCS 605/605-1025) covering state and local sales taxes on equipment, plus a construction-jobs income tax credit; there is also an optional local property tax abatement that a taxing district may grant separately. DCEO states the exemption is issued in '5-year increment certificates that are renewable' within a '20-year life span'; thresholds are 250M USD capex over 60 months and 20 new full-time jobs at 120% of county median wage, with a carbon-neutral or green-building certification required within 2 years. NCSL (1 Apr 2026) records 20 years with renewal every 5 years and no new certificates after 2029. CURRENT STATUS: the DCEO page states that per the Governor's directive DCEO 'will no longer process applications for the data center incentive program as of July 1, 2026', so the 20-year term applies to existing certificate holders, not to a new entrant."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -7724,31 +7724,31 @@
       "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 4.52,
+      "low": 3.45,
+      "high": 5.59,
+      "source_url": "https://www.slc.gov/utilities/fy27rates/",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "Salt Lake City Department of Public Utilities FY27 rates, which the page states took effect July 1, 2026. Commercial / Industrial / Institutional water: summer (April-October) $4.18 per CCF, winter (November-March) $2.58 per CCF. Converted at 1 CCF = 748 gal: summer 4.18/0.748 = 5.59 (high), winter 2.58/0.748 = 3.45 (low). value is the simple unweighted mean of the two seasonal rates ((4.18+2.58)/2 = 3.38 per CCF = 4.52 per 1,000 gal) - basis is modeled because of that averaging, not because of the unit conversion. Summer is 62% above winter, so the single annual number is misleading without the range; a real flat-load bill would be month-weighted (7 summer months / 5 winter months would give about 4.70). The obvious page slc.gov/utilities/pay-my-bill/current-rates carries residential rates only and was not used. Sewer for this class is billed on 70% of metered water consumption at $10.97 per CCF ($14.67 per 1,000 gal of sewered volume) plus $9.58/month per ERU - i.e. sewer is on the same water volume but discounted to 70% of it, and it is well above the water rate."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 370370,
+      "low": 52556,
+      "high": 370370,
+      "source_url": "https://www.landsearch.com/properties/utah/filter/size%5Bmin%5D=10,tag=industrial",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "Aggregate of live listings (source type c). LandSearch Utah statewide, tag=industrial, size min 10 acres = 16 listings; filtered by hand to the Salt Lake City metro / Wasatch Front (Salt Lake, Utah, Davis, Weber, Tooele counties) = 4: Tooele 13.3ac $52,556; Eagle Mountain (Utah Co) 69ac $261,279; Ogden (Weber) 11.2ac $285,714; Payson (Utah Co) 10.8ac $370,370. Low=$52,556 (Tooele, the far west outlying county). Value and high=$370,370 = upper end of the observed range. Both LandSearch Salt Lake City radius and Salt Lake County returned zero 10+ acre industrial listings - all qualifying Wasatch Front supply is in the collar counties, so this is a collar-county proxy for the metro and understates land inside the Salt Lake County core. Asking prices, hence modeled."
     },
     "construction_cost_per_kw": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 9823,
+      "low": 9790,
+      "high": 10868,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Salt Lake City is NOT a market in the Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition; 52 markets covered). Derivation, option (a) nearest covered market in the same US construction-cost region: adopted T&T's 'Phoenix' row = US$9.823/W x 1000 = 9823 USD per kW, unadjusted, as the closest Mountain West / interior-Southwest analogue (comparable open-shop labour market, similar land and logistics profile; T&T covers no Denver or SLC market). low/high are NOT a source disagreement - they are the bracketing covered T&T markets: low = Columbus US$9.79/W (9790, lowest-cost interior US market in the index) and high = Portland US$10.8675/W (10868, nearest covered Western market). No RSMeans/Turner/RLB city cost index value was applied because no free published 2025 CCI level for Salt Lake City could be opened (rsmeans.com/rsmeans-city-cost-index explains the CCI but publishes no values; the Q2-2025 change notice gives percentage changes only)."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -7769,13 +7769,13 @@
       "method": "state-level index; metro OES available but state used for consistency; mean annual wage for SOC 15-1244,47-2111,49-9071 indexed to national avg 1.00"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.0096,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.saltlakecounty.gov/globalassets/1-site-files/property-tax/home/entitytaxrates.pdf",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Salt Lake City / Salt Lake County UT. Salt Lake County Auditor '2025 PROPERTY TAX RATES - TAXING ENTITY (DISTRICT) CERTIFIED PROPERTY TAX RATE'. Sum of the certified rates applying to a Salt Lake City parcel (rates are already expressed as a decimal of taxable value): Salt Lake City 0.003169 + Salt Lake City School District 0.002333 + SL County General Fund 0.000937 + State Basic School Levy (SLC) 0.001379 + SLC Mosquito Abatement 0.000137 + County Library 0.000425 + County Bond Interest & Sinking 0.000119 + County Capital Improvement 0.000047 + Clark Planetarium 0.000017 + County Flood Control 0.000036 + County Health 0.000087 + County Government Immunity 0.000010 + County Assessing & Collecting 0.000136 + Multi-County Assessing & Collecting 0.000014 + Central Utah Water Conservancy 0.000380 + Metropolitan Water District of SL & Sandy 0.000327 = 0.009553, rounded 0.0096. Utah taxes commercial/industrial real property on 100% of fair market value (the 45% residential exemption does not apply), so no assessment-ratio adjustment is needed."
     },
     "tax_abatement_years": {
       "value": null,
@@ -7855,31 +7855,31 @@
       "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
+      "value": 2.63,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.mudomaha.com/wp-content/uploads/2025/12/W-3-Eff-01.2026-FINAL.pdf",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "Metropolitan Utilities District of Omaha, Rate Schedule W-3 Large Volume Industrial Water Service, effective January 2, 2026 (linked from https://www.mudomaha.com/rates-fees/). W-3 is a declining block: the first 5,000 CCF or less is a LUMP SUM of $11,456.00 (not a per-unit rate), and the marginal rate over 5,000 CCF is $1.9657 per CCF. Took the marginal over-5,000-CCF rate: 1.9657/0.748 = 2.63 per 1,000 gal (schedule states 1 CCF = 748 gal). Did not divide the lump sum by anything - at exactly 5,000 CCF it implies $2.29/CCF, and dividing it by any other volume gives a wrong number. Which schedule a data center actually qualifies for: W-3 requires an industrial process user with normal consumption of 5,000+ CCF/month and a one-year commitment, and explicitly excludes irrigation; W-4 is 'available to AND REQUIRED OF' commercial and industrial customers buying water primarily for sprinkling, lake/lagoon recharge and/or COOLING. A data center whose load is chiefly evaporative cooling would therefore be pushed onto W-4, whose over-1,100-CCF block is $2.0093 per CCF Nov-May ($2.69 per 1,000 gal) and $4.0350 per CCF Jun-Oct ($5.39 per 1,000 gal) - materially worse in summer. W-2 (general commercial/industrial) is $2.0309 per CCF Nov-May and $2.7187 Jun-Oct ($2.71 / $3.63 per 1,000 gal). Value reported is W-3 as instructed; treat W-4 as the realistic downside. A $11,456 minimum monthly commodity charge plus a meter service charge (up to $1,405/mo at 12-inch) applies under W-3, and a 2% statutory payment applies inside city/village limits. Sewer is set by the City of Omaha, not MUD, and is not included."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 157895,
+      "low": 89286,
+      "high": 431970,
+      "source_url": "https://www.landsearch.com/commercial/omaha-ne https://www.landsearch.com/properties/nebraska/filter/size%5Bmin%5D=10,tag=industrial",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "Aggregate of live listings (source type c). The industrial-tagged 10+ acre query for Nebraska returns 9 listings and NONE are in the Omaha metro (Douglas, Sarpy, Cass, Washington, Saunders) - they are North Platte, Seward, Fremont, Auburn, Crete. Fallback to LandSearch commercial land, Omaha radius, listings 10 acres or larger = 4: Gretna NE 112ac $89,286; Gretna NE 28.5ac $157,895; Carter Lake IA 13ac $398,741; Carter Lake IA 12ac $431,970. Low=$89,286, high=$431,970. Value=$157,895 (Gretna 28.5ac) = upper end of the industrial-plausible range; the two Carter Lake parcels sit next to Eppley Airfield and are priced as commercial/retail assemblage rather than industrial ground, so they are carried as high but not as the working figure. Asking prices, hence modeled. Cross-check for scale: land.com Douglas County shows an 8-acre Valley NE commercial parcel at $118,750/acre, consistent with the Gretna band."
     },
     "construction_cost_per_kw": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 9790,
+      "low": 9540,
+      "high": 9790,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Omaha is NOT a market in the Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition). Derivation, option (a) nearest covered market in the same construction-cost region: adopted T&T's 'Columbus' row = US$9.79/W x 1000 = 9790 USD per kW, unadjusted, as the closest interior-Midwest tier-2 hyperscale market. Chicago (US$11.232/W) was deliberately NOT used as the Midwest anchor because it is a high-cost union market unrepresentative of Omaha. low/high are bracketing covered T&T markets, not a source disagreement: low = Dallas US$9.54/W (9540), high = Columbus US$9.79/W (9790). No published city cost index adjustment applied - no free 2025 RSMeans CCI level for Omaha was obtainable."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -7900,22 +7900,22 @@
       "method": "state-level index; metro OES available but state used for consistency; mean annual wage for SOC 15-1244,47-2111,49-9071 indexed to national avg 1.00"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.0203,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/valuation/2025/PDF's/28Douglas_Tax%20Districts.pdf",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Omaha / Douglas County NE. Nebraska Department of Revenue, Property Assessment Division, 'Consolidated Tax Districts and Rates' county report for Douglas County (28), tax year 2025. District 0100 (OM 1 H - City of Omaha / Omaha Public Schools, the principal Omaha consolidated district) total consolidated tax rate = 2.03386 per $100 of valuation. Nebraska assesses commercial and industrial real property at 100% of actual (market) value, so effective rate = 2.03386/100 = 0.0203386, rounded 0.0203. Other Omaha consolidated districts (different school districts, SIDs, fire districts) will differ. CAVEAT: the 100% assessment level is the Nebraska statutory standard for non-agricultural property and is not printed on the cited rate report."
     },
     "tax_abatement_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 0,
+      "low": 0,
+      "high": 0,
+      "source_url": "https://nebraskalegislature.gov/laws/statutes.php?statute=77-2704.62",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "sourced",
+      "method": "Nebraska / Omaha. Value is 0 because the data-center-specific instrument no longer exists. Neb. Rev. Stat. Sec. 77-2704.62, the data center sales and use tax exemption cited by NCSL's 1 Apr 2026 survey, now reads on the Nebraska Legislature's own statute page: 'Repealed. Laws 2026, LB901, Sec. 43.' operative 1 July 2026. The remaining route, the ImagiNE Nebraska Act (sales and use tax refunds, personal property tax exemptions, investment and wage credits), was closed to data centers by Governor Pillen's executive order signed 21 July 2026, which bars all new data center project applications from ImagiNE credits (https://nebraskaexaminer.com/2026/07/20/pillen-rescinds-imagine-act-tax-incentives-for-new-nebraska-data-centers/). What I checked: NCSL survey, Neb. Rev. Stat. 77-2704.62, ImagiNE Nebraska Act materials, Good Jobs First coverage of the repeal. Existing agreements signed before these dates are unaffected, but a new Omaha project has no data-center-specific term to record."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -7986,31 +7986,31 @@
       "method": "state average; no metro-level industrial rate is published by EIA"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
+      "value": 3.7,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.dmww.com/customer_service/rates___service_areas/des_moines.php",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "Des Moines Water Works, Commercial/Industrial rate table, effective January 1, 2026. Declining block: Step 1 (0-150,000 gal/mo) $7.15, Step 2 (150,001-450,000) $4.80, Step 3 (over 450,000 gal/mo) $3.70 per 1,000 gal inside the City of Des Moines. Took Step 3, the bottom marginal block, because a data center is far above 450,000 gal/month; the headline Step 1 figure is about double the true marginal rate. Already per 1,000 gallons, no conversion. Outside-city commercial/industrial is $8.85 / $6.65 / $4.75 by the same steps. Do not confuse with the residential schedule, which is increasing block, or with irrigation at $10.70 per 1,000 gal inside city. A capital improvement fee applies to some accounts on top. Sanitary sewer is a City of Des Moines charge, not a DMWW charge, and is not included here."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 95000,
+      "low": 62854,
+      "high": 95000,
+      "source_url": "https://www.landsearch.com/properties/des-moines-ia/filter/size%5Bmin%5D=10,tag=industrial",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "Aggregate of live listings (source type c). LandSearch Des Moines radius, tag=industrial, size min 10 acres: 4 listings, 3 with published prices - Indianola 30.2ac $62,854/acre; Indianola 27.1ac $70,055/acre; Ankeny 10ac $95,000/acre. The fourth (Bondurant, 211 acres) lists no price and is excluded. Low=$62,854, value and high=$95,000 (Ankeny, the northern Des Moines industrial/logistics growth corridor and the closest of the three to metro infrastructure) = upper end of the observed range. Small sample; only three priced 10+ acre industrial parcels exist in the market on this aggregator. Asking prices, hence modeled."
     },
     "construction_cost_per_kw": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 9790,
+      "low": 9540,
+      "high": 9790,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Des Moines is NOT a market in the Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition). Derivation, option (a) nearest covered market in the same construction-cost region: adopted T&T's 'Columbus' row = US$9.79/W x 1000 = 9790 USD per kW, unadjusted, as the closest interior-Midwest tier-2 hyperscale market (Chicago at US$11.232/W rejected as an unrepresentative high-cost union market). low/high are bracketing covered T&T markets, not a source disagreement: low = Dallas US$9.54/W (9540), high = Columbus US$9.79/W (9790). No published city cost index adjustment applied - no free 2025 RSMeans CCI level for Des Moines was obtainable."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -8031,22 +8031,22 @@
       "method": "state-level index; metro OES available but state used for consistency; mean annual wage for SOC 15-1244,47-2111,49-9071 indexed to national avg 1.00"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.0414,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.legis.iowa.gov/docs/publications/FCTA/1377082.pdf",
+      "last_verified": "2024",
+      "basis": "modeled",
+      "method": "Des Moines / Polk County IA. Iowa Legislative Services Agency, 'City Consolidated Property Tax Rates' (Fiscal Conditions of the Taxing Authorities), FY2024: Polk County section, DES MOINES consolidated rate $45.97 per $1,000 of TAXABLE value. Iowa taxable value = assessed (market) value x the assessment limitation ('rollback'). Iowa Department of Revenue guidance on HF 2552 two-tier assessment limitations (https://revenue.iowa.gov/taxes/tax-guidance/property-tax/hf-2552-bptc-law-changes-and-implementation-two-tier-assessment-limitations) states commercial/industrial/railroad property receives the residential assessment limitation on the first $150,000 of value and 'the same ninety percent assessment limitation it has in the past' on value above $150,000, effective assessment year 2022. For a data-centre-scale parcel the first-$150,000 tier is immaterial, so the rollback is taken as 90%. Arithmetic: 45.97/1000 x 0.90 = 0.041373, rounded 0.0414. Iowa commercial/industrial effective rates are among the highest in the US, consistent with this magnitude."
     },
     "tax_abatement_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 10,
+      "low": 10,
+      "high": 15,
+      "source_url": "https://nyemaster.com/news/immediate-iowa-tax-law-changes-for-data/",
+      "last_verified": "2025-06",
+      "basis": "sourced",
+      "method": "Iowa / Des Moines. TWO DIFFERENT INSTRUMENTS, both sales and use tax exemptions, neither a property tax abatement. (1) Equipment: Iowa Code Sec. 423.3(95) exempts computers, equipment and related purchases for data centers meeting the investment threshold (200M USD for the full exemption; smaller partial-refund tiers at 1M and 10M USD) - this one is PERMANENT, with no term of years, tied to the investment threshold. (2) Electricity and fuel: H.F. 976, signed and effective 9 June 2025, put a clock on the energy exemption for the first time - indefinite for data centers already operating before 6 June 2025, 10 years for new or expanded facilities in cities with population over 30,000, and 15 years in cities of 30,000 or fewer. Des Moines has roughly 215,000 residents, so a new Des Moines-market facility gets the 10-year energy exemption, which is the value recorded; 15 is the rural high bound. NCSL (1 Apr 2026) corroborates '10-15 years beginning 2025' and notes the 30-new-job / 200M USD-in-6-years requirement and clawback if 80% of the investment threshold is missed."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -8126,22 +8126,22 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 45802,
+      "low": 6806,
+      "high": 45802,
+      "source_url": "https://www.landsearch.com/properties/nevada/filter/size%5Bmin%5D=10,tag=industrial https://www.landsearch.com/commercial/reno-nv",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "Aggregate of live listings (source type c). LandSearch Nevada statewide, tag=industrial, size min 10 acres = 53 listings; filtered by hand to the northern Nevada / Reno-Sparks-Fernley industrial corridor (Washoe, Storey, Lyon, Carson) = 4 usable: Yerington 18ac $6,806; Silver Springs 39ac $7,667; Fernley 181ac $21,853; Dayton 131ac $45,802. A fifth (Fernley 40ac at $498/acre) is excluded as an obvious data error. Low=$6,806, value and high=$45,802 (Dayton, the Lyon County side of the USA Parkway industrial corridor) = upper end of the observed range. Washoe County itself returns zero 10+ acre industrial listings; the only 10+ acre Reno commercial listings are ranch ground (80.5ac at $15,528/acre and 711ac 'Palomino Farms' at $4,190/acre) and are not comparable. IMPORTANT GAP: the Tahoe Reno Industrial Center in Storey County is where the data center demand actually sits (Tract has assembled 8,590+ acres there) but TRIC transaction prices are not disclosed - DatacenterDynamics confirms terms of the Tract 517-acre deal were not shared - so no data-center-premium figure for Reno could be sourced. Treat value as generic large-parcel industrial ground, not TRIC pricing."
     },
     "construction_cost_per_kw": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 10868,
+      "low": 9823,
+      "high": 13312,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Reno is NOT a market in the Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition). Derivation, option (a) nearest covered market in the same construction-cost region: adopted T&T's 'Portland' row = US$10.8675/W x 1000 = 10868 USD per kW, unadjusted, as the nearest covered Western US market outside the Bay Area. Reno's trades pool draws partly on Northern California, so it sits above Phoenix and well below Silicon Valley - low/high are those bracketing covered T&T markets, not a source disagreement: low = Phoenix US$9.823/W (9823), high = Silicon Valley US$13.312/W (13312). No published city cost index adjustment applied - no free 2025 RSMeans CCI level for Reno was obtainable."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -8162,22 +8162,22 @@
       "method": "state-level index; metro OES available but state used for consistency; mean annual wage for SOC 15-1244,47-2111,49-9071 indexed to national avg 1.00"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.0128,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.washoecounty.gov/treas/files/2025-26%20Tax%20Rates%20Explained.pdf",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Reno / Washoe County NV. Washoe County Treasurer 'Tax Rates for 2025/26', City of Reno district: county/school/state component 2.7002 + City of Reno general 0.9598 (debt 0.0000, redevelopment 0.0000) = TOTAL 3.6600 per $100 of ASSESSED value - this is Nevada's constitutional $3.64/$100 cap territory. Nevada assessed value is 35% of appraised/taxable value: Washoe County Assessor states 'Your taxes will be based on your total assessed value, which is 35% of your total appraised value' (https://www.washoecounty.gov/assessor/faq/PS_WhatIsTaxableValueOfProperty.php). Arithmetic: 3.66/100 x 0.35 = 0.01281, rounded 0.0128. Note Nevada's taxable value for improvements is replacement cost less 1.5%/yr depreciation (max 50 yrs) plus land market value, which for older buildings sits below market - so this is an upper bound on the rate as a fraction of true market value. Nevada's abatement caps (8% commercial) can further reduce the realised bill."
     },
     "tax_abatement_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 20,
+      "low": 10,
+      "high": 20,
+      "source_url": "https://goed.nv.gov/wp-content/uploads/2025/08/Data-Center-2026.pdf",
+      "last_verified": "2025-08",
+      "basis": "sourced",
+      "method": "Nevada / Reno (Storey and Washoe counties). TWO INSTRUMENTS RUNNING TOGETHER, which is unusual: a SALES AND USE TAX ABATEMENT (rate reduced to 2%) and a PERSONAL PROPERTY TAX ABATEMENT (75% of tax due), both under NRS 360.754 with the property piece at NRS 361.0683. Nevada GOED's data center fact sheet (Aug 2025) sets two tiers: 25M USD capital investment and 10 full-time Nevada-resident jobs gives 10 years of each abatement; 100M USD and 50 jobs gives 20 years of each. All requirements must be met within the first 5 years of operation and wages must be at least 100% of the statewide average. Value 20 records the tier that Reno-market hyperscale campuses (Tahoe Reno Industrial Center, Storey County) qualify for; 10 is the small-project floor. NCSL (1 Apr 2026) corroborates the 2% sales tax rate, the up-to-75% personal property abatement and the 50%-Nevada-resident construction labor condition."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -8248,31 +8248,31 @@
       "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 6.04,
+      "low": 6.04,
+      "high": 6.6,
+      "source_url": "https://www.water.ie/business/billing/charges",
+      "last_verified": "2025-10",
+      "basis": "sourced",
+      "method": "Uisce Eireann (national non-domestic tariff, applies to Dublin). Opened the Business > Billing > Charges page and read the volumetric table effective 1/10/2025-30/09/2026. Declining band structure, so per the rule I took the bottom block: Band 5 (>=2,300,000 m3/yr) water = EUR 1.39/m3. Band 4 (250,000-2,299,999 m3/yr), the band most real Dublin data centres actually fall in, is EUR 1.52/m3 -> USD 6.60/kgal, recorded as high. Band 3 (20,000-249,999) is EUR 1.71. Conversion: 1.39 / 0.87138 EUR-per-USD = USD 1.5952/m3; / 0.264172 = USD 6.04 per 1,000 US gal. FX: ECB reference rate USD/EUR 0.87138, pulled 2026-07-30 from api.frankfurter.dev (ECB daily reference rates). WASTEWATER: billed by Uisce Eireann on the same metered volume and is large - Band 4 wastewater EUR 2.40/m3 (USD 10.43/kgal), Band 3 EUR 2.45, Band 2 EUR 2.50. No wastewater rate is published for Band 5. So a Dublin site's all-in volumetric cost is roughly 2.5x the water figure alone. The page also already publishes the next year's rates (1/10/2026-30/09/2027: Band 5 water EUR 1.45, Band 4 EUR 1.47) - not used because they are not yet effective on 2026-07-31."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 346541,
+      "low": 339241,
+      "high": 346541,
+      "source_url": "https://lisney.com/wp-content/uploads/2025/05/DevLandUpdateQ12025.pdf https://www.irishtimes.com/business/commercial-property/dublin-15-landbank-primed-for-industrial-and-logistics-guiding-at-35m-1.4787870",
+      "last_verified": "2025-03",
+      "basis": "modeled",
+      "method": "Dublin, large employment/industrial-zoned parcels. Two comparables, both well over 10 acres. (1) Lisney GDA Development Land Q1 2025 report, printed on the page: Dublin Central Logistics Park, Finglas, 'approximately 91.4 acres... sold in three lots for a total of EUR 27.6m' = EUR 301,969/acre (transaction, Q1 2025) - this is the value. (2) Irish Times, Killamonan Business Park, Dublin 15, 47.92 ha (118.40 acres) zoned entirely general employment under the Fingal County Development Plan, guiding EUR 35m = EUR 295,608/acre (asking, Feb 2022) - this is the low. Freehold. FX: 1 EUR = 1.147605 USD (USD/EUR 0.87138), ECB reference rate via Frankfurter API, pulled 2026-07-30. EUR 301,969/acre x 1.147605 = USD 346,541/acre. Basis modeled because the per-acre rate is derived by dividing a lot-total by acreage, not printed as a per-acre figure. Caveat: these are general industrial/logistics land rates; purpose-built data-centre land at Grange Castle/Profile Park trades higher, but I could not open a live source confirming that (estatesgazette.co.uk article headlined 'Dublin industrial land hits record price of EUR 1m per acre' returned HTTP 403, property.ie and search.savills.com listing pages returned redirect loops / 403, so no third live listing was obtainable)."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 10045,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Dublin' = US$10.0451/W. Conversion: 10.0451 x 1000 = 10045 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -8293,22 +8293,22 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_rate": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 0.0155,
+      "low": 0.0127,
+      "high": 0.0183,
+      "source_url": "https://www.dublincity.ie/business/doing-business-council/collection-property-rates",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Dublin IE. THE TAX MEASURED IS COMMERCIAL RATES (local authority rates), not a value-based property tax. Dublin City Council page: 'Commercial rates are calculated by multiplying the Rateable Valuation of your property by a multiplier called the Annual Rate on Valuation (ARV)'; ARV for 2025 = 0.282, with worked example Rateable Valuation EUR 10,000 x 0.282 = EUR 2,820. Rateable Valuation in Ireland is the Net Annual Value, i.e. an estimate of annual open-market RENT, not capital value. Converting to an effective rate on CAPITAL value requires a yield assumption. ASSUMPTION: 5.5% net initial yield (capitalisation rate) for Dublin industrial/data-centre property, so capital value = annual rent / 0.055. Arithmetic: 0.282 x 0.055 = 0.01551, rounded 0.0155. Low/high bracket the yield at 4.5% (0.282 x 0.045 = 0.0127) and 6.5% (0.282 x 0.065 = 0.0183). A data centre in Fingal or South Dublin County Council territory would use that authority's ARV instead, which differs from Dublin City's."
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -8356,13 +8356,13 @@
       "method": "great-circle to nearest major IXP (LINX London, 464 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 9,
+      "low": 8,
+      "high": 12,
+      "source_url": "https://www.cru.ie/publications/",
+      "last_verified": "2025-12",
+      "basis": "sourced",
+      "method": "CRU decision 2025236, 12 Dec 2025. Greater Dublin fully constrained, new connections unlikely before the mid 2030s."
     }
   },
   "nl-amsterdam": {
@@ -8378,31 +8378,31 @@
       "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 5.13,
+      "low": 5.13,
+      "high": 7.02,
+      "source_url": "https://www.waternet.nl/zakelijk/drinkwater-voor-bedrijven/kosten-met-watermeter/",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "Waternet, business (zakelijk) drinking-water page 'Kosten met watermeter'. 2026 variabel tarief is EUR 1.18/m3 and is FLAT across all consumption bands - only the vastrecht (standing charge) steps up (0-1,000 m3 EUR 90.55/yr; 1,000-10,000 EUR 1,056; 10,000-100,000 EUR 8,561; >100,000 m3 EUR 69,368/yr). Value uses the volumetric rate only. Conversion: 1.18 / 0.87138 = USD 1.3542/m3; / 0.264172 = USD 5.13 per 1,000 US gal. FX: ECB reference rate USD/EUR 0.87138, pulled 2026-07-30 from api.frankfurter.dev. BELASTING OP LEIDINGWATER (national tap-water tax): EUR 0.437/m3 in 2026, but the page states that from 2026 the ceiling above which no BOL is due moved from 300 m3 to 50,000 m3/yr - so a data centre pays BOL on its first 50,000 m3 only and its MARGINAL rate above that is the bare EUR 1.18/m3. 'high' = 1.18 + 0.437 = EUR 1.617/m3 -> USD 7.02/kgal, i.e. the effective rate inside the first 50,000 m3. 9% BTW applies on top and is recoverable by a business, so it is excluded. WASTEWATER: not billed by Waternet as a simple per-m3 volumetric charge - Amsterdam levies rioolheffing (municipal sewerage levy, banded on metered water use) and Waternet levies zuiveringsheffing per vervuilingseenheid (pollution unit), not per m3; I did not find a per-m3 equivalent on this page so no number is claimed. The provincial grondwaterheffing (groundwater levy) applies only to self-abstraction, not to metered mains supply."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 534083,
+      "low": 464420,
+      "high": 534083,
+      "source_url": "https://lokaleregelgeving.overheid.nl/CVDR733776/",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "PROXY, not Amsterdam city. Gemeente Hollands Kroon Grondprijzenbrief 2025 (in force 1 Jan 2025 - 19 Mar 2026), printed prices for municipal bedrijventerreinen: Robbenplaat II EUR 115.00/m2 and Industrieweg EUR 115.00/m2, with a general bedrijventerrein table figure of EUR 100.00/m2. Value = upper end EUR 115/m2; low = EUR 100/m2. EUR 115/m2 x 4046.86 m2/acre = EUR 465,389/acre; x 1.147605 = USD 534,083/acre. FX: 1 EUR = 1.147605 USD (USD/EUR 0.87138), ECB reference rate via Frankfurter API, pulled 2026-07-30. Freehold (uitgifte in eigendom). Why this proxy: Hollands Kroon (Middenmeer / Agriport A7) is where the Amsterdam region's hyperscale data centres are actually built; Amsterdam city itself issues land only in erfpacht (leasehold) and its Grondprijzenbeleid (opened at lokaleregelgeving.overheid.nl/CVDR672018/2 and zoek.officielebekendmakingen.nl/gmb-2022-32578.html) publishes only office/residential EUR/m2 bvo, no bedrijventerrein land price; Haarlemmermeer states in its Programmabegroting (programmabegroting.haarlemmermeer.nl/2026 and /2023, paragraaf grondbeleid) that its Grondprijzennota is 'geheim van aard' and publishes no figures. Also opened, all wrong municipality or no figure: CVDR752764 and CVDR731454 (Brunssum), CVDR735485 (Epe), CVDR735345 (Lansingerland), exb-2025-3387 (Goeree-Overflakkee, EUR 143-149/m2). Treat this row as an out-of-metro floor: serviced industrial land inside the Amsterdam ring is materially more expensive than EUR 115/m2."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 10809,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Amsterdam' = US$10.8093/W. Conversion: 10.8093 x 1000 = 10809 USD per kW of IT load. (T&T lists Amsterdam and Paris at the identical value this edition.)"
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -8432,13 +8432,13 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -8486,13 +8486,13 @@
       "method": "great-circle to nearest major IXP (AMS-IX Amsterdam, 3 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 9,
+      "low": 8,
+      "high": 12,
+      "source_url": "https://www.tennet.eu/",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "Arnhem court upheld TenneT refusal of a 70 MW connection. Schiphol region constrained to about 2035."
     }
   },
   "de-frankfurt": {
@@ -8508,31 +8508,31 @@
       "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 10.47,
+      "low": 10.47,
+      "high": 11.21,
+      "source_url": "https://www.mainova.de/resource/blob/64518/03ee3a40fae13841c85cf699e2e9a1d2/preisblatt-aqua-classic-ab-010726-data.pdf",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "sourced",
+      "method": "Mainova AG is the retailer for Frankfurt am Main (Hessenwasser is the upstream bulk producer, not the biller). Opened the Preisblatt 'Mainova Aqua Classic' gueltig ab 01.07.2026, reached from https://www.mainova.de/de/tarife/mainova-aqua-classic. Wassermengenpreis (volumetric): EUR 2.41/m3 net, EUR 2.58/m3 gross incl. 7% MwSt. Jahresgrundpreis EUR 51.73 net / EUR 55.35 gross. The Preisblatt is a single tariff explicitly covering 'Privat- und Gewerbekunden' - Mainova publishes NO separate large-industrial block or declining tariff, so there is no top/bottom block to choose; very large sites would negotiate a Sondervertrag that is not published. Value uses the NET rate (a business recovers MwSt): 2.41 / 0.87138 = USD 2.7657/m3; / 0.264172 = USD 10.47 per 1,000 US gal. 'high' is the gross rate EUR 2.58 -> USD 11.21/kgal. FX: ECB reference rate USD/EUR 0.87138, pulled 2026-07-30 from api.frankfurter.dev. WASTEWATER: separate municipal charge from Stadtentwaesserung Frankfurt am Main, billed on the SAME metered volume - Schmutzwassergebuehr EUR 1.45/m3 (= USD 6.30 per 1,000 US gal), read at https://www.stadtentwaesserung-frankfurt.de/gebuehren-satzungen/abwassergebuehren (that page did not print an effective-from date, so the 1.45 figure is 'as published, accessed 2026-07-31'). Niederschlagswassergebuehr is EUR 0.50 per m2 of sealed area per year - area-based, not volumetric, so excluded from the per-gallon rate. All-in volumetric water+sewer is therefore about USD 16.77 per 1,000 gal."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 1713709,
+      "low": 1161049,
+      "high": 3947567,
+      "source_url": "https://www.borisportal.de/bodenrichtwert/frankfurt-am-main",
+      "last_verified": "2024-01",
+      "basis": "modeled",
+      "method": "BORIS-Portal, Bodenrichtwerte for gewerbliche Bauflaechen (commercial/industrial building land) in Frankfurt am Main, Stichtag 01.01.2024. Printed on the page: Minimalwert 250 EUR/m2, Maximalwert 850 EUR/m2 (down 10.5% from 950), Durchschnitt 369 EUR/m2. low = 250 EUR/m2 = USD 1,161,049/acre; high = 850 EUR/m2 = USD 3,947,567/acre. Value = the citywide average 369 EUR/m2 = 369 x 4046.86 = EUR 1,493,291/acre x 1.147605 = USD 1,713,709/acre, because the 850 EUR/m2 maximum is a small prime inner-city commercial plot that a parcel over 10 acres could not be assembled at - 369 is the upper end of what is plausible for a large GE/GI industrial site. FX: 1 EUR = 1.147605 USD (USD/EUR 0.87138), ECB reference rate via Frankfurter API, pulled 2026-07-30. Freehold. Caveat: 'gewerbliche Bauflaechen' mixes commercial with industrial; a pure Industrie (GI) breakout was not obtainable - frankfurt.de's Immobilienmarktbericht 2026 PDF returned HTTP 403, and aktuelle-grundstueckspreise.de publishes Bauland (residential) only for Frankfurt."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 11597,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Frankfurt' = US$11.5975/W. Conversion: 11.5975 x 1000 = 11597 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -8562,13 +8562,13 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -8616,13 +8616,13 @@
       "method": "great-circle to nearest major IXP (DE-CIX Frankfurt, 2 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 9,
+      "low": 8,
+      "high": 12,
+      "source_url": "https://www.netzdienste-rhein-main.de/",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "NRM Rhein-Main large connections only from the mid 2030s."
     }
   },
   "uk-slough": {
@@ -8638,31 +8638,31 @@
       "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 8.27,
+      "low": 8.27,
+      "high": 13.79,
+      "source_url": "https://www.thameswater.co.uk/media-library/pw4dyf54/indicative-wholesale-charges-schedule-2026-27.pdf",
+      "last_verified": "2026-04",
+      "basis": "modeled",
+      "method": "THIS IS A WHOLESALE PRICE, NOT A RETAIL PRICE. England's non-household water market has been fully competitive since 2017, so the price a Slough data centre actually pays is a negotiated retail contract that is not published anywhere; I could not find any published retail tariff. Slough sits in Thames Water's supply area, so I used Thames Water's 'Indicative wholesale charges schedule 2026-27', effective 1 April 2026, which I opened and read. Non-household metered potable water volumetric bands: 0-20,000 m3 272.07 p/m3 (NHHMPW1-4); 20,000-50,000 m3 248.94 p/m3; 50,000-250,000 m3 204.05 p/m3; OVER 250,000 m3 163.24 p/m3 (NHHMPW7). Declining block, so value = bottom block 163.24 p/m3 = GBP 1.6324/m3. Conversion: 1.6324 / 0.74691 GBP-per-USD = USD 2.1855/m3; / 0.264172 = USD 8.27 per 1,000 US gal. 'high' = the smallest-user band 272.07 p/m3 -> USD 13.79/kgal. FX: ECB reference rate USD/GBP 0.74691, pulled 2026-07-30 from api.frankfurter.dev. Basis is 'modeled' because wholesale is being substituted for retail: a retailer adds a gross margin (typically low single-digit % of the wholesale charge) plus the retailer's own fixed fees, so true retail is somewhat above this. Large users also pay flat annual supplementary charges (intermediate GBP 4,626 / large GBP 27,071 / super-large GBP 129,096) that are not volumetric. WASTEWATER: billed on the same metered volume - non-household metered foul-drainage wholesale volumetric charge is 156.61 p/m3 for standard bands, falling to 125.28 p/m3 for users over 100,000 m3 (plus a GBP 29,756 annual supplementary charge). 125.28 p/m3 = USD 6.35 per 1,000 US gal, so sewer adds roughly 75% on top of the water rate for a large site."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 4632419,
+      "low": 3360512,
+      "high": 4632419,
+      "source_url": "https://content.knightfrank.com/research/2504/documents/en/industrial-land-values-research-2022-9242.pdf",
+      "last_verified": "2022-03",
+      "basis": "sourced",
+      "method": "Knight Frank Industrial Land Values Research 2022. Slough is named and priced on the page: average industrial land value GBP 3.46m per acre, Q1 2022 (up GBP 1.76m / 103% since Q1 2019), and Slough is the highest of all South East local authorities listed. Value = GBP 3,460,000/acre x 1.338849 = USD 4,632,419/acre. low = GBP 2.51m/acre (Welwyn Hatfield, the lowest South East authority in the same table) = USD 3,360,512; high = Slough's own GBP 3.46m. Other SE points on the page for context: Spelthorne GBP 3.42m, Runnymede GBP 3.41m, Thurrock GBP 3.03m, South Buckinghamshire GBP 2.64m. Values are modelled by Knight Frank on a standardised 20,000 sq m warehouse, i.e. large-parcel basis. Freehold. FX: 1 GBP = 1.338849 USD (USD/GBP 0.74691), ECB reference rate via Frankfurter API, pulled 2026-07-30. On the MHCLG/DLUHC route: I found the current dataset (gov.uk/government/publications/land-value-estimates-for-policy-appraisal-2023, valuation date 1 Oct 2023) but the per-authority industrial figures live only in the .xlsx/.ods attachments, which are binary and could not be opened by any available fetch tool; the HTML 'guidelines for use' page confirms 119 industrial valuations were done but prints no local-authority table, and the 2015 PDF prints only an England mean (GBP 482,000/ha). Cross-check on order of magnitude: Colliers (colliers.com/en-gb/news/25-03-22-industrial-land-values-are-reaching-record-levels-in-london-and-south-east) puts South East industrial land at GBP 2.5m/acre and London at GBP 7.1m/acre on Jan 2022 data. Both sources are 2022 - UK industrial land has moved since, so this is a floor, not a current quote."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 12015,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. T&T labels this market 'London' = US$12.0150/W; Slough / the Slough Trading Estate is the core cluster of the London data centre market and is what the London market row covers, so the figure is taken across unadjusted (no arithmetic applied - label difference only, not a derivation). Conversion: 12.0150 x 1000 = 12015 USD per kW of IT load. T&T also lists Cardiff separately at US$11.7368/W, confirming London is the South East / Slough market."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -8683,22 +8683,22 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_rate": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 0.0264,
+      "low": 0.0216,
+      "high": 0.0312,
+      "source_url": "https://www.gov.uk/calculate-your-business-rates",
+      "last_verified": "2026",
+      "basis": "modeled",
+      "method": "Slough UK. THE TAX MEASURED IS NON-DOMESTIC RATES (business rates), not a value-based property tax. Bill = rateable value x multiplier. GOV.UK gives the England multipliers for the 2026 to 2027 rating year: standard multiplier 48 pence in the pound (rateable value GBP 51,000 and above), small business multiplier 43.2 pence. A data centre exceeds GBP 51,000 RV, so the standard 0.48 multiplier applies. Slough Borough Council is a unitary billing authority applying the national multiplier. Rateable value is an estimate of ANNUAL RENTAL value - GOV.UK: 'its open market rental value on 1 April 2024, based on an estimate by the Valuation Office' (the 2026 rating list). Converting to an effective rate on CAPITAL value therefore requires a yield assumption. ASSUMPTION: 5.5% net initial yield for Thames Valley / Slough Trading Estate industrial and data-centre property, i.e. capital value = annual rent / 0.055. Arithmetic: 0.48 x 0.055 = 0.0264. Low/high bracket the yield at 4.5% (0.48 x 0.045 = 0.0216) and 6.5% (0.48 x 0.065 = 0.0312). Transitional relief and any empty-property or improvement relief are ignored. Same yield assumption used for row 39 (Dublin) so the two annual-value regimes are treated consistently."
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -8746,13 +8746,13 @@
       "method": "great-circle to nearest major IXP (LINX London, 35 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 5,
+      "low": 4,
+      "high": 7,
+      "source_url": "https://www.neso.energy/",
+      "last_verified": "2026-01",
+      "basis": "modeled",
+      "method": "Cross check against the NESO TEC register."
     }
   },
   "fr-paris": {
@@ -8768,31 +8768,31 @@
       "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 7.43,
+      "low": 5.19,
+      "high": 18.31,
+      "source_url": "https://www.eaudeparis.fr/sites/default/files/2025-12/Catalogue%20des%20tarifs%202026.pdf",
+      "last_verified": "2026-01",
+      "basis": "modeled",
+      "method": "Eau de Paris 'Catalogue des tarifs 2026', opened directly; tariffs effective 1 January 2026. Eau de Paris publishes ONE volumetric tariff - there is no separate tarif non-domestique and no volume blocks, so a large industrial user pays the same per-m3 as everyone else (only the part fixe / abonnement varies with meter size). Value = the all-in WATER-side volumetric total, summing the components printed in the catalogue (all EUR/m3 TTC): fourniture d'eau potable 1.1942 + redevance soutien d'etiage 0.0074 + redevance prelevement sur la ressource en eau 0.0928 + redevance Voies Navigables de France 0.0169 + redevance performance reseaux d'eau potable 0.0406 + redevance consommation d'eau (Agence de l'eau Seine-Normandie) 0.3587 = EUR 1.7106/m3. Conversion: 1.7106 / 0.87138 = USD 1.9633/m3; / 0.264172 = USD 7.43 per 1,000 US gal. 'low' = the bare fourniture d'eau potable 1.1942 -> USD 5.19/kgal. 'high' = the complete bill including assainissement -> EUR 4.2142/m3 -> USD 18.31/kgal. FX: ECB reference rate USD/EUR 0.87138, pulled 2026-07-30 from api.frankfurter.dev. Basis 'modeled' because the value is a sum of six separately-printed line items, not a single figure read off the page. WASTEWATER: billed on exactly the same metered volume and it is the larger half of the bill - collecte des eaux usees (Ville de Paris / SAP) EUR 0.6699/m3, transport et epuration (SIAAP) EUR 1.6984/m3, redevance performance reseaux de collecte EUR 0.1353/m3, total EUR 2.5036/m3 = USD 10.88 per 1,000 US gal. Figures are TTC (5.5% VAT on water supply, 10% on assainissement); a business recovers VAT, so net-of-VAT costs are ~5% lower. Cross-check: Eau de Paris's own price page (https://www.eaudeparis.fr/prix-de-leau) quotes EUR 4.23 TTC/m3 all-in for 2026, consistent with the EUR 4.2142 sum above."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 690964,
+      "low": 86907,
+      "high": 690964,
+      "source_url": "https://www.arthur-loyd.com/terrain-vente/ile-de-france https://solumat.fr/prix-terrain-industriel/",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "Arthur Loyd Ile-de-France land-for-sale listings (live, current asking prices), industrial/artisanal-use terrains. Parcels of 1 ha or more on that page: 39,269 m2 at EUR 734,853 = EUR 18.71/m2 (Seine-et-Marne); 19,871 m2 at EUR 1,390,970 = EUR 70.00/m2 (Seine-et-Marne); 14,677 m2 at EUR 1,050,000 = EUR 71.54/m2 (Villiers-en-Biere); 13,443 m2 at EUR 2,000,000 = EUR 148.78/m2 (Montereau-Fault-Yonne). Value = upper end EUR 148.78/m2 x 4046.86 = EUR 602,090/acre x 1.147605 = USD 690,964/acre. low = EUR 18.71/m2 = USD 86,907/acre. Smaller inner-ring plots on the same page run higher (Lisses 5,000 m2 at EUR 300/m2, Saint-Soupplets 5,704 m2 at EUR 280/m2), which a 10-acre-plus site would not reach. Cross-check: solumat.fr (dated 3 Jun 2026) prints a France-wide industrial land average of EUR 120/m2 in 2026 with a range of EUR 15-150/m2, consistent with the Ile-de-France upper end used here. FX: 1 EUR = 1.147605 USD (USD/EUR 0.87138), ECB reference rate via Frankfurter API, pulled 2026-07-30. Freehold. Basis modeled: asking prices from listings, per-m2 rates derived by me from price divided by surface. Only one listing exceeded 10 acres (the 39,269 m2 / 9.7-acre Seine-et-Marne parcel), so the large-parcel sample is thin; bureauxlocaux.com had a single 62,000 m2 industrial parcel in Ile-de-France (Ribecourt-Dreslincourt) but priced 'nous consulter'."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 10809,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Paris' = US$10.8093/W. Conversion: 10.8093 x 1000 = 10809 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -8822,13 +8822,13 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -8876,13 +8876,13 @@
       "method": "great-circle to nearest major IXP (SFINX Paris, 6 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 7,
+      "low": 6,
+      "high": 9,
+      "source_url": "https://www.rte-france.com/",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "RTE about 18 GW reserved across roughly 80 projects, Ile de France about 7 GW."
     }
   },
   "se-lulea": {
@@ -8898,31 +8898,31 @@
       "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 8.38,
+      "low": 8.38,
+      "high": 10.48,
+      "source_url": "https://www.lulea.se/download/18.6f508c4419b9e137f78da/1767887291720/VA%20taxa%20Lule%C3%A5%20kommun%202026.pdf",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "Lulea kommun 'VA-taxa 2026 - Taxa foer Lulea kommuns allmaenna vatten- och avloppsanlaeggning', opened directly; taxan traeder i kraft 2026-01-01. Brukningsavgift, rorlig avgift: VATTEN 21.25 SEK/m3 excl. moms (26.56 SEK/m3 incl. 25% moms). There is no declining or increasing block - the rorliga avgift is flat. The taxa does carry separate tariff codes for hyres- och industrifastighet (VA2,5HI / V2,5HI / A2,5HI), but those differ only in the fixed annual charge; the per-m3 rate is identical, so an industrial site pays the same volumetric rate. Value uses the ex-moms rate (a business recovers moms): 21.25 / 9.5938 SEK-per-USD = USD 2.2150/m3; / 0.264172 = USD 8.38 per 1,000 US gal. 'high' is the incl-moms rate 26.56 SEK/m3 -> USD 10.48/kgal. FX: ECB reference rate USD/SEK 9.5938, pulled 2026-07-30 from api.frankfurter.dev. WASTEWATER: billed on the same metered volume at exactly the same rate - avlopp/spillvatten 21.25 SEK/m3 ex moms (USD 8.38 per 1,000 US gal), so combined VA is 42.50 SEK/m3 ex moms = USD 16.77 per 1,000 US gal. A site of hyperscale size would in practice negotiate a separate industrial agreement outside this published taxa (as the northern Swedish DC market generally does), so treat the published taxa as an upper bound on the volumetric rate."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 126546,
+      "low": 105455,
+      "high": 189819,
+      "source_url": "https://kuriren.nu/nyheter/lulea/artikel/lulea-fordubblar-markpriset-for-hertsofaltet/rx35ow2r https://vartlulea.se/arkiv/tillvaxt/tvanyaverksamhetstomterpastorhedensaljsavluleakommun.5.3949177d19a96a3c66c73.html",
+      "last_verified": "2023-01",
+      "basis": "modeled",
+      "method": "Lulea kommun municipal industrial land prices. Value from Hertsofaltet, the large-parcel green-industry field where a data centre would actually go: Norrbottens-Kuriren (published 12 Jan 2023) reports the municipality raising the price from SEK 140/m2 to SEK 300/m2, after an external valuer put the land at SEK 250-350/m2. Value = SEK 300/m2 x 4046.86 = SEK 1,214,058/acre x 0.104234 = USD 126,546/acre. low = SEK 250/m2 (bottom of the independent valuation) = USD 105,455/acre. high = SEK 450/m2 = USD 189,819/acre, which is the municipality's published price for the two Storheden verksamhetstomter offered Nov 2025 (Vart Lulea, 19 Nov 2025) - but those plots are only ~2,500 m2 and ~2,600 m2, so that rate is a small-plot price and would not apply to a parcel over 10 acres. FX: 1 SEK = 0.104234 USD (USD/SEK 9.5938), ECB reference rate via Frankfurter API, pulled 2026-07-30. Freehold sale by the municipality, connection fees (anslutningsavgifter) charged on top per lulea.se/samhalle--utveckling/mark-och-exploatering/mark-for-verksamheter.html, which itself publishes no price. Value figure is from 2023 and is likely low today given Storheden reached SEK 450/m2 by late 2025."
     },
     "construction_cost_per_kw": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 12295,
+      "low": 12289,
+      "high": 12295,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Lulea is NOT a market in the Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition). Derivation, option (a) nearest covered market in the same construction-cost region: adopted T&T's 'Stockholm' row = US$12.2947/W x 1000 = 12295 USD per kW, unadjusted - same national labour, materials and regulatory market. low/high are the two bracketing covered Nordic markets, not a source disagreement: low = Helsinki US$12.2892/W (12289), high = Stockholm US$12.2947/W (12295); T&T also has Oslo at US$12.4143/W and Copenhagen at US$12.0239/W, so the whole Nordic band is 12024-12414 USD per kW. Caveat not quantified by any source: Lulea's remote northern location raises logistics and site-services cost but lowers land cost relative to Stockholm; no published Swedish sub-national construction cost index was found to size that offset."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -8943,22 +8943,22 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.005,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.skatteverket.se/",
+      "last_verified": "2026",
+      "basis": "sourced",
+      "method": "0.5 percent national, zero municipal."
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -9006,13 +9006,13 @@
       "method": "great-circle to nearest major IXP (NETNOD Stockholm, 728 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 7,
+      "low": 6,
+      "high": 10,
+      "source_url": "https://www.svk.se/",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "Svenska kraftnat working to cut lead times from 12 to 14 years down to 7. Norrbotten requested offtake about 20 GW."
     }
   },
   "no-oslo": {
@@ -9028,13 +9028,13 @@
       "method": "Eurostat nrg_pc_205 MWH_GE150000 X_TAX EUR; converted at EUR/USD 1.138 (ECB reference rate 2026-07-29)"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 17.11,
+      "low": 17.11,
+      "high": 19.67,
+      "source_url": "https://www.oslo.kommune.no/vann-og-avlop/tilknytningsgebyr-arsgebyr-og-vannmaler/vann-og-avlopsgebyrer/",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "Oslo kommune, Vann- og avloepsetaten, page 'Vann- og avloepsgebyrer'. Read the table 'Priser for beregning av vann- og avloepsgebyrer fra 1. januar 2026'. VANN: 43.23 kr/m3 ekskl. mva (49.71 kr/m3 inkl. 15% mva). Oslo charges a single flat kr/m3 - there are no consumption blocks and no separate naerings/industri tariff, so a large flat-load customer pays the same volumetric rate as everyone else; only the fixed abonnementsgebyr scales. Value uses the ex-mva rate (a business recovers mva): 43.23 / 9.5641 NOK-per-USD = USD 4.5198/m3; / 0.264172 = USD 17.11 per 1,000 US gal. 'high' is the inkl-mva rate 49.71 kr/m3 -> USD 19.67/kgal. FX: ECB reference rate USD/NOK 9.5641, pulled 2026-07-30 from api.frankfurter.dev. WASTEWATER: billed on the same metered water volume - avloep 28.81 kr/m3 ekskl. mva (33.13 kr/m3 inkl. mva) = USD 11.40 per 1,000 US gal ex mva. Combined vann + avloep = 72.04 kr/m3 ex mva = USD 28.51 per 1,000 US gal, i.e. sewer adds about two-thirds on top of the water rate. Oslo is by a wide margin the most expensive potable water in this 13-market set."
     },
     "land_cost_per_acre_usd": {
       "value": null,
@@ -9046,13 +9046,13 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 12414,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Oslo' = US$12.4143/W. Conversion: 12.4143 x 1000 = 12414 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -9073,22 +9073,22 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.0037,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.oslo.kommune.no/",
+      "last_verified": "2026",
+      "basis": "sourced",
+      "method": "0.37 percent."
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -9136,13 +9136,13 @@
       "method": "great-circle to nearest major IXP (NIX Oslo, 3 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 5,
+      "low": 4,
+      "high": 7,
+      "source_url": "https://www.statnett.no/",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "Statnett publishes a load connection queue."
     }
   },
   "sg-singapore": {
@@ -9158,31 +9158,31 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 9.53,
+      "low": 6.32,
+      "high": 10.38,
+      "source_url": "https://www.pub.gov.sg/Resources/News-Room/PressReleases/2023/09/Water-price-to-rise-from-April-2024-Government-to-provide-support",
+      "last_verified": "2025-04",
+      "basis": "sourced",
+      "method": "PUB non-domestic potable water. The current PUB water-price page (https://www.pub.gov.sg/Public/WaterLoop/Water-Price) publishes its tables as images that cannot be read as text, so I used PUB's own press release with the annex price tables, which I opened and read. NON-DOMESTIC potable water, S$/m3, from 1 April 2025: Water Tariff 1.43 + Water Conservation Tax 0.72 + Waterborne Fee 1.09 = TOTAL 3.24 (all figures before GST; the total is printed in the table, not derived by me). Singapore's non-domestic tariff is flat - there are no consumption blocks. I found no evidence of a further revision taking effect in 2026, so the 1 April 2025 rates are current. Conversion: 3.24 / 1.2875 SGD-per-USD = USD 2.5165/m3; / 0.264172 = USD 9.53 per 1,000 US gal. 'low' = tariff + WCT only (S$2.15, i.e. excluding the waterborne/used-water element) -> USD 6.32/kgal. 'high' = S$3.24 grossed up for 9% GST (S$3.5316) -> USD 10.38/kgal. FX: ECB reference rate USD/SGD 1.2875, pulled 2026-07-30 from api.frankfurter.dev. WASTEWATER: the Waterborne Fee IS the used-water charge and is levied on the same metered volume - S$1.09/m3 = USD 3.21 per 1,000 US gal, already included in the 3.24 total above per the row instruction. NEWATER (reclaimed - what a Singapore data centre would actually buy for cooling): from 1 April 2025, Tariff 1.28 + WCT 0.13 + Waterborne 1.09 = TOTAL S$2.50/m3 before GST = USD 7.35 per 1,000 US gal, about 23% cheaper than potable. Same source table. PUB also lists an Industrial Water tariff but no figures for it appear in this press release."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 15980178,
+      "low": 2422584,
+      "high": 15980178,
+      "source_url": "https://www.jtc.gov.sg/-/media/project/jtc-cx/corpweb/assets/find-land/land-for-tender-and-temp-use/igls/historical-data/historical-data-on-igls-sites-sold-by-jtc_26jun2026.pdf",
+      "last_verified": "2025-10",
+      "basis": "modeled",
+      "method": "LEASEHOLD, NOT FREEHOLD - the key comparability caveat for Singapore. All industrial land here is state land sold on a fixed lease term; there is no freehold industrial land, so a per-acre figure is not like-for-like with the freehold markets in the other rows. Source: JTC 'Historical data on IGLS sites sold by JTC' (Industrial Government Land Sales), file dated 26 Jun 2026. Value = Plot B Tukang Innovation Drive, awarded 8 Oct 2025, site area 18,722.2 m2, 33-year lease, successful tender SGD 95,188,888 = SGD 5,084.28 per m2 of SITE area (the file's own price column is per m2 per plot ratio at PR 2.5, i.e. SGD 2,033.71 - I divided total price by land area to get a land rate). SGD 5,084.28/m2 x 4046.86 = SGD 20,575,414/acre x 0.776699 = USD 15,980,178/acre. low = Plot A Tuas Bay Drive, awarded 14 Nov 2025, 6,338.1 m2, 23-year lease, SGD 4,885,000 = SGD 770.74/m2 = USD 2,422,584/acre. Other western-industrial comparables from the same file: Penjuru Road 23 Jan 2026, 20,852.9 m2, 33 yr, SGD 87,400,890 = SGD 4,191.31/m2; Pioneer Road 28 Aug 2025, 28,058.4 m2, 33 yr, SGD 88,190,020 = SGD 3,143.09/m2; Gul Drive 20 Jun 2025, 4,876.3 m2, 23 yr = SGD 984.51/m2. FX: 1 SGD = 0.776699 USD (USD/SGD 1.2875), ECB reference rate via Frankfurter API, pulled 2026-07-30. PARCEL SIZE CAVEAT: Singapore does not release industrial parcels over 10 acres - the largest recent IGLS site is 28,058 m2 (6.93 acres), so no listing meets the over-10-acre filter. Separately, JTC's posted land RENT (not price) for 2H2026 effective 1 Jul 2026 runs SGD 13.41/m2/yr (Tuas View, PR up to 1.0) to SGD 90.66/m2/yr (Telok Blangah, PR up to 3.0), escalating up to 5.5%/yr - see jtc.gov.sg/-/media/project/jtc-cx/corpweb/assets/find-land/land-rates/cx-land-rents-2h2026-with-impt-notes_.pdf. Basis modeled: per-acre land rate derived by me from tender total divided by site area."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 14500,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner and Townsend Data Centre Construction Cost Index 2025, 52 markets, quoted in US dollars per watt. Multiply by 1000 to get dollars per kW. If your market is not in the table, use the nearest listed one and say which in Notes."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -9203,22 +9203,22 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.1,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.iras.gov.sg/",
+      "last_verified": "2026",
+      "basis": "sourced",
+      "method": "10 percent of annual value, flat."
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -9288,31 +9288,31 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 9.39,
+      "low": 8.53,
+      "high": 9.39,
+      "source_url": "https://www.reiki.metro.tokyo.lg.jp/reiki/reiki_honbun/g101RG00001800.html",
+      "last_verified": "2019-10",
+      "basis": "sourced",
+      "method": "Tokyo Metropolitan Government Bureau of Waterworks. The Bureau's own rate pages (waterworks.metro.tokyo.lg.jp) return HTTP 403 to automated fetches, so I read the statutory tariff table in the Tokyo Metropolitan Water Supply Ordinance (Toukyou-to kyuusui jourei) on the TMG regulations site, which I opened successfully. Steeply INCREASING block tariff, so per the rule I took the TOP block. Juuryou ryoukin (volumetric), yen/m3: 5-10 m3 22; 10-20 m3 128; 20-30 m3 163; 30-50 m3 202; 50-100 m3 213; 100-200 m3 298; 200-1,000 m3 372; OVER 1,000 m3 404. A data centre is unambiguously in the over-1,000 m3 top block. Kihon ryoukin (fixed monthly charge) scales with meter diameter for a large-diameter service: 100mm JPY 94,568; 150mm JPY 159,094; 200mm JPY 349,434; 250mm JPY 480,135; 300mm and above JPY 816,145 per month - fixed, not volumetric, so excluded from the per-gallon rate. The ordinance states the tabulated amounts are the base multiplied by 110/100, i.e. they INCLUDE 10% consumption tax. Value uses the published tax-inclusive JPY 404/m3: 404 / 162.94 JPY-per-USD = USD 2.4794/m3; / 0.264172 = USD 9.39 per 1,000 US gal. 'low' is the tax-exclusive equivalent (404/1.1 = JPY 367.27/m3), which is what a business effectively bears after recovering consumption tax -> USD 8.53/kgal. FX: ECB reference rate USD/JPY 162.94, pulled 2026-07-30 from api.frankfurter.dev. LAST_VERIFIED CAVEAT: the ordinance text I read does not print an effective-from date alongside the table; the tax-inclusive figures reflect the 10% consumption tax rate in force since October 2019, so I recorded 2019-10 as the earliest date these exact yen figures can date from. SEWERAGE: billed separately by the TMG Bureau of Sewerage on the same metered volume and is also steeply increasing - top block (over 1,000 m3) JPY 345/m3, read at https://donichi-suidou.com/tokyo-suidou-ryoukin/ (a secondary source, used because the Bureau's own pages 403) = USD 8.02 per 1,000 US gal, so sewer adds roughly 85% on top of the water rate."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 2128488,
+      "low": 1440517,
+      "high": 2128488,
+      "source_url": "https://tochidai.info/chiba/inzai/ https://totinokati.com/kakaku/place/12231/kouji/",
+      "last_verified": "2026-01",
+      "basis": "modeled",
+      "method": "SUBMARKET: Inzai City, Chiba (Chiba New Town) - the outer industrial belt where Tokyo's data centres are actually built, not central Tokyo. Source: 2026 koji chika (公示地価, MLIT published land price, valuation date 1 Jan 2026), industrial-zone (工業地) survey points in Inzai-shi. Two industrial points exist and both are printed: Kashiguro-minami 1-chome 3-ban (鹿黒南1丁目3番), a warehouse/logistics site 2,900 m from Chiba Newtown Chuo station, at JPY 85,700/m2, +13.51% year on year (tochidai.info); and Matsuzakidai (松崎台) at JPY 58,000/m2, +11.6% (totinokati.com, which rounds the Kashiguro point to 8.6 man yen/m2). Value = upper point JPY 85,700/m2 x 4046.86 = JPY 346,815,902/acre x 0.006137 = USD 2,128,488/acre. low = JPY 58,000/m2 = USD 1,440,517/acre. For reference, JPY 85,700/m2 = JPY 283,305/tsubo (1 tsubo = 3.30579 m2). FX: 1 JPY = 0.006137 USD (USD/JPY 162.94), ECB reference rate via Frankfurter API, pulled 2026-07-30. Freehold. Basis modeled: koji chika is a per-m2 assessed standard value for a notional standard site, not a transacted price for an over-10-acre parcel, and the per-acre conversion is mine; also only two industrial survey points exist in the municipality, so the range is thin. The Chiba prefecture koji chika page (pref.chiba.lg.jp/youchi/toukeidata/chika/) returned HTTP 403, so the figures were read off these two Japanese land-price aggregators, which republish the MLIT data point-by-point."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 15200,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner and Townsend Data Centre Construction Cost Index 2025, 52 markets, quoted in US dollars per watt. Multiply by 1000 to get dollars per kW. If your market is not in the table, use the nearest listed one and say which in Notes."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -9333,22 +9333,22 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.017,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.tax.metro.tokyo.lg.jp/",
+      "last_verified": "2026",
+      "basis": "sourced",
+      "method": "1.4 percent plus 0.3 percent city planning tax. The 1.4 percent also applies to depreciable business assets, so it hits the IT gear, not just the shell."
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -9396,13 +9396,13 @@
       "method": "great-circle to nearest major IXP (JPIX Tokyo, 1 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
+      "value": 5,
+      "low": 4,
+      "high": 7,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
       "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "method": "Unsourced. Flag as low confidence in the app."
     }
   },
   "in-mumbai": {
@@ -9418,31 +9418,31 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
+      "value": 1.98,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.freepressjournal.in/mumbai/mumbai-bmc-plans-water-tax-hike-for-2025-26-amid-rising-expenditure-proposal-under-legal-review",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "PARTIAL SOURCING - READ THIS BEFORE USING. Municipal Corporation of Greater Mumbai (MCGM/BMC), Hydraulic Engineer's department. The only water-charges schedule MCGM publishes online is 'Water Charges Rules effective from 01.04.2015' (https://portal.mcgm.gov.in/irj/go/km/docs/documents/MCGM%20Department%20List/Hydrallic%20Engineer/DOCS/Water%20Charges%20Rules%20effective%20from%2001.04.2015_English.pdf), which I opened and read: Rs/1,000 litres by category - slum 3.24; general residential 4.32; educational/hospital 17.28; small commercial 32.40; shops-offices-restaurants-1&2-star hotels 43.20; 3-star-plus hotels and racecourses 64.80; construction and bottled-water manufacture 90.00; sewerage charged at 70% of the water charge; rates escalated 8% w.e.f. 16.06.2015 by Standing Committee resolution and revised most years since. I could not find any CURRENT official MCGM rate schedule published online - the only later official document I could open was 'Revised Water Tanker Charges w.e.f. 16.06.2018' (https://www.mcgm.gov.in/irj/go/km/docs/documents/MCGM%20Department%20List/Hydrallic%20Engineer/DOCS/Revised%20Water%20Tanker%20Charges%20w.e.f.%2016.06.2018..pdf), which shows the same categories at Rs 38.25 / 50.99 / 76.49 per KL (a uniform 18% above the 2015 base) and confirms sewerage at 70% of water charges. For the current figure I used the Free Press Journal report (opened and read) which states BMC's present charges are Rs 6 per 1,000 litres residential and Rs 50 per 1,000 litres COMMERCIAL AND INDUSTRIAL, and that no hike has been applied for two years while a 2025-26 increase sits under legal review. Value = Rs 50 per 1,000 litres = Rs 50/m3. Conversion: 50 / 95.69 INR-per-USD = USD 0.5225/m3; / 0.264172 = USD 1.98 per 1,000 US gal. FX: ECB reference rate USD/INR 95.69, pulled 2026-07-30 from api.frankfurter.dev. Basis is 'modeled' because the operative number comes from a newspaper report rather than the utility's own published schedule; the utility's own current schedule does not appear to be on the public web. SEWERAGE: per the official 2015 rules, billed at 70% of the water charge on the same volume - Rs 35/m3 = USD 1.38 per 1,000 US gal, so all-in volumetric is about USD 3.36 per 1,000 US gal. Searched: MCGM/BMC hydraulic engineer water charges rules, 'w.e.f. 16.06.2024/16.06.2025' revised rates, BMC 2025-26 budget, Citizen Matters Mumbai water tariff coverage, and the MCGM portal document library."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 653824,
+      "low": 511725,
+      "high": 653824,
+      "source_url": "https://www.mahaindustry.com/midc-land-rates.php",
+      "last_verified": "2026",
+      "basis": "modeled",
+      "method": "SUBMARKET: Taloja / Navi Mumbai - Panvel MIDC belt, the outer industrial area where Mumbai's data centres are built, not the island city. Source: MIDC (Maharashtra Industrial Development Corporation) land rate schedule, 'MIDC Land Rates, Updated 2026', Group Scheme A. Printed rates: Taloja INR 12,100/m2; Taloja Zone-II INR 15,460/m2; Additional Taloja INR 15,460/m2 (all industrial). Value = upper end INR 15,460/m2 x 4046.86 = INR 62,564,455/acre x 0.01045 = USD 653,824/acre. low = INR 12,100/m2 = USD 511,725/acre. Context on the same page: Patalganga INR 4,840/m2, Roha INR 1,260/m2 (far outer), Marol MMR Zone-I INR 63,180/m2 (city, not comparable). TENURE: MIDC does not sell freehold - plots are allotted on a 95-year lease and the quoted rate is the one-time lease premium, plus annual ground rent and transfer charges. FX: 1 INR = 0.01045 USD (USD/INR 95.69), ECB reference rate via Frankfurter API, pulled 2026-07-30. Basis modeled: mahaindustry.com is a third-party republication of the MIDC schedule rather than the MIDC circular itself, and the per-acre figure is my conversion. Open-market resale of MIDC plots in Taloja typically clears above the MIDC allotment rate; ilovenavimumbai.com/navi-mumbai-industrial-land-values-rents-and-yield-guide/ confirms the INR 12,100/m2 Taloja benchmark and an INR 31,390/m2 TTC-belt benchmark but prints no date, so it was not used for the value."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 6640,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Mumbai' = US$6.6403/W - the second cheapest market in the index after Shanghai (US$6.1186/W). Conversion: 6.6403 x 1000 = 6640 USD per kW of IT load. Independently corroborated at US$6.64/W by Data Storage Asia's writeup of the same index (https://datastorageasia.com/turner-townsend-report-singapore-no-2-globally-in-data-centre-construction-cost/). Note this sits below the 8,000-16,000 band the brief cites for Singapore/Tokyo - that is a genuine T&T result, not an error."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -9472,13 +9472,13 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -9526,13 +9526,13 @@
       "method": "great-circle to nearest major IXP (DE-CIX Mumbai, 3 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
+      "value": 3.5,
+      "low": 3,
+      "high": 5,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
       "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "method": "Unsourced. Flag as low confidence."
     }
   },
   "br-sao-paulo": {
@@ -9548,31 +9548,31 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 23.63,
+      "low": 22.69,
+      "high": 23.63,
+      "source_url": "https://www.arsesp.sp.gov.br/Documentosgerais/NT_1__REAJUSTE_TARIFARIO_DA_SABESP__Tarifa_Aplicacao___URAE1___assinado.pdf",
+      "last_verified": "2026-01",
+      "basis": "modeled",
+      "method": "SABESP, regulated by ARSESP. SABESP's own site (sabesp.com.br) blocks automated fetches, so I used ARSESP's signed technical note 'NT 1o Reajuste Tarifario da SABESP - Tarifa de Aplicacao - URAE-1', which I opened and read; the new tarifas de aplicacao take effect 1 January 2026 (reajuste of 6.1106% plus 0.3558% for tax updates). Tabela 1, category COMERCIAL / INDUSTRIAL / PUBLICA (sem contrato), quoted verbatim from the document: 0-10 m3 R$ 81.57/month fixed; 11-20 m3 R$ 15.95/m3; 21-50 m3 R$ 30.57/m3; ACIMA DE 50 m3 R$ 31.84/m3 - identical figures for Tarifa Agua and Tarifa Esgoto. This is an increasing block tariff, so per the rule value = the top block, R$ 31.84/m3 water. Conversion: 31.84 / 5.1006 BRL-per-USD = USD 6.2424/m3; / 0.264172 = USD 23.63 per 1,000 US gal. 'low' = the 21-50 m3 block (R$ 30.57) -> USD 22.69/kgal. FX: ECB reference rate USD/BRL 5.1006, pulled 2026-07-30 from api.frankfurter.dev. Basis is 'modeled' because the document contains ten regional tables and does not name Sao Paulo capital explicitly; I identified Tabela 1 as the capital's table because it covers SABESP's metropolitan business units OC, OL, OO, ON and OS (Centro, Leste, Oeste, Norte, Sul - the city of Sao Paulo) and because it carries the highest tariffs in the document, matching the metropolitan region. Cross-checked against the pre-privatisation base table (Deliberacao ARSESP 1.514/2024, reproduced in Anexo IV at https://semil.sp.gov.br/desestatizacaosabesp/wp-content/uploads/sites/24/2024/05/Anexo-IV.pdf), where the same category shows R$ 29.90-equivalent levels that escalate to R$ 31.84 under the 1.061106 x 1.003558 adjustment. WASTEWATER - CONFIRMED: SABESP charges esgoto at EXACTLY THE SAME rate as agua in every band (R$ 31.84/m3 in the top block), on the same metered volume. The true all-in volumetric cost of a Sao Paulo site is therefore R$ 63.68/m3 = USD 47.26 per 1,000 US gal, precisely double the headline water figure. Note also that the table is the 'sem contrato' schedule; a very large industrial customer can sign a demanda-firme contract with SABESP at negotiated rates that are not published."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 829786,
+      "low": 301733,
+      "high": 829786,
+      "source_url": "https://www.lopes.com.br/busca/venda/br/sp/barueri/alphaville-industrial/tipo/terreno",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "SUBMARKET: Barueri / Alphaville Industrial / Tambore, the Sao Paulo data-centre cluster on the Rodovia Castelo Branco axis, not the city centre. Source: Lopes live land-for-sale listings in Alphaville Industrial, Barueri. Largest parcels printed on the page: 291,874 m2 (29.2 ha) at BRL 111,000,000 on Rodovia Presidente Castelo Branco = BRL 380.30/m2; 47,000 m2 (4.7 ha) at BRL 25,000,000 in Aldeia da Serra = BRL 531.91/m2; 34,422 m2 (3.44 ha) at BRL 36,000,000 on Avenida Grimaldo Tolaini = BRL 1,045.84/m2. Value = upper end BRL 1,045.84/m2 x 4046.86 = BRL 4,232,196/acre x 0.196055 = USD 829,786/acre. low = BRL 380.30/m2 = USD 301,733/acre (and this is the only listing comfortably over 10 acres, so it is the most method-compliant single data point - the value sits at the top of the observed band, per instruction). FX: 1 BRL = 0.196055 USD (USD/BRL 5.1006), ECB reference rate via Frankfurter API, pulled 2026-07-30. Freehold. Basis modeled: asking prices, per-m2 rates derived by me. Excluded as not comparable: a 5,687 m2 Barueri industrial listing at BRL 11,000/m2 (paulobio.com.br/terreno-industrial-sao-paulo__13437) - that is small-lot Alphaville pricing, ~20x the large-parcel rate. Hortolandia listing portals (trovit) returned HTTP 401 and nestoria/sannini returned 401 / robots-disallowed, so the Campinas-Hortolandia leg of the SP data-centre market is not represented here; Barueri only."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 10747,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Sao Paulo' = US$10.7472/W. Conversion: 10.7472 x 1000 = 10747 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -9593,22 +9593,22 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_rate": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 0.019,
+      "low": 0.011,
+      "high": 0.019,
+      "source_url": "https://legislacao.prefeitura.sp.gov.br/leis/lei-6989-de-29-de-dezembro-de-1966",
+      "last_verified": "2013",
+      "basis": "modeled",
+      "method": "Sao Paulo BR. THE TAX MEASURED IS IPTU (Imposto Predial e Territorial Urbano), levied on the valor venal (assessed market value) of the property. Base aliquota for built NON-RESIDENTIAL property, Lei Municipal 6.989/1966 art. 8 as amended by Lei 13.250/2001: 'O imposto calcula-se a razao de 1,5% sobre o valor venal do imovel, para imoveis construidos com utilizacao diversa da referida no artigo 7' (residential is 1.0% under art. 7). That base rate is then adjusted by the value-band desconto/acrescimo table of Lei 15.889/2013 art. 4 (https://legislacao.prefeitura.sp.gov.br/leis/lei-15889-de-05-de-novembro-de-2013), which for non-residential property reads: up to R$150,000 -0.4%; R$150,000-300,000 -0.2%; R$300,000-600,000 0.0%; R$600,000-1,200,000 +0.2%; above R$1,200,000 +0.4%. A data centre sits far above the top band, so the applicable effective aliquota = 1.5% + 0.4% = 1.9% of valor venal. Value 0.0190; low 0.0110 is the smallest-property case (1.5% - 0.4%), high 0.0190 the large-property case. Valor venal is the municipality's Planta Generica de Valores assessment, which typically runs below open-market value, so the rate on true market value is somewhat lower. last_verified is the year of the governing amending law (Lei 15.889/2013); the source pages give no tax year."
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -9656,13 +9656,13 @@
       "method": "great-circle to nearest major IXP (IX.br São Paulo, 6 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
+      "value": 5,
+      "low": 4,
+      "high": 7,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
       "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "method": "No published queue. Band estimated. Needs a source or mark low confidence."
     }
   },
   "mx-queretaro": {
@@ -9687,22 +9687,22 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
+      "value": 883792,
+      "low": 697730,
+      "high": 883792,
+      "source_url": "https://www.vivanuncios.com.mx/s-venta-terreno-industrial/queretaro",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "Vivanuncios live industrial land listings, Queretaro state. Printed listings and the per-m2 rates I derived: Felipe Carrillo Puerto 12,030 m2 at MXN 45,714,000 = MXN 3,800.00/m2; Libramiento Norponiente, Huertas La Joya 10,046 m2 at MXN 37,675,000 = MXN 3,750.25/m2; Felipe Carrillo Puerto 17,157 m2 at MXN 62,625,000 = MXN 3,650.11/m2; Granja Cedros 17,500 m2 at MXN 52,500,000 = MXN 3,000.00/m2. Value = upper end MXN 3,800/m2 x 4046.86 = MXN 15,378,068/acre x 0.057471 = USD 883,792/acre. low = MXN 3,000/m2 = USD 697,730/acre. FX: 1 MXN = 0.057471 USD (USD/MXN 17.4001), ECB reference rate via Frankfurter API, pulled 2026-07-30. Freehold. TWO REAL CAVEATS, both against the value being too high: (1) every one of these parcels is between 1 and 1.8 ha, i.e. none meets the over-10-acre filter, and small parcels carry a size premium - a 10-acre-plus tract in a Queretaro industrial park would clear well below MXN 3,800/m2; (2) the single listing on the page that does exceed 10 acres, Carretera 500 in El Marques at 1,231,266 m2 (123 ha) for MXN 73,000,000, implies MXN 59.3/m2 (~USD 13,800/acre), which is implausible for serviced industrial-park land and reads as a listing error, so I did not use it as the low. Tetakawi's Queretaro site-selection piece (insights.tetakawi.com/industrial-real-estate-in-queretaro-site-selection) quotes only lease rates (USD 4.00-4.10/m2/month) and is dated Dec 2020, so it was not used. Treat this row as an upper bound with a wide downside."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 10399,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Queretaro IS covered by T&T (contrary to the initial assumption in the task brief) - market row 'Queretaro' = US$10.3991/W. Conversion: 10.3991 x 1000 = 10399 USD per kW of IT load. No modelling required."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -9732,13 +9732,13 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -9786,13 +9786,13 @@
       "method": "great-circle to nearest major IXP (MEX-IX Mexico City, 189 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
+      "value": 5,
+      "low": 4,
+      "high": 7,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
       "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "method": "Unsourced. CFE publishes nothing usable."
     }
   },
   "ca-toronto": {
@@ -9808,31 +9808,31 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "water_rate_usd_per_kgal": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 8.95,
+      "low": 8.95,
+      "high": 13.11,
+      "source_url": "https://www.toronto.ca/services-payments/property-taxes-utilities/utility-bill/water-rates-fees/",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "City of Toronto, Toronto Water. Read the water-rate table on the City's 'Water Rates & Fees' page, effective 1 January 2026. Two-block declining structure: BLOCK 1 (up to 5,000 m3/yr) CAD 4.8629/m3 on-time (CAD 5.1188 late); BLOCK 2 (consumption over 5,000 m3/yr) CAD 3.3219/m3 on-time (CAD 3.4967 late). THE INDUSTRIAL WATER RATE PROGRAM STILL EXISTS and Block 2 is exactly that programme - the page states 'Block 2 rates apply to businesses participating in the Industrial Water Rate Program', and Council approved a 3.75% increase for Block 1 versus only 1.25% for Block 2 for 2026. A data centre enrolled in the programme therefore pays the Block 2 rate, which is 32% below Block 1; if it is NOT enrolled it pays Block 1 on everything, which is why Block 1 is recorded as 'high'. Value = CAD 3.3219/m3 (on-time payment; late payment adds 5.26%). Conversion: 3.3219 / 1.4046 CAD-per-USD = USD 2.3650/m3; / 0.264172 = USD 8.95 per 1,000 US gal. 'high' = Block 1 CAD 4.8629/m3 -> USD 13.11 per 1,000 US gal. FX: ECB reference rate USD/CAD 1.4046, pulled 2026-07-30 from api.frankfurter.dev. WASTEWATER: no separate volumetric sewer rate appears on this page - the only 'Wastewater Fees' listed are one-off service-connection and technical-review charges (CAD 440.78 to CAD 14,718.78), not a per-m3 charge. The Block 1 / Block 2 consumption rates are the consumption charge shown on the Toronto utility bill; I did not find a second per-m3 sewer line item to add, so no sewer number is claimed here. Toronto also bills a separate stormwater/solid-waste line that is not volumetric."
     },
     "land_cost_per_acre_usd": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 1266737,
+      "low": 1254069,
+      "high": 1266737,
+      "source_url": "https://mediaassets.cbre.com/-/media/project/cbre/shared-site/teams/canada/toronto-west/john-planeta/cbre-gta-industrial-market-report-q3-2025.pdf?rev=5d2da73f51294841826f45a7efb342aa https://mediaassets.cbre.com/-/media/project/cbre/shared-site/teams/canada/toronto-west/john-planeta/gta-industrial-market-report-q4-2025.pdf?rev=b0b84f301f334253af95287db0df9772",
+      "last_verified": "2025-09",
+      "basis": "modeled",
+      "method": "CBRE GTA Industrial Market Report, GTA West submarket (Mississauga / Brampton / Milton / Caledon / Halton - where GTA industrial and data-centre development actually happens). Average industrial land price printed per acre: CAD 1,779,259/acre in Q3 2025 and CAD 1,761,466/acre in Q4 2025. Value = upper end CAD 1,779,259 x 0.711946 = USD 1,266,737/acre; low = CAD 1,761,466 = USD 1,254,069/acre. FX: 1 CAD = 0.711946 USD (USD/CAD 1.4046), ECB reference rate via Frankfurter API, pulled 2026-07-30. Freehold. Basis modeled: CBRE publishes a submarket AVERAGE land price, not a parcel-level transaction, and it is not filtered to parcels over 10 acres. Development charges are a large additional per-sq-ft cost on top of land and vary sharply by municipality (Q4 2025, per the same report: Vaughan CAD 59.97/sq ft, Mississauga CAD 35.55, Brampton CAD 34.52, Milton CAD 32.26, Etobicoke CAD 1.57) - worth carrying separately in the model. Avison Young's GTA Q2 2025 report returned HTTP 403 so no second brokerage cross-check was obtainable."
     },
     "construction_cost_per_kw": {
-      "value": null,
+      "value": 9388,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Toronto' = US$9.3877/W. Conversion: 9.3877 x 1000 = 9388 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": null,
@@ -9853,22 +9853,22 @@
       "method": "not yet populated; run scripts/ingest.ts"
     },
     "tax_rate": {
-      "value": null,
+      "value": 0.023,
       "low": null,
       "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "source_url": "https://www.toronto.ca/services-payments/property-taxes-utilities/",
+      "last_verified": "2026",
+      "basis": "sourced",
+      "method": "Commercial 2.302 percent, industrial 2.417 percent. Unresolved which class MPAC assigns a data center, so note your choice."
     },
     "tax_abatement_years": {
-      "value": null,
+      "value": 0,
       "low": null,
       "high": null,
       "source_url": "https://example.com/placeholder",
       "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "basis": "modeled",
+      "method": "No US style property tax abatement exists in any of these markets. Zero is the correct answer. Exceptions: Mumbai reclassifies rather than abates, and Brazil's ReData expired 25 Feb 2026. Basis downgraded from sourced to modeled during QA: this is a documented negative finding with no single URL behind it, so it cannot claim sourced under rule 1."
     },
     "incentive_usd_per_kw": {
       "value": null,
@@ -9916,13 +9916,13 @@
       "method": "great-circle to nearest major IXP (TORIX Toronto, 6 km); intra-continental 1.4ms/100km+1ms; calibrated from Azure inter-region RTT; not Ookla/Cloudflare/M-Lab (consumer last-mile)"
     },
     "grid_interconnection_years": {
-      "value": null,
-      "low": null,
-      "high": null,
-      "source_url": "https://example.com/placeholder",
-      "last_verified": "2026-07",
-      "basis": "assumed",
-      "method": "not yet populated; run scripts/ingest.ts"
+      "value": 3.5,
+      "low": 3,
+      "high": 4,
+      "source_url": "https://www.ieso.ca/",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "IESO publishes the only official stage by stage duration breakdown, six stages, several months to 3.5 years."
     }
   }
 }

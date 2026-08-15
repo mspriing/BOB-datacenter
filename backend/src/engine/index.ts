@@ -19,6 +19,43 @@ import { parseSiteDescription } from '../llm/parseInput.js'
 
 const ENGINE_VERSION = '0.2.0'
 
+/**
+ * The drivers a site must have before it can be priced at all.
+ *
+ * Every one of these is coalesced to 0 further down when the region carries no
+ * value, which is what a missing number has to become before it can go into
+ * arithmetic. The consequence is that a region nobody has priced yet arrives at
+ * the ranker looking free, and cost carries the heaviest weight, so it wins.
+ * Only 8 of the 77 regions in data/regions.json held all six of these before
+ * the July collection was merged in, so this was the common case rather than
+ * the edge case.
+ */
+export const COST_DRIVERS = [
+  'construction_cost_per_kw',
+  'power_rate_usd_per_kwh',
+  'land_cost_per_acre_usd',
+  'staff_cost_index',
+] as const
+
+export type CostDriver = typeof COST_DRIVERS[number]
+
+export interface UnevaluableSite {
+  site_id:         string
+  label:           string
+  missing_drivers: string[]
+}
+
+/** Fewer than two sites could be priced, so there is no comparison to publish. */
+export class UnpriceableError extends Error {
+  readonly unevaluable: UnevaluableSite[]
+  constructor(unevaluable: UnevaluableSite[]) {
+    const names = unevaluable.map((u) => `${u.label} (${u.missing_drivers.join(', ')})`).join('; ')
+    super(`Not enough priced sites to compare. Missing: ${names}`)
+    this.name = 'UnpriceableError'
+    this.unevaluable = unevaluable
+  }
+}
+
 // Default weights if not supplied
 const DEFAULT_WEIGHTS = {
   total_cost:     0.50,
@@ -53,11 +90,14 @@ export async function runEngine(
     latency_ms:                   number | null
     grid_interconnection_years:   number | null
     incentive_usd: number
+    /** Raw resolved cost drivers, before the coalesce to 0. null = no value. */
+    cost_drivers: Record<CostDriver, number | null>
   }
 
   // ── parsed_fields, data_gaps, confidence accumulators ─────────────────────
   const parsed_fields: ParsedField[] = []
   const data_gaps: DataGap[] = []
+  const unevaluable: UnevaluableSite[] = []
   const confidence: Confidence = { sourced: 0, modeled: 0, assumed: 0, missing: 0 }
 
   const bundles: SiteBundle[] = await Promise.all(input.sites.map(async (site) => {
@@ -215,6 +255,12 @@ export async function runEngine(
       latency_ms:                 latency,
       grid_interconnection_years: grid_ix_years,
       incentive_usd,
+      cost_drivers: {
+        construction_cost_per_kw: construction,
+        power_rate_usd_per_kwh:   power_rate,
+        land_cost_per_acre_usd:   land_cost,
+        staff_cost_index:         staff_index,
+      },
     }
   }))
 
@@ -261,19 +307,47 @@ export async function runEngine(
       },
     }
 
-    // Pass true nulls — rank.ts will exclude null dimensions and renormalise.
-    rankInputs.push({
-      site_id:       b.site_id,
-      npv_usd:       finance.npv_usd,
-      risk_score:    b.risk_score,
-      renewable_pct: b.renewable_pct,
-      latency_ms:    b.latency_ms,
-    })
+    // A cost driver with no value became 0 when this bundle was built, because
+    // arithmetic cannot hold a null. That makes an uncollected cost read as a
+    // free one. Record the gap by name and keep the site out of the ranking
+    // rather than publishing a total the data does not support.
+    const missing_cost_drivers = COST_DRIVERS.filter((d) => b.cost_drivers[d] === null)
+
+    for (const driver of missing_cost_drivers) {
+      data_gaps.push({
+        site_id: b.site_id,
+        driver,
+        reason:  'no value in regions.json, so this site cannot be priced',
+      })
+    }
+
+    if (missing_cost_drivers.length > 0) {
+      unevaluable.push({
+        site_id:         b.site_id,
+        label:           b.label,
+        missing_drivers: [...missing_cost_drivers],
+      })
+    } else {
+      // Pass true nulls — rank.ts will exclude null dimensions and renormalise.
+      rankInputs.push({
+        site_id:       b.site_id,
+        npv_usd:       finance.npv_usd,
+        risk_score:    b.risk_score,
+        renewable_pct: b.renewable_pct,
+        latency_ms:    b.latency_ms,
+      })
+    }
 
     // Record data_gaps for ranked dimensions that are null.
     if (b.risk_score    === null) data_gaps.push({ site_id: b.site_id, driver: 'risk_score',    reason: 'no value in regions.json' })
     if (b.renewable_pct === null) data_gaps.push({ site_id: b.site_id, driver: 'renewable_pct', reason: 'no value in regions.json' })
     if (b.latency_ms    === null) data_gaps.push({ site_id: b.site_id, driver: 'latency_ms_to_hub', reason: 'no value in regions.json' })
+  }
+
+  // Ranking one site against nothing is not a comparison, so stop here and name
+  // the numbers that are missing instead of publishing a winner by default.
+  if (rankInputs.length < 2) {
+    throw new UnpriceableError(unevaluable)
   }
 
   // ── Rank sites ─────────────────────────────────────────────────────────────
@@ -293,18 +367,23 @@ export async function runEngine(
   const rank1bundle = bundles.find((b) => b.site_id === ranking[0])!
   const rank2bundle = bundles.find((b) => b.site_id === ranking[1])!
 
-  // Build SensitivitySiteParams for every site (the full-N context is required)
-  const allSensParams: SensitivitySiteParams[] = bundles.map((b) => ({
-    site_id:        b.site_id,
-    capexParams:    b.capexParams,
-    opexParams:     b.opexParams,
-    discount_rate:  input.project.discount_rate,
-    lifetime_years: input.project.lifetime_years,
-    // Sensitivity analysis requires concrete numbers; treat null as neutral midpoints.
-    risk_score:     b.risk_score     ?? 5,
-    renewable_pct:  b.renewable_pct  ?? 0,
-    latency_ms:     b.latency_ms     ?? 50,
-  }))
+  // Every ranked site, which is the full-N context the sensitivity pass needs.
+  // Unpriced sites are excluded: their costs were zeroed, and one sitting in
+  // this set would move the flip threshold against a rival that does not exist
+  // at that price.
+  const allSensParams: SensitivitySiteParams[] = bundles
+    .filter((b) => ranking.includes(b.site_id))
+    .map((b) => ({
+      site_id:        b.site_id,
+      capexParams:    b.capexParams,
+      opexParams:     b.opexParams,
+      discount_rate:  input.project.discount_rate,
+      lifetime_years: input.project.lifetime_years,
+      // Sensitivity analysis requires concrete numbers; treat null as neutral midpoints.
+      risk_score:     b.risk_score     ?? 5,
+      renewable_pct:  b.renewable_pct  ?? 0,
+      latency_ms:     b.latency_ms     ?? 50,
+    }))
 
   const rank1SensParams = allSensParams.find((s) => s.site_id === ranking[0])!
   const rank2SensParams = allSensParams.find((s) => s.site_id === ranking[1])!
@@ -370,6 +449,7 @@ export async function runEngine(
     parsed_fields,
     data_provenance,
     data_gaps,
+    unevaluable,
     confidence,
   }
 
