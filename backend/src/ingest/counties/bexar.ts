@@ -100,7 +100,11 @@ export const bexarConfig: CountyConfig = {
   transmissionSource: {
     url:          'https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Power_Transmission_Lines/FeatureServer/0',
     cachePrefix:  'hifld-tx-lines-138kv',
-    whereClause:  "VOLTAGE >= 138 AND STATE_1 = 'TX'",
+    // No STATE_1 field exists on this layer — its presence made the whole query
+    // fail with "Cannot perform query. Invalid query parameters." The envelope
+    // below already restricts results to the county, so the predicate was
+    // redundant as well as wrong. Verified: 335 lines returned for Bexar.
+    whereClause:  'VOLTAGE >= 138',
     voltageField: 'VOLTAGE',
     minKv:        138,
   },

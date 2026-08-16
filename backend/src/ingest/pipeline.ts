@@ -83,16 +83,30 @@ interface ArcGISResponse {
   name?:                  string   // layer descriptor field
 }
 
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
+
+/**
+ * Cache-aware fetch. An ArcGIS error body is never written to the cache and a
+ * cached error is never replayed: these services fail intermittently, and
+ * caching a transient failure turns one bad minute into a permanently broken
+ * pipeline that no amount of re-running can fix.
+ */
 async function cachedFetchJSON(rawDir: string, url: string, filename: string): Promise<unknown> {
   mkdirSync(rawDir, { recursive: true })
   const p = resolve(rawDir, filename)
   if (existsSync(p)) {
-    log(`[cache] ${filename}`)
-    return JSON.parse(readFileSync(p, 'utf-8'))
+    const cached = JSON.parse(readFileSync(p, 'utf-8'))
+    if (!(cached && typeof cached === 'object' && 'error' in cached)) {
+      log(`[cache] ${filename}`)
+      return cached
+    }
+    log(`[cache] ${filename} held an error response — refetching`)
   }
   log(`[fetch] ${url}`)
   const data = await fetchJSON(url)
-  writeFileSync(p, JSON.stringify(data))
+  if (!(data && typeof data === 'object' && 'error' in (data as object))) {
+    writeFileSync(p, JSON.stringify(data))
+  }
   return data
 }
 
@@ -107,35 +121,58 @@ async function arcgisFetchAll(
   params:      Record<string, string>,
   cachePrefix: string,
 ): Promise<Array<{ geometry: unknown; attributes: Record<string, unknown> }>> {
-  const PAGE_SIZE = 1000
+  // Both BCAD and FEMA answer "Error performing query operation" intermittently
+  // when a page carries too much geometry — measured: BCAD at 1000 records with
+  // outFields=* fails, the identical request at 100 succeeds three times out of
+  // three. The failure is size-related, not a bad query, so step the page size
+  // down and retry rather than treating it as a dead source. Once a size works
+  // it is kept for the remaining pages, so the cost is paid once per run.
+  const MAX_PAGE = 1000
+  const MIN_PAGE = 50
   const all: Array<{ geometry: unknown; attributes: Record<string, unknown> }> = []
-  let offset = 0
-  let page   = 0
+  let offset   = 0
+  let page     = 0
+  let pageSize = MAX_PAGE
 
   while (true) {
-    const qs = new URLSearchParams({
-      f:                 'json',
-      outFields:         '*',
-      returnGeometry:    'true',
-      outSR:             '4326',
-      resultOffset:      String(offset),
-      resultRecordCount: String(PAGE_SIZE),
-      ...params,
-    })
-    const url      = `${serviceUrl}/query?${qs}`
-    const filename = `${cachePrefix}-page${page}.json`
-    const data     = await cachedFetchJSON(rawDir, url, filename) as ArcGISResponse
+    let data: ArcGISResponse | null = null
+    let attempt = pageSize
+    let lastError = ''
 
-    if (data.error) {
-      throw new Error(`ArcGIS error at ${serviceUrl}: ${data.error.message}`)
+    while (attempt >= MIN_PAGE) {
+      const qs = new URLSearchParams({
+        f:                 'json',
+        outFields:         '*',
+        returnGeometry:    'true',
+        outSR:             '4326',
+        ...params,
+        resultOffset:      String(offset),
+        resultRecordCount: String(attempt),
+      })
+      const url      = `${serviceUrl}/query?${qs}`
+      const filename = `${cachePrefix}-o${offset}-n${attempt}.json`
+      const d        = await cachedFetchJSON(rawDir, url, filename) as ArcGISResponse
+
+      if (!d.error) { data = d; break }
+
+      lastError = d.error.message
+      warn(`  offset ${offset} failed at page size ${attempt} (${lastError}) — halving`)
+      attempt = Math.floor(attempt / 2)
+      await sleep(500)
     }
 
+    if (!data) {
+      throw new Error(
+        `ArcGIS error at ${serviceUrl}: ${lastError} — still failing at page size ${MIN_PAGE}`)
+    }
+
+    pageSize = attempt              // stick with the size that worked
     const features = data.features ?? []
     all.push(...features)
-    log(`  page ${page}: ${features.length} features (total so far: ${all.length})`)
+    log(`  page ${page} (offset ${offset}, size ${attempt}): ${features.length} features (total ${all.length})`)
 
     if (!data.exceededTransferLimit || features.length === 0) break
-    offset += PAGE_SIZE
+    offset += features.length       // advance by what came back, not what was asked for
     page++
   }
 
