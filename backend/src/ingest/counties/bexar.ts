@@ -139,4 +139,47 @@ export const bexarConfig: CountyConfig = {
     high:            8.50,
     method:          'SAWS Uniform Rate Schedule Tier 3+ commercial rate, FY2024',
   },
+
+  // ── Parcel cost model ─────────────────────────────────────────────────────
+  costModel: {
+    // Region key for county-level fallback drivers from data/regions.json
+    regionKey: 'us-tx-ercot',
+
+    // Transmission spur: $1,500,000/mile ÷ 1609.34 m/mile ≈ $932/m
+    // ERCOT CREZ transmission cost study (138 kV single-circuit, 2024 USD)
+    // Basis: assumed — order-of-magnitude; replace with ERCOT queue cost estimate per project
+    txSpurCostPerMeterUsd: 932,
+
+    // Substation allowance: $3,000,000 flat per new delivery point
+    // ERCOT interconnection cost estimates for <20 MW loads, ~$2–4 M midpoint
+    // Basis: assumed
+    substationAllowanceUsd: 3_000_000,
+
+    // Fiber conduit: $70,000/mile ÷ 1609.34 m/mile ≈ $43.50/m
+    // Underground directional bore, urban/suburban Texas, including pull
+    // Source: industry benchmark; basis: assumed
+    fiberConduitPerMeterUsd: 43.5,
+
+    // Entitlement months by zoning status
+    // Source: San Antonio DSD stated timelines for commercial/industrial projects
+    // Basis: assumed
+    entitlementMonthsByZoning: {
+      industrial:               6,   // by-right industrial permit only
+      'outside-jurisdiction':  10,   // no city zoning; ETJ/state permits; faster than city rezoning
+      'outside-limits':        10,   // outside city limits — similar to outside-jurisdiction
+      'unknown-gap':           14,   // zoning unknown; conservative estimate
+      default:                 24,   // rezoning cycle for non-industrial city parcels
+    },
+
+    // Earthwork unit costs by slope band ($/acre)
+    // RSMeans 2024 Site Work & Landscape Cost Data, San Antonio labour market adjustment
+    // NOTE: WO 07 ingest does not capture mean slope. All parcels currently default to flat.
+    // Basis: assumed
+    earthworkFlatUsdPerAcre:     8_000,
+    earthworkRollingUsdPerAcre: 25_000,
+    earthworkSteepUsdPerAcre:   55_000,
+
+    costModelSource:       'ERCOT CREZ cost studies; RSMeans 2024 Site Work; San Antonio DSD stated timelines; industry benchmarks',
+    costModelLastReviewed: '2025-08',
+  },
 }
