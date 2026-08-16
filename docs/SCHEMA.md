@@ -284,6 +284,156 @@
 
 ---
 
+## ParcelEstimate — per-parcel cost output shape
+
+> Used by `backend/src/parcel/score.ts` → `estimateParcel()` and `scoreAll()`.
+> No API route exists yet (Phase 2). This section documents the data shape before
+> any backend/src/schemas/ type references it.
+
+```jsonc
+{
+  // ── Parcel identity ────────────────────────────────────────────────────────
+  "parcel_id":    "155887",
+  "address":      "1234 INDUSTRIAL BLVD",
+  "county":       "bexar",           // CountyConfig.id
+  "acres":        227.3,
+  "zoning":       "outside-jurisdiction",  // value from ingest row
+  "flood_buildable_pct": 0.97,       // 1 = fully buildable; null = no flood data
+
+  // ── Parcel-specific CapEx components ──────────────────────────────────────
+  // These costs only exist at parcel grain and are not in the region tool.
+  "parcel_capex": {
+    "land_cost_usd":          12540000,  // LandVal ÷ PVS ratio; basis: "modeled"
+    "interconnect_capex_usd":  4200000,  // dist_to_tx_line_m × $/mile spur + substation
+    "fiber_capex_usd":          380000,  // dist_to_ixp_km × $/mile conduit
+    "entitlement_cost_usd":    620000,   // entitlement_months × carrying cost on land
+    "sitework_usd":             180000,  // slope band → $/acre × acres
+    "total_usd":              17920000   // sum of components above
+  },
+
+  // ── Full site cost breakdown (from engine) ────────────────────────────────
+  // The engine's CapexResult, OpexResult, FinanceResult — same shape as POST /estimate.
+  "capex": {
+    "land_usd":         12540000,   // = parcel_capex.land_cost_usd (parcel wins region value)
+    "construction_usd": 85000000,
+    "electrical_usd":   12000000,
+    "cooling_usd":       9500000,
+    "it_fitout_usd":    18000000,
+    "total_usd":       137040000   // engine capex total including parcel_capex components
+  },
+  "opex_annual": {
+    "power_usd":       9200000,
+    "water_usd":        420000,
+    "staff_usd":       3100000,
+    "maintenance_usd": 1800000,
+    "taxes_usd":        950000,
+    "connectivity_usd": 600000,
+    "total_usd":      16070000
+  },
+  "finance": {
+    "capex_per_kw":         13704,   // $/kW; parcel-adjusted total ÷ capacity
+    "lifetime_cost_per_kw": 1960,    // $/kW; |NPV| ÷ capacity
+    "npv_usd":           -210000000,
+    "payback_years":          8.5,
+    "ranges": {
+      "low":  { "npv_usd": -188000000, "lifetime_per_kw": 1740 },
+      "base": { "npv_usd": -210000000, "lifetime_per_kw": 1960 },
+      "high": { "npv_usd": -245000000, "lifetime_per_kw": 2290 }
+    }
+  },
+
+  // ── Composite score and ranking ───────────────────────────────────────────
+  "rank":           1,               // position within the scored county set
+  "weighted_score": 0.782,           // 0–1, higher = better; same formula as region tool
+  "non_cost_scores": {
+    "risk_score":                 null,
+    "renewable_pct":              null,
+    "low_carbon_pct":             null,
+    "latency_ms":                 null,
+    "grid_interconnection_years": null
+  },
+
+  // ── Provenance ────────────────────────────────────────────────────────────
+  // One entry per driver value used in this estimate.
+  // Same shape as data_provenance in POST /estimate.
+  // "region_key" is the county region key (e.g. "us-tx-ercot") when the value
+  // came from regions.json, or the parcel_id when measured at parcel grain.
+  "provenance": [
+    {
+      "region_key":    "155887",          // parcel_id for parcel-grain figures
+      "driver":        "land_cost_per_acre_usd",
+      "value":         55176,
+      "source_url":    "https://maps.bexar.org/arcgis/rest/services/Parcels/MapServer/0/query",
+      "last_verified": "2025-08"
+    },
+    {
+      "region_key":    "us-tx-ercot",     // region key for county-fallback figures
+      "driver":        "construction_cost_per_kw",
+      "value":         850,
+      "source_url":    "https://…",
+      "last_verified": "2025-06"
+    }
+    // … one entry per driver
+  ],
+
+  // ── Gaps ──────────────────────────────────────────────────────────────────
+  // Drivers with no figure. Same shape as data_gaps in POST /estimate.
+  "gaps": [
+    {
+      "driver": "grid_interconnection_years",
+      "reason": "ERCOT queue data requires Docling PDF pipeline; value is null until populated"
+    }
+  ],
+
+  // ── Confidence summary ────────────────────────────────────────────────────
+  "confidence": {
+    "sourced": 4,
+    "modeled": 3,
+    "assumed": 2,
+    "missing": 1
+  }
+}
+```
+
+### ParcelProject — project parameters for parcel scoring
+
+Same as the `project` object in `POST /estimate`, reused without change.
+`scoreAll(rows, project, county)` accepts a `ParcelProject`.
+
+```jsonc
+{
+  "capacity_kw":    10000,
+  "design_pue":     1.4,
+  "design_wue":     0.4,
+  "lifetime_years": 20,
+  "discount_rate":  0.08,
+  "weights": {
+    "total_cost":     0.50,
+    "risk":           0.20,
+    "sustainability": 0.15,
+    "latency":        0.15
+  }
+}
+```
+
+### Parcel-specific CapEx constants (stored in CountyConfig.costModel)
+
+Every constant must carry a `method` string explaining its derivation.
+A number with no defensible origin is `basis: "assumed"` and visible in confidence counts.
+
+| Constant | Description | Basis |
+|---|---|---|
+| `txSpurCostPerMileUsd` | Transmission spur build cost per mile (single-circuit 138 kV) | assumed |
+| `substationAllowanceUsd` | Flat substation allowance per project (sized to capacity) | assumed |
+| `fiberConduitPerMileUsd` | Fiber conduit cost per mile (directional bore, underground) | assumed |
+| `entitlementMonthsByZoning` | Months of entitlement by zoning status (`industrial`, `outside-jurisdiction`, `rezoning-needed`) | assumed |
+| `earthworkFlatUsdPerAcre` | Earthwork unit cost for flat sites (0–2% mean slope) | assumed |
+| `earthworkRollingUsdPerAcre` | Earthwork unit cost for rolling sites (2–5% mean slope) | assumed |
+| `earthworkSteepUsdPerAcre` | Earthwork unit cost for steep sites (>5% mean slope) | assumed |
+| `regionKey` | regions.json key for county-level fallback drivers | — |
+
+---
+
 ## GET /health
 
 Returns `200 OK` with a small JSON body:
