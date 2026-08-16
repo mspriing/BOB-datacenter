@@ -176,6 +176,48 @@ export function estimateParcel(
     incentive_usd:           0,  // parcel extra already baked into capexParams.incentive_usd
   })
 
+  // ── Parcel capex provenance (one entry per component) ─────────────────────
+  // These are not in the driver adapter — they are outputs of computeParcelCapex,
+  // which uses CountyConfig.costModel constants as inputs.
+  const costModelSource = county.costModel.costModelSource
+  const costModelDate   = county.costModel.costModelLastReviewed
+
+  provenance.push({
+    region_key:    row.parcel_id,
+    driver:        'interconnect_capex_usd',
+    value:         parcelCapex.interconnect_capex_usd,
+    source_url:    costModelSource,
+    last_verified: costModelDate,
+  })
+  provenance.push({
+    region_key:    row.parcel_id,
+    driver:        'fiber_capex_usd',
+    value:         row.dist_to_ixp_km !== null ? parcelCapex.fiber_capex_usd : null,
+    source_url:    costModelSource,
+    last_verified: costModelDate,
+  })
+  provenance.push({
+    region_key:    row.parcel_id,
+    driver:        'entitlement_cost_usd',
+    value:         parcelCapex.entitlement_cost_usd,
+    source_url:    costModelSource,
+    last_verified: costModelDate,
+  })
+  provenance.push({
+    region_key:    row.parcel_id,
+    driver:        'sitework_usd',
+    value:         parcelCapex.sitework_usd,
+    source_url:    costModelSource,
+    last_verified: costModelDate,
+  })
+  provenance.push({
+    region_key:    row.parcel_id,
+    driver:        'land_cost_usd',
+    value:         parcelCapex.land_cost_usd,
+    source_url:    `${county.parcelSource.url}/query`,
+    last_verified: costModelDate,
+  })
+
   // ── Gaps ───────────────────────────────────────────────────────────────────
   const gaps: ParcelEstimate['gaps'] = []
   if (drivers.grid_interconnection_years === null) {
