@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import { estimateRouter } from './routes/estimate.js'
 import { healthRouter } from './routes/health.js'
+import { parcelsRouter } from './routes/parcels.js'
 import { watsonxConfigFromEnv } from './llm/client.js'
 
 const app = express()
@@ -11,10 +12,12 @@ const corsOrigin = process.env.CORS_ORIGIN
 app.use(cors(corsOrigin ? { origin: corsOrigin } : undefined))
 app.use(express.json())
 
-app.use('/health',      healthRouter)
-app.use('/estimate',    estimateRouter)
-app.use('/api/health',  healthRouter)
+app.use('/health',       healthRouter)
+app.use('/estimate',     estimateRouter)
+app.use('/parcels',      parcelsRouter)
+app.use('/api/health',   healthRouter)
 app.use('/api/estimate', estimateRouter)
+app.use('/api/parcels',  parcelsRouter)
 
 const PORT = process.env.PORT ?? 3001
 app.listen(PORT, () => {
