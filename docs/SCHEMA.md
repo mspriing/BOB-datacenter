@@ -284,6 +284,139 @@
 
 ---
 
+## Parcel API endpoints
+
+> Phase 2. No API keys, no authentication. Read-only. All reads go through
+> `backend/src/parcel/repository.ts`.
+>
+> Error shape reuses the existing convention:
+> `{ "error": "string", "details"?: any }`
+
+---
+
+### GET /parcels
+
+Paged list of parcel summaries — light rows for the map and ranked list.
+Full cost breakdowns are in `GET /parcels/:id`.
+
+**Query parameters**
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `county` | string | `bexar` | County key (must match a `CountyConfig.id`) |
+| `page` | integer ≥ 1 | `1` | Page number |
+| `per_page` | integer 1–200 | `50` | Results per page |
+| `bbox` | `minLng,minLat,maxLng,maxLat` | — | Spatial filter; centroid must be inside |
+| `min_acres` | number | — | Minimum parcel size |
+| `max_acres` | number | — | Maximum parcel size |
+| `max_land_cost_per_acre` | number | — | Maximum modeled land cost $/acre |
+| `max_dist_tx_m` | number | — | Maximum distance to ≥138 kV line (metres) |
+| `exclude_flood` | boolean | `false` | Exclude parcels with `flood_buildable_pct < 1.0` |
+| `zoning` | string | — | Comma-separated zoning tags to include (e.g. `outside-jurisdiction,industrial`) |
+| `capacity_kw` | integer | `10000` | IT load for scoring (kW) |
+| `design_pue` | number | `1.4` | PUE for scoring |
+| `lifetime_years` | integer | `20` | NPV horizon for scoring |
+| `discount_rate` | number | `0.08` | WACC for scoring |
+| `weights` | JSON string | defaults | Ranking weights: `{"total_cost":0.5,"risk":0.2,...}` |
+| `sort_by` | `rank`\|`acres`\|`lifetime_cost_per_kw`\|`land_cost_per_acre` | `rank` | Sort field |
+
+**Response 200**
+
+```jsonc
+{
+  "county":      "bexar",
+  "total":       412,          // total matching parcels (before pagination)
+  "page":        1,
+  "per_page":    50,
+  "parcels": [
+    {
+      "parcel_id":              "155887",
+      "address":                "1234 INDUSTRIAL BLVD",
+      "acres":                  227.3,
+      "zoning":                 "outside-jurisdiction",
+      "flood_buildable_pct":    0.97,
+      "dist_to_tx_line_m":      1850,
+      "dist_to_ixp_km":         14.2,
+      "lat":                    29.4512,
+      "lng":                   -98.5024,
+      "lifetime_cost_per_kw":   1842,
+      "capex_per_kw":           12870,
+      "land_cost_per_acre_usd": 55176,
+      "rank":                   3,
+      "weighted_score":         0.782
+    }
+    // … up to per_page items
+  ]
+}
+```
+
+**Errors**
+- `400` — invalid query parameter (Zod validation failure)
+- `404` — county not found
+
+---
+
+### GET /parcels/:id
+
+Full `ParcelEstimate` for one parcel (see §ParcelEstimate above for shape).
+
+**Query parameters**: same `capacity_kw`, `design_pue`, `lifetime_years`,
+`discount_rate` as the list endpoint (scoring context).
+
+`county` query param selects the county; defaults to `bexar`.
+
+**Response 200** — the full `ParcelEstimate` object (see §ParcelEstimate).
+
+**Errors**
+- `404` — `{ "error": "parcel not found", "parcel_id": "..." }`
+
+---
+
+### POST /parcels/search
+
+Structured criteria in, ranked parcel ids and summaries out.
+Accepts the same filter vocabulary as `GET /parcels` but as a JSON body
+(avoids URL-length limits on large bbox or zoning lists).
+
+**Request body**
+
+```jsonc
+{
+  "county": "bexar",    // optional; defaults to "bexar"
+
+  "project": {          // scoring context
+    "capacity_kw":    10000,
+    "design_pue":     1.4,
+    "design_wue":     0.4,
+    "lifetime_years": 20,
+    "discount_rate":  0.08,
+    "weights": { "total_cost": 0.5, "risk": 0.2, "sustainability": 0.15, "latency": 0.15 }
+  },
+
+  "filters": {          // all optional; omit = no filter on that dimension
+    "bbox":                    { "minLng": -99.0, "minLat": 29.1, "maxLng": -98.0, "maxLat": 29.9 },
+    "min_acres":               25,
+    "max_acres":               500,
+    "max_land_cost_per_acre":  80000,
+    "max_dist_tx_m":           5000,
+    "exclude_flood":           true,
+    "zoning":                  ["outside-jurisdiction", "industrial"]
+  },
+
+  "pagination": {
+    "page":     1,
+    "per_page": 50
+  }
+}
+```
+
+**Response 200** — same shape as `GET /parcels` 200.
+
+**Errors**
+- `400` — Zod validation failure
+
+---
+
 ## ParcelEstimate — per-parcel cost output shape
 
 > Used by `backend/src/parcel/score.ts` → `estimateParcel()` and `scoreAll()`.
