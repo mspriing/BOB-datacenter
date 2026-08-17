@@ -84,3 +84,31 @@ export function fetchParcels(q: ParcelQuery): Promise<ApiResult<ParcelListRespon
 export function fetchParcel(id: string, county = 'bexar'): Promise<ApiResult<unknown>> {
   return get<unknown>(`/parcels/${encodeURIComponent(id)}?county=${encodeURIComponent(county)}`)
 }
+
+// ── Criteria parsing ──────────────────────────────────────────────────────────
+
+export interface CriteriaResult {
+  filters: ParcelFilters
+  weights: Record<string, number>
+  /** Phrases the parser could not express as a filter. Always shown. */
+  unparsed: string[]
+  source: 'watsonx' | 'fallback'
+}
+
+export async function parseCriteria(text: string): Promise<ApiResult<CriteriaResult>> {
+  try {
+    const res = await fetch(`${API_BASE}/api/parcels/criteria`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ text }),
+    })
+    if (!res.ok) {
+      let message = `Request failed (${res.status})`
+      try { const b = await res.json(); if (b?.error) message = String(b.error) } catch { /* keep */ }
+      return { data: null, error: message }
+    }
+    return { data: (await res.json()) as CriteriaResult, error: null }
+  } catch (e) {
+    return { data: null, error: e instanceof Error ? e.message : 'Network error' }
+  }
+}

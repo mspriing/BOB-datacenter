@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowRight, MapPin, AlertTriangle, Loader2 } from 'lucide-react'
 import { Card, Explain, Chip, Rule } from '../components/Primitives'
+import { CriteriaBox } from '../components/CriteriaBox'
 import { ParcelMap, PARCEL_SHADE, type ParcelShadeKey } from '../components/map/ParcelMap'
 import { fetchParcels, type ParcelSummary, type ParcelQuery, type SortBy } from '../lib/parcelApi'
 import { usd } from '../lib/format'
@@ -131,6 +132,10 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
       <div className="grid gap-3.5 lg:grid-cols-[320px_1fr] lg:items-start">
         {/* ── Filter rail ───────────────────────────────────────────────── */}
         <div className="space-y-3.5 lg:sticky lg:top-4">
+          {/* Applying merges onto the same `query` the rail writes to, so the
+              sentence and the controls can never disagree about what is set. */}
+          <CriteriaBox onApply={f => patch(f)} />
+
           <Card title="Narrow the set"
             note={total === null ? '—' : `${total.toLocaleString('en-US')} match`}>
             <div className="space-y-4 p-5">

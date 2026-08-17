@@ -128,33 +128,48 @@ export function estimateParcel(
   )
 
   // ── Engine capex ──────────────────────────────────────────────────────────
-  // Land cost comes from the parcel calculation, not the engine's per-acre formula.
-  // We pass land_cost_per_acre_usd to CapexParams and let the engine compute
-  // land_usd = acres × $/acre, which must equal parcelCapex.land_cost_usd.
-  // The parcel capex components (interconnect, fiber, entitlement, sitework) are
-  // added as an increment to the engine's land figure via a land_usd override
-  // equivalent: we add the extra components into the incentive_usd offset (negative
-  // incentive = extra cost) so that capex.total_usd reflects the full parcel cost.
+  // The engine sizes land by what a campus of this capacity needs — about 1.2
+  // acres per megawatt, so 12 acres for a 10 MW build — and charges that many
+  // acres at the parcel's price. That is the right question for comparing
+  // regions and the wrong one for buying a parcel: a seller will not split 12
+  // acres off an 85-acre listing. This tool prices acquisition, so the whole
+  // parcel is charged.
   //
-  // Derivation:
-  //   engine.land_usd            = acres × land_cost_per_acre_usd
-  //   parcel extra               = interconnect + fiber + entitlement + sitework
-  //   effective incentive offset = −parcel_extra  (adds cost rather than subtracts)
+  // Both adjustments ride the same lever Bob used for the site-specific costs —
+  // a negative incentive adds cost — which keeps backend/src/engine/ untouched
+  // and the region tool's arithmetic exactly as it was.
   //
-  // This keeps the engine formulas unchanged while producing a parcel-correct total.
+  //   parcel extra    = interconnect + fibre + entitlement + sitework
+  //   land shortfall  = whole-parcel land − the acreage the engine charged for
+  //   offset          = incentive − parcel_extra − land_shortfall
+  //
+  // The engine's own land figure is read back from a first pass rather than
+  // recomputed here, so the acreage rule stays owned by the engine.
   const parcelExtra =
     parcelCapex.interconnect_capex_usd +
     parcelCapex.fiber_capex_usd +
     parcelCapex.entitlement_cost_usd +
     parcelCapex.sitework_usd
 
-  const capexParams: CapexParams = {
+  const baseParams: CapexParams = {
     capacity_kw:              project.capacity_kw,
     land_cost_per_acre_usd:   drivers.land_cost_per_acre_usd,
     construction_cost_per_kw: drivers.construction_cost_per_kw,
-    incentive_usd:            drivers.incentive_usd - parcelExtra,  // negative adds cost
+    incentive_usd:            drivers.incentive_usd - parcelExtra,
   }
-  const capex = computeCapex(capexParams)
+
+  const firstPass     = computeCapex(baseParams)
+  const landShortfall = parcelCapex.land_cost_usd - firstPass.land_usd
+
+  const capexParams: CapexParams = {
+    ...baseParams,
+    incentive_usd: drivers.incentive_usd - parcelExtra - landShortfall,
+  }
+
+  // Report the land line as what is actually being bought, so the printed
+  // components still sum to the total.
+  const rawCapex = computeCapex(capexParams)
+  const capex    = { ...rawCapex, land_usd: parcelCapex.land_cost_usd }
 
   // ── Engine opex ────────────────────────────────────────────────────────────
   const opexParams: OpexParams = {

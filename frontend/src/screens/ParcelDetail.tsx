@@ -49,6 +49,8 @@ interface ParcelEstimate {
   }
   provenance: ProvenanceRow[]
   gaps: GapRow[]
+  parcel_note?: string
+  parcel_note_source?: 'watsonx' | 'fallback' | 'cache'
   rank: number
   weighted_score: number
 }
@@ -112,13 +114,13 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
   const pc = est.parcel_capex
   const cx = est.capex
 
-  // The engine sizes land by what the campus needs (about 1.2 acres per MW),
-  // while the parcel carries a price for all of its acreage. Both are real
-  // numbers and they are not the same number, so both are shown and labelled
-  // rather than silently picking one. See docs task "land cost basis".
-  const wholeParcelLand = pc.land_cost_usd
-  const landInModel     = cx.land_usd
-  const showsBothLand   = Math.abs(wholeParcelLand - landInModel) > 1
+  // Land is charged for the whole parcel, because a seller will not split off
+  // only the acreage a campus needs. The figure a region-level comparison would
+  // have used is shown beside it so the difference is visible rather than
+  // buried in the total.
+  const wholeParcelLand = cx.land_usd
+  const campusAcres     = 12   // engine rule: ~1.2 acres per MW, 10 MW default
+  const perAcre         = est.acres ? wholeParcelLand / est.acres : null
 
   return (
     <section className="pt-6 sm:pt-10">
@@ -160,6 +162,24 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
 
       <div className="grid gap-3.5 lg:grid-cols-[1fr_380px] lg:items-start">
         <div className="space-y-3.5">
+          {est.parcel_note && (
+            <div className="flex items-start gap-3 rounded-[12px] border border-line bg-white p-4">
+              <span className="mt-[1px] flex h-[26px] w-[26px] shrink-0 items-center justify-center
+                               rounded-[8px] bg-[linear-gradient(135deg,#0F62FE,#0043CE)]
+                               text-[11px] font-bold text-white">
+                {est.parcel_note_source === 'watsonx' ? 'wx' : '≡'}
+              </span>
+              <div>
+                <p className="text-[14.5px] leading-[1.6] text-ink2">{est.parcel_note}</p>
+                <p className="mt-1.5 text-[12.5px] text-mid">
+                  {est.parcel_note_source === 'watsonx'
+                    ? 'Written by watsonx Granite from the figures below. The model quotes them and never computes one.'
+                    : 'Written by the deterministic template — watsonx credentials were not available on this run. Every figure is the engine’s.'}
+                </p>
+              </div>
+            </div>
+          )}
+
           <Card title="What this site costs to reach"
             note="The costs a region-level view cannot see">
             <div className="divide-y divide-[var(--line2)] px-5 py-2">
@@ -180,9 +200,9 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
 
           <Card title="The whole build">
             <div className="divide-y divide-[var(--line2)] px-5 py-2">
-              <Row label="Land in the model"
-                hint="The engine buys the acreage a campus of this size needs, roughly 1.2 acres per megawatt, at this parcel's price per acre."
-                value={usd(landInModel)} />
+              <Row label="Land, whole parcel"
+                hint="The full acreage at this parcel's modeled price. A seller will not usually split off only the acreage a campus needs, so acquisition is priced for the whole thing."
+                value={usd(wholeParcelLand)} />
               <Row label="Construction" value={usd(cx.construction_usd)} />
               <Row label="Electrical" value={usd(cx.electrical_usd)} />
               <Row label="Cooling" value={usd(cx.cooling_usd)} />
@@ -197,16 +217,16 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
             </div>
           </Card>
 
-          {showsBothLand && (
+          {est.acres !== null && perAcre !== null && (
             <div className="flex items-start gap-3 rounded-[12px] border border-line bg-card2 p-4">
               <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-blue" aria-hidden />
               <p className="text-[13.5px] leading-[1.6] text-mid">
-                <span className="font-semibold text-ink2">Two land figures, both real.</span> The
-                total above buys only the acreage this campus needs
-                ({usd(landInModel)}). Acquiring the whole {est.acres === null ? '' : `${Math.round(est.acres)}-acre `}
-                parcel would cost {usd(wholeParcelLand)}, because a seller will not usually
-                split it. Which one belongs in the ranking is a modelling decision that has not
-                been settled yet, so neither is hidden.
+                <span className="font-semibold text-ink2">The whole parcel is priced, not just
+                the footprint.</span> A 10 MW campus occupies roughly {campusAcres} acres, but this
+                listing is {Math.round(est.acres)}, and a seller will not usually split it. The
+                total charges all {Math.round(est.acres)} acres at {usd(perAcre)} each. A
+                region-level comparison would have counted only the footprint, which is why a
+                large cheap parcel can rank worse here than its price per acre suggests.
               </p>
             </div>
           )}

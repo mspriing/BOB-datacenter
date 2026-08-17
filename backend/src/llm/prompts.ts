@@ -118,3 +118,38 @@ IMPORTANT: tax_abatement_years and incentive_usd are NEGOTIATED per deal, not pu
 Only extract them when the text explicitly mentions an abatement period or a specific incentive dollar amount.
 Do NOT infer or estimate them.`
 }
+
+/**
+ * Criteria parsing: a developer's sentence becomes parcel filters and ranking
+ * weights. The model proposes; validateParsed() in parseCriteria.ts is what
+ * decides, so an invented key here is dropped rather than trusted.
+ */
+export function buildParseCriteriaPrompt(
+  text:        string,
+  filterKeys:  string[],
+  weightKeys:  string[],
+): string {
+  return `You are helping a data-center developer search a county's parcels.
+Turn their sentence into filters and ranking weights.
+
+The ONLY permitted filter keys are: ${filterKeys.join(', ')}
+The ONLY permitted weight keys are: ${weightKeys.join(', ')}
+
+Rules:
+- Use no key outside those lists. Do not invent filters.
+- Distances are metres. Areas are acres. Money is US dollars.
+- Weights are decimals between 0 and 1 and should sum to about 1.
+- Anything the reader asked for that you cannot express with these keys goes in
+  "unparsed", quoted from their words. Never silently drop a criterion.
+
+Sentence: """
+${text}
+"""
+
+Return ONLY valid JSON:
+{
+  "filters":  { "<permitted filter key>": <number or boolean> },
+  "weights":  { "<permitted weight key>": <number 0-1> },
+  "unparsed": ["<phrase you could not express>"]
+}`
+}

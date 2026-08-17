@@ -5,14 +5,23 @@
  * GET  /parcels/:id      — full ParcelEstimate for one parcel
  * POST /parcels/search   — same as GET but criteria in JSON body
  *
+ * POST /parcels/criteria — a sentence becomes filters and weights
+ *
  * All reads go through parcelRepository (never open files directly here).
  * Spatial filtering uses the Flatbush index; no full-scan per request.
  *
- * Rule: no LLM calls. No cost math. Only scoring (estimateParcel) and ranking
- * (scoreAll / rerank) happen here — both are deterministic, tested functions.
+ * Rule: no cost math here. Scoring (estimateParcel) and ranking (scoreAll /
+ * rerank) are deterministic, tested functions and stay that way.
+ *
+ * Two LLM calls do live here, both bounded: the per-parcel note on the detail
+ * route, generated for one parcel at a time and rejected if it contains a
+ * figure absent from the estimate; and criteria parsing, which only interprets
+ * and never runs a search. Neither produces a number that reaches the maths.
  */
 
 import { Router } from 'express'
+import { parcelNote } from '../llm/parcelNote.js'
+import { parseCriteria } from '../llm/parseCriteria.js'
 import { fileRepository } from '../parcel/repository.js'
 import { bexarConfig } from '../ingest/counties/bexar.js'
 import { getOrBuildIndex, queryBbox } from '../parcel/spatialIndex.js'
@@ -209,7 +218,7 @@ parcelsRouter.get('/', (req, res) => {
 
 // ── GET /parcels/:id ───────────────────────────────────────────────────────────
 
-parcelsRouter.get('/:id', (req, res) => {
+parcelsRouter.get('/:id', async (req, res) => {
   const parsed = DetailQuerySchema.safeParse(req.query)
   if (!parsed.success) {
     res.status(400).json({ error: 'Invalid query parameters', details: parsed.error.flatten() })
@@ -229,8 +238,14 @@ parcelsRouter.get('/:id', (req, res) => {
   }
 
   const project  = projectFromQuery(q)
-  const estimate = estimateParcel(row, project, county)
-  res.json({ ...estimate, rank: 0, weighted_score: 0 })
+  const estimate = { ...estimateParcel(row, project, county), rank: 0, weighted_score: 0 }
+
+  // The note is generated here, for the one parcel being opened. It is never
+  // produced during a list or a search — 3,046 generations per run would be
+  // expensive and nobody would read them.
+  const note = await parcelNote(estimate)
+
+  res.json({ ...estimate, parcel_note: note.text, parcel_note_source: note.source })
 })
 
 // ── POST /parcels/search ───────────────────────────────────────────────────────
@@ -297,4 +312,26 @@ parcelsRouter.post('/search', (req, res) => {
     parcels:  paged.map(e => toSummary(e, rowById.get(e.parcel_id)!)),
   }
   res.json(response)
+})
+
+// ── POST /parcels/criteria ─────────────────────────────────────────────────────
+//
+// A sentence becomes filters and weights. This endpoint only interprets — it
+// runs no search and changes nothing. The client shows the interpretation back
+// to the reader, who applies it. Acting on a model's reading of intent without
+// showing it first is how a tool quietly answers a question nobody asked.
+
+parcelsRouter.post('/criteria', async (req, res) => {
+  const text = typeof req.body?.text === 'string' ? req.body.text : ''
+  if (!text.trim()) {
+    res.status(400).json({ error: 'text is required' })
+    return
+  }
+  if (text.length > 2000) {
+    res.status(400).json({ error: 'text too long', max: 2000 })
+    return
+  }
+
+  const result = await parseCriteria(text)
+  res.json(result)
 })
