@@ -96,6 +96,10 @@ function resolveDriver(
         region_key:    parcelId,
         driver:        fieldName,
         value:         parcelDriver.value,
+        // Basis was computed here and then dropped from the provenance item, so
+        // the parcel table could not distinguish a sourced figure from a modeled
+        // one — the distinction the whole tool rests on.
+        basis:         parcelDriver.basis,
         source_url:    parcelDriver.source_url,
         last_verified: parcelDriver.last_verified,
       },
@@ -113,6 +117,7 @@ function resolveDriver(
       region_key:    regionKey,
       driver:        fieldName,
       value:         rv,
+      basis:         'assumed',
       source_url:    regionDriver?.source_url    ?? '',
       last_verified: regionDriver?.last_verified ?? '',
     },

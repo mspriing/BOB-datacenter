@@ -83,7 +83,18 @@ export interface ParcelEstimate {
  * same cost calculations — only the ranking step changes.
  */
 interface CostKey { countyId: string; project: Omit<ParcelProject, 'weights'> }
-type CachedCosts = Map<string, Omit<ParcelEstimate, 'rank' | 'weighted_score'>[]>
+
+/**
+ * Keyed by parcel id inside each project key, not stored as one flat array.
+ *
+ * It was an array, and scoreAll returned the whole of it on every call after the
+ * first — so the `rows` argument was honoured on the cold run and silently
+ * discarded thereafter. Every filtered request got all 3,046 parcels back, which
+ * made the entire filter rail look wired-up and do nothing. Keying by parcel id
+ * keeps the "compute once, re-rank cheaply" intent while letting a caller ask
+ * for a subset.
+ */
+type CachedCosts = Map<string, Map<string, Omit<ParcelEstimate, 'rank' | 'weighted_score'>>>
 
 const _costsCache: CachedCosts = new Map()
 
@@ -300,13 +311,20 @@ export function scoreAll(
 ): ParcelEstimate[] {
   const cacheKey = makeCostKey(county.id, project)
 
-  // ── Cold run: compute costs and cache ────────────────────────────────────
-  if (!_costsCache.has(cacheKey)) {
-    const estimates = rows.map(row => estimateParcel(row, project, county))
-    _costsCache.set(cacheKey, estimates)
-  }
+  // ── Cost cache, per parcel ───────────────────────────────────────────────
+  // Compute only what this call actually asks for and has not been priced yet.
+  // Ranking then runs over the requested set, so rank 1 means best among the
+  // parcels that matched the filters rather than best in the county.
+  let byId = _costsCache.get(cacheKey)
+  if (!byId) { byId = new Map(); _costsCache.set(cacheKey, byId) }
 
-  const cached = _costsCache.get(cacheKey)!
+  const cached = rows.map(row => {
+    const hit = byId!.get(row.parcel_id)
+    if (hit) return hit
+    const fresh = estimateParcel(row, project, county)
+    byId!.set(row.parcel_id, fresh)
+    return fresh
+  })
 
   // ── Rank (re-sort over cached costs — weights only affect ranking) ────────
   const w: Weights = { ...DEFAULT_WEIGHTS, ...(project.weights ?? {}) }

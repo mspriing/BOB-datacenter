@@ -76,9 +76,27 @@ export interface ParcelRepository {
 /** Cache so we only read + parse once per county per process lifetime. */
 const _cache: Map<string, ParcelRow[]> = new Map()
 
+/**
+ * A county id becomes a filesystem path, so it is validated here rather than
+ * trusted. The routes already reject unknown counties against a registry, but
+ * this module is a public interface: any later caller — a script, the criteria
+ * parser, a second route — could pass a value straight from a request. A county
+ * of "../../../etc/passwd" would otherwise escape DATA_DIR entirely.
+ *
+ * Lowercase letters, digits and hyphens are enough for every county id we use.
+ */
+const COUNTY_ID = /^[a-z0-9-]+$/
+
 function loadCounty(county: string): ParcelRow[] {
   if (_cache.has(county)) return _cache.get(county)!
+  if (!COUNTY_ID.test(county)) {
+    throw new Error(`invalid county id: ${JSON.stringify(county)}`)
+  }
   const path = resolve(DATA_DIR, `${county}.rows.json`)
+  // Belt and braces: even a regex-clean id must land inside the data directory.
+  if (!path.startsWith(DATA_DIR)) {
+    throw new Error(`county id escapes the data directory: ${JSON.stringify(county)}`)
+  }
   const rows: ParcelRow[] = JSON.parse(readFileSync(path, 'utf-8'))
   _cache.set(county, rows)
   return rows
