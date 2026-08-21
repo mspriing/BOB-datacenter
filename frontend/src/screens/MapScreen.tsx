@@ -19,9 +19,11 @@ export function MapScreen({ pinned, onTogglePin, onClear, go }: {
           Find the places worth pricing before you price them.
         </h1>
         <p className="text-[17px] leading-[1.65] text-mid">
-          Every state is shaded on the driver you pick. The {US_METROS.length} marked metros carry
-          the deepest driver coverage, so those are the ones you can pin and compare. Pin up
-          to three and the panel prices them on the whole {15} years.
+          Regions are shaded on the driver you pick, and hatched where no figure exists yet.
+          Pinning is limited to the {US_METROS.length} marked metros because a site cannot be
+          ranked without land price, cost to build, power price and staffing cost together, and
+          those {US_METROS.length} are the only US regions carrying all four today. Pin up to
+          three and the panel prices them across the whole {15} years.
         </p>
       </div>
 
@@ -58,7 +60,7 @@ export function MapScreen({ pinned, onTogglePin, onClear, go }: {
       </div>
 
       {/* What the shading rests on — full width, three-column row */}
-      <Card title="What the shading rests on">
+      <Card title="How complete this data is">
         <div className="grid gap-5 p-5 text-[13.5px] leading-[1.6] text-mid sm:grid-cols-3">
           <p>
             Hazard risk is published for all {US_STATES.length + US_METROS.length} regions.
@@ -66,14 +68,15 @@ export function MapScreen({ pinned, onTogglePin, onClear, go }: {
             remaining six.
           </p>
           <p>
-            Clean power, distance to users and cost to build are published for the metros
-            and derived for the states. Derived figures are labelled on hover and the
-            derivation is written out on the sources page.
+            Clean power is held for all {US_STATES.length + US_METROS.length} US regions, mostly
+            derived from the state grid mix. Distance to users and cost to build reach 13 of them.
+            Derived figures are labeled on hover and the derivation is written out on the
+            sources page.
           </p>
           <div className="flex flex-col gap-2.5">
             <p>
-              Land price and property tax exist only for the {7} regions where a figure was
-              published. They are left blank everywhere else rather than filled in with a guess.
+              Land price and property tax cover the same 13 regions. Everywhere else stays blank
+              rather than filled in with a guess.
             </p>
             <button onClick={() => go('known-gaps')} className="link-inline self-start">
               Read the full list of gaps

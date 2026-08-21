@@ -6,4 +6,6 @@ export const PROJECT = {
   discountRate: 0.08,
   annualGwh: 122.64,
 }
-export const COVERAGE = { sourced: 259, modeled: 237, assumed: 582, regions: 77, drivers: 13 }
+// COVERAGE is generated from data/regions.json by scripts/gen-coverage.mjs.
+// Re-exported here so every existing import keeps working.
+export { COVERAGE } from './coverage'

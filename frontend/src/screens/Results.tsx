@@ -100,10 +100,7 @@ export function Results({ projections, setProjections, pinned, chosen, go, serve
             <Rule />
             <span>engine {server.engine_version}</span>
             <Rule />
-            <span>
-              recommendation written by{' '}
-              {server.narrative.source === 'watsonx' ? 'watsonx Granite' : 'the deterministic template'}
-            </span>
+            <span>{server.data_provenance.length} figures with a source</span>
             {movedCount > 0 && (
               <>
                 <Rule />
@@ -225,29 +222,10 @@ export function Results({ projections, setProjections, pinned, chosen, go, serve
         <div className="border-t border-[var(--line2)]">
           <header className="panel-head">
             <h3>What the engine concluded</h3>
-            <span className="panel-note">Every figure calculated by the engine, each shown with the basis it carries</span>
+            <span className="panel-note">Calculated first, then written up. No language model wrote any of it.</span>
           </header>
           <div className="relative z-[2] p-6">
             <div className="space-y-4 text-[16px] leading-[1.75] text-ink2">
-              {server && (
-                <div className="rounded-[11px] border border-line bg-card2 px-5 py-4">
-                  <p className="label-xs mb-2">
-                    Written by {server.narrative.source === 'watsonx' ? 'watsonx Granite' : 'the deterministic template'},
-                    citing the engine&rsquo;s figures
-                  </p>
-                  <p className="text-[15.5px] leading-[1.7] text-ink2">{server.narrative.recommendation}</p>
-                  {server.flip_sentence && (
-                    <p className="mt-3 text-[14.5px] leading-[1.6] text-mid">{server.flip_sentence}</p>
-                  )}
-                  {server.data_gaps.length > 0 && (
-                    <p className="mt-3 text-[14px] leading-[1.6] text-warn">
-                      {server.data_gaps.length} driver{server.data_gaps.length === 1 ? '' : 's'} had no
-                      published value for this set and {server.data_gaps.length === 1 ? 'was' : 'were'} left
-                      out of the score rather than filled with a benchmark.
-                    </p>
-                  )}
-                </div>
-              )}
               <p>
                 <b className="font-semibold text-ink">
                   {leader.label} finishes first while costing {premiumPct.toFixed(1)}% more than
@@ -256,7 +234,7 @@ export function Results({ projections, setProjections, pinned, chosen, go, serve
                 {short(cheapest.label)} prices at {usd(cheapest.lifetimePerKw)} per kW against{' '}
                 {short(leader.label)}&rsquo;s {usd(leader.lifetimePerKw)}, a difference of $
                 {gapUsdM.toFixed(1)}M in today&rsquo;s money across {PROJECT.lifetimeYears} years.
-                The ranking still favours {short(leader.label)} because hazard risk, clean power
+                The ranking still favors {short(leader.label)} because hazard risk, clean power
                 and distance to your users are scored alongside cost rather than folded into it.
               </p>
               <p>
@@ -283,19 +261,19 @@ export function Results({ projections, setProjections, pinned, chosen, go, serve
                   {(ranked[ranked.length - 1].opexYear1.taxes / 1e6).toFixed(2)}M in property tax.
                 </p>
               )}
+              {server && server.data_gaps.length > 0 && (
+                <p className="text-[15px] leading-[1.65] text-warn">
+                  {server.data_gaps.length} driver{server.data_gaps.length === 1 ? '' : 's'} had no
+                  published value for this set and {server.data_gaps.length === 1 ? 'was' : 'were'} left
+                  out of the score rather than filled with a benchmark.
+                </p>
+              )}
             </div>
             {server && (
               <div className="mt-6 flex items-start gap-3 border-t border-[var(--line2)] pt-5">
-                <span className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[8px]
-                  bg-[linear-gradient(135deg,#0F62FE,#0043CE)] text-[12px] font-bold text-white
-                  shadow-[0_3px_9px_-3px_rgba(15,98,254,.55)]">
-                  {server.narrative.source === 'watsonx' ? 'wx' : '≡'}
-                </span>
                 <p className="text-[13.5px] leading-[1.55] text-mid">
-                  {server.narrative.source === 'watsonx'
-                    ? <>Written by watsonx Granite. The model quotes the engine&rsquo;s figures and never computes one itself.</>
-                    : <>Written by the deterministic template — watsonx credentials were not available on this run. Every figure is still the engine&rsquo;s.</>
-                  }
+                  The figures above recalculate in your browser as you move the projections. The
+                  source table below comes from the server&rsquo;s own run.
                 </p>
               </div>
             )}

@@ -4,6 +4,7 @@ import { Card, Reveal, Counter } from '../components/Primitives'
 import { COVERAGE } from '../data/project'
 import { DEFAULT_SITES } from '../data/defaultSites'
 import { US_METROS } from '../data/usRegions'
+import { INTL_REGIONS } from '../data/intlRegions'
 import type { Route } from '../lib/routes'
 import { PROJECT } from '../data/project'
 import {
@@ -16,6 +17,11 @@ const P: ProjectParams = {
   capacityKw: PROJECT.capacityMw * 1000, pue: PROJECT.pue,
   lifetimeYears: PROJECT.lifetimeYears, discountRate: PROJECT.discountRate, designWue: 0.4,
 }
+
+// The interconnection panel reads the dataset rather than a hand-typed fixture.
+// These three carry basis 'sourced' with a named grid operator behind each one,
+// which is the whole point of showing them.
+const QUEUE_KEYS = ['ca-toronto', 'fr-paris', 'nl-amsterdam'] as const
 
 export function Home({ go }: { go: (r: Route) => void }) {
   // Computed from the same engine the results page runs, so the worked example
@@ -145,25 +151,33 @@ export function Home({ go }: { go: (r: Route) => void }) {
               </p>
             </div>
             <div className="space-y-2.5">
-              {DEFAULT_SITES.map(s => (
-                <div key={s.key}
-                  className="flex items-center gap-4 rounded-[11px] border border-line bg-white/80 px-4 py-3.5">
-                  <Zap size={17} strokeWidth={2} className="shrink-0 text-blue" aria-hidden />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-[15px] font-medium text-ink">{s.label}</div>
-                    <div className="truncate text-[13px] text-mid">{s.place}</div>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <div className="num text-[19px] font-semibold leading-none text-ink">
-                      {s.base.gridWaitYears}
+              {QUEUE_KEYS.map(key => {
+                const r = INTL_REGIONS.find(x => x.key === key)
+                const cell = r?.drivers['grid_interconnection_years']
+                if (!r || !cell) return null
+                const [city, country] = r.label.split(/,\s*/)
+                return (
+                  <div key={key}
+                    className="flex items-center gap-4 rounded-[11px] border border-line bg-white/80 px-4 py-3.5">
+                    <Zap size={17} strokeWidth={2} className="shrink-0 text-blue" aria-hidden />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-[15px] font-medium text-ink">{city}</div>
+                      <div className="truncate text-[13px] text-mid">{country ?? ''}</div>
                     </div>
-                    <div className="text-[12px] text-mid">years to connect</div>
+                    <div className="shrink-0 text-right">
+                      <div className="num text-[19px] font-semibold leading-none text-ink">
+                        {cell.v}
+                      </div>
+                      <div className="text-[12px] text-mid">years to connect</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
               <p className="pt-1 text-[13px] leading-[1.55] text-mid">
-                Interconnection wait is the thirteenth driver in the dataset. These three
-                figures are placeholders until the queue pull lands.
+                Interconnection wait is the thirteenth driver in the dataset. These three figures
+                come from the grid operators that publish them, which are IESO, RTE and TenneT.
+                Amsterdam runs slowest because a Dutch court upheld a refusal of a new 70 MW
+                connection.
               </p>
             </div>
           </div>

@@ -302,7 +302,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
 
           <Card title="Where the modeled build cost comes from" note="Applies to 56 of the 63 US regions"><Prose>
             <p>Seven US regions carry a published cost to build. The other 56 come from the state staff cost index, fitted by least squares against those seven sourced figures, since labor drives most of the regional variation in what it costs to put capacity in the ground. This is not a published construction index.</p>
-            <p>Any figure produced this way is labelled <Chip tone="blue">modeled</Chip> wherever it appears, including on the map. It is a defensible estimate rather than a measurement, and it should not be quoted as one.</p>
+            <p>Any figure produced this way is labeled <Chip tone="blue">modeled</Chip> wherever it appears, including on the map. It is a defensible estimate rather than a measurement, and it should not be quoted as one.</p>
           </Prose></Card>
         </Page>
       )

@@ -98,7 +98,7 @@ export function Setup({ projections, setProjections, pinned, chosen, setChosen, 
               <Field label="Years to model" defaultValue="15"
                 explain="How far ahead to price. Running cost is summed across this many years and discounted back, so a longer horizon puts more weight on power and staff and less on the build." />
               <Field label="Discount rate" defaultValue="8%"
-                explain="What future money is worth to you today. A dollar of running cost in year 15 counts for less than one spent now, and a higher rate discounts it harder, which favours cheap-to-build sites." />
+                explain="What future money is worth to you today. A dollar of running cost in year 15 counts for less than one spent now, and a higher rate discounts it harder, which favors cheap-to-build sites." />
               <Field label="Water use per kWh" defaultValue="0.4 L"
                 explain="Litres of water your cooling design consumes per kilowatt hour of cooling energy. This is a choice you make in the design rather than a property of the region, which is why it sits here and not in the regional data." />
             </div>
@@ -190,8 +190,8 @@ export function Setup({ projections, setProjections, pinned, chosen, setChosen, 
               <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-[var(--warn)]" aria-hidden />
               <div className="text-[14px] leading-[1.6] text-[#5C3A00]">
                 <p className="mb-1.5">
-                  Some figures for these places have not been collected yet. The comparison will
-                  still run, but treat the ranking as partial until they are filled in.
+                  Some figures for these places have not been collected yet. The comparison still
+                  runs, though the ranking stays partial until they land.
                 </p>
                 <ul className="list-disc pl-5">
                   {thin.map(t => (
