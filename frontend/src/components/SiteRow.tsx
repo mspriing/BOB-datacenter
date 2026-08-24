@@ -3,15 +3,16 @@ import { Chip, Rule } from './Primitives'
 import { usd } from '../lib/format'
 import type { SiteResult } from '../lib/engine'
 
-export function SiteRow({ site, rank, perKw, winner }: {
-  site: SiteResult; rank: number; perKw: number; winner: boolean
+export function SiteRow({ site, rank, perKw, winner, lifetimeYears = 15 }: {
+  site: SiteResult; rank: number; perKw: number; winner: boolean; lifetimeYears?: number
 }) {
+  // Three segments, not five. Switchgear and cooling plant used to be their own
+  // slices, charged on top of the cost to build. The published build cost per kW
+  // already covers mechanical and electrical work, so they were counted twice.
   const parts = [
-    { label: 'Construction', usdM: site.capex.construction / 1e6, color: '#0F62FE' },
-    { label: 'Electrical', usdM: site.capex.electrical / 1e6, color: '#00A3B8' },
-    { label: 'Cooling', usdM: site.capex.cooling / 1e6, color: '#5A7EA8' },
-    { label: 'Land and fit out', usdM: (site.capex.land + site.capex.itFitout) / 1e6, color: '#8A73C4' },
-    { label: 'Running cost over 15 years', usdM: site.opexNpv / 1e6, color: '#B9C4D0' },
+    { label: 'Cost to build', usdM: site.capex.construction / 1e6, color: '#0F62FE' },
+    { label: 'Land', usdM: site.capex.land / 1e6, color: '#8A73C4' },
+    { label: `Running cost over ${lifetimeYears} years`, usdM: site.opexNpv / 1e6, color: '#B9C4D0' },
   ]
   const total = parts.reduce((a, p) => a + p.usdM, 0)
   const marker = ((perKw - site.rangeLow) / (site.rangeHigh - site.rangeLow)) * 100

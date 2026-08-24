@@ -93,8 +93,8 @@ export function Setup({ projections, setProjections, pinned, chosen, setChosen, 
                 explain="Your label for this comparison. It appears on the results and changes nothing in the maths." />
               <Field label="IT load, megawatts" defaultValue="10"
                 explain="The power your servers themselves draw, before any cooling overhead. It is the number capacity is normally quoted in, so a 10 MW campus draws more than 10 MW at the meter." />
-              <Field label="Cooling overhead" defaultValue="1.4"
-                explain="Power usage effectiveness. Total site power divided by the power your equipment draws. 1.4 means 40 percent goes to cooling and electrical losses. Lower is more efficient, and 1.2 is very good." />
+              <Field label="Cooling overhead" defaultValue="1.25"
+                explain="Total site power divided by the power your equipment draws. 1.25 means a quarter again on top of the servers goes to cooling and electrical losses. Lower is better. Uptime Institute's 2025 survey puts running data centers at 1.54 on average, and those of 20 MW and above at 1.44; 1.25 is what a new build with modern cooling is designed to reach." />
               <Field label="Years to model" defaultValue="15"
                 explain="How far ahead to price. Running cost is summed across this many years and discounted back, so a longer horizon puts more weight on power and staff and less on the build." />
               <Field label="Discount rate" defaultValue="8%"

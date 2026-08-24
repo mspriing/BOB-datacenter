@@ -38,11 +38,10 @@ export function buildNarrativePrompt(output: EstimateOutput, siteLabels: Record<
       `  Rank: ${s.rank}  Score: ${s.weighted_score}`,
       `  CapEx total: ${usd(s.capex.total_usd)}`,
       `    Land: ${usd(s.capex.land_usd)}  Construction: ${usd(s.capex.construction_usd)}`,
-      `    Electrical: ${usd(s.capex.electrical_usd)}  Cooling: ${usd(s.capex.cooling_usd)}  IT fitout: ${usd(s.capex.it_fitout_usd)}`,
       `  Annual OpEx: ${usd(s.opex_annual.total_usd)}`,
       `    Power: ${usd(s.opex_annual.power_usd)}  Water: ${usd(s.opex_annual.water_usd)}  Staff: ${usd(s.opex_annual.staff_usd)}`,
       `    Maintenance: ${usd(s.opex_annual.maintenance_usd)}  Taxes: ${usd(s.opex_annual.taxes_usd)}  Connectivity: ${usd(s.opex_annual.connectivity_usd)}`,
-      `  Finance (base): NPV ${usd(s.finance.npv_usd)}  Lifetime cost ${usd(s.finance.lifetime_cost_per_kw)}/kW  Build cost ${usd(s.finance.capex_per_kw)}/kW  Payback ${round1(s.finance.payback_years)} yr`,
+      `  Finance (base): NPV ${usd(s.finance.npv_usd)}  Lifetime cost ${usd(s.finance.lifetime_cost_per_kw)}/kW  Build cost ${usd(s.finance.capex_per_kw)}/kW  Years of running cost equal to the build ${round1(s.finance.payback_years)}`,
       `  Finance low:  NPV ${usd(s.finance.ranges.low.npv_usd)}  Lifetime cost ${usd(s.finance.ranges.low.lifetime_per_kw)}/kW`,
       `  Finance high: NPV ${usd(s.finance.ranges.high.npv_usd)}  Lifetime cost ${usd(s.finance.ranges.high.lifetime_per_kw)}/kW`,
       `  Risk score: ${s.non_cost_scores.risk_score ?? 'N/A'}/10  Renewable: ${pct(s.non_cost_scores.renewable_pct ?? 0)}  Latency: ${s.non_cost_scores.latency_ms} ms`,
@@ -63,7 +62,7 @@ STRICT RULES:
 5. Do NOT add any figures that are not in the DATA section below.
 
 DATA:
-Project: ${output.ranking.length} candidate sites, ${rank1.finance.payback_years.toFixed(1)}-year payback horizon.
+Project: ${output.ranking.length} candidate sites, priced over ${rank1.finance.lifetime_years} years.
 Top-ranked site: ${rank1Label}
 
 ${siteLines}

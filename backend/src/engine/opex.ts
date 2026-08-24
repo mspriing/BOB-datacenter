@@ -7,6 +7,8 @@
  *                      [design_wue = litres of water per kWh of cooling energy (project-level design assumption)]
  *   staff_usd        = BASE_STAFF_COST_PER_KW × capacity_kw × staff_cost_index
  *   maintenance_usd  = capex_total × MAINTENANCE_RATE
+ *                      [was 1.5% with nothing behind it; now 1.0% and stated
+ *                       as an assumption in assumptions.ts]
  *   taxes_usd        = capex_total × effective_tax_rate  (0 during abatement years)
  *   connectivity_usd = BASE_CONNECTIVITY_PER_KW × capacity_kw
  *   total_usd        = sum of all above
@@ -23,8 +25,8 @@ export interface OpexParams {
   design_wue:              number   // water usage effectiveness (litres / kWh cooling) — project-level design assumption
   staff_cost_index:        number   // multiplier vs. national baseline
   tax_rate:                number   // decimal (e.g. 0.055)
-  tax_abatement_years:     number   // years from year-0 with zero property tax
-  current_year:            number   // which year we're computing (0-indexed)
+  tax_abatement_years:     number   // how many years from the start carry no property tax
+  current_year:            number   // which year we're computing, numbered from 1
   capex_total_usd:         number
 }
 
@@ -39,11 +41,16 @@ export interface OpexResult {
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const HOURS_PER_YEAR           = 8_760
-const BASE_STAFF_COST_PER_KW   = 280   // $/kW-year — national median fully-loaded DC ops
-const MAINTENANCE_RATE         = 0.015 // 1.5% of CapEx per year
-const BASE_CONNECTIVITY_PER_KW = 60    // $/kW-year — diverse fiber + dark fiber amortised
-const LITRES_PER_KGAL          = 3_785.4
+// Everything that is not a physical conversion now lives in assumptions.ts with
+// its basis, its source and its working, and is published with the estimate.
+import {
+  BASE_STAFF_COST_PER_KW,
+  BASE_CONNECTIVITY_PER_KW,
+  MAINTENANCE_RATE,
+} from './assumptions.js'
+
+const HOURS_PER_YEAR  = 8_760
+const LITRES_PER_KGAL = 3_785.4
 
 export function computeOpex(p: OpexParams): OpexResult {
   // Annual IT energy (kWh)
@@ -61,7 +68,10 @@ export function computeOpex(p: OpexParams): OpexResult {
 
   const staff_usd        = p.capacity_kw * BASE_STAFF_COST_PER_KW * p.staff_cost_index
   const maintenance_usd  = p.capex_total_usd * MAINTENANCE_RATE
-  const taxes_usd        = p.current_year < p.tax_abatement_years
+  // Years are numbered from 1, so an abatement of N years covers years 1 to N
+  // and tax starts in year N+1. This read `<` while every caller passed year 1,
+  // which made an abatement of 1 year and an abatement of 15 behave the same.
+  const taxes_usd        = p.current_year <= p.tax_abatement_years
     ? 0
     : p.capex_total_usd * p.tax_rate
   const connectivity_usd = p.capacity_kw * BASE_CONNECTIVITY_PER_KW

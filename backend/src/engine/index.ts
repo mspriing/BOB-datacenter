@@ -16,6 +16,7 @@ import { computeSensitivity, type SensitivitySiteParams } from './sensitivity.js
 import type { ProvenanceItem } from '../schemas/output.js'
 import { generateNarrative, type NarrativeOptions } from '../llm/narrative.js'
 import { parseSiteDescription } from '../llm/parseInput.js'
+import { ASSUMPTIONS } from './assumptions.js'
 
 const ENGINE_VERSION = '0.2.0'
 
@@ -451,6 +452,7 @@ export async function runEngine(
     data_gaps,
     unevaluable,
     confidence,
+    assumptions: ASSUMPTIONS,
   }
 
   const narrative = await generateNarrative(partialOutput, siteLabels, narrativeOpts)

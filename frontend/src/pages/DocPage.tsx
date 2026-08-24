@@ -293,7 +293,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
             <p className="num text-[14px] text-ink">running cost NPV = Σ over each year t of (running cost in year t) ÷ (1 + discount rate)^t</p>
             <p className="num text-[14px] text-ink">total = capex + running cost NPV</p>
             <p className="num text-[14px] text-ink">lifetime cost per kW = total ÷ capacity_kW</p>
-            <p className="text-mid">At the default 10 MW, PUE 1.4, fifteen years and an eight percent discount rate, the annuity factor is 8.5595. A site with an even running cost profile therefore carries roughly eight and a half years of running cost in today&rsquo;s money.</p>
+            <p className="text-mid">Each year is priced separately and then discounted, rather than one year being repeated across the whole term. That matters where a site has a property tax abatement: a ten year abatement on a fifteen year build has to stop in year eleven. At fifteen years and an eight percent discount rate, a site whose running cost never changes carries about eight and a half years of it in today&rsquo;s money.</p>
           </Prose></Card>
 
           <Card title="The band around each figure"><Prose>

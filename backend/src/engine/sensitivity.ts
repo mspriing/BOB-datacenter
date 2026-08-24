@@ -28,7 +28,8 @@
  */
 
 import { computeCapex, type CapexParams } from './capex.js'
-import { computeOpex, type OpexParams } from './opex.js'
+import { type OpexParams } from './opex.js'
+import { npvOpexStream } from './finance.js'
 import { rankSites, type RankInput, type Weights } from './rank.js'
 
 export interface SensitivitySiteParams {
@@ -55,20 +56,22 @@ export interface SensitivityItem {
 
 // ── NPV helper ────────────────────────────────────────────────────────────────
 
-/** Cost-only NPV for a site (negative number; more negative = more expensive). */
+/**
+ * Cost-only NPV for a site (negative number; more negative = more expensive).
+ *
+ * Uses the same year-by-year running-cost stream as finance.ts, so the flip
+ * threshold this file reports and the totals the results page shows are built
+ * the same way. Holding year 1 flat for the whole life, which is what this did,
+ * carried a tax abatement past the year it ends.
+ */
 function siteNPV(
   capexParams: CapexParams,
   opexParams: OpexParams,
   r: number,
   years: number,
 ): number {
-  const cap  = computeCapex(capexParams)
-  const opex = computeOpex({ ...opexParams, capex_total_usd: cap.total_usd })
-  const annualOpex = opex.total_usd
-  const opexNPV = r === 0
-    ? annualOpex * years
-    : annualOpex * (1 - Math.pow(1 + r, -years)) / r
-  return -(cap.total_usd + opexNPV)
+  const cap = computeCapex(capexParams)
+  return -(cap.total_usd + npvOpexStream(opexParams, cap.total_usd, r, years))
 }
 
 // ── Full-N-site ranking helper ────────────────────────────────────────────────

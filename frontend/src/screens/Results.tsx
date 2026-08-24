@@ -152,7 +152,7 @@ export function Results({ projections, setProjections, pinned, chosen, go, serve
               value={<Counter to={leader.score} decimals={3} />}
               foot={ranked.length > 1 ? `Next best is ${short(second.label)} at ${second.score.toFixed(3)}` : 'Only one site in the set'} />
             <StatTile bare label="Years of running cost to equal the build"
-              value={<><Counter to={leader.paybackYears} decimals={1} /> yrs</>}
+              value={<><Counter to={leader.opexYearsToEqualCapex} decimals={1} /> yrs</>}
               foot="Build cost divided by one year of running cost" />
           </div>
         </div>

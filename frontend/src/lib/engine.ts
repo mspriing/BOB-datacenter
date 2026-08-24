@@ -15,14 +15,11 @@ import type { UsRegion } from '../data/usRegions'
 // ── capex.ts ─────────────────────────────────────────────────────────────────
 const ACRES_PER_MW = 1.2
 const MIN_ACRES = 5
-const ELECTRICAL_COST_PER_KW = 550
-const COOLING_COST_PER_KW = 400
-const IT_FITOUT_PER_KW = 200
 
 // ── opex.ts ──────────────────────────────────────────────────────────────────
 const HOURS_PER_YEAR = 8760
 const BASE_STAFF_COST_PER_KW = 280
-const MAINTENANCE_RATE = 0.015
+const MAINTENANCE_RATE = 0.010
 const BASE_CONNECTIVITY_PER_KW = 60
 const LITRES_PER_KGAL = 3785.4
 
@@ -50,20 +47,24 @@ export interface SiteDrivers {
 }
 
 export interface CapexBreakdown {
-  land: number; construction: number; electrical: number; cooling: number
-  itFitout: number; incentive: number; total: number
+  land: number; construction: number; incentive: number; total: number
 }
 
+/**
+ * Land plus the published build cost, less any incentive.
+ *
+ * Switchgear, cooling plant and fit-out used to be added on top at $550, $400
+ * and $200 per kW. The cost to build per kW comes from a published construction
+ * index whose methodology already includes mechanical and electrical fit-out
+ * and equipment, so those three lines charged for the same work twice.
+ */
 export function computeCapex(p: ProjectParams, d: SiteDrivers): CapexBreakdown {
   const acres = Math.max(MIN_ACRES, (p.capacityKw / 1000) * ACRES_PER_MW)
   const land = acres * d.landCostPerAcre
   const construction = p.capacityKw * d.constructionPerKw
-  const electrical = p.capacityKw * ELECTRICAL_COST_PER_KW
-  const cooling = p.capacityKw * COOLING_COST_PER_KW
-  const itFitout = p.capacityKw * IT_FITOUT_PER_KW
   const incentive = d.incentivePerKw * p.capacityKw
-  const gross = land + construction + electrical + cooling + itFitout
-  return { land, construction, electrical, cooling, itFitout, incentive, total: Math.max(0, gross - incentive) }
+  const gross = land + construction
+  return { land, construction, incentive, total: Math.max(0, gross - incentive) }
 }
 
 export interface OpexBreakdown {
@@ -82,7 +83,8 @@ export function computeOpex(
   const water = (coolingEnergy * p.designWue / LITRES_PER_KGAL) * d.waterRate
   const staff = p.capacityKw * BASE_STAFF_COST_PER_KW * d.staffIndex
   const maintenance = capexTotal * MAINTENANCE_RATE
-  const taxes = year < d.taxAbatementYears ? 0 : capexTotal * d.taxRate
+  // Years are numbered from 1, so an abatement of N covers years 1 to N.
+  const taxes = year <= d.taxAbatementYears ? 0 : capexTotal * d.taxRate
   const connectivity = p.capacityKw * BASE_CONNECTIVITY_PER_KW
 
   return { power, water, staff, maintenance, taxes, connectivity,
@@ -101,19 +103,22 @@ export interface SiteResult {
   lifetimePerKw: number
   rangeLow: number
   rangeHigh: number
-  paybackYears: number
+  opexYearsToEqualCapex: number
   powerAnnual: number
   annualGwh: number
   score: number
   parts: { cost: number; risk: number; clean: number; distance: number }
 }
 
-/** Discounted sum of annual OpEx across the project life, honouring abatement. */
+/**
+ * Discounted sum of annual running cost across the project life, honouring the
+ * abatement. Years run 1 to lifetimeYears, which is what the server does too.
+ */
 export function opexNpv(p: ProjectParams, d: SiteDrivers, capexTotal: number): number {
   let npv = 0
-  for (let t = 0; t < p.lifetimeYears; t++) {
-    const yearly = computeOpex(p, d, capexTotal, t).total
-    npv += yearly / Math.pow(1 + p.discountRate, t + 1)
+  for (let year = 1; year <= p.lifetimeYears; year++) {
+    const yearly = computeOpex(p, d, capexTotal, year).total
+    npv += yearly / Math.pow(1 + p.discountRate, year)
   }
   return npv
 }
@@ -122,7 +127,7 @@ export function priceSite(
   key: string, label: string, place: string, p: ProjectParams, d: SiteDrivers,
 ): Omit<SiteResult, 'score' | 'parts'> {
   const capex = computeCapex(p, d)
-  const opexY1 = computeOpex(p, d, capex.total, 0)
+  const opexY1 = computeOpex(p, d, capex.total, 1)
   const oNpv = opexNpv(p, d, capex.total)
   const npvTotal = capex.total + oNpv
   const lifetimePerKw = npvTotal / p.capacityKw
@@ -133,7 +138,9 @@ export function priceSite(
     lifetimePerKw,
     rangeLow: lifetimePerKw * 0.908,
     rangeHigh: lifetimePerKw * 1.171,
-    paybackYears: capex.total / opexY1.total,
+    // Years of running cost that add up to the build cost. Not a payback, and
+    // lower is not better: a site with expensive power gets there sooner.
+    opexYearsToEqualCapex: capex.total / opexY1.total,
     powerAnnual: opexY1.power,
     annualGwh: p.capacityKw * p.pue * HOURS_PER_YEAR / 1e6,
   }

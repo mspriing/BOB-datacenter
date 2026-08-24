@@ -35,13 +35,18 @@ function dominantDrivers(
   const cap  = s.capex
   const totalNPV = Math.abs(s.finance.npv_usd)
 
+  // Running costs are weighed over the years the build is priced over. They used
+  // to be multiplied by capex divided by one year of running cost, which is not
+  // a horizon and gets shorter as a site gets more expensive to run.
+  const years = s.finance.lifetime_years
+
   const items: Array<{ name: string; value: number }> = [
-    { name: 'power costs',        value: opex.power_usd * output.sites[siteId].finance.payback_years },
+    { name: 'power costs',        value: opex.power_usd * years },
     { name: 'construction costs', value: cap.construction_usd },
     { name: 'land costs',         value: cap.land_usd },
-    { name: 'staffing costs',     value: opex.staff_usd * output.sites[siteId].finance.payback_years },
-    { name: 'property taxes',     value: opex.taxes_usd * output.sites[siteId].finance.payback_years },
-    { name: 'water costs',        value: opex.water_usd * output.sites[siteId].finance.payback_years },
+    { name: 'staffing costs',     value: opex.staff_usd * years },
+    { name: 'property taxes',     value: opex.taxes_usd * years },
+    { name: 'water costs',        value: opex.water_usd * years },
   ]
   items.sort((a, b) => b.value - a.value)
 
@@ -73,7 +78,7 @@ export function buildFallbackNarrative(
     `Based on a ${output.ranking.length}-site analysis, ${rank1Label} is the recommended site ` +
     `with a weighted composite score of ${rank1.weighted_score.toFixed(3)}, ` +
     `a total capital outlay of ${usd(rank1.capex.total_usd)}, and annual operating costs of ${usd(rank1.opex_annual.total_usd)}. ` +
-    `The ${output.sites[rank1Id].finance.payback_years.toFixed(1)}-year base-case NPV is ${usd(rank1.finance.npv_usd)}, ` +
+    `Over ${rank1.finance.lifetime_years} years the total in today's money is ${usd(rank1.finance.npv_usd)}, ` +
     `yielding a lifetime cost of ${usd(rank1.finance.lifetime_cost_per_kw)}/kW ` +
     (pricedBetter ? `— the most competitive figure among the evaluated candidates. ` : `— `) +
     `Under low and high cost scenarios this spans ${usd(rank1.finance.ranges.low.lifetime_per_kw)}/kW to ` +

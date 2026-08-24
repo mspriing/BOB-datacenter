@@ -15,7 +15,7 @@ import { _resetRegionsCache } from '../src/regions.js'
 
 // ── capex.ts ─────────────────────────────────────────────────────────────────
 describe('computeCapex', () => {
-  it('sums land + shell + electrical + cooling + fitout minus incentive', () => {
+  it('is land plus the published build cost, less any incentive', () => {
     const result = computeCapex({
       capacity_kw:              10_000,
       land_cost_per_acre_usd:   420_000,
@@ -24,16 +24,15 @@ describe('computeCapex', () => {
     })
     // land: max(5, 10×1.2) = 12 acres × $420k = $5,040,000
     expect(result.land_usd).toBe(5_040_000)
-    // shell: 10,000 × $9,100 = $91,000,000
+    // build cost: 10,000 × $9,100 = $91,000,000
     expect(result.construction_usd).toBe(91_000_000)
-    // electrical: 10,000 × $550 = $5,500,000
-    expect(result.electrical_usd).toBe(5_500_000)
-    // cooling: 10,000 × $400 = $4,000,000
-    expect(result.cooling_usd).toBe(4_000_000)
-    // fitout: 10,000 × $200 = $2,000,000
-    expect(result.it_fitout_usd).toBe(2_000_000)
-    // total = sum − incentive
-    const gross = 5_040_000 + 91_000_000 + 5_500_000 + 4_000_000 + 2_000_000
+    // Mechanical and electrical are inside the published build cost, so they
+    // are no longer charged a second time. The fields stay at 0 rather than
+    // disappearing, so an older response can still be compared with this one.
+    expect(result.electrical_usd).toBe(0)
+    expect(result.cooling_usd).toBe(0)
+    expect(result.it_fitout_usd).toBe(0)
+    const gross = 5_040_000 + 91_000_000
     expect(result.total_usd).toBe(gross - 500_000)
   })
 
@@ -742,7 +741,7 @@ describe('region key coverage (Part 2b)', () => {
 describe('hero fixture exact scores and flip point (Part 2e)', () => {
   beforeEach(() => { _resetRegionsCache() })
 
-  it('Nordic 0.672, ERCOT 0.622, NoVA 0.315 — ranking flips at ~8% construction increase', async () => {
+  it('Nordic 0.686, ERCOT 0.622, NoVA 0.315 — ranking flips at ~10% construction increase', async () => {
     const out = await runEngine({
       request_id: '00000000-0000-0000-0000-000000000099',
       project: {
@@ -760,7 +759,12 @@ describe('hero fixture exact scores and flip point (Part 2e)', () => {
       ],
     }, { forceFallback: true, skipCache: true })
 
-    expect(out.sites['nordic'].weighted_score).toBeCloseTo(0.672, 2)
+    // Nordic moved from 0.672 after three corrections a working data-center
+    // operator asked for: mechanical and electrical are no longer charged twice,
+    // maintenance runs at 1.0% of the build cost rather than 1.5%, and a tax
+    // abatement now stops in the year it ends instead of running for the life
+    // of the build.
+    expect(out.sites['nordic'].weighted_score).toBeCloseTo(0.686, 2)
     expect(out.sites['ercot'].weighted_score).toBeCloseTo(0.622, 2)
     expect(out.sites['nova'].weighted_score).toBeCloseTo(0.315, 2)
 

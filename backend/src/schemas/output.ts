@@ -33,6 +33,7 @@ const FinanceSchema = z.object({
   capex_per_kw:         z.number(),
   lifetime_cost_per_kw: z.number(),
   npv_usd:              z.number(),
+  lifetime_years:       z.number(),
   payback_years:        z.number(),
   ranges: z.object({
     low:  RangeSchema,
@@ -85,6 +86,17 @@ const SensitivityItemSchema = z.object({
   affected_sites:  z.array(z.string()),
   /** True when no weighted-score flip occurs within the search range. */
   stable:          z.boolean().optional(),
+})
+
+export const AssumptionSchema = z.object({
+  key:           z.string(),
+  label:         z.string(),
+  value:         z.number(),
+  unit:          z.string(),
+  basis:         z.enum(['sourced', 'modeled', 'assumed']),
+  source_url:    z.string(),
+  last_verified: z.string(),
+  method:        z.string(),
 })
 
 export const ProvenanceItemSchema = z.object({
@@ -159,6 +171,12 @@ export const OutputSchema = z.object({
   data_gaps:       z.array(DataGapSchema),
   unevaluable:     z.array(UnevaluableSiteSchema),
   confidence:      ConfidenceSchema,
+  /**
+   * The project-level figures that are not read from the regional dataset:
+   * cooling overhead, maintenance rate, staffing baseline and the rest. They
+   * move the answer as much as the regional data does and used to be invisible.
+   */
+  assumptions:     z.array(AssumptionSchema),
 })
 
 export type EstimateOutput = z.infer<typeof OutputSchema>
