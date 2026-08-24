@@ -31,7 +31,7 @@ import {
   type ParcelSummary, type ParcelListResponse,
 } from '../schemas/parcelApi.js'
 import type { ParcelRow } from '../parcel/repository.js'
-import type { ParcelProject } from '../parcel/score.js'
+import type { ParcelProject, ParcelEstimate } from '../parcel/score.js'
 import type { CountyConfig } from '../ingest/countyConfig.js'
 
 export const parcelsRouter = Router()
@@ -116,14 +116,25 @@ function applyFilters(rows: ParcelRow[], f: {
   return result
 }
 
+/**
+ * A missing figure travels to the client as null, never as 0. The land price
+ * used to arrive as 0 when nobody had priced the parcel, which put it top of
+ * any cheapest-first sort and top of the ranking.
+ */
+function landPricePerAcre(
+  provenance: Array<{ driver: string; value: number | null }>,
+): number | null {
+  return provenance.find(p => p.driver === 'land_cost_per_acre_usd')?.value ?? null
+}
+
 function toSummary(
   e: { parcel_id: string; address: string; acres: number | null; zoning: string;
        flood_buildable_pct: number | null; rank: number; weighted_score: number;
-       finance: { lifetime_cost_per_kw: number; capex_per_kw: number };
+       finance: { lifetime_cost_per_kw: number; capex_per_kw: number } | null;
+       unevaluable: { missing_drivers: string[] } | null;
        provenance: Array<{ driver: string; value: number | null }> },
   row: ParcelRow,
 ): ParcelSummary {
-  const landProv = e.provenance.find(p => p.driver === 'land_cost_per_acre_usd')
   return {
     parcel_id:              e.parcel_id,
     address:                e.address,
@@ -134,9 +145,10 @@ function toSummary(
     dist_to_ixp_km:         row.dist_to_ixp_km,
     lat:                    row.lat,
     lng:                    row.lng,
-    lifetime_cost_per_kw:   e.finance.lifetime_cost_per_kw,
-    capex_per_kw:           e.finance.capex_per_kw,
-    land_cost_per_acre_usd: landProv?.value ?? 0,
+    lifetime_cost_per_kw:   e.finance?.lifetime_cost_per_kw ?? null,
+    capex_per_kw:           e.finance?.capex_per_kw ?? null,
+    land_cost_per_acre_usd: landPricePerAcre(e.provenance),
+    unevaluable:            e.unevaluable ? e.unevaluable.missing_drivers : null,
     rank:                   e.rank,
     weighted_score:         e.weighted_score,
   }
@@ -165,7 +177,7 @@ parcelsRouter.get('/', (req, res) => {
     res.status(404).json({
       error: 'parcel data not found',
       county: q.county,
-      hint: 'Run `npm run ingest:parcels` to generate data/parcels/bexar.rows.json',
+      hint: 'Run `npm run ingest:parcels` to build the parcel data for this county.',
     })
     return
   }
@@ -186,16 +198,43 @@ parcelsRouter.get('/', (req, res) => {
   const scored  = scoreAll(filtered, project, county)
 
   // Sort
+  // A parcel with no figure for the column being sorted goes to the end of the
+  // list, whichever direction the sort runs. Reading a missing price as 0 put
+  // the least known parcels at the top of a cheapest-first sort.
+  const missingLast = (
+    av: number | null,
+    bv: number | null,
+    compare: (x: number, y: number) => number,
+  ): number => {
+    if (av === null && bv === null) return 0
+    if (av === null) return 1
+    if (bv === null) return -1
+    return compare(av, bv)
+  }
+
   const sorted = [...scored].sort((a, b) => {
     switch (q.sort_by) {
-      case 'acres':               return (b.acres ?? 0) - (a.acres ?? 0)
-      case 'lifetime_cost_per_kw':return a.finance.lifetime_cost_per_kw - b.finance.lifetime_cost_per_kw
-      case 'land_cost_per_acre':  {
-        const av = a.provenance.find(p => p.driver === 'land_cost_per_acre_usd')?.value ?? 0
-        const bv = b.provenance.find(p => p.driver === 'land_cost_per_acre_usd')?.value ?? 0
-        return av - bv
+      case 'acres':
+        return missingLast(a.acres, b.acres, (x, y) => y - x)
+      case 'lifetime_cost_per_kw':
+        return missingLast(
+          a.finance?.lifetime_cost_per_kw ?? null,
+          b.finance?.lifetime_cost_per_kw ?? null,
+          (x, y) => x - y,
+        )
+      case 'land_cost_per_acre':
+        return missingLast(
+          landPricePerAcre(a.provenance),
+          landPricePerAcre(b.provenance),
+          (x, y) => x - y,
+        )
+      default: {
+        // rank 0 means unpriced, so it sorts last rather than first.
+        if (a.rank === 0 && b.rank === 0) return 0
+        if (a.rank === 0) return 1
+        if (b.rank === 0) return -1
+        return a.rank - b.rank
       }
-      default: return a.rank - b.rank  // 'rank'
     }
   })
 
@@ -237,8 +276,24 @@ parcelsRouter.get('/:id', async (req, res) => {
     return
   }
 
-  const project  = projectFromQuery(q)
-  const estimate = { ...estimateParcel(row, project, county), rank: 0, weighted_score: 0 }
+  const project = projectFromQuery(q)
+  const priced  = estimateParcel(row, project, county)
+
+  // A parcel with a cost driver missing gets no note. The note quotes figures
+  // from the estimate, and this estimate has none to quote; what it has instead
+  // is the list of numbers nobody has collected, which the client shows.
+  if (priced.finance === null) {
+    res.json({
+      ...priced,
+      rank: 0,
+      weighted_score: 0,
+      parcel_note: null,
+      parcel_note_source: null,
+    })
+    return
+  }
+
+  const estimate: ParcelEstimate = { ...priced, rank: 0, weighted_score: 0 }
 
   // The note is generated here, for the one parcel being opened. It is never
   // produced during a list or a search — 3,046 generations per run would be
@@ -267,7 +322,7 @@ parcelsRouter.post('/search', (req, res) => {
     res.status(404).json({
       error: 'parcel data not found',
       county: body.county,
-      hint: 'Run `npm run ingest:parcels` to generate data/parcels/bexar.rows.json',
+      hint: 'Run `npm run ingest:parcels` to build the parcel data for this county.',
     })
     return
   }

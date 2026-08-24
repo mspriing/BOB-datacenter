@@ -836,7 +836,11 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
     }
     const roundedGeom = roundGeom(p.geometry)
 
-    const jurisdiction = utility.includes('CPS') ? `City of San Antonio (CPS Energy territory)` : utility
+    // The county config owns both the utility name and the label that goes with
+    // it, so this line stays true for the next county without being edited.
+    const jurisdiction = utility === cfg.defaultUtility
+      ? cfg.defaultJurisdictionLabel
+      : utility
 
     // GeoJSON feature
     geojsonFeatures.push({

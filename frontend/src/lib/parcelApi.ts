@@ -14,9 +14,16 @@ export interface ParcelSummary {
   dist_to_ixp_km: number | null
   lat: number | null
   lng: number | null
-  lifetime_cost_per_kw: number
-  capex_per_kw: number
-  land_cost_per_acre_usd: number
+  /**
+   * null when the parcel is missing a cost driver. A missing cost is not a zero
+   * cost, so the server sends null rather than 0 and the list says so in words.
+   */
+  lifetime_cost_per_kw: number | null
+  capex_per_kw: number | null
+  land_cost_per_acre_usd: number | null
+  /** Names the missing cost drivers. null when the parcel was priced. */
+  unevaluable: string[] | null
+  /** 0 when the parcel carries no rank because it could not be priced. */
   rank: number
   weighted_score: number
 }

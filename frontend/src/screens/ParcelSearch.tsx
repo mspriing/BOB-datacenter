@@ -246,15 +246,20 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
                       <div className="min-w-0 flex-1">
                         <div className="mb-0.5 flex flex-wrap items-center gap-2">
                           <span className="text-[14.5px] font-medium text-ink">{p.address}</span>
-                          {i === 0 && query.page === 1 && <Chip>Best fit</Chip>}
+                          {i === 0 && query.page === 1 && p.rank === 1 && <Chip>Best fit</Chip>}
+                          {p.unevaluable !== null && <Chip tone="grey">Not priced</Chip>}
                           {p.zoning === 'outside-jurisdiction' && <Chip tone="grey">No zoning</Chip>}
                         </div>
                         <div className="num text-[13px] text-mid">
                           {p.acres === null ? 'acreage unknown' : `${Math.round(p.acres)} ac`}
                           <Rule />
-                          {usd(p.lifetime_cost_per_kw)} per kW
+                          {p.lifetime_cost_per_kw === null
+                            ? 'no price yet'
+                            : `${usd(p.lifetime_cost_per_kw)} per kW`}
                           <Rule />
-                          {usd(p.land_cost_per_acre_usd)} per acre
+                          {p.land_cost_per_acre_usd === null
+                            ? 'land price not collected'
+                            : `${usd(p.land_cost_per_acre_usd)} per acre`}
                           {p.dist_to_tx_line_m !== null && (
                             <><Rule />{(p.dist_to_tx_line_m / 1000).toFixed(1)} km to grid</>
                           )}

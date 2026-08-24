@@ -151,7 +151,7 @@ export interface CountyConfig {
   name:      string    // e.g. 'Bexar County, Texas'
   state:     string    // two-letter code
   fips:      string    // 5-digit FIPS
-  outputKey: string    // filename stem (data/parcels/<outputKey>.geojson)
+  outputKey: string    // filename stem the repository builds its paths from
 
   // Spatial extent
   bbox: BboxConfig
@@ -176,6 +176,13 @@ export interface CountyConfig {
   territorySource:  TerritorySourceConfig | null
   territoryGap?:    GapRecord
   defaultUtility:   string
+  /**
+   * How to label a parcel served by the default utility. The pipeline used to
+   * hold the county's own utility name and city name in an inline test, which
+   * is the one thing this config exists to prevent: the next county would have
+   * inherited San Antonio's label.
+   */
+  defaultJurisdictionLabel: string
 
   // Transmission lines
   transmissionSource: TransmissionSourceConfig

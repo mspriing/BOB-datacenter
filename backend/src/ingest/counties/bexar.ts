@@ -95,6 +95,7 @@ export const bexarConfig: CountyConfig = {
       'host is still live (separate service path). No replacement found for territories.',
   },
   defaultUtility: 'assumed-CPS-Energy',
+  defaultJurisdictionLabel: 'City of San Antonio (CPS Energy territory)',
 
   // ── Transmission lines source ─────────────────────────────────────────────
   transmissionSource: {

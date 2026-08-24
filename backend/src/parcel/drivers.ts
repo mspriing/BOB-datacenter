@@ -32,15 +32,20 @@ import type { ProvenanceItem } from '../schemas/output.js'
  */
 export interface SiteDrivers {
   // CapEx
-  land_cost_per_acre_usd:   number
-  construction_cost_per_kw: number
+  // A cost driver stays null when nobody has priced it. It used to become 0 on
+  // the way out of this file, which made an uncollected cost read as a free one
+  // and handed rank 1 to the parcel with the least data behind it. Same defect
+  // the region engine carried until a225bc2, and the same rule applies here: a
+  // parcel missing any of these is named and left out of the ranking.
+  land_cost_per_acre_usd:   number | null
+  construction_cost_per_kw: number | null
   incentive_usd:            number
 
   // OpEx
-  power_rate_usd_per_kwh:   number
-  water_rate_usd_per_kgal:  number
-  staff_cost_index:          number
-  tax_rate:                  number
+  power_rate_usd_per_kwh:   number | null
+  water_rate_usd_per_kgal:  number | null
+  staff_cost_index:          number | null
+  tax_rate:                  number | null
   tax_abatement_years:       number
 
   // Non-cost scoring (all null until sourced at parcel grain or county level)
@@ -57,9 +62,23 @@ export interface SiteDrivers {
   construction_cost_high:      number
 }
 
+/**
+ * The drivers a parcel must have before it can be priced at all. Mirrors
+ * COST_DRIVERS in backend/src/engine/index.ts, which is where the same rule
+ * lives for whole regions.
+ */
+export const PARCEL_COST_DRIVERS = [
+  'land_cost_per_acre_usd',
+  'construction_cost_per_kw',
+  'power_rate_usd_per_kwh',
+  'staff_cost_index',
+] as const
+
 export interface DriversResult {
   drivers:    SiteDrivers
   provenance: ProvenanceItem[]
+  /** Cost drivers with no value. Non-empty means this parcel cannot be priced. */
+  missing_cost_drivers: string[]
 }
 
 // ── Internal helpers ───────────────────────────────────────────────────────────
@@ -192,24 +211,29 @@ export function driversForParcel(row: ParcelRow, county: CountyConfig): DriversR
   const latencyRes   = resolveDriver(null, region.latency_ms_to_hub,          'latency_ms_to_hub',          parcelId, regionKey)
   provenance.push(riskRes.prov, renewRes.prov, lcRes.prov, latencyRes.prov)
 
-  // grid_interconnection_years: always null — never fall back to region value
+  // grid_interconnection_years: always null — never fall back to region value.
+  // basis is carried explicitly and set to null, because there is no figure for
+  // a basis to describe. Leaving the field off made this row look like every
+  // other row in the provenance table, on a product whose claim is that each
+  // number says where it came from.
   provenance.push({
     region_key:    parcelId,
     driver:        'grid_interconnection_years',
     value:         null,
+    basis:         null,
     source_url:    'https://www.ercot.com/services/rq/large-load-integration',
     last_verified: '',
   })
 
   const drivers: SiteDrivers = {
-    land_cost_per_acre_usd:   landRes.value   ?? 0,
-    construction_cost_per_kw: constrRes.value ?? 0,
+    land_cost_per_acre_usd:   landRes.value,
+    construction_cost_per_kw: constrRes.value,
     incentive_usd:            0,  // no parcel-grain incentive data yet
 
-    power_rate_usd_per_kwh:   powerRes.value ?? 0,
-    water_rate_usd_per_kgal:  waterRes.value ?? 0,
-    staff_cost_index:          staffRes.value  ?? 1,
-    tax_rate:                  taxRes.value    ?? 0,
+    power_rate_usd_per_kwh:   powerRes.value,
+    water_rate_usd_per_kgal:  waterRes.value,
+    staff_cost_index:          staffRes.value,
+    tax_rate:                  taxRes.value,
     tax_abatement_years:       abateRes.value  ?? 0,
 
     risk_score:                 riskRes.value,
@@ -224,5 +248,9 @@ export function driversForParcel(row: ParcelRow, county: CountyConfig): DriversR
     construction_cost_high:  constrRes.high ?? (constrRes.value ?? 0) * 1.10,
   }
 
-  return { drivers, provenance }
+  const missing_cost_drivers = PARCEL_COST_DRIVERS.filter(
+    (d) => drivers[d] === null,
+  ) as string[]
+
+  return { drivers, provenance, missing_cost_drivers }
 }

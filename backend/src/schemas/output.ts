@@ -94,6 +94,12 @@ export const ProvenanceItemSchema = z.object({
   source_url:    z.string(),
   last_verified: z.string(),
   basis:         z.enum(['sourced', 'modeled', 'assumed']).nullable().optional(),
+  /**
+   * How a derived figure was worked out. Present whenever the number is not
+   * read straight off the page at source_url, so a reader can tell an
+   * arithmetic result from a published one.
+   */
+  method:        z.string().optional(),
 })
 
 export type ProvenanceItem = z.infer<typeof ProvenanceItemSchema>

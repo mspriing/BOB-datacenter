@@ -107,9 +107,14 @@ export interface ParcelSummary {
   dist_to_ixp_km:         number | null
   lat:                    number | null
   lng:                    number | null
-  lifetime_cost_per_kw:   number
-  capex_per_kw:           number
-  land_cost_per_acre_usd: number
+  // null means this parcel could not be priced. A missing cost is not a zero
+  // cost, and a total built on one would put the least known parcel first.
+  lifetime_cost_per_kw:   number | null
+  capex_per_kw:           number | null
+  land_cost_per_acre_usd: number | null
+  /** Names the cost drivers with no value. null when the parcel was priced. */
+  unevaluable:            string[] | null
+  /** 0 when the parcel is unpriced and therefore carries no rank. */
   rank:                   number
   weighted_score:         number
 }
