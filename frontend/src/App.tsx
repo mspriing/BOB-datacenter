@@ -21,12 +21,16 @@ import { ParcelSearch } from './screens/ParcelSearch'
 import { ParcelDetail } from './screens/ParcelDetail'
 import { DocPage } from './pages/DocPage'
 
+// Parcels is deliberately absent. It is not a fifth thing you can do, it is
+// how close you are looking at the same question, and that choice is made on
+// the setup screen. Four peer tabs read as four steps while all four were
+// clickable from the start, which is what put a reader on the results screen
+// before anything had been run.
 const NAV: Array<{ id: Route; label: string }> = [
   { id: 'home', label: 'Start' },
   { id: 'map', label: 'Map' },
   { id: 'setup', label: 'Set up' },
   { id: 'results', label: 'Results' },
-  { id: 'parcels', label: 'Parcels' },
 ]
 
 const DOC_ROUTES: Route[] = [
@@ -53,6 +57,9 @@ export default function App() {
   // `chosen` does: a screen that owns its own selection cannot survive a route
   // change, and every other view needs to read it.
   const [openParcel, setOpenParcel] = useState<string | null>(null)
+  // How close the reader wants to look. Lives here so the choice survives a
+  // route change, the same reason `chosen` does.
+  const [zoom, setZoom] = useState<'regions' | 'parcels'>('regions')
   const reduced = useReducedMotion()
 
 
@@ -169,7 +176,9 @@ export default function App() {
               )}
               {route === 'setup' && (
                 <Setup projections={projections} setProjections={setProjections}
-                  pinned={pinned} chosen={chosen} setChosen={setChosen} run={run} go={go} />
+                  pinned={pinned} chosen={chosen} setChosen={setChosen}
+                  zoom={zoom} setZoom={setZoom}
+                  run={() => (zoom === 'parcels' ? go('parcels') : run())} go={go} />
               )}
               {route === 'running' && (
                 <Running done={() => go('results')} pending={serverPending}
@@ -181,13 +190,13 @@ export default function App() {
                   server={server} serverError={serverError} />
               )}
               {route === 'parcels' && (
-                <ParcelSearch onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
+                <ParcelSearch go={go} onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
               )}
               {route === 'parcel' && openParcel && (
                 <ParcelDetail parcelId={openParcel} onBack={() => go('parcels')} />
               )}
               {route === 'parcel' && !openParcel && (
-                <ParcelSearch onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
+                <ParcelSearch go={go} onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
               )}
               {isDoc && <DocPage route={route} go={go} />}
           </div>

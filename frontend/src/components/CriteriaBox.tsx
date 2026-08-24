@@ -98,7 +98,7 @@ export function CriteriaBox({ onApply }: { onApply: (f: ParcelFilters) => void }
             {result.unparsed.length > 0 && (
               <div className="border-t border-[var(--line2)] pt-3">
                 <p className="mb-1.5 text-[13px] font-medium text-ink2">
-                  Not used, because there is no filter for it:
+                  Read but left out, since no filter covers it:
                 </p>
                 <ul className="space-y-1">
                   {result.unparsed.map((u, i) => (

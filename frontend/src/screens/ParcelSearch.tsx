@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowRight, MapPin, AlertTriangle, Loader2 } from 'lucide-react'
+import { ArrowRight, ArrowLeft, MapPin, AlertTriangle, Loader2 } from 'lucide-react'
 import { Card, Explain, Chip, Rule } from '../components/Primitives'
 import { CriteriaBox } from '../components/CriteriaBox'
 import { ParcelMap, PARCEL_SHADE, type ParcelShadeKey } from '../components/map/ParcelMap'
 import { fetchParcels, type ParcelSummary, type ParcelQuery, type SortBy } from '../lib/parcelApi'
 import { usd } from '../lib/format'
+import type { Route } from '../lib/routes'
 
 /**
  * Every view on this screen reads one state object.
@@ -60,7 +61,10 @@ function NumberFilter({ label, hint, value, onChange, placeholder, suffix }: {
   )
 }
 
-export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => void }) {
+export function ParcelSearch({ onOpenParcel, go }: {
+  onOpenParcel: (id: string) => void
+  go: (r: Route) => void
+}) {
   const [query, setQuery] = useState<ParcelQuery>(DEFAULT_QUERY)
   const [shade, setShade] = useState<ParcelShadeKey>('lifetime_cost_per_kw')
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -116,12 +120,19 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
 
   return (
     <section className="pt-6 sm:pt-10">
-      <div className="mb-7 max-w-[68ch]">
-        <p className="label-xs mb-3">Bexar County, Texas</p>
-        <h1 className="mb-3 text-[clamp(1.875rem,1.5rem+1.6vw,2.75rem)] font-semibold text-ink">
+      <div className="mb-7">
+        <div className="mb-3 flex flex-wrap items-center gap-3">
+          <button onClick={() => go('setup')} className="pill text-[13px]">
+            <ArrowLeft size={14} strokeWidth={2.4} aria-hidden />
+            Back to the build
+          </button>
+          <p className="label-xs">Step two of two<Rule />Bexar County, Texas</p>
+        </div>
+        <h1 className="mb-3 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
+          font-semibold leading-[1.08] tracking-[-.02em] text-ink">
           Every parcel worth pricing, ranked before you call a broker.
         </h1>
-        <p className="text-[17px] leading-[1.65] text-mid">
+        <p className="max-w-[68ch] text-[17px] leading-[1.65] text-mid">
           Candidate parcels are priced on the whole build: land, reaching the transmission
           line, reaching fiber, leveling the ground and getting through entitlement, rather than just
           the asking price. Filter to what you can actually use, then open one to see what

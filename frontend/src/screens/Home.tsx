@@ -92,7 +92,7 @@ export function Home({ go }: { go: (r: Route) => void }) {
               src="/product-results.webp"
               width={1440}
               height={1069}
-              alt="The results screen ranking three candidate sites, with the lifetime cost per kW,
+              alt="The results screen ranking three candidate sites. It shows the lifetime cost per kW,
                    the total in today's money, the score, and a note saying how far the leader's cost
                    to build can rise before second place takes over."
               className="block w-full"
@@ -119,7 +119,7 @@ export function Home({ go }: { go: (r: Route) => void }) {
                 question a decade ago. Today the queue to connect a large load to the grid runs
                 years long, and it varies more between regions than the tariff does. A site
                 that is two cents cheaper per kWh and four years slower to energize is not the
-                cheaper site. So the wait is priced here as a driver of its own, alongside the tariff.
+                cheaper site. So the wait is priced here as a separate driver, alongside the tariff.
               </p>
             </div>
             <div className="space-y-2.5">
@@ -236,8 +236,8 @@ export function Home({ go }: { go: (r: Route) => void }) {
               Want to see one finished first?
             </h2>
             <p className="mx-auto mb-5 max-w-[52ch] text-[15.5px] leading-[1.65] text-mid">
-              A three-site comparison already run, with the sentence that says which input is worth
-              checking before anyone commits money.
+              A three-site comparison already run. It ends on the sentence that says which input is
+              worth checking before anyone commits money.
             </p>
             <button className="btn btn-primary" onClick={() => setShowExample(true)}>
               See a finished comparison

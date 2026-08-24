@@ -374,7 +374,7 @@ export function Results({ projections, setProjections, pinned, chosen, go, serve
       <FoldCard title="Where every number came from"
         note={sourcedCount !== null
           ? `${sourcedCount} of the values behind this run are traced to a named source`
-          : 'Unavailable, because the engine did not answer'}>
+          : 'Unavailable. The engine did not answer'}>
         <div className="p-5 pb-2">
           <p className="mb-4 max-w-[76ch] text-[15px] leading-[1.65] text-mid">
             This run reads {COVERAGE.drivers} cost drivers for each site. Values marked{' '}

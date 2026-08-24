@@ -126,7 +126,7 @@ const DRIVERS: Array<{ key: string; name: string; plain: string; unit: string }>
   { key: 'staff_cost_index', name: 'Staff cost', unit: 'index, 1.00 is median',
     plain: 'Local fully loaded operations pay against the national median. 1.20 means twenty percent above.' },
   { key: 'land_cost_per_acre_usd', name: 'Land price', unit: '$ per acre',
-    plain: 'What an acre costs locally. A 10 MW campus is sized at 12 acres, with a floor of 5.' },
+    plain: 'What an acre costs locally. A 10 MW campus is sized at 12 acres, and never below 5.' },
   { key: 'water_rate_usd_per_kgal', name: 'Water price', unit: '$ per thousand gallons',
     plain: 'The rate for the water cooling consumes. How much you use is a design choice rather than a property of the region.' },
   { key: 'tax_rate', name: 'Property tax rate', unit: 'share of assessed value',
@@ -245,7 +245,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
     case 'driver-meanings':
       return (
         <Page go={go} route={route} title={ROUTE_TITLES[route]}
-          lead="Thirteen drivers, each in one sentence, with the unit it is carried in.">
+          lead="Thirteen drivers, each in one sentence and carrying its unit.">
           <Card title="All thirteen">
             <Table head={['Driver', 'Unit', 'What it means']}
               rows={DRIVERS.map(d => [
@@ -265,7 +265,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
     case 'cost-method':
       return (
         <Page go={go} route={route} title={ROUTE_TITLES[route]}
-          lead="Every formula the engine runs, with the constants written out. Nothing here is estimated by a language model.">
+          lead="Every formula the engine runs, and the constants written out. Nothing here is estimated by a language model.">
           <Card title="Capital cost"><Prose>
             <p className="num text-[14px] text-ink">acres = max(5, capacity_MW × 1.2)</p>
             <p className="num text-[14px] text-ink">land = acres × land_price_per_acre</p>
@@ -395,7 +395,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
               ])} />
           </Card>
           <Card title="How to read this"><Prose>
-            <p>One driver is complete and measured for every US region, which is hazard risk. Power price and staff cost are complete and sourced for 57 of the 63, with six derived. Renewable share and low carbon share are complete in the table above and almost entirely derived.</p>
+            <p>One driver is complete and measured for every US region, which is hazard risk. Power price and staff cost are complete and sourced for 57 of the 63, and six are derived. Renewable share and low carbon share are complete in the table above and almost entirely derived.</p>
             <p>Distance to a hub and cost to build are complete and mostly derived. They are good enough to shade a map and to sort a shortlist, and too rough for a board paper without checking the underlying region.</p>
             <p>Land price, property tax, water price, abatement and capital incentive exist for seven regions. Everywhere else they are blank. They are not estimated, since a wrong land price moves the answer more than a missing one does.</p>
           </Prose></Card>

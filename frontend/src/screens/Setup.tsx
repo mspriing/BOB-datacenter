@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { ArrowRight, MapPin, AlertTriangle } from 'lucide-react'
 import { Card, Field } from '../components/Primitives'
 import { ProjectionSliders } from '../components/ProjectionSliders'
-import { PROJECT } from '../data/project'
+import { PROJECT, COVERAGE } from '../data/project'
 import { ALL_REGIONS } from '../lib/useSites'
 import { gapsFor } from '../lib/engine'
 import { DEFAULT_SITES } from '../data/defaultSites'
@@ -15,15 +15,20 @@ const P: ProjectParams = {
   lifetimeYears: PROJECT.lifetimeYears, discountRate: PROJECT.discountRate, designWue: 0.4,
 }
 
-export function Setup({ projections, setProjections, pinned, chosen, setChosen, run, go }: {
+export function Setup({
+  projections, setProjections, pinned, chosen, setChosen, zoom, setZoom, run, go,
+}: {
   projections: Projections
   setProjections: (p: Projections) => void
   pinned: string[]
   chosen: string[]
   setChosen: (f: (c: string[]) => string[]) => void
+  zoom: 'regions' | 'parcels'
+  setZoom: (z: 'regions' | 'parcels') => void
   run: () => void
   go: (r: Route) => void
 }) {
+  const atParcelGrain = zoom === 'parcels'
   const { sites, source } = useSites(pinned, chosen)
   const fromPins = source === 'pins'
   const [freeText, setFreeText] = useState('')
@@ -116,6 +121,61 @@ export function Setup({ projections, setProjections, pinned, chosen, setChosen, 
             </div>
           </Card>
 
+          {/* The zoom choice. Parcels used to be a fifth tab sitting beside
+              this screen, which made it look like a different tool rather than
+              a closer look at the same question. */}
+          <Card title="How close do you want to look?"
+            note="The same fifteen years get priced whichever you pick">
+            <div className="grid gap-3 p-5 sm:grid-cols-2">
+              {([
+                {
+                  id: 'regions' as const,
+                  head: 'Compare regions',
+                  body: 'Two to four markets against each other, priced on published regional figures. Use this to decide where.',
+                  foot: `${COVERAGE.priceable} regions carry what a ranking needs`,
+                },
+                {
+                  id: 'parcels' as const,
+                  head: 'Compare parcels in one county',
+                  body: 'Individual plots in Bexar County, Texas, priced on the whole build: land, reaching the transmission line, reaching fiber, leveling the ground and getting through entitlement. Use this once you know where.',
+                  foot: '3,046 candidate parcels of 25 acres and above',
+                },
+              ]).map(o => {
+                const on = zoom === o.id
+                return (
+                  <button key={o.id} type="button" onClick={() => setZoom(o.id)}
+                    aria-pressed={on}
+                    className={`rounded-[12px] border p-4 text-left transition-colors
+                      ${on
+                        ? 'border-blue bg-bluex shadow-[var(--shadow-sm)]'
+                        : 'border-line bg-white/70 hover:bg-card2'}`}>
+                    <div className={`mb-1 text-[15px] font-semibold ${on ? 'text-blued' : 'text-ink'}`}>
+                      {o.head}
+                    </div>
+                    <div className="mb-2 text-[13.5px] leading-[1.55] text-mid">{o.body}</div>
+                    <div className="text-[12.5px] text-mid">{o.foot}</div>
+                  </button>
+                )
+              })}
+            </div>
+          </Card>
+
+          {atParcelGrain ? (
+            <Card title="The county" note="Bexar County, Texas">
+              <div className="p-5">
+                <p className="max-w-[70ch] text-[15px] leading-[1.65] text-ink2">
+                  San Antonio sits inside ERCOT, where a large load can be energized faster than in
+                  most US markets, and its appraisal district publishes parcel level land values.
+                  That combination is what makes a county this size worth pricing plot by plot.
+                </p>
+                <p className="mt-3 max-w-[70ch] text-[13.5px] leading-[1.55] text-mid">
+                  The build you described above carries through. You will filter by size, land
+                  price, distance to transmission and flood exposure on the next screen, and every
+                  parcel is ranked against the same four things a region comparison uses.
+                </p>
+              </div>
+            </Card>
+          ) : (
           <Card title="The candidate sites"
             note={fromPins
               ? <span className="flex items-center gap-1.5"><MapPin size={13} strokeWidth={2.2} aria-hidden />From your pins</span>
@@ -184,8 +244,9 @@ export function Setup({ projections, setProjections, pinned, chosen, setChosen, 
               </div>
             )}
           </Card>
+          )}
 
-          {duplicates.length > 0 && (
+          {!atParcelGrain && duplicates.length > 0 && (
             <div className="flex items-start gap-3 rounded-[12px] border border-[rgba(194,47,47,.3)]
                             bg-[rgba(255,240,240,.9)] p-4">
               <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-bad" aria-hidden />
@@ -196,7 +257,7 @@ export function Setup({ projections, setProjections, pinned, chosen, setChosen, 
             </div>
           )}
 
-          {thin.length > 0 && (
+          {!atParcelGrain && thin.length > 0 && (
             <div className="flex items-start gap-3 rounded-[12px] border border-[rgba(138,82,0,.28)]
                             bg-[rgba(255,249,238,.9)] p-4">
               <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-[var(--warn)]" aria-hidden />
@@ -214,6 +275,7 @@ export function Setup({ projections, setProjections, pinned, chosen, setChosen, 
             </div>
           )}
 
+          {!atParcelGrain && (
           <Card title="Anything else you know" note="Optional">
             <div className="p-5">
               <label className="block">
@@ -231,23 +293,30 @@ export function Setup({ projections, setProjections, pinned, chosen, setChosen, 
               </p>
             </div>
           </Card>
+          )}
 
         {/* The projections used to ride a tall sticky rail beside a shorter
             column, which left the page ending on two different lines. They sit
             full width below the thing they act on instead. */}
-        <ProjectionSliders
-          sites={sites} project={P} projections={projections}
-          onChange={setProjections} onReset={() => setProjections({})} />
+        {!atParcelGrain && (
+          <ProjectionSliders
+            sites={sites} project={P} projections={projections}
+            onChange={setProjections} onReset={() => setProjections({})} />
+        )}
 
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-[12px]
                         border border-line bg-white/80 px-5 py-4">
           <p className="max-w-[52ch] text-[13.5px] leading-[1.55] text-mid">
-            {active.length} sites, priced across {PROJECT.lifetimeYears} years. The run happens on
-            the server, which is where the sources, the gaps and the wording come from.
+            {atParcelGrain
+              ? `Bexar County parcels, priced across ${PROJECT.lifetimeYears} years.`
+              : `${active.length} regions, priced across ${PROJECT.lifetimeYears} years.`}{' '}
+            The run happens on the server, which is where the sources, the gaps and the wording
+            come from.
           </p>
-          <button className="btn btn-primary" onClick={run} disabled={duplicates.length > 0}
-            style={duplicates.length > 0 ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}>
-            Run the comparison
+          <button className="btn btn-primary" onClick={run}
+            disabled={!atParcelGrain && duplicates.length > 0}
+            style={!atParcelGrain && duplicates.length > 0 ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}>
+            {atParcelGrain ? 'Look at the parcels' : 'Run the comparison'}
             <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
           </button>
         </div>

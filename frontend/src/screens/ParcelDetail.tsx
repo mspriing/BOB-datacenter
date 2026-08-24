@@ -174,7 +174,7 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
                 <p className="mt-1.5 text-[12.5px] text-mid">
                   {est.parcel_note_source === 'watsonx'
                     ? 'Written by watsonx Granite from the figures below. The model quotes them and never computes one.'
-                    : 'Written by the deterministic template, because watsonx credentials were not available on this run. Every figure is the engine’s.'}
+                    : 'Written by the deterministic template. watsonx credentials were not available on this run, and every figure is the engine’s either way.'}
                 </p>
               </div>
             </div>
