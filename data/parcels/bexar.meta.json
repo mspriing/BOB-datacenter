@@ -1,0 +1,106 @@
+{
+  "runTimestamp": "2026-08-16T19:35:13.535Z",
+  "countyId": "bexar",
+  "countyName": "Bexar County, Texas",
+  "sources": [
+    {
+      "url": "https://maps.bexar.org/arcgis/rest/services/Parcels/MapServer/0",
+      "probeResult": "ok",
+      "fetchDate": "2026-08-16"
+    },
+    {
+      "url": "https://services.arcgis.com/g3ToTjWotgngStr3/arcgis/rest/services/Zoning_Districts/FeatureServer/0",
+      "probeResult": "gap",
+      "fetchDate": "2026-08-16",
+      "error": "g3ToTjWotgngStr3 org returns {\"error\":{\"code\":400,\"message\":\"Invalid URL\"}} on all service paths. gis.sanantonio.gov returns {\"error\":{\"code\":499,\"message\":\"Token Required\"}} — internal-only, not publicly accessible. No replacement found."
+    },
+    {
+      "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28",
+      "probeResult": "error",
+      "fetchDate": "2026-08-16",
+      "error": "ArcGIS error at https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28: Error performing query operation — still failing at page size 50"
+    },
+    {
+      "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Retail_Service_Territories/FeatureServer/0",
+      "probeResult": "gap",
+      "fetchDate": "2026-08-16",
+      "error": "HIFLD Open was archived ~Oct 2025. All service-territory paths on Hp6G80Pky0om7QvQ return {\"error\":{\"code\":400,\"message\":\"Invalid URL\"}}. FiaFA6OHVYrXZjRv org likewise. Transmission-lines layer on the same Hp6G80Pky0om7QvQ host is still live (separate service path). No replacement found for territories."
+    },
+    {
+      "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Power_Transmission_Lines/FeatureServer/0",
+      "probeResult": "ok",
+      "fetchDate": "2026-08-16"
+    },
+    {
+      "url": "https://www.peeringdb.com/api/fac?city=San+Antonio&state=TX&country=US",
+      "probeResult": "ok",
+      "fetchDate": "2026-08-16"
+    }
+  ],
+  "funnel": {
+    "raw": 3516,
+    "afterAcres": 3516,
+    "afterLandVal": 3387,
+    "afterLandUse": 3227,
+    "afterFlood": 3227,
+    "afterTx": 3046,
+    "candidates": 3046
+  },
+  "driverCoverage": {
+    "land_cost_per_acre_usd": {
+      "sourced": 0,
+      "modeled": 3046,
+      "assumed": 0,
+      "missing": 0
+    },
+    "power_rate_usd_per_kwh": {
+      "sourced": 3046,
+      "modeled": 0,
+      "assumed": 0,
+      "missing": 0
+    },
+    "water_rate_usd_per_kgal": {
+      "sourced": 3046,
+      "modeled": 0,
+      "assumed": 0,
+      "missing": 0
+    },
+    "grid_interconnection_years": {
+      "sourced": 0,
+      "modeled": 0,
+      "assumed": 0,
+      "missing": 3046
+    }
+  },
+  "gaps": [
+    {
+      "source": "zoning",
+      "urlsTried": [
+        "https://services.arcgis.com/g3ToTjWotgngStr3/arcgis/rest/services/Zoning_Districts/FeatureServer/0",
+        "https://gis.sanantonio.gov/arcgis/rest/services/Planning/Zoning/FeatureServer/0",
+        "https://gis.sanantonio.gov/arcgis/rest/services/Zoning/FeatureServer/0",
+        "https://services.arcgis.com/g3ToTjWotgngStr3/arcgis/rest/services/Zoning/FeatureServer/0",
+        "https://services.arcgis.com/g3ToTjWotgngStr3/arcgis/rest/services/COSA_Zoning/FeatureServer/0"
+      ],
+      "probedDate": "2025-08-16",
+      "outcome": "g3ToTjWotgngStr3 org returns {\"error\":{\"code\":400,\"message\":\"Invalid URL\"}} on all service paths. gis.sanantonio.gov returns {\"error\":{\"code\":499,\"message\":\"Token Required\"}} — internal-only, not publicly accessible. No replacement found.",
+      "note": "Parcels outside San Antonio city limits carry tag \"outside-jurisdiction\". Parcels inside city limits cannot be classified by code without this layer."
+    },
+    {
+      "source": "service-territories",
+      "urlsTried": [
+        "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Retail_Service_Territories/FeatureServer/0",
+        "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Elec_Retail_Service_Territories/FeatureServer/0",
+        "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Service_Territories/FeatureServer/0",
+        "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Utility_Service_Area/FeatureServer/0",
+        "https://services2.arcgis.com/FiaFA6OHVYrXZjRv/arcgis/rest/services/Electric_Retail_Service_Territories/FeatureServer/0"
+      ],
+      "probedDate": "2025-08-16",
+      "outcome": "HIFLD Open was archived ~Oct 2025. All service-territory paths on Hp6G80Pky0om7QvQ return {\"error\":{\"code\":400,\"message\":\"Invalid URL\"}}. FiaFA6OHVYrXZjRv org likewise. Transmission-lines layer on the same Hp6G80Pky0om7QvQ host is still live (separate service path). No replacement found for territories."
+    }
+  ],
+  "notes": [
+    "land_cost_per_acre_usd: modeled — BCAD appraised value ÷ Texas Comptroller PVS ratio. Texas is a non-disclosure state; this is NOT a market price.",
+    "grid_interconnection_years: null — requires ERCOT Docling PDF pipeline; see source_url."
+  ]
+}

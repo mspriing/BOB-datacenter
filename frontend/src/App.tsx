@@ -17,6 +17,8 @@ import { Setup } from './screens/Setup'
 import { Running } from './screens/Running'
 import { Results } from './screens/Results'
 import { MapScreen } from './screens/MapScreen'
+import { ParcelSearch } from './screens/ParcelSearch'
+import { ParcelDetail } from './screens/ParcelDetail'
 import { DocPage } from './pages/DocPage'
 
 const NAV: Array<{ id: Route; label: string }> = [
@@ -24,6 +26,7 @@ const NAV: Array<{ id: Route; label: string }> = [
   { id: 'map', label: 'Map' },
   { id: 'setup', label: 'Set up' },
   { id: 'results', label: 'Results' },
+  { id: 'parcels', label: 'Parcels' },
 ]
 
 const DOC_ROUTES: Route[] = [
@@ -46,6 +49,10 @@ export default function App() {
   // The setup screen's candidate picks. This lives here, not inside Setup:
   // when Setup owned it the run never saw it and always priced the default three.
   const [chosen, setChosen] = useState<string[]>(() => DEFAULT_SITES.map(s => s.key))
+  // Which parcel the detail screen is showing. Lives here for the same reason
+  // `chosen` does: a screen that owns its own selection cannot survive a route
+  // change, and every other view needs to read it.
+  const [openParcel, setOpenParcel] = useState<string | null>(null)
   const reduced = useReducedMotion()
 
 
@@ -172,6 +179,15 @@ export default function App() {
                 <Results projections={projections} setProjections={setProjections}
                   weights={weights} setWeights={setWeights} pinned={pinned} chosen={chosen} go={go}
                   server={server} serverError={serverError} />
+              )}
+              {route === 'parcels' && (
+                <ParcelSearch onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
+              )}
+              {route === 'parcel' && openParcel && (
+                <ParcelDetail parcelId={openParcel} onBack={() => go('parcels')} />
+              )}
+              {route === 'parcel' && !openParcel && (
+                <ParcelSearch onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
               )}
               {isDoc && <DocPage route={route} go={go} />}
           </div>

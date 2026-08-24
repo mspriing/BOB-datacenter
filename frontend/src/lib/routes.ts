@@ -1,11 +1,13 @@
 export type Route =
   | 'home' | 'setup' | 'running' | 'results' | 'map'
+  | 'parcels' | 'parcel'
   | 'how-ranking-works' | 'driver-meanings' | 'cost-method' | 'release-notes'
   | 'all-regions' | 'the-drivers' | 'sources' | 'known-gaps'
   | 'request-region' | 'report-figure' | 'talk-to-team'
 
 export const ROUTE_TITLES: Record<Route, string> = {
   home: 'Start', setup: 'Set up', running: 'Working', results: 'Results', map: 'Map',
+  parcels: 'Parcels', parcel: 'Parcel',
   'how-ranking-works': 'How the ranking works',
   'driver-meanings': 'What each driver means',
   'cost-method': 'Cost method and formulas',
