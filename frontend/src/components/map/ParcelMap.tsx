@@ -172,7 +172,7 @@ export function ParcelMap({
       <div ref={holder} className="h-full w-full overflow-hidden rounded-[11px] border border-line" />
       {basemapFailed && (
         <p className="absolute bottom-2 left-2 rounded-[7px] bg-white/90 px-2 py-1 text-[12px] text-mid">
-          Basemap unavailable — parcels shown without map context
+          Basemap unavailable. Parcels are shown without map context.
         </p>
       )}
     </div>

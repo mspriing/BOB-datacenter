@@ -74,33 +74,45 @@ export function Setup({ projections, setProjections, pinned, chosen, setChosen, 
 
   return (
     <section className="pt-6 sm:pt-10">
-      <div className="mb-8 max-w-[62ch]">
+      <div className="mb-8">
         <p className="label-xs mb-3">Step one of two</p>
-        <h1 className="mb-3 text-[clamp(1.875rem,1.5rem+1.6vw,2.75rem)] font-semibold text-ink">
+        <h1 className="mb-4 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
+          font-semibold leading-[1.08] tracking-[-.02em] text-ink">
           Describe the build and the places you are weighing up.
         </h1>
-        <p className="text-[17px] leading-[1.65] text-mid">
-          Defaults come from a typical 10 MW campus, so you can change only what you know
-          and run the comparison.
+        <p className="max-w-[62ch] text-[17px] leading-[1.65] text-mid">
+          Every box below is already filled in with a figure a mid-size campus would use, and each
+          one says what a normal value looks like. Change what you know, leave the rest, and run it.
         </p>
       </div>
 
-      <div className="grid gap-3.5 lg:grid-cols-[1fr_380px] lg:items-start">
-        <div className="space-y-3.5">
-          <Card title="The build">
-            <div className="grid gap-4 p-5 sm:grid-cols-2">
+      <div className="space-y-3.5">
+          <Card title="The build" note="What you are putting up, and for how long">
+            <div className="grid gap-5 p-5 sm:grid-cols-2">
               <Field label="Project name" defaultValue={PROJECT.name}
-                explain="Your label for this comparison. It appears on the results and changes nothing in the maths." />
-              <Field label="IT load, megawatts" defaultValue="10"
-                explain="The power your servers themselves draw, before any cooling overhead. It is the number capacity is normally quoted in, so a 10 MW campus draws more than 10 MW at the meter." />
+                hint="Your label for this comparison. It appears on the results and changes nothing in the arithmetic."
+                explain="Your label for this comparison. It appears on the results and changes nothing in the arithmetic." />
+              <Field label="How much power the servers draw" defaultValue="10 MW"
+                hint="10 MW is a mid-size campus. This is the servers alone, before anything spent on cooling them."
+                explain="Capacity is normally quoted this way, so a 10 MW campus pulls more than 10 MW at the meter once cooling is added." />
+              <Field label="How many years to price" defaultValue="15"
+                hint="15 years is the usual planning life. A longer horizon puts more weight on power and staff and less on the build."
+                explain="Running cost is added up across this many years and brought back to today's money." />
+            </div>
+          </Card>
+
+          <Card title="Three assumptions worth understanding"
+            note="Filled in already. Change one only if you have a reason to">
+            <div className="grid gap-5 p-5 sm:grid-cols-3">
               <Field label="Cooling overhead" defaultValue="1.25"
-                explain="Total site power divided by the power your equipment draws. 1.25 means a quarter again on top of the servers goes to cooling and electrical losses. Lower is better. Uptime Institute's 2025 survey puts running data centers at 1.54 on average, and those of 20 MW and above at 1.44; 1.25 is what a new build with modern cooling is designed to reach." />
-              <Field label="Years to model" defaultValue="15"
-                explain="How far ahead to price. Running cost is summed across this many years and discounted back, so a longer horizon puts more weight on power and staff and less on the build." />
+                hint="Total site power divided by what the servers draw. 1.25 means a quarter again goes to cooling and electrical losses. A new build aims for about that. Running data centers average 1.54, and those above 20 MW average 1.44."
+                explain="Known in the industry as PUE. Lower is better, and it multiplies the electricity bill directly." />
               <Field label="Discount rate" defaultValue="8%"
-                explain="What future money is worth to you today. A dollar of running cost in year 15 counts for less than one spent now, and a higher rate discounts it harder, which favors cheap-to-build sites." />
-              <Field label="Water use per kWh" defaultValue="0.4 L"
-                explain="Litres of water your cooling design consumes per kilowatt hour of cooling energy. This is a choice you make in the design rather than a property of the region, which is why it sits here and not in the regional data." />
+                hint="What money in the future is worth to you today. A dollar of running cost in year 15 counts for less than one spent now. 8% is a common starting point. A higher rate favors sites that are cheap to build. A lower one favors sites that are cheap to run."
+                explain="The rate used to bring every future year of running cost back to today's money." />
+              <Field label="Water your cooling uses" defaultValue="0.4 L per kWh"
+                hint="Liters of water for each kilowatt hour of cooling. 0.4 is a normal design figure. Air cooled runs lower and evaporative runs higher. It is a choice in the design rather than something the region decides, which is why it sits here."
+                explain="Multiplied by the local water tariff to give the annual water bill." />
             </div>
           </Card>
 
@@ -219,13 +231,21 @@ export function Setup({ projections, setProjections, pinned, chosen, setChosen, 
               </p>
             </div>
           </Card>
-        </div>
 
-        <div className="space-y-3.5 lg:sticky lg:top-4">
-          <ProjectionSliders
-            sites={sites} project={P} projections={projections}
-            onChange={setProjections} onReset={() => setProjections({})} />
-          <button className="btn btn-primary w-full" onClick={run} disabled={duplicates.length > 0}
+        {/* The projections used to ride a tall sticky rail beside a shorter
+            column, which left the page ending on two different lines. They sit
+            full width below the thing they act on instead. */}
+        <ProjectionSliders
+          sites={sites} project={P} projections={projections}
+          onChange={setProjections} onReset={() => setProjections({})} />
+
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-[12px]
+                        border border-line bg-white/80 px-5 py-4">
+          <p className="max-w-[52ch] text-[13.5px] leading-[1.55] text-mid">
+            {active.length} sites, priced across {PROJECT.lifetimeYears} years. The run happens on
+            the server, which is where the sources, the gaps and the wording come from.
+          </p>
+          <button className="btn btn-primary" onClick={run} disabled={duplicates.length > 0}
             style={duplicates.length > 0 ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}>
             Run the comparison
             <ArrowRight size={17} strokeWidth={2.4} aria-hidden />

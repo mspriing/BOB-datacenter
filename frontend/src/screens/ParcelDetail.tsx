@@ -174,7 +174,7 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
                 <p className="mt-1.5 text-[12.5px] text-mid">
                   {est.parcel_note_source === 'watsonx'
                     ? 'Written by watsonx Granite from the figures below. The model quotes them and never computes one.'
-                    : 'Written by the deterministic template — watsonx credentials were not available on this run. Every figure is the engine’s.'}
+                    : 'Written by the deterministic template, because watsonx credentials were not available on this run. Every figure is the engine’s.'}
                 </p>
               </div>
             </div>
@@ -186,7 +186,7 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
               <Row label="Reaching the transmission line"
                 hint="Spur from the nearest line of 138 kV or above, plus a substation allowance."
                 value={usd(pc.interconnect_capex_usd)} />
-              <Row label="Reaching fibre"
+              <Row label="Reaching fiber"
                 hint="Conduit to the nearest interconnection facility."
                 value={usd(pc.fiber_capex_usd)} />
               <Row label="Getting through entitlement"
@@ -264,9 +264,9 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
                         <td className="px-3 py-2.5">
                           {p.basis
                             ? <Chip tone={BASIS_TONE[p.basis] ?? 'grey'}>{p.basis}</Chip>
-                            : <span className="text-[12.5px] text-mid">—</span>}
+                            : <span className="text-[12.5px] text-mid">none</span>}
                         </td>
-                        <td className="px-5 py-2.5 text-mid">{p.last_verified || '—'}</td>
+                        <td className="px-5 py-2.5 text-mid">{p.last_verified || 'not dated'}</td>
                       </tr>
                     )
                   })}
@@ -296,8 +296,8 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
               )}
               <p className="border-t border-[var(--line2)] pt-3 text-[13px] leading-[1.55] text-mid">
                 Interconnection wait is a placeholder everywhere. ERCOT publishes the large-load
-                queue only as PDFs, and in 2026 that wait dominates siting economics — so it is
-                marked assumed rather than modelled from something weaker.
+                queue only as PDFs, and in 2026 that wait dominates siting economics, so it is
+                marked assumed rather than modeled from something weaker.
               </p>
             </div>
           </Card>

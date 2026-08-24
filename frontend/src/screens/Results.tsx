@@ -112,9 +112,10 @@ export function Results({ projections, setProjections, pinned, chosen, go, serve
           </>
         ) : (
           <span>
-            {serverError ?? 'The engine has not answered yet.'} The figures below are the browser&rsquo;s
-            own mirror of the engine, which is close but is not the published result. Run the
-            comparison again to price this on the server.
+            {serverError ?? 'The engine has not answered yet.'} The figures below come from the
+            browser&rsquo;s copy of the engine, which now reproduces the server to the dollar on the
+            published example. Run the comparison to price this on the server and pick up the
+            provenance, the gaps and the wording that come with it.
           </span>
         )}
       </div>
@@ -373,7 +374,7 @@ export function Results({ projections, setProjections, pinned, chosen, go, serve
       <FoldCard title="Where every number came from"
         note={sourcedCount !== null
           ? `${sourcedCount} of the values behind this run are traced to a named source`
-          : 'Unavailable — the engine did not answer'}>
+          : 'Unavailable, because the engine did not answer'}>
         <div className="p-5 pb-2">
           <p className="mb-4 max-w-[76ch] text-[15px] leading-[1.65] text-mid">
             This run reads {COVERAGE.drivers} cost drivers for each site. Values marked{' '}

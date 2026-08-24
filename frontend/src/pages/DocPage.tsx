@@ -219,8 +219,8 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
           lead="The engine measures four things, puts them on the same scale, and combines them into one number. What follows is the arithmetic, what changed in it, and why.">
           <Card title="The short version"><Prose>
             <p>Every candidate is priced across the full fifteen years. That gives one cost figure per site. Three more things that cost alone will not tell you are measured alongside it: hazard risk, how clean the local grid is, and how far the site sits from your users.</p>
-            <p>Each of the four is normalised across the sites in your set, so the best performer scores 1 and the worst scores 0. The four scores are combined and the highest total ranks first.</p>
-            <p>When a site has no figure for one of the four, that dimension is dropped from its score and the remaining weights are renormalised. A missing figure never counts as a zero because a gap in the data is not the same as bad performance.</p>
+            <p>Each of the four is normalized across the sites in your set, so the best performer scores 1 and the worst scores 0. The four scores are combined and the highest total ranks first.</p>
+            <p>When a site has no figure for one of the four, that dimension is dropped from its score and the remaining weights are renormalized. A missing figure never counts as a zero because a gap in the data is not the same as bad performance.</p>
           </Prose></Card>
 
           <Card title="Why the percentage sliders are gone"><Prose>
@@ -237,7 +237,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
 
           <Card title="What the ranking will not do"><Prose>
             <p>It prices what is measurable about a site and stays silent on everything else. The list of what it does not model sits on the known gaps page.</p>
-            <p>It also will not rank a single site. With one candidate there is nothing to normalise against.</p>
+            <p>It also will not rank a single site. With one candidate there is nothing to normalize against.</p>
           </Prose></Card>
         </Page>
       )
@@ -256,7 +256,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
           </Card>
           <Card title="Three that get misread"><Prose>
             <p><b className="text-ink">Cost to build is not the whole cost.</b> It covers shell, structure and site works. Electrical plant, cooling plant and IT fit out are priced separately at fixed rates per kW, so two sites with the same build cost can still land in different places.</p>
-            <p><b className="text-ink">Water use is yours. Water price is theirs.</b> The region sets the rate. How many litres per kWh your cooling design consumes is a decision you make, which is why it sits on the setup screen rather than in the regional data.</p>
+            <p><b className="text-ink">Water use is yours. Water price is theirs.</b> The region sets the rate. How many liters per kWh your cooling design consumes is a decision you make, which is why it sits on the setup screen rather than in the regional data.</p>
             <p><b className="text-ink">Distance to your users is a proxy.</b> It measures the round trip to the nearest major interconnection hub rather than to your customers. If your users sit somewhere unusual, this driver will mislead you.</p>
           </Prose></Card>
         </Page>

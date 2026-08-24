@@ -164,7 +164,7 @@ export function PinPanel({ pinned, onUnpin, onClear }: {
             fmt={v => `${v < 1 ? v.toFixed(1) : Math.round(v)} ms`} />
           <CompareBars
             icon={<Clock size={15} strokeWidth={2.2} aria-hidden />}
-            label="Years to get connected" hint="Wait to energise a large load on the local grid. Placeholder figures until the queue pull lands."
+            label="Years to get connected" hint="Wait to energize a large load on the local grid. Shown only where a grid operator publishes it."
             rows={ranked.map(s => ({ name: short(s.label), v: s.drivers.gridWaitYears, max: 8, good: (s.drivers.gridWaitYears ?? 9) < 3 }))}
             fmt={v => `${v.toFixed(1)} yr`} />
         </div>

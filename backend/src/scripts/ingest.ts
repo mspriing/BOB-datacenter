@@ -381,7 +381,7 @@ async function ingestUSGenerationMix(regions: RegionsFile): Promise<void> {
 // zone (Luleå) is overwhelmingly hydro+wind with essentially no nuclear. The national
 // figure overstates low-carbon and understates the renewable/nuclear split.
 // Norway (no-oslo): NO1 (Oslo) is ~98% hydro — very close to national average.
-const SE_CAVEAT = 'Sweden national mix; SE1 zone (Luleå) is overwhelmingly hydro+wind with no nuclear — national figure overstates low-carbon share'
+const SE_CAVEAT = 'Sweden national mix; SE1 zone (Luleå) is overwhelmingly hydro+wind with no nuclear, so the national figure overstates the low-carbon share'
 const NO_CAVEAT = 'Norway national mix; NO1 zone (Oslo) is ~98% hydro, close to national average; bidding-zone caveat noted'
 
 // Map our keys → Eurostat geo code
@@ -520,7 +520,7 @@ async function ingestInternationalGenerationMix(regions: RegionsFile): Promise<v
 // difference must be stated rather than hidden. Caveat in every method string.
 const FEMA_CAVEAT =
   'FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; ' +
-  'normalised into one column — comparability is approximate'
+  'normalized into one column, so comparability is approximate'
 
 const SUFFIX_TO_FIPS: Record<string, string> = {
   al:'01',ak:'02',az:'04',ar:'05',ca:'06',co:'08',ct:'09',de:'10',

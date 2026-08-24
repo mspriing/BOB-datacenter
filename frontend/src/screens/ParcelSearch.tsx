@@ -122,8 +122,8 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
           Every parcel worth pricing, ranked before you call a broker.
         </h1>
         <p className="text-[17px] leading-[1.65] text-mid">
-          Candidate parcels are priced on the whole build — land, reaching the transmission
-          line, reaching fibre, levelling the ground and getting through entitlement — not just
+          Candidate parcels are priced on the whole build: land, reaching the transmission
+          line, reaching fiber, leveling the ground and getting through entitlement, rather than just
           the asking price. Filter to what you can actually use, then open one to see what
           each figure rests on.
         </p>
@@ -137,7 +137,7 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
           <CriteriaBox onApply={f => patch(f)} />
 
           <Card title="Narrow the set"
-            note={total === null ? '—' : `${total.toLocaleString('en-US')} match`}>
+            note={total === null ? 'counting' : `${total.toLocaleString('en-US')} match`}>
             <div className="space-y-4 p-5">
               <NumberFilter label="Smallest site" hint="A 10 MW campus needs roughly 12 acres at 1.2 acres per megawatt, so 25 is a working floor with room for setbacks."
                 value={query.min_acres} onChange={v => patch({ min_acres: v })}
@@ -224,7 +224,7 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
             ) : parcels.length === 0 && !loading ? (
               <div className="p-5">
                 <p className="text-[14px] leading-[1.6] text-mid">
-                  No parcel matches every filter. Loosen the tightest one — usually the
+                  No parcel matches every filter. Loosen the tightest one, usually the
                   distance to transmission.
                 </p>
               </div>

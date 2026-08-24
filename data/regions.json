@@ -1072,7 +1072,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 67 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 67 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.08133460045568042,
@@ -1202,7 +1202,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 30 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 30 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.2812059356945499,
@@ -1332,7 +1332,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 15 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 15 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.06928335542210694,
@@ -1462,7 +1462,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 75 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 75 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.0638050131353164,
@@ -1592,7 +1592,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 58 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 58 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.2818818506636016,
@@ -1722,7 +1722,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 64 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 64 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.3290971292668788,
@@ -1852,7 +1852,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 9 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 9 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.02078044365535207,
@@ -1982,7 +1982,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 3 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 3 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.00923422428515348,
@@ -2112,7 +2112,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 67 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 67 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.011809052390335285,
@@ -2242,7 +2242,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 159 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 159 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.059420496467272384,
@@ -2372,7 +2372,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 5 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 5 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.13550953451590708,
@@ -2502,7 +2502,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 44 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 44 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.6320400881677756,
@@ -2632,7 +2632,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 102 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 102 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.13625859186548228,
@@ -2762,7 +2762,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 92 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 92 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.1120510928456323,
@@ -2892,7 +2892,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 99 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 99 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.6460722642395713,
@@ -3022,7 +3022,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 105 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 105 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.5177254706141163,
@@ -3152,7 +3152,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 120 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 120 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.06732889974255592,
@@ -3282,7 +3282,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 64 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 64 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.02873702600412847,
@@ -3412,7 +3412,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 16 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 16 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.47367643529655085,
@@ -3542,7 +3542,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 24 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 24 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.07732073817064461,
@@ -3672,7 +3672,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 14 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 14 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.09442694149607966,
@@ -3802,7 +3802,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 83 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 83 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.10491807932733319,
@@ -3932,7 +3932,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 87 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 87 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.2869541990983497,
@@ -4062,7 +4062,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 82 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 82 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.02104741665252073,
@@ -4192,7 +4192,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 115 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 115 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.11837033206825019,
@@ -4322,7 +4322,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 56 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 56 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.5607964519178514,
@@ -4452,7 +4452,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 93 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 93 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.3533711897158311,
@@ -4582,7 +4582,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 17 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 17 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.12878830625973525,
@@ -4712,7 +4712,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 10 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 10 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.14876511585080815,
@@ -4842,7 +4842,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 21 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 21 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.011293015923740735,
@@ -4972,7 +4972,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 33 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 33 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.3864268333648426,
@@ -5102,7 +5102,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 62 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 62 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.275699204004133,
@@ -5232,7 +5232,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 100 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 100 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.05048151009018638,
@@ -5362,7 +5362,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 53 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 53 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.39530768934697413,
@@ -5492,7 +5492,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 88 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 88 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.025087402016828325,
@@ -5622,7 +5622,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 77 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 77 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.4239428303091005,
@@ -5752,7 +5752,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 36 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 36 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.5831558867661217,
@@ -5882,7 +5882,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 67 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 67 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.03091833031330954,
@@ -6012,7 +6012,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 5 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 5 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.03861889713509025,
@@ -6142,7 +6142,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 46 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 46 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.04218463901269016,
@@ -6272,7 +6272,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 66 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 66 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.7998431774175482,
@@ -6402,7 +6402,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 95 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 95 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.12335932546539621,
@@ -6532,7 +6532,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 254 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 254 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.22236556840903388,
@@ -6662,7 +6662,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 29 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 29 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.05773067026106718,
@@ -6792,7 +6792,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 14 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 14 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.90172921136965,
@@ -6922,7 +6922,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 133 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 133 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.04567699379392799,
@@ -7052,7 +7052,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 39 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 39 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.6905375874023435,
@@ -7182,7 +7182,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 55 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 55 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.0666431491066931,
@@ -7312,7 +7312,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 72 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 72 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.07890969014609167,
@@ -7442,7 +7442,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; pop-weighted mean of 23 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; pop-weighted mean of 23 counties; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.24609773856497277,
@@ -7572,7 +7572,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; county FIPS 48113; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; county FIPS 48113; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.22236556840903388,
@@ -7703,7 +7703,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; county FIPS 17031; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; county FIPS 17031; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.13625859186548228,
@@ -7834,7 +7834,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; county FIPS 49035; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; county FIPS 49035; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.05773067026106718,
@@ -7965,7 +7965,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; county FIPS 31055; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; county FIPS 31055; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.3533711897158311,
@@ -8096,7 +8096,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; county FIPS 19153; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; county FIPS 19153; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.6460722642395713,
@@ -8227,7 +8227,7 @@
       "source_url": "https://hub.arcgis.com/api/download/v1/items/39485e8035d446a5bff03259508ae355/csv?redirect=true&layers=0",
       "last_verified": "2026-07",
       "basis": "sourced",
-      "method": "FEMA NRI Score composite; county FIPS 32031; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "FEMA NRI Score composite; county FIPS 32031; rescaled /10; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.12878830625973525,
@@ -8358,7 +8358,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/1587.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 7 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 7 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.48142162322998044,
@@ -8488,7 +8488,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/2165.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 7 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 7 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.5120035171508789,
@@ -8618,7 +8618,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/1314.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 5 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 5 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.5909244918823242,
@@ -8748,7 +8748,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/40096.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 5 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 5 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.5197222137451172,
@@ -8878,7 +8878,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/16280.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 5 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 5 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.2606407356262207,
@@ -9008,7 +9008,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/2795.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 4 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 4 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.7119090270996093,
@@ -9017,7 +9017,7 @@
       "source_url": "https://owid-public.owid.io/data/energy/owid-energy-data.csv",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "OWID renewables_share_elec; most recent year 2025; country-level figure; Sweden national mix; SE1 zone (Luleå) is overwhelmingly hydro+wind with no nuclear — national figure overstates low-carbon share"
+      "method": "OWID renewables_share_elec; most recent year 2025; country-level figure; Sweden national mix; SE1 zone (Luleå) is overwhelmingly hydro+wind with no nuclear, so the national figure overstates the low-carbon share"
     },
     "low_carbon_pct": {
       "value": 0.9878155517578125,
@@ -9026,7 +9026,7 @@
       "source_url": "https://owid-public.owid.io/data/energy/owid-energy-data.csv",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "OWID low_carbon_share_elec; most recent year 2025; country-level figure; Sweden national mix; SE1 zone (Luleå) is overwhelmingly hydro+wind with no nuclear — national figure overstates low-carbon share"
+      "method": "OWID low_carbon_share_elec; most recent year 2025; country-level figure; Sweden national mix; SE1 zone (Luleå) is overwhelmingly hydro+wind with no nuclear, so the national figure overstates the low-carbon share"
     },
     "latency_ms_to_hub": {
       "value": 11.2,
@@ -9138,7 +9138,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/23413.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 6 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 6 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.9899881744384765,
@@ -9268,7 +9268,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/2660.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 6 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 6 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.054862842559814454,
@@ -9398,7 +9398,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/1690.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 7 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 7 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.23569223403930664,
@@ -9528,7 +9528,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/70184.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 8 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 8 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.24067062377929688,
@@ -9658,7 +9658,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/11543.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 5 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 5 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.866014633178711,
@@ -9788,7 +9788,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/20804.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 6 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 6 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.23091575622558594,
@@ -9918,7 +9918,7 @@
       "source_url": "https://www.thinkhazard.org/en/report/12686.json",
       "last_verified": "2026-07",
       "basis": "modeled",
-      "method": "ThinkHazard mean of 6 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalised into one column — comparability is approximate"
+      "method": "ThinkHazard mean of 6 hazards (EQ FL UF CF TS CY WF EH); VLO=0 LOW=3.3 MED=6.7 HIG=10; no-data excluded; FEMA NRI (US) and ThinkHazard (international) are different frameworks on different scales; normalized into one column, so comparability is approximate"
     },
     "renewable_pct": {
       "value": 0.6390012741088867,
