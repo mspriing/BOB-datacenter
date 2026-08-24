@@ -2,6 +2,16 @@
 
 Bob wrote this codebase. Every TypeScript file in `backend/src/` and `frontend/src/`, every test in `backend/tests/`, and every commit in the history was produced by directing Bob inside VS Code. This document records how that worked, with the transcripts.
 
+## Two IBM products, and two different claims
+
+The names get run together, so they are separated here before anything else.
+
+**IBM Bob wrote the software.** That is what the rest of this document is about, and it is finished work: it sits in the git history, in the commit table below, and in six screenshots of the sessions that produced it. Nothing has to be running for that to hold, and switching a service off later does not undo it.
+
+**watsonx writes one paragraph, at run time, where it is switched on.** It reads what the engine has already computed and puts the result into a sentence. The prompt forbids it from introducing a figure the arithmetic did not produce. Where credentials are absent, a deterministic template writes that closing text from the figures already computed, and the interface names which of the two you are reading. The IBM Cloud account behind this project closed in August 2026, so the hosted demo runs the fallback.
+
+That split is deliberate rather than a shortfall. A cost model whose answer depends on whether a language service answered the phone is one nobody can rely on. Every number here comes from plain code under test, which is why the closing paragraph can fall back without the analysis changing.
+
 ## The working loop
 
 The pattern that produced the best results was to give Bob a written work order rather than a conversational request. Each work order names the file, the line, the symptom, and the acceptance test, then tells Bob to commit each task separately so a bad task can be reverted without losing a good one.

@@ -24,13 +24,17 @@ This tool does the arithmetic in the open. Every input is visible, every figure 
 
 The design rule the whole project is built around: **the language model never generates a number.**
 
-Cost and financial math lives in `backend/src/engine/` as deterministic TypeScript under test. CapEx, OpEx, NPV, payback, the low and high scenarios, the weighted ranking and the sensitivity flip points are all plain code. 72 tests cover it. Running the same input twice returns the same answer, and any figure in the output can be traced to a line of arithmetic.
+Cost and financial math lives in `backend/src/engine/` as deterministic TypeScript under test. The build cost, the running cost, the total in today's money, the low and high scenarios, the weighted ranking and the sensitivity flip points are all plain code. 212 tests cover it. Running the same input twice returns the same answer, and any figure in the output can be traced to a line of arithmetic.
+
+The figures that come from outside the regional dataset are published too. Cooling overhead, the maintenance rate, the staffing baseline and the rest live in `backend/src/engine/assumptions.ts`, each carrying its basis, its source, the date it was last checked and the working behind it. Every estimate returns them. They move the answer as much as the regional data does, and until August 2026 they sat in the code as bare constants with a comment at best.
 
 IBM watsonx with the Granite 3 8B Instruct model does two jobs, neither of which involves inventing figures:
 
 1. **Reading messy input.** A user can paste a broker's note instead of filling in fields. Granite extracts the values it recognizes and maps them to the schema's override fields. When it is unavailable, a regex extractor takes over, so the feature never hard-fails. Anything pulled out of typed text is marked `user-supplied description` and `unverified` in the provenance table so it is never confused with a sourced figure.
 
 2. **Writing the recommendation.** Granite receives the engine's computed output and writes the ranked narrative and the sensitivity callouts. The prompt forbids introducing figures that are not in the engine output. When credentials are absent or the call fails, a deterministic template produces the same paragraph from the same numbers, and the interface shows which of the two produced what you are reading.
+
+**What the hosted demo is running.** The two jobs above describe how the language layer is wired rather than promising it is switched on. Credentials are set per deployment, and the IBM Cloud account behind this project closed in August 2026, so read the hosted demo as running the deterministic path unless the badge on screen says otherwise. The analysis is identical in either case. Every figure comes from the engine, and the interface names which of the two wrote the words beside them. The free-text box falls back to a regular expression extractor on the same terms.
 
 The ranking itself is min-max normalization across four drivers, so each is scored 0 to 1 with 1 always best, then weighted by four user-set sliders and summed. Sensitivity works backwards from that: each cost driver is moved on its own, holding everything else still, until the top two sites swap, which yields the "this ranking flips if" sentence and tells you which input is worth verifying before you commit money.
 
@@ -121,16 +125,16 @@ The two services wire themselves together: Render injects the backend URL into
 `VITE_API_URL` at frontend build time, and the frontend URL into `CORS_ORIGIN`
 on the backend at startup.
 
-### Secrets — enter in the Render dashboard
+### Secrets, entered in the Render dashboard
 
 Three secrets must be set manually in the Render dashboard (they are marked
 `sync: false` in `render.yaml` so they are never stored in the file):
 
 | Variable | Where to get it |
 |---|---|
-| `WATSONX_API_KEY` | IBM Cloud — API key for your watsonx.ai instance |
+| `WATSONX_API_KEY` | IBM Cloud API key for your watsonx.ai instance |
 | `WATSONX_PROJECT_ID` | IBM watsonx.ai project UUID |
-| `EIA_API_KEY` | [eia.gov/opendata](https://www.eia.gov/opendata/) — free registration |
+| `EIA_API_KEY` | [eia.gov/opendata](https://www.eia.gov/opendata/), free registration |
 
 ### Free-tier cold start
 
@@ -240,9 +244,9 @@ cd frontend && npm run build
 ## Build status
 
 > **Current state:** End to end working. `/estimate` runs the deterministic
-> engine and returns a full analysis with a watsonx/Granite narrative (or the
-> deterministic fallback when no credentials are configured). 72 backend tests
-> passing.
+> engine and returns a full analysis. The closing paragraph comes from
+> watsonx/Granite where credentials are configured and from the deterministic
+> template otherwise, and the interface says which. 212 backend tests passing.
 
 | Module | Status |
 |---|---|
@@ -251,10 +255,11 @@ cd frontend && npm run build
 | `data/regions.json` | ✅ Done |
 | `docs/SCHEMA.md` | ✅ Done |
 | Deterministic cost engine (CapEx/OpEx/NPV/rank/sensitivity) | ✅ Done + tested |
-| watsonx/Granite narrative + offline fallback | ✅ Done + tested |
+| watsonx/Granite narrative + offline fallback | ✅ Done + tested (the hosted demo runs the fallback) |
 | Free-text site parsing into overrides | ✅ Done + tested |
 | User-set decision weights | ✅ Done |
 | React results dashboard | ✅ Done |
+| Parcel-grain comparison for Bexar County, Texas | ✅ Done + tested |
 
 ### Verifying the watsonx (live) path
 
