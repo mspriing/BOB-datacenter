@@ -2,9 +2,11 @@
  * Front-end port of the backend cost engine.
  *
  * This mirrors backend/src/engine/{capex,opex,finance,rank}.ts exactly so the
- * numbers on screen match the numbers the API returns. Verified against the
- * published fixture: Nordic Hydro capex $113.4M, power $2.94M a year,
- * lifetime $21,236 per kW.
+ * numbers on screen match the numbers the API returns. Verified 2026-08-24
+ * against the published fixture at 10 MW, cooling overhead 1.4, fifteen years
+ * and an eight percent discount rate: Nordic Hydro build cost $123.2M and
+ * lifetime $21,962 per kW, Texas ERCOT $17,579 per kW, Northern Virginia
+ * $28,394 per kW.
  *
  * Every constant below is a copy of the backend constant of the same name.
  * If one changes there it has to change here.
@@ -62,7 +64,12 @@ export function computeCapex(p: ProjectParams, d: SiteDrivers): CapexBreakdown {
   const acres = Math.max(MIN_ACRES, (p.capacityKw / 1000) * ACRES_PER_MW)
   const land = acres * d.landCostPerAcre
   const construction = p.capacityKw * d.constructionPerKw
-  const incentive = d.incentivePerKw * p.capacityKw
+  // No regional incentive is netted off here, because the server stopped doing
+  // that: an incentive is negotiated per deal, and a statewide average dressed
+  // up as one is not a figure anyone can act on. This page was still taking it
+  // off, which is part of why the two disagreed. An incentive you have actually
+  // been offered belongs in the build description.
+  const incentive = 0
   const gross = land + construction
   return { land, construction, incentive, total: Math.max(0, gross - incentive) }
 }

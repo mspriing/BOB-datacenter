@@ -4,8 +4,8 @@ export const COVERAGE = {
   "regions": 77,
   "drivers": 13,
   "cells": 1001,
-  "sourced": 296,
-  "modeled": 271,
+  "sourced": 279,
+  "modeled": 288,
   "assumed": 4,
   "empty": 430,
   "priceable": 14

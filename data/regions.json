@@ -12,28 +12,31 @@
       "basis": "sourced"
     },
     "water_rate_usd_per_kgal": {
-      "value": 5.2,
-      "low": 4.5,
-      "high": 6.2,
-      "source_url": "https://www.novawater.org/rates",
-      "last_verified": "2025-04",
-      "basis": "sourced"
+      "value": 7.59,
+      "low": null,
+      "high": null,
+      "source_url": "https://www.loudounwater.org/rates-fees-charges-penalties",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "Loudoun Water (the retail utility for Loudoun County; Fairfax Water is only the wholesale supplier and was not used). Read off the 'Central System Water and Sewer User Rates' table, Water Usage Rates, Multifamily & Commercial line: Tier 1 $4.42 and Tier 2 $7.59 per 1,000 gallons. Took Tier 2, the top block, as the rate a very large flat-load user pays. Already published per 1,000 gallons; no unit conversion. The page prints the two commercial tiers without stating the gallon threshold between them (only the residential tiers show 0-25,000 / 25,001-50,000 / over 50,000 gal breakpoints), so the exact breakpoint could not be read off the page. Rates effective January 1, 2026. Wastewater is billed separately by Loudoun Water on the same metered volume at $6.59 per 1,000 gallons (all customers), so an all-in volumetric cost is about $14.18 per 1,000 gal. Reclaimed water on the same page is $2.07 per 1,000 gal; non-potable/irrigation is $9.34. Quarterly basic charges are additional and scale with meter size (6-inch commercial water $3,125.80/quarter)."
     },
     "land_cost_per_acre_usd": {
-      "value": 420000,
-      "low": 350000,
-      "high": 560000,
-      "source_url": "https://www.loopnet.com/for-sale/loudoun-county-va/",
-      "last_verified": "2025-03",
-      "basis": "sourced"
+      "value": 4400000,
+      "low": 2100000,
+      "high": 6340000,
+      "source_url": "https://northernvirginiamag.com/news/2026/03/24/data-center-developer-offers-ashburn-homeowners-4-4-million-per-acre/ https://www.loudounnow.com/news/loudoun-land-data-center-values-soar-while-home-assessments-hold-steady/article_d7977ab6-f33b-4dc2-8203-d53bc9a8ebc4.html https://www.datacenterdynamics.com/en/news/sdc-capital-partners-buys-97-acres-of-data-center-zoned-land-in-virginia-for-615-million/ https://www.datacenterfrontier.com/site-selection/article/11428233/data-center-boom-pushes-prince-william-land-to-nearly-1m-an-acre",
+      "last_verified": "2026-03",
+      "basis": "sourced",
+      "method": "DATA-CENTER LAND PREMIUM APPLIES - this is NOT generic industrial land. Loudoun 'Data Center Alley' land trades at a large multiple of ordinary industrial land, so the data-center-relevant figure is reported per instruction. Four sources, all printing $/acre on the page: (1) Loudoun County Commissioner of the Revenue via Loudoun Now, 2026 assessment cycle - average SALE price for data center property $3.76M/acre, up $1.4M YoY; (2) Northern Virginia Magazine 24-Mar-2026 - developer offering $4.4M/acre for a 130-acre residential assemblage in Ashburn, i.e. the current marginal price a DC developer will pay for a large contiguous site; (3) DatacenterDynamics - SDC Capital Partners paid $615.05M for 97 acres of DC-zoned land at Cochran Mill Rd, Leesburg (Nov 2025) = $6.34M/acre, the record trade, used as high; (4) Data Center Frontier - Ashburn Data Center Alley valued $2.1M+/acre, used as low. Value set at $4.4M/acre = upper end of the typical current range for a large assembled DC site, not the $3.76M assessment average (method says do not use averages) and not the $6.34M record outlier. Generic non-DC industrial land in Loudoun is an order of magnitude cheaper and is not what this row measures."
     },
     "construction_cost_per_kw": {
-      "value": 9100,
-      "low": 8200,
-      "high": 10500,
-      "source_url": "https://www.construction-analytics.com/data-center-construction-costs/",
-      "last_verified": "2025-05",
-      "basis": "sourced"
+      "value": 10920,
+      "low": null,
+      "high": null,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), 'Data centre cost index 2025 - index scores and US$ per watt' market chart on the Data centre cost trends page. Market row 'North Virginia' = US$10.92/W. Conversion: 10.92 USD/W x 1000 = 10920 USD per kW of IT load. T&T methodology page states the benchmark basis is a typical air-cooled build-to-suit hyperscale data centre of 30-50MW IT load, same basis as the pre-filled Singapore (14.53/W) and Tokyo (15.15/W) rows."
     },
     "construction_cost_per_mw": {
       "value": 9100000,
@@ -52,20 +55,22 @@
       "basis": "sourced"
     },
     "tax_rate": {
-      "value": 0.06,
-      "low": 0.06,
-      "high": 0.06,
-      "source_url": "https://www.tax.virginia.gov/data-center-exemptions",
-      "last_verified": "2025-06",
-      "basis": "sourced"
+      "value": 0.0081,
+      "low": null,
+      "high": null,
+      "source_url": "https://www.loudoun.gov/1911/Taxes-in-Loudoun-County",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Loudoun County VA real property tax. Option (b) - computed from the county's own published levy rather than the Lincoln/MCFE 50-State study, because that study's Virginia city is Virginia Beach/Norfolk, not Loudoun. Page states: '2025 Real Property Tax Rate for Regular District 1: $0.805 per $100 in assessed value' and 'Real estate in Virginia is assessed at 100% of its fair market value.' Arithmetic: 0.805/100 x 1.00 assessment ratio = 0.00805, rounded 0.0081. Real property only. Data-center IT equipment is taxed SEPARATELY as business tangible personal property, not at this rate - Loudoun's published rate table (https://www.loudoun.gov/1922/Property-Tax-Rates) shows Personal Property General Class $4.15/$100 and Machinery and Tools $2.75/$100 applied to depreciated cost; I could not find a distinct line item labelled 'computer equipment' on that page, so no computer-equipment rate is asserted here. Parcels in special districts add Route 28 Highway Improvement $0.105/$100 and Dulles Rail Service Districts $0.20/$100."
     },
     "tax_abatement_years": {
-      "value": 0,
-      "low": 0,
-      "high": 0,
-      "source_url": "https://www.loudoun.gov/incentives",
-      "last_verified": "2025-02",
-      "basis": "sourced"
+      "value": 9,
+      "low": 9,
+      "high": 24,
+      "source_url": "https://www.vedp.org/incentive/data-center-retail-sales-use-tax-exemption",
+      "last_verified": "2023",
+      "basis": "modeled",
+      "method": "Virginia / Loudoun. INSTRUMENT: retail SALES AND USE TAX EXEMPTION on data center equipment (Va. Code Sec. 58.1-609.3(18)), not a property tax abatement. The exemption is not a fixed number of years: VEDP states it runs 'from the date of the data center's MOU through June 30, 2035', so the term is the remaining life of the program at the date the qualifying MOU is signed. An MOU executed in 2026 therefore yields ~9 years (value = 2035 sunset minus 2026), which is why basis is modeled rather than sourced. Thresholds (150M USD capex / 50 jobs at 150% of local average wage; 70M USD / 10 jobs in distressed localities from 1 Jul 2023) must generally be met within 3 years of the MOU. High end of 24 years = MOUs signed on or after 1 Jan 2023 that commit 100B USD capex and 2,500 jobs, which extend the exemption to 2050 (35B USD / 1,000 jobs extends to 2040). Cross-checked against the Virginia Dept of Taxation report to the General Assembly dated 2 Jan 2026 (https://rga.lis.virginia.gov/Published/2026/RD40/PDF), which reports 56 companies claiming the exemption in FY2025 but does not state a per-facility term."
     },
     "incentive_usd_per_kw": {
       "value": 50,
@@ -146,12 +151,13 @@
       "basis": "sourced"
     },
     "construction_cost_per_kw": {
-      "value": 8200,
-      "low": 7400,
-      "high": 9400,
-      "source_url": "https://www.construction-analytics.com/data-center-construction-costs/",
-      "last_verified": "2025-05",
-      "basis": "sourced"
+      "value": 9540,
+      "low": 9540,
+      "high": 9540,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "ERCOT is a grid zone, not a market in the Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition). Derivation, nearest covered market in the same construction cost region: adopted T&T's 'Dallas' row = US$9.54/W x 1000 = 9540 USD per kW, unadjusted. Dallas is T&T's only Texas market and is already used the same way for the Dallas-Fort Worth metro and for San Antonio. Replaces 8200 USD per kW, which came from a general construction cost article with no method recorded and sat about 14 percent below the index while every neighbouring Texas region used it."
     },
     "construction_cost_per_mw": {
       "value": 8200000,
@@ -264,12 +270,13 @@
       "basis": "sourced"
     },
     "construction_cost_per_kw": {
-      "value": 10200,
-      "low": 9100,
-      "high": 12000,
-      "source_url": "https://www.construction-analytics.com/data-center-construction-costs/",
-      "last_verified": "2025-05",
-      "basis": "sourced"
+      "value": 12295,
+      "low": 12024,
+      "high": 12414,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "The Nordic hydro zone is a bidding zone, not a market in the Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition). Derivation: adopted T&T's 'Stockholm' row = US$12.2947/W x 1000 = 12295 USD per kW, unadjusted, which is exactly how se-lulea is already derived in this dataset. low and high are the bracketing covered Nordic markets rather than a source disagreement: low = Copenhagen US$12.0239/W (12024), high = Oslo US$12.4143/W (12414). Replaces 10200 USD per kW, which came from a general construction cost article with no method recorded and left this region and se-lulea, the same physical place, 2095 USD per kW apart."
     },
     "construction_cost_per_mw": {
       "value": 10200000,
@@ -367,28 +374,31 @@
       "basis": "sourced"
     },
     "water_rate_usd_per_kgal": {
-      "value": 3.8,
-      "low": 3.2,
-      "high": 5,
-      "source_url": "https://www.phoenix.gov/waterservices/rates",
-      "last_verified": "2025-04",
-      "basis": "sourced"
+      "value": 7.55,
+      "low": 6.59,
+      "high": 8.2,
+      "source_url": "https://www.phoenix.gov/content/dam/phoenix/waterservicessite/documents/rates_effective_march_2025.pdf",
+      "last_verified": "2025-03",
+      "basis": "sourced",
+      "method": "City of Phoenix Water Services rate schedule effective March 1, 2025. 'User and Other Charges' volume rates, inside-city column: low season (Jan/Feb/Mar/Dec) $4.93 per CCF, medium season (Apr/May/Oct/Nov) $5.65, high season (Jun-Sep) $6.13. Converted at 1 CCF = 748 gal (the schedule states this): value = 5.65/0.748 = 7.55; low = 4.93/0.748 = 6.59; high = 6.13/0.748 = 8.20. Used the medium season for value because a data center runs a flat year-round load. Note the schedule does NOT publish a separate non-residential volume table - the same per-CCF volume rates apply to residential and non-residential inside the city; only the fixed monthly service charge varies by meter size and location. Outside-city volume is 150% of inside. An environmental mandate charge of $0.62 per CCF inside city (=$0.83 per 1,000 gal) is billed on top of the volume rate and is NOT included in value. Wastewater is not in this document and is billed separately."
     },
     "land_cost_per_acre_usd": {
-      "value": 85000,
-      "low": 70000,
-      "high": 110000,
-      "source_url": "https://www.loopnet.com/for-sale/maricopa-county-az/",
-      "last_verified": "2025-03",
-      "basis": "sourced"
+      "value": 349683,
+      "low": 5377,
+      "high": 349683,
+      "source_url": "https://www.land.com/Phoenix-%26-Central-Arizona-Region/commercial-property/ https://www.landsearch.com/properties/maricopa-county-az/filter/size%5Bmin%5D=10,tag=industrial",
+      "last_verified": "2026-07",
+      "basis": "modeled",
+      "method": "Aggregate of live listings (source type c), two aggregators because Phoenix 10+ acre industrial inventory is thin. LandSearch Maricopa County, tag=industrial, 10+ acres: 6 listings, all far West Valley / exurban - Gila Bend 130ac $5,377; Wittmann 30ac $16,667; Tonopah 19ac $19,500; Tonopah 32ac $30,000; Gila Bend 70ac $34,014; Buckeye 20ac $37,500. Land.com Phoenix & Central Arizona commercial land 10+ acres: Eloy 2,358ac $24,998; Buckeye 126ac $349,683; regional median $187,341/acre (stated on page). Value=$349,683 (Buckeye 126-acre parcel) as upper end - Buckeye/Goodyear is the West Valley data center corridor with power and fiber, so it is the data-center-relevant end of the range. Low=$5,377 = raw Gila Bend desert acreage, the kind of unserviced parcel the method says drags averages down. High=value here because no priced 10+ acre listing above it was found. Note NO large industrial listings were found inside the Phoenix city limits on either aggregator; all 10+ acre supply is exurban."
     },
     "construction_cost_per_kw": {
-      "value": 8500,
-      "low": 7700,
-      "high": 9800,
-      "source_url": "https://www.construction-analytics.com/data-center-construction-costs/",
-      "last_verified": "2025-05",
-      "basis": "sourced"
+      "value": 9823,
+      "low": null,
+      "high": null,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Phoenix' = US$9.823/W. Conversion: 9.823 x 1000 = 9823 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": 8500000,
@@ -407,20 +417,22 @@
       "basis": "sourced"
     },
     "tax_rate": {
-      "value": 0.048,
-      "low": 0.048,
-      "high": 0.048,
-      "source_url": "https://azdor.gov/business/transaction-privilege-tax",
-      "last_verified": "2025-06",
-      "basis": "sourced"
+      "value": 0.022,
+      "low": null,
+      "high": null,
+      "source_url": "https://www.maricopa.gov/DocumentCenter/View/109284/Tax-Levy-2025-PDF",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Phoenix / Maricopa County AZ. Derived from the county's adopted Tax Levy and Rates document for tax year 2025 (FY2026), rates per $100 of NET ASSESSED value. Tax area used: City of Phoenix + Phoenix Elementary School District #1 + Phoenix Union High School District #210. County group: countywide primary 1.1591 + library 0.0462 + flood control 0.1428 + fire district assistance 0.0076 = 1.3557. Maricopa Community College: primary 1.0600 + bond 0.0228 = 1.0828. City of Phoenix: primary 1.2658 + bond debt 0.8141 = 2.0799. Phoenix Elem #1: 1.7603 + 0.5687 override + 0.3234 capital override + 1.1376 bond + 1.1966 desegregation = 4.9866. Phoenix Union HS #210: 1.7212 + 0.4429 + 0.2170 + 1.0963 + 0.7914 = 4.2688. TOTAL = 13.7738 per $100 NAV. Arizona Class 1 (commercial/industrial) assessment ratio for 2025 is 16% of full cash value per A.R.S. 42-15001 ('Sixteen percent beginning from and after December 31, 2024 through December 31, 2025') - https://www.azleg.gov/ars/42/15001.htm. Effective rate = 0.137738 x 0.16 = 0.02204, rounded 0.0220. Note the ratio steps down to 15.5% in 2026 and 15% from 2027. Phoenix Elementary #1 is a comparatively high-rate district; industrial parcels in other Phoenix elementary districts will produce a lower total."
     },
     "tax_abatement_years": {
-      "value": 0,
-      "low": 0,
-      "high": 0,
-      "source_url": "https://www.azcommerce.com/incentives/",
-      "last_verified": "2025-02",
-      "basis": "sourced"
+      "value": 10,
+      "low": 10,
+      "high": 20,
+      "source_url": "https://www.ncsl.org/fiscal/subsidizing-servers-how-states-are-competing-to-attract-data-centers",
+      "last_verified": "2026-04",
+      "basis": "sourced",
+      "method": "Arizona / Phoenix. INSTRUMENT: transaction privilege (sales) and use TAX EXEMPTION on qualifying equipment under the Computer Data Center program, A.R.S. Sec. 41-1519 - an equipment tax exemption, not a property tax abatement. NCSL 50-state survey (updated 1 Apr 2026) records the term as 10 or 20 years depending on sustainability certification, with a 2033 program sunset. Confirmed on the Arizona Commerce Authority program page (https://www.azcommerce.com/incentives/computer-data-center-program/): 'up to 10 full calendar years following certification', extended to 'up to 20 full calendar years' for Sustainable Redevelopment Projects; capex 50M USD within 5 years in Maricopa/Pima counties, 25M USD elsewhere; ACA may accept certification applications only between 1 Sep 2013 and 31 Dec 2033. Value records the standard 10-year term because Phoenix sits in Maricopa County and most projects certify under the standard tier."
     },
     "incentive_usd_per_kw": {
       "value": 120,
@@ -486,28 +498,31 @@
       "basis": "sourced"
     },
     "water_rate_usd_per_kgal": {
-      "value": 4.6,
-      "low": 3.9,
-      "high": 5.8,
-      "source_url": "https://www.saws.org/your-account/rates/",
-      "last_verified": "2025-04",
-      "basis": "sourced"
+      "value": 5.04,
+      "low": null,
+      "high": null,
+      "source_url": "https://www.saws.org/service/water-sewer-rates/general-class-rates/ https://www.saws.org/service/water-sewer-rates/water-supply-fee/",
+      "last_verified": "2026-01",
+      "basis": "modeled",
+      "method": "San Antonio Water System, General Class (commercial/industrial). SAWS splits the volumetric water charge across two separate published schedules and both must be added. (1) Water Delivery, general-class page, 'Effective for Consumption on or about January 1, 2026', inside city: base block (up to 100% of the customer's annual average monthly use) $1.958 per 1,000 gal; then $2.252 (>100-125%), $2.937 (>125-175%), $3.427 (>175%). (2) General Class Water Supply Fee, base block $3.079 per 1,000 gal (then $3.541 / $4.619 / $5.389). Sum of the base blocks = 1.958 + 3.079 = $5.037, rounded to 5.04 per 1,000 gal. Both components are already per 1,000 gallons; no unit conversion. Used the BASE block because SAWS defines blocks as a percentage of the customer's own prior-year average month, not fixed gallons - a flat-load data center sits in its own base block essentially all year and never escalates. The supply fee is larger than the delivery charge, so reading only the general-class page would understate water cost by about 61%. Basis is modeled because the two components carry different vintages: the delivery page states January 1, 2026 while the water supply fee page's table is labeled 2024 under a legacy 'effective January 1, 2023' heading, so the sum is not a single as-published number. Wastewater is billed on the same volume, flat across all usage, at $4.3680 per 1,000 gal inside city (2026), which nearly doubles the volumetric bill to about $9.41."
     },
     "land_cost_per_acre_usd": {
-      "value": 62000,
-      "low": 48000,
-      "high": 82000,
-      "source_url": "https://www.loopnet.com/for-sale/bexar-county-tx/",
-      "last_verified": "2025-03",
-      "basis": "sourced"
+      "value": 99926,
+      "low": 16000,
+      "high": 326493,
+      "source_url": "https://www.landsearch.com/properties/san-antonio-tx/filter/size%5Bmin%5D=10,tag=industrial",
+      "last_verified": "2026-07",
+      "basis": "modeled",
+      "method": "Aggregate of live listings (source type c). LandSearch San Antonio radius, tag=industrial, size min 10 acres: 10 listings, all priced. Observed $/acre: Elmendorf 44ac $16,000; Floresville 83ac $26,687; Von Ormy 133ac $37,594; Atascosa 15.3ac $45,751; San Antonio 78263 27.6ac $52,536; Schertz 133ac $52,632; San Antonio 78266 20.9ac $62,201; Converse 49ac $71,429; Elmendorf 54.4ac $99,926; Elmendorf 10.9ac $326,493. Low and high are min and max. Value=$99,926 (Elmendorf 54.4-acre site) = upper end of the clustered range; the $326,493 figure is a single 10.9-acre lot priced far above every other parcel in the set and is held as high only, per the method's warning that small lots price per acre far higher. Asking prices, hence modeled."
     },
     "construction_cost_per_kw": {
-      "value": 8200,
-      "low": 7400,
-      "high": 9400,
-      "source_url": "https://www.construction-analytics.com/data-center-construction-costs/",
-      "last_verified": "2025-05",
-      "basis": "sourced"
+      "value": 9540,
+      "low": 9500,
+      "high": 9540,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "San Antonio is NOT a market in the Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition). Derivation, option (a) nearest covered market in the same construction-cost region: adopted T&T's 'Dallas' row = US$9.54/W x 1000 = 9540 USD per kW, unadjusted - same state, same labour and materials market, and Dallas is the only Texas market in the index. low/high are the bracketing covered T&T markets, not a source disagreement: low = Charlotte US$9.50/W (9500, the cheapest US market in the index) and high = Dallas US$9.54/W (9540); San Antonio conventionally prices at or slightly below DFW. No published city cost index adjustment applied - no free 2025 RSMeans CCI level for San Antonio was obtainable."
     },
     "construction_cost_per_mw": {
       "value": 8200000,
@@ -526,20 +541,22 @@
       "basis": "sourced"
     },
     "tax_rate": {
-      "value": 0.019,
-      "low": 0.019,
-      "high": 0.019,
-      "source_url": "https://comptroller.texas.gov/taxes/property-tax/",
-      "last_verified": "2025-06",
-      "basis": "sourced"
+      "value": 0.0244,
+      "low": null,
+      "high": null,
+      "source_url": "https://www.bexar.org/4032/2025-Official-Tax-Rates-Exemptions",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "San Antonio / Bexar County TX. Bexar County Tax Assessor-Collector '2025 Official Tax Rates & Exemptions', rates per $100 valuation, summed across all overlapping jurisdictions for a typical industrial parcel in the City of San Antonio / San Antonio ISD: Bexar County 0.276331 + City of San Antonio 0.541590 + San Antonio ISD 1.155200 + Alamo Community College District 0.149150 + Bexar County Hospital District (University Health) 0.276235 + San Antonio River Authority 0.018300 + County Road and Flood Control Fund 0.023668 = 2.440474 per $100. Texas appraises at 100% of market value, so effective rate = 2.440474/100 = 0.0244047, rounded 0.0244. Parcels in other ISDs (Northside, North East, Judson) within Bexar County will differ."
     },
     "tax_abatement_years": {
-      "value": 10,
-      "low": 5,
-      "high": 10,
-      "source_url": "https://gov.texas.gov/business/page/texas-enterprise-fund",
-      "last_verified": "2025-02",
-      "basis": "sourced"
+      "value": 15,
+      "low": 10,
+      "high": 20,
+      "source_url": "https://comptroller.texas.gov/taxes/data-centers/index.php",
+      "last_verified": "2026-02",
+      "basis": "sourced",
+      "method": "Texas / Bexar (San Antonio). Same statutes and same instrument as the DFW row: state SALES AND USE TAX EXEMPTION on equipment, not a property tax abatement. Tex. Tax Code Sec. 151.359 gives 10 years at 200-249M USD capex and 15 years at 250M USD+; Sec. 151.3595 gives 20 years (state and local sales tax) for a qualifying large data center project at 500M USD capex, 40 jobs, 20 MW and 250,000 sq ft. Comptroller page last updated 20 Feb 2026. OBSERVED TERMS from https://comptroller.texas.gov/taxes/data-centers/data-center-lists.php: 5 facilities statewide have full-term (non-revoked) effective-to-end spans - 10 yr (NADC), 15 yr (LinkedIn Richardson), 15 yr (State Farm Richardson), 20 yr (Microsoft SAT09-SAT13), 20 yr (Winner LLC) - median 15 years, which is the value recorded. Market-specific caveat stated plainly: the only San Antonio facility in that set, Microsoft SAT09-SAT13 (12/15/2015 to 12/15/2035), runs 20 years because it is registered as a large data center project; San Antonio's other registered facilities (ALE60, ALE61, San Antonio Data Center II) are standard qualifying data centers with no end date posted yet. n = 5 facilities used statewide, 1 of them in the San Antonio market."
     },
     "incentive_usd_per_kw": {
       "value": 200,
@@ -605,28 +622,31 @@
       "basis": "sourced"
     },
     "water_rate_usd_per_kgal": {
-      "value": 6.8,
-      "low": 5.8,
-      "high": 8.2,
-      "source_url": "https://www.portlandoregon.gov/bes/rates",
-      "last_verified": "2025-04",
-      "basis": "sourced"
+      "value": 11.81,
+      "low": null,
+      "high": null,
+      "source_url": "https://www.portland.gov/water/pay-your-utility-bill/water-bill-rates-and-charges",
+      "last_verified": "2026-07",
+      "basis": "sourced",
+      "method": "Portland Water Bureau, water volume charge $8.833 per CCF for the fiscal year July 1, 2026 to June 30, 2027 (rates reset every July 1). Converted at 1 CCF = 748 gal: 8.833/0.748 = 11.81 per 1,000 gal. Flat rate - no volume blocks, no separate commercial class, so a large flat-load user pays the same volumetric rate as everyone else. Sewer (sanitary) is billed on the same metered water volume and is higher than water itself: nonresidential $14.73 per CCF = $19.69 per 1,000 gal (residential $14.24 per CCF), same FY26-27 effective period, so the combined volumetric cost is about $31.50 per 1,000 gal. Stormwater is deliberately excluded from this per-gallon rate because it is not volumetric: it is charged on impervious/developed area at $14.739 per 1,000 sq ft of billable area per 30 days."
     },
     "land_cost_per_acre_usd": {
-      "value": 150000,
-      "low": 120000,
-      "high": 200000,
-      "source_url": "https://www.loopnet.com/for-sale/multnomah-county-or/",
-      "last_verified": "2025-03",
-      "basis": "sourced"
+      "value": 58911,
+      "low": 25363,
+      "high": 58911,
+      "source_url": "https://www.land.com/Portland-Metro-Oregon-Region/commercial-property/ https://www.land.com/Washington-County-OR/commercial-property/ https://www.land.com/Clackamas-County-OR/commercial-property/ https://www.landsearch.com/properties/oregon/filter/size%5Bmin%5D=10,tag=industrial",
+      "last_verified": "2026-07",
+      "basis": "modeled",
+      "method": "WEAK ROW - read the caveat. No 10+ acre INDUSTRIAL-tagged listing exists anywhere in the Portland metro on either aggregator: LandSearch Portland radius returns 0, and the Oregon statewide industrial 10+ acre query returns 17 listings, all in central/coastal/southern Oregon (Prineville, Roseburg, Newport, Coos Bay, Independence, Hines) with none in Multnomah, Washington, Clackamas or Columbia counties. Portland's industrial land shortage inside the urban growth boundary is the reason. Fallback used: land.com commercial land 10+ acres in the Portland metro region = 3 listings - Cornelius (Washington Co) 157ac $25,363; Cornelius 300ac $28,849; Estacada (Clackamas Co) 161ac $58,911. Low=$25,363, value and high=$58,911 (upper end). CAUTION: these are large rural-fringe parcels (one is a leased rock-products site, the Cornelius ones are nursery ground) and materially understate serviced industrial land inside the UGB - on the same source, sub-10-acre commercial parcels in the metro ask $356,812/ac (Sandy), $433,428/ac (Forest Grove), $482,233/ac (Estacada infill) and $648,701/ac (Canby). If this row is used for a serviced site, the sub-10-acre band is the better guide."
     },
     "construction_cost_per_kw": {
-      "value": 9400,
-      "low": 8400,
-      "high": 10800,
-      "source_url": "https://www.construction-analytics.com/data-center-construction-costs/",
-      "last_verified": "2025-05",
-      "basis": "sourced"
+      "value": 10868,
+      "low": null,
+      "high": null,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Portland' = US$10.8675/W. Conversion: 10.8675 x 1000 = 10867.5, rounded to 10868 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": 9400000,
@@ -645,20 +665,22 @@
       "basis": "sourced"
     },
     "tax_rate": {
-      "value": 0.076,
-      "low": 0.076,
-      "high": 0.076,
-      "source_url": "https://www.oregon.gov/dor/",
-      "last_verified": "2025-06",
-      "basis": "sourced"
+      "value": 0.0117,
+      "low": null,
+      "high": null,
+      "source_url": "https://www.oregon.gov/dor/programs/gov-research/Documents/FY%202024-25%20Oregon%20Property%20Tax%20Statistics%20Report%20150-303-405-Secured.pdf",
+      "last_verified": "2024",
+      "basis": "modeled",
+      "method": "Portland / Multnomah County OR. Oregon Department of Revenue, Oregon Property Tax Statistics FY 2024-25, Exhibit 6b 'Average Effective Tax Rates': Multnomah County M5 tax rate = $11.71 per $1,000 of Measure 5 value (real market value), i.e. 0.01171 of RMV, rounded 0.0117. The corresponding AV tax rate is $23.56 per $1,000 of assessed value; Exhibit 6a gives Multnomah total AV $102,625,272k against Measure 5 value $206,503,128k, an AV/RMV ratio of 0.497 - Oregon's Measure 50 assessed value is a frozen, growth-capped figure well below market, which is why the rate must be restated onto real market value to be comparable. MODELED because this is a county-wide average across ALL property classes, not an industrial-specific rate; Multnomah County is effectively coterminous with Portland. Measure 5 caps total non-education levies at $10 per $1,000 RMV and education at $5 per $1,000 RMV."
     },
     "tax_abatement_years": {
-      "value": 0,
-      "low": 0,
-      "high": 0,
-      "source_url": "https://www.oregonbusiness.org/incentives",
-      "last_verified": "2025-02",
-      "basis": "sourced"
+      "value": 5,
+      "low": 3,
+      "high": 15,
+      "source_url": "https://www.hillsboro-oregon.gov/Home/Components/News/News/17404/4300",
+      "last_verified": "2026-05",
+      "basis": "sourced",
+      "method": "Oregon / Portland (Hillsboro, Washington County). Oregon has NO SALES TAX AT ALL, so 'no sales tax' is not an abatement and is not what this row measures. INSTRUMENT: local PROPERTY TAX ABATEMENT. Two instruments exist. (1) Enterprise zone: 100% property tax abatement on new qualified capital assets; the City of Hillsboro Q&A dated 8 May 2026 states 'Each application covers a period of 3 to 5 years. That is the maximum exemption period allowed.' Value 5 = the maximum standard enterprise-zone term, low 3 = the minimum. (2) Strategic Investment Program: a longer property tax abatement on assessed value above a taxable threshold for very large investments, documented at up to 15 years (https://www.stackinfra.com/wp-content/uploads/2021/02/Portland_Tax_Incentives_022421.pdf), which is the high bound; standalone data centers in Hillsboro are now negotiated through SIP. CURRENT STATUS: both are frozen. Oregon HB 4084 (passed March 2026) imposed a one-year statewide moratorium on new data center tax exemptions beginning 6 Jun 2026, and Hillsboro City Council approved a 180-day pause on new SIP agreements for standalone data centers on 21 Jul 2026 (https://hillsboronewstimes.com/2026/07/22/hillsboro-pauses-more-data-center-tax-breaks-to-close-potential-loophole/)."
     },
     "incentive_usd_per_kw": {
       "value": 80,
@@ -724,28 +746,31 @@
       "basis": "sourced"
     },
     "water_rate_usd_per_kgal": {
-      "value": 4.1,
-      "low": 3.5,
-      "high": 5.2,
-      "source_url": "https://www.columbus.gov/utilities/",
-      "last_verified": "2025-04",
-      "basis": "sourced"
+      "value": 8.84,
+      "low": null,
+      "high": null,
+      "source_url": "https://www.columbus.gov/files/sharedassets/city/v/6/services/public-utilities/water-rate-chart.pdf",
+      "last_verified": "2026-01",
+      "basis": "sourced",
+      "method": "City of Columbus Division of Water rate chart, all rates stated 'Effective January 1, 2026'. Used the INDUSTRIAL, inside-city row: $6.610 per CCF (rate codes SQIC/SMIC). Converted at 1 CCF = 748 gal: 6.610/0.748 = 8.84 per 1,000 gal. Flat per-CCF commodity charge, no volume blocks, so there is no large-user discount. Which class a data center is billed under matters here and I used INDUSTRIAL: industrial is priced ABOVE commercial in Columbus. For reference, commercial inside city is $5.850 per CCF (WMIC) = $7.82 per 1,000 gal; industrial outside city/suburban is $7.170 per CCF (SQII/SMII) = $9.59; commercial outside city $6.180 (ZQIC) = $8.26. Suburban sites such as New Albany pay the outside-city column. Residential is tiered ($4.448 first 5 CCF/mo, $4.932 over) and is not applicable. Sanitary sewer and stormwater are separate Columbus charges not included in this water figure."
     },
     "land_cost_per_acre_usd": {
-      "value": 45000,
-      "low": 35000,
-      "high": 62000,
-      "source_url": "https://www.loopnet.com/for-sale/franklin-county-oh/",
-      "last_verified": "2025-03",
-      "basis": "sourced"
+      "value": 264999,
+      "low": 189214,
+      "high": 264999,
+      "source_url": "https://www.yourresearchresource.com/post/chart-of-the-month-columbus-land-sales-trends-2021-2025 https://www.landsearch.com/properties/columbus-oh/filter/size%5Bmin%5D=10,tag=industrial",
+      "last_verified": "2026-07",
+      "basis": "modeled",
+      "method": "Two sources. (1) Your Research Resource 'Columbus Land Sales Trends 2021-2025' chart, which prints Q4 2025 land sales at $189,213.56 per acre market-wide and states that parcels bought for PROPOSED DATA CENTER use averaged nearly $235,000 per acre - it also cites the 131-acre Worthington Rd / Amgen sale at roughly $191,000 per acre. (2) LandSearch Columbus radius, tag=industrial, 10+ acres: exactly 1 listing - 13219 Beecher Gamble Rd, Marysville (Union County) 370 acres asking $98,050,000 = $264,999/acre, a large contiguous site of the type a data center would buy. Low=$189,214 (Q4 2025 published market-wide $/acre, data period 2025-12). Value and high=$264,999, the only current 10+ acre industrial asking price and the upper end observed. Modeled because it mixes a published transaction average with a single live asking price. Note the data center premium is visible but modest here: $235k vs $189k, roughly 1.24x, nothing like Loudoun."
     },
     "construction_cost_per_kw": {
-      "value": 7900,
-      "low": 7100,
-      "high": 9100,
-      "source_url": "https://www.construction-analytics.com/data-center-construction-costs/",
-      "last_verified": "2025-05",
-      "basis": "sourced"
+      "value": 9790,
+      "low": null,
+      "high": null,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Columbus IS covered by T&T (contrary to the initial assumption in the task brief). Market row 'Columbus' = US$9.79/W. Conversion: 9.79 x 1000 = 9790 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": 7900000,
@@ -764,20 +789,22 @@
       "basis": "sourced"
     },
     "tax_rate": {
-      "value": 0.055,
-      "low": 0.055,
-      "high": 0.055,
-      "source_url": "https://tax.ohio.gov/",
-      "last_verified": "2025-06",
-      "basis": "sourced"
+      "value": 0.0262,
+      "low": null,
+      "high": null,
+      "source_url": "https://treasurer.franklincountyohio.gov/files/assets/treasurer/v/2/documents/2025-property-tax-rates-for-2026.pdf",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Columbus / Franklin County OH. Franklin County Treasurer '2025 property tax rates for 2026' rate sheet, taxing district 010 City of Columbus (Columbus City School District). Row: state 0.32 + special 4.30 + county 20.37 + township 0.00 + school 87.76 + village 3.14 = TOTAL (gross) RATE 115.89 mills; CLASS 2 (all other, i.e. commercial/industrial) REDUCTION FACTOR 0.352996; CLASS 2 EFFECTIVE RATE 74.981315 mills per $1,000 of assessed value (check: 115.89 x (1 - 0.352996) = 74.98). Ohio assesses real property at 35% of true (market) value. Arithmetic: 74.981315/1000 x 0.35 = 0.0262435, rounded 0.0262. No non-business credit or owner-occupancy credit applied - those do not benefit commercial/industrial property. CAVEAT: the 35% assessment ratio is the Ohio statutory ratio and is not itself printed on the cited rate sheet."
     },
     "tax_abatement_years": {
-      "value": 7,
-      "low": 5,
-      "high": 10,
-      "source_url": "https://development.ohio.gov/incentives",
-      "last_verified": "2025-02",
-      "basis": "sourced"
+      "value": 15,
+      "low": 15,
+      "high": 15,
+      "source_url": "https://signalohio.org/ohio-data-centers-tax-breaks/",
+      "last_verified": "2025-07",
+      "basis": "sourced",
+      "method": "Ohio / Columbus. INSTRUMENT: SALES AND USE TAX EXEMPTION on data center equipment under Ohio Rev. Code Sec. 122.175, granted by agreement with the Ohio Tax Credit Authority - not a property tax abatement. The statute sets no maximum: 'The term of an agreement under this section shall be determined by the tax credit authority'; eligibility is 100M USD capital investment plus 1.5M USD annual payroll at the site. In practice the awarded term is 15 years: Signal Ohio (30 Jul 2025) reports that for Microsoft's New Albany facility, in the Columbus market, 'the state Tax Credit Authority gave the company a 100% sales tax exemption for 15 years'. NCSL (1 Apr 2026) describes Ohio's as up to 15 years. IMPORTANT CURRENT STATUS: Governor DeWine announced on 27 May 2026 that he directed the Tax Credit Authority to pause consideration of any NEW data center tax exemption requests (https://governor.ohio.gov/media/news-and-media/governor-dewine-announces-pause-of-data-center-tax-exemption); existing agreements are unaffected, so 15 years remains the term of an agreement already in force."
     },
     "incentive_usd_per_kw": {
       "value": 160,
@@ -843,28 +870,31 @@
       "basis": "sourced"
     },
     "water_rate_usd_per_kgal": {
-      "value": 3.5,
-      "low": 2.9,
-      "high": 4.4,
-      "source_url": "https://www.atlantaga.gov/government/departments/watershed-management/rates",
-      "last_verified": "2025-04",
-      "basis": "sourced"
+      "value": 8.24,
+      "low": null,
+      "high": null,
+      "source_url": "https://www.ajc.com/news/local/got-water-atlanta-rates-again-friday/oA6jVZqMeUKulVgVYIt8MN/ https://atlantawatershed.org/waterrates/",
+      "last_verified": "2011-07",
+      "basis": "modeled",
+      "method": "Could not read the current rate off any City of Atlanta Department of Watershed Management page. The official 'Water and Sewer Rates' page (https://atlantawatershed.org/waterrates/) publishes only Fulton County's supplemental sewer charges (service $5.62/30 days, usage $6.72 per CCF effective 1/1/2026) plus the statement that 'Atlanta's water and sewer rates have not increased since 2012' and are held through June 30, 2028. The City's own tiers live only in the '2025 Water-Sewer Rates Fact Sheet' hosted on Google Drive (https://drive.google.com/file/d/1KdbW1uTS5iHjwtp4Vr3dYGyvy4v7DTTm/view), which is robots-disallowed and returned no text via file/view, /preview, uc?export=download and drive.usercontent download; the same file is what ATL311 KB0012935 links to as 'Get Rate Information'. The bill calculator (atlantawatershed.org/billcalculator/) loads from aws.h2o4atl.com, which fails TLS. Also checked atlanta.elaws.us Sec. 154-112 (redirect loop, unfetchable) and library.municode.com (403). So the number here comes from a live AJC news page reporting the last increase in the series: Atlanta charges three increasing tiers per CCF and a data center sits wholly in tier 3 (7+ CCF): WATER $6.16 per CCF, sewer $15.69 per CCF, effective July 1, 2011. Converted 6.16/0.748 = 8.24 per 1,000 gal. Basis is modeled, not sourced, because the figure is (a) from a news page rather than the tariff and (b) carried forward to today on the utility's 'no increase since 2012' statement, which leaves a possible 2012 step unaccounted for. Sewer is billed on the same metered water volume and is roughly 2.5x the water rate ($15.69/CCF = $20.98 per 1,000 gal), so the combined volumetric cost is far larger than the water line alone - Atlanta commonly publishes water and sewer combined, and that combined figure was deliberately NOT used here. Ignored cleanwateratlanta.h2o4atl.com: confirmed dead, now serving gambling spam."
     },
     "land_cost_per_acre_usd": {
-      "value": 95000,
-      "low": 78000,
-      "high": 130000,
-      "source_url": "https://www.loopnet.com/for-sale/fulton-county-ga/",
-      "last_verified": "2025-03",
-      "basis": "sourced"
+      "value": 430657,
+      "low": 27317,
+      "high": 537634,
+      "source_url": "https://www.landsearch.com/properties/georgia/filter/size%5Bmin%5D=10,tag=industrial",
+      "last_verified": "2026-07",
+      "basis": "modeled",
+      "method": "Aggregate of live listings (source type c). LandSearch Georgia statewide, tag=industrial, size min 10 acres = 116 listings; filtered by hand to metro Atlanta counties (Fulton, DeKalb, Cobb, Gwinnett, Clayton, Coweta, Barrow) = 7 listings: Winder (Barrow) 29.1ac $27,317; Suwanee (Gwinnett) 61.3ac $35,564; Newnan (Coweta) 11.5ac $57,878; Lithonia (DeKalb) 17.7ac $113,011; Jonesboro (Clayton) 10.8ac $342,593; Newnan (Coweta) 13.7ac $430,657; Duluth (Gwinnett) 18.6ac $537,634. Low and high are the min and max of those 7. Value=$430,657 = upper end of the typical range for an infill/near-in metro industrial site; the Duluth $537,634 is the single dearest and is held as high rather than value. County-level LandSearch and Fulton County queries returned zero 10+ acre industrial listings, so the state-filtered query was used. Asking prices, hence modeled."
     },
     "construction_cost_per_kw": {
-      "value": 8000,
-      "low": 7200,
-      "high": 9200,
-      "source_url": "https://www.construction-analytics.com/data-center-construction-costs/",
-      "last_verified": "2025-05",
-      "basis": "sourced"
+      "value": 9905,
+      "low": null,
+      "high": null,
+      "source_url": "https://reports.turnerandtownsend.com/data-centre-construction-cost-index-2025/data-centre-cost-trends",
+      "last_verified": "2025",
+      "basis": "sourced",
+      "method": "Turner & Townsend Data Centre Construction Cost Index 2025-2026 (9th edition), market chart on the Data centre cost trends page. Market row 'Atlanta' = US$9.9045/W. Conversion: 9.9045 x 1000 = 9904.5, rounded to 9905 USD per kW of IT load."
     },
     "construction_cost_per_mw": {
       "value": 8000000,
@@ -883,20 +913,22 @@
       "basis": "sourced"
     },
     "tax_rate": {
-      "value": 0.055,
-      "low": 0.055,
-      "high": 0.055,
-      "source_url": "https://dor.georgia.gov/",
-      "last_verified": "2025-06",
-      "basis": "sourced"
+      "value": 0.0164,
+      "low": null,
+      "high": null,
+      "source_url": "https://www.fultoncountytaxes.org/media/Millage_Rates_Through_2025.pdf",
+      "last_verified": "2025",
+      "basis": "modeled",
+      "method": "Atlanta / Fulton County GA. Fulton County Tax Commissioner's published millage rate history table, 2025 row: City of Atlanta millage 31.870 mills (this column includes the Atlanta Public Schools levy) + Fulton County millage in City of Atlanta 9.039 mills = TOTAL 40.909 mills. Georgia assesses real property at 40% of fair market value. Arithmetic: 40.909/1000 x 0.40 = 0.0163636, rounded 0.0164. CAVEAT ON TRACEABILITY: the 40% assessment ratio is the standard Georgia statutory ratio (O.C.G.A. 48-5-7) but is NOT printed on the millage-rate PDF cited here; I was unable to open a separate page stating it before exhausting the web-search budget. The millage total itself is read directly off the cited document."
     },
     "tax_abatement_years": {
-      "value": 5,
-      "low": 3,
+      "value": 7,
+      "low": 7,
       "high": 7,
-      "source_url": "https://www.georgia.org/competitive-advantages/incentives",
-      "last_verified": "2025-02",
-      "basis": "sourced"
+      "source_url": "https://www.audits.ga.gov/ReportSearch/download/29072",
+      "last_verified": "2022-12",
+      "basis": "sourced",
+      "method": "Georgia / Atlanta. INSTRUMENT: state and local SALES AND USE TAX EXEMPTION on data center equipment (high-technology data center exemption, O.C.G.A. Sec. 48-8-3(68.1)) - an equipment exemption, not a property tax abatement. Georgia Dept of Audits and Accounts tax incentive evaluation (Dec 2022) states 'Data centers must meet the investment threshold within seven years of their exemption start date', which is the operative term of a certificate; thresholds are tiered by county population (25M USD under 30,000; 75M USD for 30,000-50,000; 250M USD over 50,000 - Fulton/DeKalb/Douglas etc. in the Atlanta market fall in the 250M USD tier). SUNSET: sources conflict and this matters. The 2022 audit says the exemption sunsets in 2033 (as extended by HB 1291, 2022); Alston and Bird, 12 Feb 2026 (https://www.alston.com/en/insights/publications/2026/02/georgia-sales-tax-exemptions-data-centers) states it 'is set to expire on December 31, 2031'; NCSL (1 Apr 2026) says 2032. Treat the sunset as 2031-2033 and note that five 2026 bills (SB 408, SB 410, SB 436, HB 559, HB 1012) would repeal, suspend or pause it."
     },
     "incentive_usd_per_kw": {
       "value": 95,
