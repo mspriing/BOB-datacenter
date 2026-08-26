@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ArrowRight, Zap } from 'lucide-react'
 import { Card, Reveal, Counter } from '../components/Primitives'
+import { HeroVideo } from '../components/HeroVideo'
 import { COVERAGE } from '../data/project'
 import { DEFAULT_SITES } from '../data/defaultSites'
 import { US_METROS } from '../data/usRegions'
@@ -88,19 +89,19 @@ export function Home({ go }: { go: (r: Route) => void }) {
         <figure className="m-0">
           <div className="overflow-hidden rounded-[14px] border border-line bg-white
             shadow-[0_18px_40px_-24px_rgba(15,32,64,.38)]">
-            <img
-              src="/product-results.webp"
-              width={1440}
-              height={1069}
-              alt="The results screen ranking three candidate sites. It shows the lifetime cost per kW,
-                   the total in today's money, the score, and a note saying how far the leader's cost
-                   to build can rise before second place takes over."
-              className="block w-full"
+            <HeroVideo
+              poster="/hero-poster.webp"
+              still="/product-results.webp"
+              alt="One continuous pull back, from a rack of servers out through the building and the
+                   parcel to the county, ending on the results screen: three candidate sites ranked by
+                   lifetime cost per kW, with a note saying how far the leader's cost to build can rise
+                   before second place takes over."
             />
           </div>
           <figcaption className="mt-3 text-[13.5px] leading-[1.55] text-mid">
-            The answer screen for the three sites shipped with the repo. The amber line is the one
-            worth reading twice: it says how far the leader can slip before second place takes over.
+            One shot, from a rack of servers out to the county and back down onto the answer. The amber
+            line at the end is the one worth reading twice: it says how far the leader can slip before
+            second place takes over.
           </figcaption>
         </figure>
       </Reveal>
