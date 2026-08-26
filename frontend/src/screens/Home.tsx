@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ArrowRight, Zap } from 'lucide-react'
 import { Card, Reveal, Counter } from '../components/Primitives'
-import { HeroVideo } from '../components/HeroVideo'
+import { HeroPullback } from '../components/HeroPullback'
 import { COVERAGE } from '../data/project'
 import { DEFAULT_SITES } from '../data/defaultSites'
 import { US_METROS } from '../data/usRegions'
@@ -87,21 +87,11 @@ export function Home({ go }: { go: (r: Route) => void }) {
       {/* ── What the tool looks like ───────────────────────────────────────── */}
       <Reveal className="mt-10">
         <figure className="m-0">
-          <div className="overflow-hidden rounded-[14px] border border-line bg-white
-            shadow-[0_18px_40px_-24px_rgba(15,32,64,.38)]">
-            <HeroVideo
-              poster="/hero-poster.webp"
-              still="/product-results.webp"
-              alt="One continuous pull back, from a rack of servers out through the building and the
-                   parcel to the county, ending on the results screen: three candidate sites ranked by
-                   lifetime cost per kW, with a note saying how far the leader's cost to build can rise
-                   before second place takes over."
-            />
-          </div>
+          <HeroPullback go={go} />
           <figcaption className="mt-3 text-[13.5px] leading-[1.55] text-mid">
-            One shot, from a rack of servers out to the county and back down onto the answer. The amber
-            line at the end is the one worth reading twice: it says how far the leader can slip before
-            second place takes over.
+            One continuous shot, from a rack of servers out to the county and back down onto the answer.
+            The page it lands on is the product, not a picture of it: those figures come from the engine
+            at load, and the rows open the full run.
           </figcaption>
         </figure>
       </Reveal>
