@@ -98,8 +98,49 @@ function loadCounty(county: string): ParcelRow[] {
     throw new Error(`county id escapes the data directory: ${JSON.stringify(county)}`)
   }
   const rows: ParcelRow[] = JSON.parse(readFileSync(path, 'utf-8'))
-  _cache.set(county, rows)
-  return rows
+  const deduped = oneRowPerParcel(rows)
+  _cache.set(county, deduped)
+  return deduped
+}
+
+/** Coordinate pairs in a WKT ring, counted cheaply. Null geometry counts zero. */
+function vertexCount(wkt: string | null): number {
+  if (!wkt) return 0
+  let n = 0
+  for (let i = 0; i < wkt.length; i++) if (wkt.charCodeAt(i) === 44 /* , */) n++
+  return n
+}
+
+/**
+ * One row per parcel id.
+ *
+ * The Bexar file carries 3,046 rows for 3,040 distinct parcels. Three of the
+ * six repeats are byte-identical, which is the county service returning the
+ * same feature twice. The other three share an id and an acreage but carry
+ * different rings: a multi-part parcel arrives as one feature per part, and
+ * each part is stamped with the whole parcel's acreage.
+ *
+ * Left alone that counted six plots twice in the headline, entered them twice
+ * in the ranking, and for the multi-part ones measured the distance to
+ * transmission from a fragment rather than from the parcel. The row with the
+ * most vertices is the main body, and its centroid is the one worth measuring
+ * from, so that is the row kept.
+ *
+ * This lives here rather than in the ingest because this module is the only
+ * way parcel data reaches the rest of the backend, so a stale data file or a
+ * future county with the same habit is covered without a re-run.
+ */
+export function oneRowPerParcel(rows: ParcelRow[]): ParcelRow[] {
+  const best = new Map<string, ParcelRow>()
+  for (const r of rows) {
+    const held = best.get(r.parcel_id)
+    if (!held || vertexCount(r.geometry_wkt) > vertexCount(held.geometry_wkt)) {
+      best.set(r.parcel_id, r)
+    }
+  }
+  // Map preserves insertion order, so the file's order survives for the rows
+  // that were never duplicated, which keeps every downstream sort stable.
+  return [...best.values()]
 }
 
 export const fileRepository: ParcelRepository = {

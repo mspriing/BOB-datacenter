@@ -8,5 +8,6 @@ export const COVERAGE = {
   "modeled": 288,
   "assumed": 4,
   "empty": 430,
-  "priceable": 14
+  "priceable": 14,
+  "parcels": 3040
 } as const

@@ -116,7 +116,7 @@ interface CostKey { countyId: string; project: Omit<ParcelProject, 'weights'> }
  *
  * It was an array, and scoreAll returned the whole of it on every call after the
  * first — so the `rows` argument was honoured on the cold run and silently
- * discarded thereafter. Every filtered request got all 3,046 parcels back, which
+ * discarded thereafter. Every filtered request got all 3,040 parcels back, which
  * made the entire filter rail look wired-up and do nothing. Keying by parcel id
  * keeps the "compute once, re-rank cheaply" intent while letting a caller ask
  * for a subset.

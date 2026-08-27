@@ -296,7 +296,7 @@ parcelsRouter.get('/:id', async (req, res) => {
   const estimate: ParcelEstimate = { ...priced, rank: 0, weighted_score: 0 }
 
   // The note is generated here, for the one parcel being opened. It is never
-  // produced during a list or a search — 3,046 generations per run would be
+  // produced during a list or a search — 3,040 generations per run would be
   // expensive and nobody would read them.
   const note = await parcelNote(estimate)
 

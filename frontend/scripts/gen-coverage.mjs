@@ -42,10 +42,20 @@ for (const region of Object.values(regions)) {
   if (REQUIRED.every(d => region[d] && region[d].value !== null && region[d].value !== undefined)) priceable++
 }
 
+// The parcel count the setup card advertises, counted rather than typed, for
+// the same reason as everything above. It was written by hand as 3,046, which
+// is the number of ROWS the Bexar ingest produced; six of those rows repeat a
+// parcel already in the file, either as an identical feature returned twice or
+// as a second part of a multi-part parcel carrying the whole parcel's acreage.
+// The backend hands out one row per id, so the page counts the same way.
+const parcelRows = JSON.parse(readFileSync(resolve(here, '../../data/parcels/bexar.rows.json'), 'utf8'))
+const parcels = new Set(parcelRows.map(r => r.parcel_id)).size
+
 const out = {
   regions: Object.keys(regions).length,
   drivers: driverNames.size,
   cells, sourced, modeled, assumed, empty, priceable,
+  parcels,
 }
 
 writeFileSync(resolve(here, '../src/data/coverage.ts'),

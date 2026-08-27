@@ -12,7 +12,7 @@
  * permitted to compute one, and a note whose numbers do not all appear in the
  * estimate is rejected in favour of the deterministic text.
  *
- * Generated on demand for the parcel being viewed. Never batched: 3,046
+ * Generated on demand for the parcel being viewed. Never batched: 3,040
  * generations per ingest would be expensive and pointless.
  */
 

@@ -115,7 +115,7 @@ export function Setup({
                   id: 'parcels' as const,
                   head: 'Compare parcels in one county',
                   body: 'Individual plots in Bexar County, Texas, priced on the whole build: land, reaching the transmission line, reaching fiber, leveling the ground and getting through entitlement. Use this once you know where.',
-                  foot: '3,046 candidate parcels of 25 acres and above',
+                  foot: `${COVERAGE.parcels.toLocaleString('en-US')} candidate parcels of 25 acres and above`,
                 },
               ]).map(o => {
                 const on = zoom === o.id
