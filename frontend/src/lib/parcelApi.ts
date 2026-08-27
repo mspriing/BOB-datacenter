@@ -15,6 +15,12 @@ export interface ParcelSummary {
   lat: number | null
   lng: number | null
   /**
+   * The parcel outline, thinned server-side, or null when the ingest holds no
+   * usable shape. The map draws this. The point above is what it falls back to
+   * when the whole county is in view and a plot is smaller than a pixel.
+   */
+  geometry: { type: 'Polygon'; coordinates: number[][][] } | null
+  /**
    * null when the parcel is missing a cost driver. A missing cost is not a zero
    * cost, so the server sends null rather than 0 and the list says so in words.
    */

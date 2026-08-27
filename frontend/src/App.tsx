@@ -26,7 +26,7 @@ import { DocPage } from './pages/DocPage'
 // the setup screen. Four peer tabs read as four steps while all four were
 // clickable from the start, which is what put a reader on the results screen
 // before anything had been run.
-// Three steps, numbered, because that is what they are.
+// Three steps, in the order they happen.
 //
 // The map used to sit here as a fourth peer, which is what made the bar read as
 // a menu rather than a path: a reader saw "Map" and "Set up" side by side with
@@ -35,10 +35,10 @@ import { DocPage } from './pages/DocPage'
 // happens on the setup screen, so the map is reached from there and lights the
 // setup step while you are on it. Same for the parcel screens, which are the
 // other end of the same choice.
-const NAV: Array<{ id: Route; label: string; step: number }> = [
-  { id: 'home',    label: 'Start',   step: 1 },
-  { id: 'setup',   label: 'Set up',  step: 2 },
-  { id: 'results', label: 'Results', step: 3 },
+const NAV: Array<{ id: Route; label: string }> = [
+  { id: 'home',    label: 'Start' },
+  { id: 'setup',   label: 'Set up' },
+  { id: 'results', label: 'Results' },
 ]
 
 /** Which step in the bar a route belongs to. */
@@ -164,11 +164,7 @@ export default function App() {
                     <motion.span layoutId="navpill" className="absolute inset-0 rounded-full bg-bluex"
                       transition={{ type: 'spring', stiffness: 420, damping: 36 }} />
                   )}
-                  <span className="relative flex items-center gap-1.5">
-                    <span className={`num text-[11px] font-bold tabular-nums
-                      ${active ? 'text-blued' : 'text-dim'}`}>{n.step}</span>
-                    {n.label}
-                  </span>
+                  <span className="relative">{n.label}</span>
                 </button>
               )
             })}

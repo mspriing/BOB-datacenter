@@ -26,6 +26,7 @@ import { fileRepository } from '../parcel/repository.js'
 import { bexarConfig } from '../ingest/counties/bexar.js'
 import { getOrBuildIndex, queryBbox } from '../parcel/spatialIndex.js'
 import { scoreAll, estimateParcel, rerank } from '../parcel/score.js'
+import { parcelOutline } from '../parcel/geometry.js'
 import {
   ListQuerySchema, DetailQuerySchema, SearchBodySchema,
   type ParcelSummary, type ParcelListResponse,
@@ -145,6 +146,7 @@ function toSummary(
     dist_to_ixp_km:         row.dist_to_ixp_km,
     lat:                    row.lat,
     lng:                    row.lng,
+    geometry:               parcelOutline(row.geometry_wkt),
     lifetime_cost_per_kw:   e.finance?.lifetime_cost_per_kw ?? null,
     capex_per_kw:           e.finance?.capex_per_kw ?? null,
     land_cost_per_acre_usd: landPricePerAcre(e.provenance),

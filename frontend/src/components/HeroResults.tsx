@@ -85,12 +85,10 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
           {/* The same three steps the real bar shows, in the same order. A
               miniature that disagrees with the thing it stands for is worse
               than no miniature. */}
-          {[['1', 'Start'], ['2', 'Set up'], ['3', 'Results']].map(([n, t]) => (
+          {['Start', 'Set up', 'Results'].map(t => (
             <span key={t}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-medium ${
-                t === 'Results' ? 'bg-blue-x text-blue-d' : 'text-mid'}`}>
-              <span className="num text-[10px] font-bold text-dim">{n}</span>{t}
-            </span>
+              className={`rounded-full px-3 py-1 text-[12px] font-medium ${
+                t === 'Results' ? 'bg-blue-x text-blue-d' : 'text-mid'}`}>{t}</span>
           ))}
         </div>
       </div>

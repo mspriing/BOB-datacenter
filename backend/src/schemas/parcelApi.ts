@@ -107,6 +107,12 @@ export interface ParcelSummary {
   dist_to_ixp_km:         number | null
   lat:                    number | null
   lng:                    number | null
+  /**
+   * The parcel outline, thinned for the wire, or null when the ingest holds no
+   * usable shape. The map draws this; the point above is what it falls back to
+   * when the county is in view and a plot is smaller than a pixel.
+   */
+  geometry:               { type: 'Polygon'; coordinates: number[][][] } | null
   // null means this parcel could not be priced. A missing cost is not a zero
   // cost, and a total built on one would put the least known parcel first.
   lifetime_cost_per_kw:   number | null
