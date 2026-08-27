@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ArrowRight, MapPin, AlertTriangle } from 'lucide-react'
-import { Card, Field } from '../components/Primitives'
+import { Card, FoldCard, Field } from '../components/Primitives'
 import { ProjectionSliders } from '../components/ProjectionSliders'
 import { PROJECT, COVERAGE } from '../data/project'
 import { ALL_REGIONS } from '../lib/useSites'
@@ -137,6 +137,11 @@ export function Setup({
             </div>
           </Card>
 
+          {/* Everything from here down is what the depth choice decided. It is
+              keyed on that choice so React replaces it rather than patching it,
+              and the entry animation makes the swap read as caused by the click
+              above rather than as the page redrawing itself. */}
+          <div key={zoom} className="swap-enter space-y-3.5">
           <Card title="The build" note="What you are putting up, and for how long">
             <div className="grid gap-5 p-5 sm:grid-cols-2">
               <Field label="Project name" defaultValue={PROJECT.name}
@@ -151,8 +156,11 @@ export function Setup({
             </div>
           </Card>
 
-          <Card title="Three assumptions worth understanding"
-            note="Filled in already. Change one only if you have a reason to">
+          {/* Folded. The card's own note told the reader to leave it alone, and
+              it still took a third of the screen doing so. Closed by default,
+              one line away, and the note now says what opening it is for. */}
+          <FoldCard title="Three assumptions worth understanding"
+            note="Filled in already. Open it if you have a reason to change one">
             <div className="grid gap-5 p-5 sm:grid-cols-3">
               <Field label="Cooling overhead" defaultValue="1.25"
                 hint="Total site power divided by what the servers draw. 1.25 means a quarter again goes to cooling and electrical losses. A new build aims for about that. Running data centers average 1.54, and those above 20 MW average 1.44."
@@ -164,7 +172,7 @@ export function Setup({
                 hint="Liters of water for each kilowatt hour of cooling. 0.4 is a normal design figure. Air cooled runs lower and evaporative runs higher. It is a choice in the design rather than something the region decides, which is why it sits here."
                 explain="Multiplied by the local water tariff to give the annual water bill." />
             </div>
-          </Card>
+          </FoldCard>
 
 
           {atParcelGrain ? (
@@ -276,20 +284,31 @@ export function Setup({
               <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-[var(--warn)]" aria-hidden />
               <div className="text-[14px] leading-[1.6] text-[#5C3A00]">
                 <p className="mb-1.5">
-                  Some figures for these places have not been collected yet. The comparison still
-                  runs, though the ranking stays partial until they land.
+                  These places are missing a figure. The comparison still runs, and the ranking
+                  stays partial until the figure exists.
                 </p>
-                <ul className="list-disc pl-5">
+                <ul className="mb-2 list-disc pl-5">
                   {thin.map(t => (
-                    <li key={t.label}>{t.label}: missing {t.missing.join(', ')}</li>
+                    <li key={t.label}>{t.label}: no {t.missing.join(', no ')}</li>
                   ))}
                 </ul>
+                {/* Named rather than left as a shrug. The grid wait is missing because
+                    neither operator publishes one, which is a different thing from
+                    nobody having looked, and a reader deciding on a site deserves to
+                    know which it is. */}
+                <p className="text-[13.5px] leading-[1.55]">
+                  The grid wait is the one that matters most here, and it is empty because
+                  neither ERCOT nor Svenska kraftnat publishes a connection time in years.{' '}
+                  <button onClick={() => go('known-gaps')} className="link-inline">
+                    What was checked
+                  </button>
+                </p>
               </div>
             </div>
           )}
 
           {!atParcelGrain && (
-          <Card title="Anything else you know" note="Optional">
+          <FoldCard title="Anything else you know" note="Optional. A quote, an abatement, a figure you were given">
             <div className="p-5">
               <label className="block">
                 <span className="mb-1.5 block text-[15px] font-medium text-ink2">
@@ -305,8 +324,10 @@ export function Setup({
                 a region already in the set.
               </p>
             </div>
-          </Card>
+          </FoldCard>
           )}
+
+          </div>
 
         {/* The projections used to ride a tall sticky rail beside a shorter
             column, which left the page ending on two different lines. They sit

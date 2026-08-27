@@ -42,7 +42,7 @@ export function FoldCard({ title, note, children, defaultOpen = false }: {
           {note && <span className="panel-note hidden sm:block">{note}</span>}
         </button>
       </Collapsible.Trigger>
-      <Collapsible.Content className="relative z-[2]">{children}</Collapsible.Content>
+      <Collapsible.Content className="fold-panel relative z-[2]">{children}</Collapsible.Content>
     </Collapsible.Root>
   )
 }
