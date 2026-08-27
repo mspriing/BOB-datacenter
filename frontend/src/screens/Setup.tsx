@@ -83,47 +83,24 @@ export function Setup({
         <p className="label-xs mb-3">Step one of two</p>
         <h1 className="mb-4 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
           font-semibold leading-[1.08] tracking-[-.02em] text-ink">
-          Describe the build and the places you are weighing up.
+          Pick how close to look, then describe the build.
         </h1>
         <p className="max-w-[62ch] text-[17px] leading-[1.65] text-mid">
-          Every box below is already filled in with a figure a mid-size campus would use, and each
-          one says what a normal value looks like. Change what you know, leave the rest, and run it.
+          The choice below decides what this page asks for next. Everything under it arrives
+          filled in with a figure a mid-size campus would use, and each field says what a normal
+          value looks like. Change what you know, leave the rest, and run it.
         </p>
       </div>
 
       <div className="space-y-3.5">
-          <Card title="The build" note="What you are putting up, and for how long">
-            <div className="grid gap-5 p-5 sm:grid-cols-2">
-              <Field label="Project name" defaultValue={PROJECT.name}
-                hint="Your label for this comparison. It appears on the results and changes nothing in the arithmetic."
-                explain="Your label for this comparison. It appears on the results and changes nothing in the arithmetic." />
-              <Field label="How much power the servers draw" defaultValue="10 MW"
-                hint="10 MW is a mid-size campus. This is the servers alone, before anything spent on cooling them."
-                explain="Capacity is normally quoted this way, so a 10 MW campus pulls more than 10 MW at the meter once cooling is added." />
-              <Field label="How many years to price" defaultValue="15"
-                hint="15 years is the usual planning life. A longer horizon puts more weight on power and staff and less on the build."
-                explain="Running cost is added up across this many years and brought back to today's money." />
-            </div>
-          </Card>
+          {/* The zoom choice, first on the page.
 
-          <Card title="Three assumptions worth understanding"
-            note="Filled in already. Change one only if you have a reason to">
-            <div className="grid gap-5 p-5 sm:grid-cols-3">
-              <Field label="Cooling overhead" defaultValue="1.25"
-                hint="Total site power divided by what the servers draw. 1.25 means a quarter again goes to cooling and electrical losses. A new build aims for about that. Running data centers average 1.54, and those above 20 MW average 1.44."
-                explain="Known in the industry as PUE. Lower is better, and it multiplies the electricity bill directly." />
-              <Field label="Discount rate" defaultValue="8%"
-                hint="What money in the future is worth to you today. A dollar of running cost in year 15 counts for less than one spent now. 8% is a common starting point. A higher rate favors sites that are cheap to build. A lower one favors sites that are cheap to run."
-                explain="The rate used to bring every future year of running cost back to today's money." />
-              <Field label="Water your cooling uses" defaultValue="0.4 L per kWh"
-                hint="Liters of water for each kilowatt hour of cooling. 0.4 is a normal design figure. Air cooled runs lower and evaporative runs higher. It is a choice in the design rather than something the region decides, which is why it sits here."
-                explain="Multiplied by the local water tariff to give the annual water bill." />
-            </div>
-          </Card>
-
-          {/* The zoom choice. Parcels used to be a fifth tab sitting beside
-              this screen, which made it look like a different tool rather than
-              a closer look at the same question. */}
+              Parcels used to be a fifth tab sitting beside this screen, which
+              made it look like a different tool rather than a closer look at
+              the same question. Folding it in fixed that, but it landed third,
+              under six boxes the page itself tells the reader to leave alone.
+              It is the only control here that changes what the rest of the page
+              shows, so it opens the page. */}
           <Card title="How close do you want to look?"
             note="The same fifteen years get priced whichever you pick">
             <div className="grid gap-3 p-5 sm:grid-cols-2">
@@ -159,6 +136,36 @@ export function Setup({
               })}
             </div>
           </Card>
+
+          <Card title="The build" note="What you are putting up, and for how long">
+            <div className="grid gap-5 p-5 sm:grid-cols-2">
+              <Field label="Project name" defaultValue={PROJECT.name}
+                hint="Your label for this comparison. It appears on the results and changes nothing in the arithmetic."
+                explain="Your label for this comparison. It appears on the results and changes nothing in the arithmetic." />
+              <Field label="How much power the servers draw" defaultValue="10 MW"
+                hint="10 MW is a mid-size campus. This is the servers alone, before anything spent on cooling them."
+                explain="Capacity is normally quoted this way, so a 10 MW campus pulls more than 10 MW at the meter once cooling is added." />
+              <Field label="How many years to price" defaultValue="15"
+                hint="15 years is the usual planning life. A longer horizon puts more weight on power and staff and less on the build."
+                explain="Running cost is added up across this many years and brought back to today's money." />
+            </div>
+          </Card>
+
+          <Card title="Three assumptions worth understanding"
+            note="Filled in already. Change one only if you have a reason to">
+            <div className="grid gap-5 p-5 sm:grid-cols-3">
+              <Field label="Cooling overhead" defaultValue="1.25"
+                hint="Total site power divided by what the servers draw. 1.25 means a quarter again goes to cooling and electrical losses. A new build aims for about that. Running data centers average 1.54, and those above 20 MW average 1.44."
+                explain="Known in the industry as PUE. Lower is better, and it multiplies the electricity bill directly." />
+              <Field label="Discount rate" defaultValue="8%"
+                hint="What money in the future is worth to you today. A dollar of running cost in year 15 counts for less than one spent now. 8% is a common starting point. A higher rate favors sites that are cheap to build. A lower one favors sites that are cheap to run."
+                explain="The rate used to bring every future year of running cost back to today's money." />
+              <Field label="Water your cooling uses" defaultValue="0.4 L per kWh"
+                hint="Liters of water for each kilowatt hour of cooling. 0.4 is a normal design figure. Air cooled runs lower and evaporative runs higher. It is a choice in the design rather than something the region decides, which is why it sits here."
+                explain="Multiplied by the local water tariff to give the annual water bill." />
+            </div>
+          </Card>
+
 
           {atParcelGrain ? (
             <Card title="The county" note="Bexar County, Texas">
