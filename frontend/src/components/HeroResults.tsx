@@ -82,10 +82,15 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
         className="mb-3 flex items-center justify-between rounded-[11px] border border-line bg-white px-4 py-2.5">
         <span className="text-[17px] font-semibold tracking-[-.02em] text-ink">leepr</span>
         <div className="flex gap-1.5">
-          {['Start', 'Map', 'Set up', 'Results'].map(t => (
+          {/* The same three steps the real bar shows, in the same order. A
+              miniature that disagrees with the thing it stands for is worse
+              than no miniature. */}
+          {[['1', 'Start'], ['2', 'Set up'], ['3', 'Results']].map(([n, t]) => (
             <span key={t}
-              className={`rounded-full px-3 py-1 text-[12px] font-medium ${
-                t === 'Results' ? 'bg-blue-x text-blue-d' : 'text-mid'}`}>{t}</span>
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-medium ${
+                t === 'Results' ? 'bg-blue-x text-blue-d' : 'text-mid'}`}>
+              <span className="num text-[10px] font-bold text-dim">{n}</span>{t}
+            </span>
           ))}
         </div>
       </div>
@@ -191,7 +196,10 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
       </div>
 
       <div style={step(6)} className="mt-3 flex justify-end">
-        <button className="btn btn-ghost text-[13.5px]" onClick={() => go('results')}>
+        {/* btn-quiet, because btn-ghost is not a class this stylesheet defines.
+            It rendered as a bare .btn: no background, no border, no shadow, so
+            the one action on the hero did not read as a button at all. */}
+        <button className="btn btn-quiet text-[13.5px]" onClick={() => go('results')}>
           Open the full run
           <ArrowRight size={15} strokeWidth={2.4} aria-hidden />
         </button>

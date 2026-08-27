@@ -71,13 +71,15 @@ export function Home({ go }: { go: (r: Route) => void }) {
         </h1>
         <div className="max-w-[62ch]">
           <p className="mb-8 text-[clamp(1.0625rem,1rem+.3vw,1.3125rem)] leading-[1.6] text-mid">
-            Start on the map or name candidates yourself. The engine prices build, power,
-            staff and hazard exposure for every region, adds land, water and tax wherever a
-            published figure exists, ranks the set against your projections, then shows
-            exactly what would have to change for that ranking to flip.
+            Choose how close you want to look, then say what you are building. The engine
+            prices build, power, staff and hazard exposure for every region, adds land, water
+            and tax wherever a published figure exists, ranks the set against your projections,
+            then shows exactly what would have to change for that ranking to flip.
           </p>
-          <button className="btn btn-primary" onClick={() => go('map')}>
-            Open the map
+          {/* Into the flow, rather than sideways into the map. The map is one of
+              the two ways to name regions, and that choice is made on setup. */}
+          <button className="btn btn-primary" onClick={() => go('setup')}>
+            Start the comparison
             <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
           </button>
           <p className="mt-4 text-[13.5px] text-mid">Takes about a minute. You do not need an account.</p>

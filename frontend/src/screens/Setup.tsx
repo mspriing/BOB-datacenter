@@ -237,8 +237,11 @@ export function Setup({
                     )}
                   </div>
                 ))}
-                {chosen.length < 4 && (
-                  <div className="p-5">
+                {/* The map is reached from here rather than from the top bar.
+                    Without this link a reader with nothing pinned had no way to
+                    open it at all once it stopped being a tab. */}
+                <div className="flex flex-wrap items-center gap-3 p-5">
+                  {chosen.length < 4 && (
                     <button className="pill text-[13.5px]"
                       onClick={() => {
                         const next = options.find(o => !active.includes(o.key))
@@ -246,8 +249,11 @@ export function Setup({
                       }}>
                       Add another site
                     </button>
-                  </div>
-                )}
+                  )}
+                  <button onClick={() => go('map')} className="link-inline text-[14px]">
+                    Pick them on the map instead
+                  </button>
+                </div>
               </div>
             )}
           </Card>

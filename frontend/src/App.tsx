@@ -26,12 +26,25 @@ import { DocPage } from './pages/DocPage'
 // the setup screen. Four peer tabs read as four steps while all four were
 // clickable from the start, which is what put a reader on the results screen
 // before anything had been run.
-const NAV: Array<{ id: Route; label: string }> = [
-  { id: 'home', label: 'Start' },
-  { id: 'map', label: 'Map' },
-  { id: 'setup', label: 'Set up' },
-  { id: 'results', label: 'Results' },
+// Three steps, numbered, because that is what they are.
+//
+// The map used to sit here as a fourth peer, which is what made the bar read as
+// a menu rather than a path: a reader saw "Map" and "Set up" side by side with
+// no way to tell which came first, or that one lives inside the other. The map
+// is one of the two ways to name the regions you are comparing, and that naming
+// happens on the setup screen, so the map is reached from there and lights the
+// setup step while you are on it. Same for the parcel screens, which are the
+// other end of the same choice.
+const NAV: Array<{ id: Route; label: string; step: number }> = [
+  { id: 'home',    label: 'Start',   step: 1 },
+  { id: 'setup',   label: 'Set up',  step: 2 },
+  { id: 'results', label: 'Results', step: 3 },
 ]
+
+/** Which step in the bar a route belongs to. */
+const STEP_OF: Partial<Record<Route, Route>> = {
+  map: 'setup', parcels: 'setup', parcel: 'setup', running: 'results',
+}
 
 const DOC_ROUTES: Route[] = [
   'how-ranking-works', 'driver-meanings', 'cost-method', 'release-notes',
@@ -141,7 +154,7 @@ export default function App() {
           <nav aria-label="Screens"
             className="flex items-center gap-1.5 rounded-full border border-line bg-white/80 p-1 shadow-[var(--shadow-sm)]">
             {NAV.map(n => {
-              const active = route === n.id || (route === 'running' && n.id === 'results')
+              const active = (STEP_OF[route] ?? route) === n.id
               return (
                 <button key={n.id} onClick={() => go(n.id)}
                   aria-current={active ? 'page' : undefined}
@@ -151,7 +164,11 @@ export default function App() {
                     <motion.span layoutId="navpill" className="absolute inset-0 rounded-full bg-bluex"
                       transition={{ type: 'spring', stiffness: 420, damping: 36 }} />
                   )}
-                  <span className="relative">{n.label}</span>
+                  <span className="relative flex items-center gap-1.5">
+                    <span className={`num text-[11px] font-bold tabular-nums
+                      ${active ? 'text-blued' : 'text-dim'}`}>{n.step}</span>
+                    {n.label}
+                  </span>
                 </button>
               )
             })}
