@@ -71,10 +71,8 @@ export function Home({ go }: { go: (r: Route) => void }) {
         </h1>
         <div className="max-w-[62ch]">
           <p className="mb-8 text-[clamp(1.0625rem,1rem+.3vw,1.3125rem)] leading-[1.6] text-mid">
-            Choose how close you want to look, then say what you are building. The engine
-            prices build, power, staff and hazard exposure for every region, adds land, water
-            and tax wherever a published figure exists, ranks the set against your projections,
-            then shows exactly what would have to change for that ranking to flip.
+            It prices the whole 15 years for each place you are weighing, then names the one
+            figure that would change the answer.
           </p>
           {/* Into the flow, rather than sideways into the map. The map is one of
               the two ways to name regions, and that choice is made on setup. */}
@@ -96,6 +94,42 @@ export function Home({ go }: { go: (r: Route) => void }) {
             at load, and the rows open the full run.
           </figcaption>
         </figure>
+      </Reveal>
+
+      {/* ── What it does, for the reader who kept scrolling ─────────────────
+          The hero used to carry this as a four-line paragraph above the
+          button, which asked a first-time reader to finish an explanation
+          before they were allowed to start. The headline, one line and the
+          button are the whole of the opening now; anyone who wants the detail
+          before committing a minute finds it here, under the shot. */}
+      <Reveal className="mt-14">
+        <Card>
+          <div className="p-6 sm:p-8">
+            <p className="label-xs mb-3">What it actually does</p>
+            <h2 className="mb-6 max-w-[34ch] text-[clamp(1.375rem,1.15rem+1vw,1.875rem)]
+              font-semibold leading-[1.15] tracking-[-.01em] text-ink">
+              Three things, in the order you meet them.
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-3 sm:gap-8">
+              {[
+                ['Prices the whole build',
+                 'Cost to build, power, staff and hazard exposure for each region that carries them, with land, water and tax added wherever a published value exists.'],
+                ['Ranks against your own assumptions',
+                 'Move a driver and the order re-sorts while you watch, so the ranking answers the project you are running rather than a fixed scenario.'],
+                ['Names what would flip it',
+                 'The smallest move in a single driver that puts a different place first, given as a percentage and as the number it lands on.'],
+              ].map(([head, body], i) => (
+                <div key={head}>
+                  <div className="mb-2 flex items-baseline gap-2">
+                    <span className="num text-[12px] font-bold text-dim">{i + 1}</span>
+                    <span className="text-[15px] font-semibold text-ink">{head}</span>
+                  </div>
+                  <p className="text-[14.5px] leading-[1.65] text-mid">{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
       </Reveal>
 
       {/* ── The insight ────────────────────────────────────────────────────── */}
