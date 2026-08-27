@@ -27,7 +27,7 @@ const DEFAULT_QUERY: ParcelQuery = {
 const SORTS: Array<{ key: SortBy; label: string }> = [
   { key: 'rank',                 label: 'Best fit' },
   { key: 'lifetime_cost_per_kw', label: 'Cheapest lifetime' },
-  { key: 'land_cost_per_acre_usd' as SortBy, label: 'Cheapest land' },
+  { key: 'land_cost_per_acre',   label: 'Cheapest land' },
   { key: 'acres',                label: 'Largest' },
 ]
 
@@ -74,6 +74,14 @@ export function ParcelSearch({ onOpenParcel, go }: {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  /**
+   * Set when the parcel service did not answer and the screen is reading the
+   * recorded snapshot instead. It carries the date the snapshot was taken,
+   * which the page prints, because a figure whose age is not stated is a figure
+   * nobody can check.
+   */
+  const [snapshotDate, setSnapshotDate] = useState<string | null>(null)
+
   /** Unfiltered count, fetched once, so a filter can say what it removed. */
   const [baseline, setBaseline] = useState<number | null>(null)
 
@@ -95,6 +103,7 @@ export function ParcelSearch({ onOpenParcel, go }: {
       setLoading(false)
       if (r.error || !r.data) { setError(r.error ?? 'No response'); setParcels([]); setTotal(0); return }
       setError(null)
+      setSnapshotDate(r.offline ? r.capturedAt ?? 'an earlier run' : null)
       setParcels(r.data.parcels)
       setTotal(r.data.total)
     }, 250)
@@ -138,6 +147,20 @@ export function ParcelSearch({ onOpenParcel, go }: {
           the asking price. Filter to what you can actually use, then open one to see what
           each figure rests on.
         </p>
+
+        {snapshotDate && (
+          <div className="mt-5 flex items-start gap-3 rounded-[11px] border border-[#E4D2A8]
+            bg-[#FBF3E2] px-4 py-3">
+            <AlertTriangle size={16} strokeWidth={2.2} className="mt-[3px] shrink-0 text-gold" aria-hidden />
+            <p className="text-[13.5px] leading-[1.6] text-gold">
+              The parcel service did not answer, so this page is reading a recording of its
+              replies from {snapshotDate}. Those figures are what it returned that day, priced
+              on the default build. The order is the one it gave for the whole county, and the
+              number beside each entry counts down the set your filters left. Open a row and
+              you get the estimate as it stood then rather than a fresh one.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="grid gap-3.5 lg:grid-cols-[320px_1fr] lg:items-start">

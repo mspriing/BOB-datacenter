@@ -63,33 +63,79 @@ function toQueryString(q: ParcelQuery): string {
   return p.toString()
 }
 
-export interface ApiResult<T> { data: T | null; error: string | null }
+export interface ApiResult<T> {
+  data: T | null
+  error: string | null
+  /**
+   * True when the reply came from the recorded snapshot rather than from the
+   * service. The screens say so on the page; nothing reads this silently.
+   */
+  offline?: boolean
+  /** The date the snapshot was recorded. Set only when offline is true. */
+  capturedAt?: string
+}
 
-async function get<T>(path: string): Promise<ApiResult<T>> {
+/**
+ * A request that never reached the service, as against one the service
+ * answered with an error. Only the first case falls back to the snapshot: if
+ * the service replied 400 or 404, its answer is the truth and replacing it
+ * with older data would hide a real fault.
+ */
+interface Unreachable { unreachable: true; message: string }
+function unreachable(e: unknown): Unreachable {
+  return { unreachable: true, message: e instanceof Error ? e.message : 'Network error' }
+}
+
+async function get<T>(path: string): Promise<ApiResult<T> | Unreachable> {
   try {
     const res = await fetch(`${API_BASE}/api${path}`, { headers: { Accept: 'application/json' } })
     if (!res.ok) {
-      // The backend's error shape is { error: { message } }; fall back to the
-      // status when a proxy or a crash returns something else entirely.
-      let message = `Request failed (${res.status})`
-      try {
-        const body = await res.json()
-        if (body?.error?.message) message = body.error.message
-      } catch { /* keep the status message */ }
+      // The parcel service answers an error in JSON, as { error } or
+      // { error: { message } }. Anything else on this path came from a static
+      // host or a proxy that has no parcel service behind it, and a page served
+      // from one of those is offline as far as parcels are concerned.
+      let body: unknown = null
+      try { body = await res.json() } catch { return unreachable(new Error(`Request failed (${res.status})`)) }
+      const err = (body as { error?: unknown })?.error
+      if (err === undefined) return unreachable(new Error(`Request failed (${res.status})`))
+      const message = typeof err === 'string'
+        ? err
+        : (err as { message?: string })?.message ?? `Request failed (${res.status})`
       return { data: null, error: message }
     }
-    return { data: (await res.json()) as T, error: null }
+    // A static host that answers every path with the app's own index.html
+    // returns 200 and no JSON. That is not the parcel service either.
+    try {
+      return { data: (await res.json()) as T, error: null }
+    } catch (e) {
+      return unreachable(e)
+    }
   } catch (e) {
-    return { data: null, error: e instanceof Error ? e.message : 'Network error' }
+    return unreachable(e)
   }
 }
 
-export function fetchParcels(q: ParcelQuery): Promise<ApiResult<ParcelListResponse>> {
-  return get<ParcelListResponse>(`/parcels?${toQueryString(q)}`)
+export async function fetchParcels(q: ParcelQuery): Promise<ApiResult<ParcelListResponse>> {
+  const r = await get<ParcelListResponse>(`/parcels?${toQueryString(q)}`)
+  if (!('unreachable' in r)) return r
+  const { offlineParcels, SNAPSHOT_DATE } = await import('./parcelOffline')
+  return { data: offlineParcels(q), error: null, offline: true, capturedAt: SNAPSHOT_DATE }
 }
 
-export function fetchParcel(id: string, county = 'bexar'): Promise<ApiResult<unknown>> {
-  return get<unknown>(`/parcels/${encodeURIComponent(id)}?county=${encodeURIComponent(county)}`)
+export async function fetchParcel(id: string, county = 'bexar'): Promise<ApiResult<unknown>> {
+  const r = await get<unknown>(
+    `/parcels/${encodeURIComponent(id)}?county=${encodeURIComponent(county)}`)
+  if (!('unreachable' in r)) return r
+  const { offlineParcel, SNAPSHOT_DATE } = await import('./parcelOffline')
+  const hit = offlineParcel(id)
+  if (!hit) {
+    return {
+      data: null,
+      error: 'The parcel service did not answer, and this parcel is not one of '
+        + 'the ones held in the recorded set.',
+    }
+  }
+  return { data: hit, error: null, offline: true, capturedAt: SNAPSHOT_DATE }
 }
 
 // ── Criteria parsing ──────────────────────────────────────────────────────────

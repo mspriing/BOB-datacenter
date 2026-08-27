@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import './lib/maplibreWorker'
 import './styles.css'
 
 // Backstop: if any scroll reveal fails to fire, force everything visible.

@@ -5,7 +5,7 @@
  *
  * Scope, fixed by the product owner: the note is written from the driver data
  * and its provenance, never from the parcel's identity. No prose about owners,
- * neighbourhoods, or what a site "feels like" — the model has no basis for any
+ * neighborhoods, or what a site "feels like" — the model has no basis for any
  * of that, and inventing it would undermine every honest figure beside it.
  *
  * Every number in the prose is quoted from the estimate. The model is not
@@ -48,9 +48,9 @@ function dominantCost(e: ParcelEstimate): { name: string; value: number; share: 
     { name: 'land',                        value: e.capex.land_usd },
     { name: 'construction',                value: e.capex.construction_usd },
     { name: 'reaching the transmission line', value: e.parcel_capex.interconnect_capex_usd },
-    { name: 'levelling the ground',        value: e.parcel_capex.sitework_usd },
+    { name: 'leveling the ground',        value: e.parcel_capex.sitework_usd },
     { name: 'entitlement carrying cost',   value: e.parcel_capex.entitlement_cost_usd },
-    { name: 'reaching fibre',              value: e.parcel_capex.fiber_capex_usd },
+    { name: 'reaching fiber',              value: e.parcel_capex.fiber_capex_usd },
   ].sort((a, b) => b.value - a.value)
 
   const total = e.capex.total_usd || 1
@@ -78,7 +78,7 @@ export function buildFallbackNote(e: ParcelEstimate): string {
 
   const second = e.parcel_capex.interconnect_capex_usd > 0
     ? `Reaching the grid adds ${usd(e.parcel_capex.interconnect_capex_usd)} and reaching ` +
-      `fibre ${usd(e.parcel_capex.fiber_capex_usd)}, costs a region-level comparison cannot see.`
+      `fiber ${usd(e.parcel_capex.fiber_capex_usd)}, costs a region-level comparison cannot see.`
     : `The parcel already sits on the transmission line, so no spur is priced.`
 
   const third = gaps.length > 0
@@ -181,7 +181,7 @@ function buildParcelNotePrompt(e: ParcelEstimate): string {
   return `Write two or three plain sentences explaining what drives this parcel's cost.
 
 Use ONLY the figures below. Do not compute anything. Do not mention the owner,
-the neighbourhood, the address, or what the site is like — you have no
+the neighborhood, the address, or what the site is like — you have no
 information about any of that and must not invent it. Write about the cost
 drivers and how well sourced they are, nothing else.
 
@@ -191,8 +191,8 @@ Figures:
 - land: ${usd(e.capex.land_usd)}
 - construction: ${usd(e.capex.construction_usd)}
 - reaching the transmission line: ${usd(e.parcel_capex.interconnect_capex_usd)}
-- reaching fibre: ${usd(e.parcel_capex.fiber_capex_usd)}
-- levelling the ground: ${usd(e.parcel_capex.sitework_usd)}
+- reaching fiber: ${usd(e.parcel_capex.fiber_capex_usd)}
+- leveling the ground: ${usd(e.parcel_capex.sitework_usd)}
 - entitlement carrying cost: ${usd(e.parcel_capex.entitlement_cost_usd)}
 - largest single item: ${dom.name}, ${Math.round(dom.share * 100)}% of capital cost
 - drivers that are assumed rather than sourced: ${gaps.length ? gaps.join(', ') : 'none'}

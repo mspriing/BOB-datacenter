@@ -48,7 +48,18 @@ export function ParcelMap({
 }) {
   const holder = useRef<HTMLDivElement | null>(null)
   const map = useRef<MlMap | null>(null)
-  const [ready, setReady] = useState(false)
+  /**
+   * Bumped whenever the style finishes loading without our layers on it.
+   *
+   * A plain ready flag was not enough. Swapping to the fallback style wipes
+   * every source and layer the map is carrying, and the flag was already true
+   * by then, so nothing re-added them and the pane sat empty on exactly the
+   * runs where the basemap had failed, which is when the parcels matter most.
+   */
+  const [styleEpoch, setStyleEpoch] = useState(0)
+  const wired = useRef(false)
+  /** The fallback style is swapped in once, however many errors arrive. */
+  const swapped = useRef(false)
   const [basemapFailed, setBasemapFailed] = useState(false)
 
   // Colour every parcel up front. Doing this in JS rather than a MapLibre
@@ -93,19 +104,27 @@ export function ParcelMap({
 
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
 
+    const check = () => { if (!m.getLayer(LYR)) setStyleEpoch(e => e + 1) }
+
     // A style that fails to load leaves the map blank and silent, so swap in the
     // plain ground and carry on rather than leaving the reader staring at grey.
+    //
+    // The swap happens once. An unreachable tile host keeps raising the same
+    // error, and calling setStyle on each one wiped the parcel layer as fast as
+    // it was added, which left the pane empty for the whole session.
     m.on('error', (e: ErrorEvent) => {
       const msg = String(e?.error?.message ?? '')
-      if (msg.includes('style') || msg.includes('Failed to fetch')) {
-        setBasemapFailed(true)
-        try { m.setStyle(FALLBACK_STYLE) } catch { /* already gone */ }
-      }
+      if (!(msg.includes('style') || msg.includes('Failed to fetch'))) return
+      setBasemapFailed(true)
+      if (swapped.current) return
+      swapped.current = true
+      try { m.setStyle(FALLBACK_STYLE) } catch { /* already gone */ }
     })
 
-    m.on('load', () => setReady(true))
-    // setStyle re-fires styledata; re-add sources when that happens.
-    m.on('styledata', () => { if (m.isStyleLoaded()) setReady(true) })
+    m.on('load', check)
+    // setStyle re-fires styledata; that is where a wiped layer is noticed.
+    m.on('styledata', check)
+    m.on('idle', check)
 
     return () => { m.remove(); map.current = null }
   }, [])
@@ -113,10 +132,11 @@ export function ParcelMap({
   // ── Keep the source in sync ─────────────────────────────────────────────────
   useEffect(() => {
     const m = map.current
-    if (!m || !ready) return
+    if (!m || !m.style || !m.isStyleLoaded()) return
 
     const existing = m.getSource(SRC) as maplibregl.GeoJSONSource | undefined
-    if (existing) { existing.setData(geojson); return }
+    if (existing && m.getLayer(LYR)) { existing.setData(geojson); return }
+    if (existing) m.removeSource(SRC)
 
     m.addSource(SRC, { type: 'geojson', data: geojson })
 
@@ -152,20 +172,24 @@ export function ParcelMap({
       },
     })
 
-    m.on('click', LYR, ev => {
-      const f = ev.features?.[0]
-      if (f?.properties?.parcel_id) onSelect(String(f.properties.parcel_id))
-    })
-    m.on('mouseenter', LYR, () => { m.getCanvas().style.cursor = 'pointer' })
-    m.on('mouseleave', LYR, () => { m.getCanvas().style.cursor = '' })
-  }, [ready, geojson, onSelect])
+    // Layer handlers survive a style swap, so they are attached once.
+    if (!wired.current) {
+      wired.current = true
+      m.on('click', LYR, ev => {
+        const f = ev.features?.[0]
+        if (f?.properties?.parcel_id) onSelect(String(f.properties.parcel_id))
+      })
+      m.on('mouseenter', LYR, () => { m.getCanvas().style.cursor = 'pointer' })
+      m.on('mouseleave', LYR, () => { m.getCanvas().style.cursor = '' })
+    }
+  }, [styleEpoch, geojson, onSelect])
 
   // ── Highlight the selection ─────────────────────────────────────────────────
   useEffect(() => {
     const m = map.current
-    if (!m || !ready || !m.getLayer(LYR_SEL)) return
+    if (!m || !m.getLayer(LYR_SEL)) return
     m.setFilter(LYR_SEL, ['==', ['get', 'parcel_id'], selectedId ?? '__none__'])
-  }, [selectedId, ready])
+  }, [selectedId, styleEpoch])
 
   return (
     <div className={`relative ${className}`}>

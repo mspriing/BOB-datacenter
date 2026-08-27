@@ -75,14 +75,16 @@ function Row({ label, value, hint, muted = false }: {
 export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: () => void }) {
   const [est, setEst] = useState<ParcelEstimate | null>(null)
   const [error, setError] = useState<string | null>(null)
+  /** Set when this estimate came from the recording rather than the service. */
+  const [snapshotDate, setSnapshotDate] = useState<string | null>(null)
 
   useEffect(() => {
     let live = true
-    setEst(null); setError(null)
+    setEst(null); setError(null); setSnapshotDate(null)
     fetchParcel(parcelId).then(r => {
       if (!live) return
       if (r.error || !r.data) setError(r.error ?? 'No response')
-      else setEst(r.data as ParcelEstimate)
+      else { setEst(r.data as ParcelEstimate); setSnapshotDate(r.offline ? r.capturedAt ?? 'an earlier run' : null) }
     })
     return () => { live = false }
   }, [parcelId])
@@ -133,16 +135,33 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
         <h1 className="mb-3 text-[clamp(1.5rem,1.2rem+1.4vw,2.25rem)] font-semibold text-ink">
           {est.address}
         </h1>
+        {/* No rank and no score here. A rank is a position inside a set, and the
+            detail route prices one parcel with no set around it, so it returns
+            zero for both. Printing them read as "rank 0, score 0.000" on the
+            best parcel in the county. The rank lives on the list, where the set
+            it belongs to is on screen. */}
         <div className="num flex flex-wrap items-center gap-x-1 text-[14px] text-mid">
           {est.acres === null ? 'acreage unknown' : `${Math.round(est.acres)} acres`}
           <Rule />
-          rank {est.rank}
-          <Rule />
-          score {est.weighted_score.toFixed(3)}
+          {est.flood_buildable_pct === null
+            ? 'no flood map published for this plot'
+            : `${Math.round(est.flood_buildable_pct * 100)}% outside the flood zone`}
           {est.zoning === 'outside-jurisdiction' && (
             <span className="ml-2"><Chip tone="grey">Outside city zoning</Chip></span>
           )}
         </div>
+
+        {snapshotDate && (
+          <div className="mt-5 flex items-start gap-3 rounded-[11px] border border-[#E4D2A8]
+            bg-[#FBF3E2] px-4 py-3">
+            <AlertTriangle size={16} strokeWidth={2.2} className="mt-[3px] shrink-0 text-gold" aria-hidden />
+            <p className="text-[13.5px] leading-[1.6] text-gold">
+              The parcel service did not answer. What follows is the estimate it returned for
+              this plot on {snapshotDate}, kept on the page so the figures and their sources
+              stay readable. Nothing here was computed in your browser.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="mb-3.5 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
