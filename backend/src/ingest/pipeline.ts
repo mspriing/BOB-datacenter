@@ -26,6 +26,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import * as turf from '@turf/turf'
+import Flatbush from 'flatbush'
 import type { CountyConfig } from './countyConfig.js'
 import type { ParcelRow } from '../parcel/repository.js'
 
@@ -234,27 +235,63 @@ function minDistToLines(
  * given flood polygons.  Returns null when no flood data is available.
  * Returns 1.0 (fully buildable) when the parcel has no overlap.
  */
+/**
+ * Bounding boxes for the flood polygons, indexed once.
+ *
+ * Without this, working out a parcel's flood exposure meant a full polygon
+ * intersection against every flood polygon in the county — roughly 8,000 of
+ * them, for each of ~7,500 parcels. That is 60 million turf.intersect calls and
+ * the run never finished. The bug was invisible until FEMA started answering:
+ * while that source was failing the whole stage was skipped.
+ *
+ * Nearly every pair is disjoint, and a bounding-box test rejects those for
+ * almost nothing. Only genuine candidates reach the expensive geometry.
+ */
+interface FloodIndex { index: Flatbush; geoms: Geometry[] }
+
+function buildFloodIndex(floodGeoms: Geometry[]): FloodIndex | null {
+  const geoms = floodGeoms.filter((g): g is NonNullable<Geometry> => !!g)
+  if (geoms.length === 0) return null
+
+  const index = new Flatbush(geoms.length)
+  for (const g of geoms) {
+    try {
+      const [minX, minY, maxX, maxY] =
+        turf.bbox({ type: 'Feature', geometry: g as GeoJSON.Geometry, properties: {} })
+      index.add(minX, minY, maxX, maxY)
+    } catch {
+      // A geometry turf cannot box still needs a slot, or the index and the
+      // array fall out of alignment and every later lookup returns the wrong
+      // polygon. An empty box simply never matches.
+      index.add(0, 0, 0, 0)
+    }
+  }
+  index.finish()
+  return { index, geoms }
+}
+
 function floodBuildablePct(
   parcelGeom: Geometry,
-  floodGeoms: Geometry[],
+  flood:      FloodIndex | null,
 ): number | null {
-  if (floodGeoms.length === 0) return null
-  if (!parcelGeom) return null
+  if (!flood || !parcelGeom) return null
 
   try {
     const parcelFeat = { type: 'Feature', geometry: parcelGeom, properties: {} } as GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
     const parcelArea = turf.area(parcelFeat)
     if (parcelArea === 0) return null
 
+    const [minX, minY, maxX, maxY] = turf.bbox(parcelFeat)
+    const candidates = flood.index.search(minX, minY, maxX, maxY)
+
     let affectedArea = 0
-    for (const fg of floodGeoms) {
+    for (const i of candidates) {
+      const fg = flood.geoms[i]
       if (!fg) continue
       try {
         const floodFeat = { type: 'Feature', geometry: fg, properties: {} } as GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
         const inter = turf.intersect(turf.featureCollection([parcelFeat, floodFeat]))
-        if (inter) {
-          affectedArea += turf.area(inter)
-        }
+        if (inter) affectedArea += turf.area(inter)
       } catch { /* non-overlapping or geometry error */ }
     }
 
@@ -345,6 +382,8 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
     acresSource:       'Acres' | 'LglAcres'
     stateCode:         string
     appraisedLandValue:number | null
+    owner:             string
+    exemptCodes:       string
     geometry:          Geometry
   }
 
@@ -389,6 +428,8 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
         acresSource,
         stateCode,
         appraisedLandValue: isNaN(landVal) || landVal <= 0 ? null : landVal,
+        owner:       String(a[cfg.parcelSource.ownerField] ?? '').trim(),
+        exemptCodes: String(a[cfg.parcelSource.exemptField] ?? '').trim().toUpperCase(),
         geometry: toGeoJSONGeometry(f.geometry),
       }
     })
@@ -579,9 +620,56 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
   const afterAcres = rawParcels.filter(p => (p.acres ?? 0) >= cfg.minAcres)
   console.log(`  After acreage >= ${cfg.minAcres} ac:  ${afterAcres.length}  (dropped ${rawParcels.length - afterAcres.length})`)
 
-  // Stage 2: LandVal > 0 (client-side — server-side AND causes ArcGIS error on this service)
-  const afterLandVal = afterAcres.filter(p => p.appraisedLandValue !== null)
-  console.log(`  After LandVal > 0:              ${afterLandVal.length}  (dropped ${afterAcres.length - afterLandVal.length})`)
+  // Stage 2: Institutional ownership.
+  //
+  // A city park carries the same land-use code as any other open land, so the
+  // code alone cannot tell them apart. The tax exemption can: EX-* means the
+  // owner is a government body, a school or a charity, and none of that is for
+  // sale. These parcels also carry nominal appraised values, so without this
+  // stage they sort to the top of the ranking and are the first thing a reader
+  // sees. Owner-name matching runs behind it as a second net.
+  const isInstitutional = (p: RawParcel): boolean => {
+    for (const pre of cfg.parcelSource.institutionalExemptPrefixes) {
+      if (p.exemptCodes.includes(pre)) return true
+    }
+    const owner = p.owner.toUpperCase()
+    return cfg.parcelSource.governmentOwnerPatterns.some(g => owner.includes(g))
+  }
+  /**
+   * A homestead or veteran exemption means somebody lives on the land. It stays
+   * a candidate — it is privately owned and can be bought — but a reader should
+   * know they would be negotiating with a family, not a landholding company.
+   */
+  const isOccupied = (p: RawParcel): boolean =>
+    cfg.parcelSource.occupancyExemptPrefixes.some(pre =>
+      p.exemptCodes.split(',').map(c => c.trim()).includes(pre))
+
+  const afterInstitutional = afterAcres.filter(p => !isInstitutional(p))
+  console.log(`  After institutional owners:     ${afterInstitutional.length}  (dropped ${afterAcres.length - afterInstitutional.length})`)
+
+  // Stage 3: Priceable land.
+  //
+  // A parcel whose land the data cannot price is not a cheap parcel. Routed to
+  // its own list rather than discarded, so the omission stays visible — the
+  // same reasoning as UnevaluableSite for regions.
+  const unpriceable: Array<{ parcel: RawParcel; reason: string }> = []
+  const afterLandVal = afterInstitutional.filter(p => {
+    if (p.appraisedLandValue === null) {
+      unpriceable.push({ parcel: p, reason: 'no appraised land value published' })
+      return false
+    }
+    const perAcre = p.acres && p.acres > 0 ? p.appraisedLandValue / p.acres : 0
+    if (perAcre < cfg.parcelSource.minLandValuePerAcre) {
+      unpriceable.push({
+        parcel: p,
+        reason: `appraised land value of $${Math.round(perAcre)} per acre is below the ` +
+                `$${cfg.parcelSource.minLandValuePerAcre} plausibility floor for this county`,
+      })
+      return false
+    }
+    return true
+  })
+  console.log(`  After priceable land:           ${afterLandVal.length}  (dropped ${afterInstitutional.length - afterLandVal.length} to the unpriceable list)`)
 
   // Stage 3: Land use state code filter
   const afterLandUse = afterLandVal.filter(p => {
@@ -597,21 +685,33 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
   console.log(`  After land-use state code:      ${afterLandUse.length}  (dropped ${afterLandVal.length - afterLandUse.length})`)
 
   // Stage 4: Flood — drop if > floodDropPct of parcel area in 100-yr SFHA
+  //
+  // The zone lists and their spatial indexes are built once. They used to be
+  // rebuilt inside the per-parcel loop, which meant re-filtering every flood
+  // record in the county — thousands of them — for each parcel, on top of the
+  // intersection cost.
+  const dropZoneGeoms = floods
+    .filter(fz => cfg.floodSource.dropZones.has(fz.floodZone) && fz.geometry)
+    .map(fz => fz.geometry!)
+  const flagZoneGeoms = floods
+    .filter(fz => cfg.floodSource.flagZones.has(fz.floodZone.replace('_', '')) && fz.geometry)
+    .map(fz => fz.geometry!)
+
+  const dropIndex = buildFloodIndex(dropZoneGeoms)
+  const flagIndex = buildFloodIndex(flagZoneGeoms)
+  if (hasFlood) {
+    log(`flood zones indexed: ${dropZoneGeoms.length} drop, ${flagZoneGeoms.length} flag`)
+  }
+
   const afterFlood: typeof afterLandUse = []
-  const floodDropZones = cfg.floodSource.dropZones
   for (const p of afterLandUse) {
     if (!hasFlood) { afterFlood.push(p); continue }
     const centroid = geometryCentroid(p.geometry)
     if (!centroid) { afterFlood.push(p); continue }
 
-    // Gather flood zone geometries that overlap with this parcel's rough bbox
-    const dropZoneGeoms = floods
-      .filter(fz => floodDropZones.has(fz.floodZone) && fz.geometry)
-      .map(fz => fz.geometry!)
+    if (!dropIndex) { afterFlood.push(p); continue }
 
-    if (dropZoneGeoms.length === 0) { afterFlood.push(p); continue }
-
-    const buildablePct = floodBuildablePct(p.geometry, dropZoneGeoms)
+    const buildablePct = floodBuildablePct(p.geometry, dropIndex)
     if (buildablePct === null) { afterFlood.push(p); continue }
 
     // Drop if more than floodDropPct of parcel is in 100-yr zone
@@ -622,12 +722,19 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
   console.log(`  After flood filter (>${Math.round(cfg.floodDropPct * 100)}% 100-yr drop): ${afterFlood.length}  (dropped ${afterLandUse.length - afterFlood.length})`)
 
   // Stage 5: Transmission proximity
+  //
+  // Distance is computed once per parcel and kept, because the output loop
+  // needs the same number. It used to be recomputed there, so every parcel
+  // paid for a scan of every transmission line twice — the slowest thing in
+  // the run, and it scales with the acreage floor.
+  const txDistanceByParcel = new Map<string, number>()
   const afterTx: typeof afterFlood = []
   for (const p of afterFlood) {
     if (!hasLines) { afterTx.push(p); continue }
     const centroid = geometryCentroid(p.geometry)
     if (!centroid) continue
     const d = minDistToLines(centroid, txLines)
+    txDistanceByParcel.set(p.parcelId, d)
     if (d <= cfg.maxDistToTxLineM) afterTx.push(p)
   }
   console.log(`  After transmission (≤${cfg.maxDistToTxLineM/1000}km ≥${cfg.transmissionSource.minKv}kV): ${afterTx.length}  (dropped ${afterFlood.length - afterTx.length})`)
@@ -641,6 +748,8 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
   const funnel = {
     raw:          rawParcels.length,
     afterAcres:   afterAcres.length,
+    afterInstitutional: afterInstitutional.length,
+    unpriceable:  unpriceable.length,
     afterLandVal: afterLandVal.length,
     afterLandUse: afterLandUse.length,
     afterFlood:   afterFlood.length,
@@ -710,23 +819,17 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
     let buildablePct: number | null = null
     let in500yr = false
     if (hasFlood) {
-      const dropGeoms = floods
-        .filter(fz => cfg.floodSource.dropZones.has(fz.floodZone) && fz.geometry)
-        .map(fz => fz.geometry!)
-      const flagGeoms = floods
-        .filter(fz => cfg.floodSource.flagZones.has(fz.floodZone.replace('_', '')) && fz.geometry)
-        .map(fz => fz.geometry!)
+      buildablePct = dropIndex ? floodBuildablePct(p.geometry, dropIndex) : 1.0
 
-      if (dropGeoms.length > 0) {
-        buildablePct = floodBuildablePct(p.geometry, dropGeoms)
-      } else {
-        buildablePct = 1.0
-      }
-      if (flagGeoms.length > 0) {
-        // 500-yr flag: centroid-based test is fine for a flag (not a hard drop)
-        for (const fg of flagGeoms) {
+      if (flagIndex) {
+        // 500-yr flag: a centroid test is enough for a flag, since it does not
+        // drop the parcel. The index narrows it to the few polygons whose box
+        // contains the point rather than testing every one.
+        const pt = turf.point(centroid)
+        for (const i of flagIndex.index.search(centroid[0], centroid[1], centroid[0], centroid[1])) {
+          const fg = flagIndex.geoms[i]
+          if (!fg) continue
           try {
-            const pt   = turf.point(centroid)
             const poly = { type: 'Feature', geometry: fg, properties: {} } as GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
             if (turf.booleanPointInPolygon(pt, poly)) { in500yr = true; break }
           } catch { /* skip */ }
@@ -735,7 +838,8 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
     }
 
     // ── Transmission distance ──────────────────────────────────────────────
-    const distToTxLineM = hasLines ? Math.round(minDistToLines(centroid, txLines)) : null
+    const cachedTxDist  = txDistanceByParcel.get(p.parcelId)
+    const distToTxLineM = cachedTxDist === undefined ? null : Math.round(cachedTxDist)
 
     // ── IXP proximity ──────────────────────────────────────────────────────
     let distToIxpKm: number | null = null
@@ -836,7 +940,9 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
     }
     const roundedGeom = roundGeom(p.geometry)
 
-    const jurisdiction = utility.includes('CPS') ? `City of San Antonio (CPS Energy territory)` : utility
+    const jurisdiction = utility.includes(cfg.primaryUtility.match)
+      ? cfg.primaryUtility.jurisdictionLabel
+      : utility
 
     // GeoJSON feature
     geojsonFeatures.push({
@@ -855,6 +961,9 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
         dist_to_ixp_km:      distToIxpKm,
         utility,
         state_code:          p.stateCode,
+        owner:               p.owner,
+        occupied:            isOccupied(p),
+        exempt_codes:        p.exemptCodes,
         drivers,
       },
     })
@@ -873,6 +982,9 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
       dist_to_ixp_km:      distToIxpKm,
       utility,
       state_code:          p.stateCode,
+      owner:               p.owner,
+      occupied:            isOccupied(p),
+      exempt_codes:        p.exemptCodes,
       lat:                 r6(centroid[1]),
       lng:                 r6(centroid[0]),
       geometry_wkt:        toWkt(roundedGeom),
@@ -896,6 +1008,23 @@ export async function runIngest(cfg: CountyConfig): Promise<void> {
   writeFileSync(rowsPath,    JSON.stringify(rows, null, 2))
   console.log(`\n✓ Wrote ${geojsonFeatures.length} candidate parcels to ${geojsonPath}`)
   console.log(`✓ Wrote ${rows.length} rows to ${rowsPath}`)
+
+  // Parcels the data could not price. Kept and published rather than dropped,
+  // so the set that was left out of the ranking can be read and argued with.
+  const unpriceablePath = resolve(OUT_DIR, `${cfg.outputKey}.unpriceable.json`)
+  const unpriceableOut = unpriceable
+    .map(u => ({
+      parcel_id:  u.parcel.parcelId,
+      address:    u.parcel.address,
+      acres:      u.parcel.acres,
+      state_code: u.parcel.stateCode,
+      owner:      u.parcel.owner,
+      appraised_land_value: u.parcel.appraisedLandValue,
+      reason:     u.reason,
+    }))
+    .sort((a, b) => a.parcel_id.localeCompare(b.parcel_id))
+  writeFileSync(unpriceablePath, JSON.stringify(unpriceableOut, null, 2))
+  console.log(`✓ Wrote ${unpriceableOut.length} unpriceable parcels to ${unpriceablePath}`)
 
   // ── Coverage table ────────────────────────────────────────────────────────
   const driverNames = ['land_cost_per_acre_usd', 'power_rate_usd_per_kwh', 'water_rate_usd_per_kgal', 'grid_interconnection_years']

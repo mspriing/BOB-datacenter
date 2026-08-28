@@ -13,7 +13,7 @@
  *   must match only repository.ts and the ingest pipeline.
  */
 
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -45,10 +45,25 @@ export interface ParcelRow {
   dist_to_ixp_km:    number | null
   utility:           string
   state_code:        string
+  owner:             string
+  /** A private residence sits on the land — purchasable, but occupied. */
+  occupied:          boolean
+  exempt_codes:      string
   lat:               number | null
   lng:               number | null
   geometry_wkt:      string | null
   drivers:           Record<string, DriverValue>
+}
+
+/** A parcel left out of the ranking because its land could not be priced. */
+export interface UnpriceableParcel {
+  parcel_id:  string
+  address:    string
+  acres:      number | null
+  state_code: string
+  owner:      string
+  appraised_land_value: number | null
+  reason:     string
 }
 
 export interface BboxQuery {
@@ -69,6 +84,9 @@ export interface ParcelRepository {
 
   /** Return all parcels whose centroid falls inside the bbox. */
   queryByBbox(county: string, bbox: BboxQuery): ParcelRow[]
+
+  /** Parcels excluded from the ranking because their land could not be priced. */
+  listUnpriceable(county: string): UnpriceableParcel[]
 }
 
 // ── File-backed implementation ────────────────────────────────────────────────
@@ -109,6 +127,22 @@ export const fileRepository: ParcelRepository = {
 
   getParcel(county, parcelId) {
     return loadCounty(county).find(r => r.parcel_id === parcelId) ?? null
+  },
+
+  listUnpriceable(county) {
+    // Same validation as loadCounty — this is a second path to the filesystem
+    // and must not be the one that forgets to check.
+    if (!COUNTY_ID.test(county)) {
+      throw new Error(`invalid county id: ${JSON.stringify(county)}`)
+    }
+    const path = resolve(DATA_DIR, `${county}.unpriceable.json`)
+    if (!path.startsWith(DATA_DIR)) {
+      throw new Error(`county id escapes the data directory: ${JSON.stringify(county)}`)
+    }
+    // An absent file means the ingest predates this list, not that nothing was
+    // excluded — but an empty array is the honest answer either way.
+    if (!existsSync(path)) return []
+    return JSON.parse(readFileSync(path, 'utf-8')) as UnpriceableParcel[]
   },
 
   queryByBbox(county, bbox) {

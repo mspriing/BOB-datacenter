@@ -1,66 +1,68 @@
 {
-  "runTimestamp": "2026-08-16T19:35:13.535Z",
+  "runTimestamp": "2026-08-28T15:31:14.451Z",
   "countyId": "bexar",
   "countyName": "Bexar County, Texas",
   "sources": [
     {
       "url": "https://maps.bexar.org/arcgis/rest/services/Parcels/MapServer/0",
       "probeResult": "ok",
-      "fetchDate": "2026-08-16"
+      "fetchDate": "2026-08-28"
     },
     {
       "url": "https://services.arcgis.com/g3ToTjWotgngStr3/arcgis/rest/services/Zoning_Districts/FeatureServer/0",
       "probeResult": "gap",
-      "fetchDate": "2026-08-16",
+      "fetchDate": "2026-08-28",
       "error": "g3ToTjWotgngStr3 org returns {\"error\":{\"code\":400,\"message\":\"Invalid URL\"}} on all service paths. gis.sanantonio.gov returns {\"error\":{\"code\":499,\"message\":\"Token Required\"}} — internal-only, not publicly accessible. No replacement found."
     },
     {
       "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28",
       "probeResult": "error",
-      "fetchDate": "2026-08-16",
+      "fetchDate": "2026-08-28",
       "error": "ArcGIS error at https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28: Error performing query operation — still failing at page size 50"
     },
     {
       "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Retail_Service_Territories/FeatureServer/0",
       "probeResult": "gap",
-      "fetchDate": "2026-08-16",
+      "fetchDate": "2026-08-28",
       "error": "HIFLD Open was archived ~Oct 2025. All service-territory paths on Hp6G80Pky0om7QvQ return {\"error\":{\"code\":400,\"message\":\"Invalid URL\"}}. FiaFA6OHVYrXZjRv org likewise. Transmission-lines layer on the same Hp6G80Pky0om7QvQ host is still live (separate service path). No replacement found for territories."
     },
     {
       "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Power_Transmission_Lines/FeatureServer/0",
       "probeResult": "ok",
-      "fetchDate": "2026-08-16"
+      "fetchDate": "2026-08-28"
     },
     {
       "url": "https://www.peeringdb.com/api/fac?city=San+Antonio&state=TX&country=US",
       "probeResult": "ok",
-      "fetchDate": "2026-08-16"
+      "fetchDate": "2026-08-28"
     }
   ],
   "funnel": {
-    "raw": 3516,
-    "afterAcres": 3516,
-    "afterLandVal": 3387,
-    "afterLandUse": 3227,
-    "afterFlood": 3227,
-    "afterTx": 3046,
-    "candidates": 3046
+    "raw": 10264,
+    "afterAcres": 10264,
+    "afterInstitutional": 8784,
+    "unpriceable": 428,
+    "afterLandVal": 8356,
+    "afterLandUse": 7408,
+    "afterFlood": 7408,
+    "afterTx": 6993,
+    "candidates": 6993
   },
   "driverCoverage": {
     "land_cost_per_acre_usd": {
       "sourced": 0,
-      "modeled": 3046,
+      "modeled": 6993,
       "assumed": 0,
       "missing": 0
     },
     "power_rate_usd_per_kwh": {
-      "sourced": 3046,
+      "sourced": 6993,
       "modeled": 0,
       "assumed": 0,
       "missing": 0
     },
     "water_rate_usd_per_kgal": {
-      "sourced": 3046,
+      "sourced": 6993,
       "modeled": 0,
       "assumed": 0,
       "missing": 0
@@ -69,7 +71,7 @@
       "sourced": 0,
       "modeled": 0,
       "assumed": 0,
-      "missing": 3046
+      "missing": 6993
     }
   },
   "gaps": [

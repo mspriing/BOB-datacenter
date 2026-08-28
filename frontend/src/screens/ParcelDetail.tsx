@@ -49,6 +49,8 @@ interface ParcelEstimate {
   }
   provenance: ProvenanceRow[]
   gaps: GapRow[]
+  occupied?: boolean
+  owner?: string
   parcel_note?: string
   parcel_note_source?: 'watsonx' | 'fallback' | 'cache'
   rank: number
@@ -293,6 +295,14 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
                     has no figure. {g.reason}
                   </p>
                 ))
+              )}
+              {est.occupied && (
+                <p className="border-t border-[var(--line2)] pt-3 text-[13.5px] leading-[1.55] text-mid">
+                  <span className="font-semibold text-ink2">Someone lives here.</span> A homestead
+                  or veteran exemption is recorded against this parcel. That does not stop it being
+                  bought — it means the seller is a household rather than a landholding company,
+                  which is a difference in how the acquisition goes, not in whether it can.
+                </p>
               )}
               <p className="border-t border-[var(--line2)] pt-3 text-[13px] leading-[1.55] text-mid">
                 Interconnection wait is a placeholder everywhere. ERCOT publishes the large-load

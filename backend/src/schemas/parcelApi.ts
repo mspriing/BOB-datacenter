@@ -102,6 +102,7 @@ export interface ParcelSummary {
   address:                string
   acres:                  number | null
   zoning:                 string
+  occupied:               boolean
   flood_buildable_pct:    number | null
   dist_to_tx_line_m:      number | null
   dist_to_ixp_km:         number | null

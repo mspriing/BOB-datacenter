@@ -295,3 +295,46 @@ Returns `200 OK` with a small JSON body:
 This endpoint is the **deployment health check** used by Render to decide whether the backend
 service is alive. Do not remove it and do not change the path — removing it will cause Render
 to mark the service as unhealthy and stop routing traffic to it.
+
+---
+
+## GET /parcels/unpriceable
+
+Parcels excluded from the ranking because their land could not be priced.
+
+They are published rather than dropped for the same reason `unevaluable` exists
+on `POST /estimate`: a cost the data never captured reads as a cost that is not
+there, so a parcel appraised at $0 an acre would otherwise rank first. Excluding
+them silently would hide the omission instead of the artifact.
+
+### Query params
+
+| Param | Default | Meaning |
+|---|---|---|
+| `county` | `bexar` | County id, validated against the registry |
+
+### Response
+
+```jsonc
+{
+  "county": "bexar",
+  "total": 136,
+  "parcels": [
+    {
+      "parcel_id":  "string",
+      "address":    "string",
+      "acres":      1323.3,
+      "state_code": "E1",
+      "owner":      "string",
+      "appraised_land_value": 0,
+      "reason": "appraised land value of $0 per acre is below the $1000 plausibility floor for this county"
+    }
+  ]
+}
+```
+
+## ParcelSummary additions
+
+| Field | Type | Meaning |
+|---|---|---|
+| `occupied` | `boolean` | A homestead or veteran exemption is recorded, so a private residence sits on the land. The parcel is purchasable; this is about acquisition difficulty, not eligibility. |

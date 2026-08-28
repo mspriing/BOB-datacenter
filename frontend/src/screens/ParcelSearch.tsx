@@ -3,7 +3,10 @@ import { ArrowRight, MapPin, AlertTriangle, Loader2 } from 'lucide-react'
 import { Card, Explain, Chip, Rule } from '../components/Primitives'
 import { CriteriaBox } from '../components/CriteriaBox'
 import { ParcelMap, PARCEL_SHADE, type ParcelShadeKey } from '../components/map/ParcelMap'
-import { fetchParcels, type ParcelSummary, type ParcelQuery, type SortBy } from '../lib/parcelApi'
+import {
+  fetchParcels, fetchUnpriceable,
+  type ParcelSummary, type ParcelQuery, type SortBy, type UnpriceableParcel,
+} from '../lib/parcelApi'
 import { usd } from '../lib/format'
 
 /**
@@ -17,7 +20,7 @@ import { usd } from '../lib/format'
  */
 const DEFAULT_QUERY: ParcelQuery = {
   county: 'bexar',
-  min_acres: 25,
+  min_acres: 10,
   page: 1,
   per_page: 50,
   sort_by: 'rank',
@@ -73,6 +76,11 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
   /** Unfiltered count, fetched once, so a filter can say what it removed. */
   const [baseline, setBaseline] = useState<number | null>(null)
 
+  /** Parcels the ingest could not price — shown so the exclusion is visible. */
+  const [unpriceable, setUnpriceable] = useState<UnpriceableParcel[]>([])
+  const [unpriceableCount, setUnpriceableCount] = useState<number | null>(null)
+  const [showUnpriceable, setShowUnpriceable] = useState(false)
+
   const runToken = useRef(0)
 
   const patch = useCallback((p: Partial<ParcelQuery>) => {
@@ -100,6 +108,9 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
   useEffect(() => {
     fetchParcels({ county: 'bexar', per_page: 1 }).then(r => {
       if (r.data) setBaseline(r.data.total)
+    })
+    fetchUnpriceable('bexar').then(r => {
+      if (r.data) { setUnpriceable(r.data.parcels); setUnpriceableCount(r.data.total) }
     })
   }, [])
 
@@ -139,9 +150,9 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
           <Card title="Narrow the set"
             note={total === null ? '—' : `${total.toLocaleString('en-US')} match`}>
             <div className="space-y-4 p-5">
-              <NumberFilter label="Smallest site" hint="A 10 MW campus needs roughly 12 acres at 1.2 acres per megawatt, so 25 is a working floor with room for setbacks."
+              <NumberFilter label="Smallest site" hint="A 10 MW campus occupies roughly 12 acres at 1.2 acres per megawatt. The ingest floor is 10, which admits smaller infill industrial sites alongside greenfield."
                 value={query.min_acres} onChange={v => patch({ min_acres: v })}
-                placeholder="25" suffix="acres" />
+                placeholder="10" suffix="acres" />
 
               <NumberFilter label="Most per acre" hint="Land price is modeled from the appraisal district's land value, not a sale price. Texas does not publish sale prices."
                 value={query.max_land_cost_per_acre} onChange={v => patch({ max_land_cost_per_acre: v })}
@@ -248,6 +259,13 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
                           <span className="text-[14.5px] font-medium text-ink">{p.address}</span>
                           {i === 0 && query.page === 1 && <Chip>Best fit</Chip>}
                           {p.zoning === 'outside-jurisdiction' && <Chip tone="grey">No zoning</Chip>}
+                          {p.occupied && (
+                            <Chip tone="grey">
+                              <Explain text="A homestead or veteran exemption is recorded on this parcel, so a private residence sits on the land. It can still be bought — this is about how hard the acquisition is, not whether it is possible.">
+                                Occupied
+                              </Explain>
+                            </Chip>
+                          )}
                         </div>
                         <div className="num text-[13px] text-mid">
                           {p.acres === null ? 'acreage unknown' : `${Math.round(p.acres)} ac`}
@@ -284,6 +302,37 @@ export function ParcelSearch({ onOpenParcel }: { onOpenParcel: (id: string) => v
               </div>
             )}
           </Card>
+
+          {unpriceableCount !== null && unpriceableCount > 0 && (
+            <div className="rounded-[12px] border border-line bg-card2 p-4">
+              <p className="text-[13.5px] leading-[1.6] text-mid">
+                <span className="font-semibold text-ink2">
+                  {unpriceableCount.toLocaleString('en-US')} parcels are not ranked
+                </span>{' '}
+                because their appraised land value is too low to be a real price — mostly
+                nominal valuations that would otherwise look like the cheapest land in the
+                county. They are excluded rather than hidden.{' '}
+                <button onClick={() => setShowUnpriceable(v => !v)} className="link-inline">
+                  {showUnpriceable ? 'Hide them' : 'See what was left out'}
+                </button>
+              </p>
+              {showUnpriceable && unpriceable.length > 0 && (
+                <div className="mt-3 space-y-1.5 border-t border-[var(--line2)] pt-3">
+                  {unpriceable.slice(0, 8).map(u => (
+                    <p key={u.parcel_id} className="text-[13px] leading-[1.5] text-mid">
+                      <span className="text-ink2">{u.address}</span>
+                      {u.acres !== null && <> · {Math.round(u.acres)} ac</>} — {u.reason}
+                    </p>
+                  ))}
+                  {unpriceable.length > 8 && (
+                    <p className="text-[13px] text-mid">
+                      and {(unpriceable.length - 8).toLocaleString('en-US')} more.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           <p className="flex items-start gap-2 text-[13px] leading-[1.55] text-mid">
             <MapPin size={14} strokeWidth={2} className="mt-[2px] shrink-0 text-blue" aria-hidden />

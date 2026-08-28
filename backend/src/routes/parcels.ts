@@ -129,6 +129,7 @@ function toSummary(
     address:                e.address,
     acres:                  e.acres,
     zoning:                 e.zoning,
+    occupied:               row.occupied ?? false,
     flood_buildable_pct:    e.flood_buildable_pct,
     dist_to_tx_line_m:      row.dist_to_tx_line_m,
     dist_to_ixp_km:         row.dist_to_ixp_km,
@@ -165,7 +166,7 @@ parcelsRouter.get('/', (req, res) => {
     res.status(404).json({
       error: 'parcel data not found',
       county: q.county,
-      hint: 'Run `npm run ingest:parcels` to generate data/parcels/bexar.rows.json',
+      hint: 'Run `npm run ingest:parcels` to generate the parcel layer for this county.',
     })
     return
   }
@@ -218,6 +219,30 @@ parcelsRouter.get('/', (req, res) => {
 
 // ── GET /parcels/:id ───────────────────────────────────────────────────────────
 
+// ── GET /parcels/unpriceable ───────────────────────────────────────────────────
+//
+// Declared BEFORE '/:id', or Express matches "unpriceable" as a parcel id and
+// this route is never reached.
+//
+// These parcels are published rather than dropped for the same reason
+// `unevaluable` exists on /estimate: a cost the data never captured reads as a
+// cost that is not there, so a parcel appraised at $0 an acre ranks first.
+// Excluding them silently would hide the omission instead of the artifact.
+
+parcelsRouter.get('/unpriceable', (req, res) => {
+  const countyId = typeof req.query.county === 'string' ? req.query.county : 'bexar'
+  if (!getCountyConfig(countyId)) {
+    res.status(404).json({ error: 'county not found', county: countyId })
+    return
+  }
+  try {
+    const parcels = fileRepository.listUnpriceable(countyId)
+    res.json({ county: countyId, total: parcels.length, parcels })
+  } catch (e) {
+    res.status(400).json({ error: e instanceof Error ? e.message : 'could not read unpriceable list' })
+  }
+})
+
 parcelsRouter.get('/:id', async (req, res) => {
   const parsed = DetailQuerySchema.safeParse(req.query)
   if (!parsed.success) {
@@ -267,7 +292,7 @@ parcelsRouter.post('/search', (req, res) => {
     res.status(404).json({
       error: 'parcel data not found',
       county: body.county,
-      hint: 'Run `npm run ingest:parcels` to generate data/parcels/bexar.rows.json',
+      hint: 'Run `npm run ingest:parcels` to generate the parcel layer for this county.',
     })
     return
   }

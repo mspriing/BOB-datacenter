@@ -49,6 +49,9 @@ export interface ParcelEstimate {
   acres:               number | null
   zoning:              string
   flood_buildable_pct: number | null
+  /** A homestead exemption is recorded: a private residence sits on the land. */
+  occupied:            boolean
+  owner:               string
 
   // Parcel-specific capex
   parcel_capex: ParcelCapex
@@ -284,6 +287,8 @@ export function estimateParcel(
     acres:               row.acres,
     zoning:              row.zoning,
     flood_buildable_pct: row.flood_buildable_pct,
+    occupied:            row.occupied ?? false,
+    owner:               row.owner ?? "",
     parcel_capex:        parcelCapex,
     capex,
     opex_annual:         opexYear1,

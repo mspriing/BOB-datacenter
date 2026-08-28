@@ -22,7 +22,9 @@ export const bexarConfig: CountyConfig = {
   bbox: { minLng: -99.5, minLat: 29.0, maxLng: -97.9, maxLat: 30.0 },
 
   // ── Candidate filter thresholds ───────────────────────────────────────────
-  minAcres:         25,
+  // 10 acres. A 10 MW campus occupies roughly 12 acres at 1.2 acres per MW, so
+  // this admits smaller infill industrial sites as well as greenfield.
+  minAcres:         10,
   maxDistToTxLineM: 8_000,   // 8 km to nearest ≥138 kV line
   floodDropPct:     0.25,    // drop parcel if >25% area in 100-yr SFHA
 
@@ -40,6 +42,35 @@ export const bexarConfig: CountyConfig = {
     // https://comptroller.texas.gov/taxes/property-tax/docs/96-313.pdf
     allowedStateCodes: new Set(['F1', 'F2', 'C1', 'C2', 'D1', 'D2', 'E1', 'G1']),
     excludedStateCodes: new Set(['A1', 'A2', 'A3', 'B1', 'B2', 'X', 'X1', 'S1']),
+
+    // ── Ownership and exemption screening ──────────────────────────────────
+    //
+    // Decoded from a 400-parcel live sample of BCAD on 2026-08-17. These are
+    // judgement calls and a later reader should feel free to argue with them.
+    //
+    //   EX-XV   65% of exempt parcels — Texas Tax Code §11.11, property owned
+    //           by the state or a political subdivision. The city parks and the
+    //           San Antonio Water System land that were ranking first.
+    //   EX-XJ   private schools.   EX-XI  charitable organisations.
+    //   HS, OV65, DV4, DVHS, FRSS — homestead, over-65, disabled-veteran and
+    //           surviving-spouse exemptions on PRIVATE property. Those parcels
+    //           are purchasable; the exemption only tells us someone lives there.
+    //
+    // Agricultural land does not appear in this field at all: D1 open-space is
+    // a special appraisal, not an exemption. So screening EX-* removes
+    // institutional land without touching the greenfield a campus would use.
+    exemptField: 'Exempts',
+    ownerField:  'Owner',
+    institutionalExemptPrefixes: ['EX-'],
+    occupancyExemptPrefixes: ['HS', 'OV65', 'DV4', 'DVHS', 'FRSS'],
+    governmentOwnerPatterns: [
+      'CITY OF', 'COUNTY', 'STATE OF', 'ISD', 'SCHOOL',
+      'UNITED STATES', 'SAN ANTONIO WATER',
+    ],
+
+    // $1,000/acre. Raw land in Bexar does not trade below this; 136 parcels
+    // sit under it, including a 1,323-acre parcel appraised at $0 an acre.
+    minLandValuePerAcre: 1_000,
   },
 
   // ── Zoning source ─────────────────────────────────────────────────────────
@@ -95,6 +126,10 @@ export const bexarConfig: CountyConfig = {
       'host is still live (separate service path). No replacement found for territories.',
   },
   defaultUtility: 'assumed-CPS-Energy',
+  primaryUtility: {
+    match: 'CPS',
+    jurisdictionLabel: 'City of San Antonio (CPS Energy territory)',
+  },
 
   // ── Transmission lines source ─────────────────────────────────────────────
   transmissionSource: {

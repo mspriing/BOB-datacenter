@@ -90,6 +90,7 @@ export function ParcelMap({
       attributionControl: { compact: true },
     })
     map.current = m
+    if (import.meta.env.DEV) (window as unknown as Record<string, unknown>).__parcelMap = m
 
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
 
@@ -107,7 +108,35 @@ export function ParcelMap({
     // setStyle re-fires styledata; re-add sources when that happens.
     m.on('styledata', () => { if (m.isStyleLoaded()) setReady(true) })
 
-    return () => { m.remove(); map.current = null }
+    // A map built in a hidden tab never starts.
+    //
+    // Browsers pause requestAnimationFrame while a tab is backgrounded, and
+    // MapLibre works out which tiles it needs during the render pass — so a map
+    // created off-screen renders nothing, fetches no tiles, and leaves its style
+    // permanently uncommitted. It does not recover on its own when the tab is
+    // shown, because the frame it requested while hidden is still marked
+    // pending. Nudging it on visibility and on container resize is what makes
+    // "open in a background tab, come back to it later" work.
+    const wake = () => {
+      if (document.visibilityState !== 'visible') return
+      try { m.resize(); m.triggerRepaint() } catch { /* map already gone */ }
+    }
+    document.addEventListener('visibilitychange', wake)
+
+    const ro = new ResizeObserver(() => wake())
+    ro.observe(holder.current)
+
+    // And once on the next frame, for the case where the container only gets its
+    // height after the surrounding grid has laid out.
+    const raf = requestAnimationFrame(wake)
+
+    return () => {
+      document.removeEventListener('visibilitychange', wake)
+      ro.disconnect()
+      cancelAnimationFrame(raf)
+      m.remove()
+      map.current = null
+    }
   }, [])
 
   // ── Keep the source in sync ─────────────────────────────────────────────────

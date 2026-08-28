@@ -1,0 +1,3854 @@
+[
+  {
+    "parcel_id": "1004965",
+    "address": "OLDE VILLAGE",
+    "acres": 16.9,
+    "state_code": "E1",
+    "owner": "MAINLAND CROSSING LAND",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1004966",
+    "address": "RICHMOND HILL",
+    "acres": 16.9,
+    "state_code": "E1",
+    "owner": "MAINLAND CROSSING LAND",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1006005",
+    "address": "POINT BLUFF DR",
+    "acres": 15.7197,
+    "state_code": "E1",
+    "owner": "SALADO CREEK CONSERVATION ASSOCIATION INC",
+    "appraised_land_value": 5310,
+    "reason": "appraised land value of $338 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1007450",
+    "address": "LOOKOUT FOREST",
+    "acres": 10.18,
+    "state_code": "C1",
+    "owner": "CROSSING AT LOOKOUT CANYON HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1007474",
+    "address": "100  GRASSMARKET",
+    "acres": 15.459,
+    "state_code": "C1",
+    "owner": "ROSEHEART HOMEOWNERS ASSN",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1010505",
+    "address": "FARINON DR",
+    "acres": 12.46,
+    "state_code": "C1",
+    "owner": "6103 FARINON LLC",
+    "appraised_land_value": 1000,
+    "reason": "appraised land value of $80 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1013172",
+    "address": "WOODLAKE PKWY",
+    "acres": 14.782,
+    "state_code": "C1",
+    "owner": "NEC HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1014097",
+    "address": "EMERALD FOREST DR",
+    "acres": 16.215,
+    "state_code": "E1",
+    "owner": "EMERALD FOREST HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1014150",
+    "address": "EMERALD FOREST DR",
+    "acres": 84.6278,
+    "state_code": "E1",
+    "owner": "EMERALD FOREST HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $1 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1017702",
+    "address": "BOERNE STAGE RD",
+    "acres": 16.508,
+    "state_code": "E1",
+    "owner": "1-10/BOERNE STAGE ROAD LIMITED PARTNERSHIP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1018153",
+    "address": "W MILITARY DR",
+    "acres": 23.2036,
+    "state_code": "C1",
+    "owner": "VILLAGES OF WESTCREEK HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1018302",
+    "address": "GLASS CANYON",
+    "acres": 12.2562,
+    "state_code": "C1",
+    "owner": "CANYON SPRINGS HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1032874",
+    "address": "LEGEND BREEZE",
+    "acres": 12.3897,
+    "state_code": "E1",
+    "owner": "HEIGHTS AT STONE OAK HOA INC",
+    "appraised_land_value": 4300,
+    "reason": "appraised land value of $347 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1033267",
+    "address": "BULVERDE RD",
+    "acres": 15.116,
+    "state_code": "E1",
+    "owner": "BULVERDE VILLAGE PROPERTY OWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1034326",
+    "address": "ROGERS PL",
+    "acres": 18.3245,
+    "state_code": "D1",
+    "owner": "SALADO CREEK CONSERVATION ASSOCIATION INC",
+    "appraised_land_value": 1500,
+    "reason": "appraised land value of $82 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1034516",
+    "address": "ARROYO HONDO",
+    "acres": 10.1425,
+    "state_code": "C1",
+    "owner": "SONOMA RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1035112",
+    "address": "CANYON GOLF RD",
+    "acres": 14.6031,
+    "state_code": "C1",
+    "owner": "LAKESIDE AT CANYON SPRINGS HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1037305",
+    "address": "BINZ ENGLEMAN RD",
+    "acres": 33.7,
+    "state_code": "C1",
+    "owner": "MUSTANG VALLEY OWNERS ASSC INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1042484",
+    "address": "POINT BLUFF DR",
+    "acres": 11.33,
+    "state_code": "E1",
+    "owner": "ROGERS SHAVANO RANCH LTD NO 3 LTD",
+    "appraised_land_value": 5180,
+    "reason": "appraised land value of $457 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1043265",
+    "address": "DUSTY CYN",
+    "acres": 111.4,
+    "state_code": "C1",
+    "owner": "FOX GROVE (SAN ANTONIO) HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $1 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1043266",
+    "address": "DUSTY CYN",
+    "acres": 30.9567,
+    "state_code": "C1",
+    "owner": "FOX GROVE (SAN ANTONIO) HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1043887",
+    "address": "HAUSMAN RD",
+    "acres": 15.4913,
+    "state_code": "C1",
+    "owner": "CAMBRIDGE HOMEOWNERS ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1046034",
+    "address": "5645  EVANS RD",
+    "acres": 90.885,
+    "state_code": "C1",
+    "owner": "WORTHAM OAKS HOMEOWNERS ASSOC INC",
+    "appraised_land_value": 81550,
+    "reason": "appraised land value of $897 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1049231",
+    "address": "RALPH FAIR RD",
+    "acres": 11.951,
+    "state_code": "E1",
+    "owner": "FAIR OAKS RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1052764",
+    "address": "PAYNES GRAY",
+    "acres": 11.2757,
+    "state_code": "C1",
+    "owner": "HEARTHSTONE PUD HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1053181",
+    "address": "POTRANCO RD",
+    "acres": 20.1051,
+    "state_code": "C1",
+    "owner": "AMHURST SUBD HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1055588",
+    "address": "CANYON GOLF RD",
+    "acres": 16.8759,
+    "state_code": "E1",
+    "owner": "CARRILLO RON & STEVENSON GRISELDA CARRILLO",
+    "appraised_land_value": 10000,
+    "reason": "appraised land value of $593 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1057738",
+    "address": "14945  POTRANCO RD",
+    "acres": 40.256,
+    "state_code": "C1",
+    "owner": "POTRANCO PATIENCE LLC",
+    "appraised_land_value": 17540,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1058174",
+    "address": "W LOOP 1604",
+    "acres": 113.9243,
+    "state_code": "D1",
+    "owner": "SALADO CREEK CONSERVATION ASSOCIATION INC",
+    "appraised_land_value": 49630,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1059744",
+    "address": "LOCKHILL SELMA RD",
+    "acres": 26.67,
+    "state_code": "E1",
+    "owner": "INVERNESS HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1060850",
+    "address": "LIBERTY FIELD",
+    "acres": 39.7012,
+    "state_code": "C1",
+    "owner": "KB HOME LONE STAR LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1062911",
+    "address": "ROGERS RD",
+    "acres": 44.938,
+    "state_code": "E1",
+    "owner": "WESTOVER HILS-PHASE VI OWNERS ASSN INC",
+    "appraised_land_value": 19580,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1062979",
+    "address": "TPC PARKWAY",
+    "acres": 13.0532,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1063001",
+    "address": "TPC PARKWAY",
+    "acres": 18.6292,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1063149",
+    "address": "W IH 10 W",
+    "acres": 29.8353,
+    "state_code": "C1",
+    "owner": "BVA KIM RIM SPE LLC ET AL",
+    "appraised_land_value": 19490,
+    "reason": "appraised land value of $653 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1063279",
+    "address": "BILTMORE LAKES",
+    "acres": 12.069,
+    "state_code": "E1",
+    "owner": "BRIDLEWOOD PARK HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1063426",
+    "address": "VANCE JACKSON",
+    "acres": 23.0816,
+    "state_code": "C1",
+    "owner": "BVA KIM RIM SPE LLC ET AL",
+    "appraised_land_value": 1010,
+    "reason": "appraised land value of $44 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1063500",
+    "address": "BRENTHURST LN",
+    "acres": 11.0113,
+    "state_code": "E1",
+    "owner": "DOMINION HOMEOWNERS ASSN",
+    "appraised_land_value": 5050,
+    "reason": "appraised land value of $459 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1067950",
+    "address": "JASPER HOLLOW",
+    "acres": 14.8133,
+    "state_code": "C1",
+    "owner": "BLUE ROCK SPRINGS HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1069228",
+    "address": "4550  DEL WEBB BLVD",
+    "acres": 10.19,
+    "state_code": "A1",
+    "owner": "HILL COUNTRY RETREAT COMM ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1069453",
+    "address": "SUN CHASE",
+    "acres": 25.2683,
+    "state_code": "C1",
+    "owner": "SUNDANCE (SAN ANTONIO) HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1070453",
+    "address": "ROCKWALL MILL",
+    "acres": 20.054,
+    "state_code": "C1",
+    "owner": "RIVERSTONE AT ALAMO RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1071100",
+    "address": "TUSCAN WOODS",
+    "acres": 40.124,
+    "state_code": "C1",
+    "owner": "TUSCAN OAKS OWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1074195",
+    "address": "PLAZA LAKE DR",
+    "acres": 19.476,
+    "state_code": "C1",
+    "owner": "HOMEOWNERS ASSOCIATION OF LAKEVIEW INC",
+    "appraised_land_value": 200,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1075561",
+    "address": "SALADO CANYON",
+    "acres": 10.5061,
+    "state_code": "E1",
+    "owner": "ROGERS SHAVANO RANCH LTD NO 3 LTD",
+    "appraised_land_value": 4830,
+    "reason": "appraised land value of $460 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1076284",
+    "address": "BINZ ENGELMAN RD",
+    "acres": 41.4315,
+    "state_code": "C1",
+    "owner": "ESCONDIDO MEADOWS HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1076516",
+    "address": "BULVERDE GREEN",
+    "acres": 11.1636,
+    "state_code": "E1",
+    "owner": "CENTEX HOMES",
+    "appraised_land_value": 6850,
+    "reason": "appraised land value of $614 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1077772",
+    "address": "9502  WIND GATE PARKWAY",
+    "acres": 11.8576,
+    "state_code": "C1",
+    "owner": "WIND GATE RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1077786",
+    "address": "WINDGATE PKWY",
+    "acres": 13.7022,
+    "state_code": "C1",
+    "owner": "WIND GATE RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1078666",
+    "address": "HIGH PLAINS DR",
+    "acres": 12.85,
+    "state_code": "C1",
+    "owner": "KALLISON RANCH I COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1085838",
+    "address": "CASCADE HLS",
+    "acres": 10.56,
+    "state_code": "C1",
+    "owner": "HILL COUNTRY RETREAT COMM ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1086246",
+    "address": "HOLLIMON PKWY",
+    "acres": 12.8216,
+    "state_code": "A1",
+    "owner": "REDBIRD RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1087627",
+    "address": "SONNI FIELD",
+    "acres": 17.336,
+    "state_code": "C1",
+    "owner": "RESERVE AT WESTCREEK HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1090811",
+    "address": "GALM RD",
+    "acres": 25.3252,
+    "state_code": "E1",
+    "owner": "CENTEX HOMES",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1090910",
+    "address": "KYLE SEALE PKWY",
+    "acres": 17.514,
+    "state_code": "E1",
+    "owner": "SONOMA MESA COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 7630,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1093981",
+    "address": "DOGWOOD PATH",
+    "acres": 10.5393,
+    "state_code": "C1",
+    "owner": "EMERALD FOREST HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1094368",
+    "address": "12160  VOLUNTEER PKWY",
+    "acres": 10.94,
+    "state_code": "A1",
+    "owner": "ALAMO RANCH COMMUNITY ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1098833",
+    "address": "WOODLAKE PARKWAY",
+    "acres": 14.385,
+    "state_code": "C1",
+    "owner": "HORIZON POINTE HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1099617",
+    "address": "GAGE CROSSING",
+    "acres": 33.203,
+    "state_code": "C1",
+    "owner": "WEST OAK ESTATES HOMEOWNERS ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1100541",
+    "address": "TERRA MONT",
+    "acres": 19.832,
+    "state_code": "C1",
+    "owner": "TERRA MONT PROPERTY OWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1100542",
+    "address": "TERRA MONT",
+    "acres": 44.413,
+    "state_code": "A1",
+    "owner": "TERRA MONT PROPERTY OWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1103270",
+    "address": "TPC PARKWAY",
+    "acres": 13.5925,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1103280",
+    "address": "TPC PARKWAY",
+    "acres": 57.6473,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1106712",
+    "address": "RIDGEWOOD PKWY",
+    "acres": 12.9625,
+    "state_code": "C1",
+    "owner": "RIDGEWOOD ASSN",
+    "appraised_land_value": 5650,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1108596",
+    "address": "CALLE DE ORO",
+    "acres": 11.7376,
+    "state_code": "C1",
+    "owner": "PRESIDIO HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1109108",
+    "address": "AMSTERDAM",
+    "acres": 10.8,
+    "state_code": "C1",
+    "owner": "WOODS OF ALON (S A) HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1110673",
+    "address": "WILD SAGE",
+    "acres": 19.035,
+    "state_code": "C1",
+    "owner": "LOT OWNERS ASSOCIATION FOR SUNDANCE RANCH INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1116010",
+    "address": "18818  CAYMAN LNDG",
+    "acres": 22.05,
+    "state_code": "C1",
+    "owner": "THE RIDGE AT SONOMA VERDE RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1116147",
+    "address": "CAYMAN LNDG",
+    "acres": 15.51,
+    "state_code": "C1",
+    "owner": "THE RIDGE AT SONOMA VERDE RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1118748",
+    "address": "LORING PARK",
+    "acres": 15.476,
+    "state_code": "C1",
+    "owner": "PARC AT ESCONDIDO HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1120822",
+    "address": "SILVER HORSE",
+    "acres": 11.466,
+    "state_code": "C1",
+    "owner": "SILVER OAKS HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1121394",
+    "address": "PAR TWO",
+    "acres": 14.3534,
+    "state_code": "C1",
+    "owner": "MISSION DEL LAGO HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1121677",
+    "address": "7900  WINECUP HL",
+    "acres": 31.85,
+    "state_code": "C1",
+    "owner": "STONEWALL ESTATES HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1121749",
+    "address": "CIELO VIS",
+    "acres": 13.02,
+    "state_code": "C1",
+    "owner": "STONEWALL ESTATES HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1125081",
+    "address": "LA VILLITA WAY",
+    "acres": 18.6,
+    "state_code": "C1",
+    "owner": "ALAMO RANCH COMMUNITY ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1125169",
+    "address": "ALAMO PKWY",
+    "acres": 12.6133,
+    "state_code": "C1",
+    "owner": "ALAMO RANCH COMMUNITY ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1126392",
+    "address": "US HWY 90",
+    "acres": 12.7577,
+    "state_code": "C1",
+    "owner": "WPGL LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1126901",
+    "address": "DANA CREEK DR",
+    "acres": 30.11,
+    "state_code": "C1",
+    "owner": "SA-RIDGE CREEK HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1127040",
+    "address": "CLINKER HEIGHTS",
+    "acres": 28.0603,
+    "state_code": "C1",
+    "owner": "LONGHORN QUARRY QOZB LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1138188",
+    "address": "BANDITOS RIDGE",
+    "acres": 15.0827,
+    "state_code": "C1",
+    "owner": "LADERA MASTER COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1139494",
+    "address": "LONE STAR PKWY",
+    "acres": 19.4991,
+    "state_code": "C1",
+    "owner": "ALAMO RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1139613",
+    "address": "FALCON PLACE",
+    "acres": 13.707,
+    "state_code": "C1",
+    "owner": "BLOOMFIELD HILLS HOMEOWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1139633",
+    "address": "FALCON PLACE",
+    "acres": 16.037,
+    "state_code": "C1",
+    "owner": "BLOOMFIELD HILLS HOMEOWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1143152",
+    "address": "FOREST CANYON",
+    "acres": 24.5388,
+    "state_code": "C1",
+    "owner": "CAMPOS DANNY",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1144971",
+    "address": "LONESTAR PKWY",
+    "acres": 13.46,
+    "state_code": "C1",
+    "owner": "SANTA MARIA @ ALAMO RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1147900",
+    "address": "REDBIRD SONG",
+    "acres": 12.3469,
+    "state_code": "C1",
+    "owner": "REDBIRD RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1148950",
+    "address": "DEL WEBB BLVD",
+    "acres": 10.7461,
+    "state_code": "C1",
+    "owner": "HILL COUNTRY RETREAT COMM ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1150382",
+    "address": "10115  FISCHER RD",
+    "acres": 153.79,
+    "state_code": "F1",
+    "owner": "BNSF RAILWAY  COMPANY",
+    "appraised_land_value": null,
+    "reason": "no appraised land value published"
+  },
+  {
+    "parcel_id": "1155078",
+    "address": "ALAMO PKWY",
+    "acres": 16.465,
+    "state_code": "E1",
+    "owner": "ALAMO RANCH PROPERTY OWNERS ASSC INC",
+    "appraised_land_value": 7170,
+    "reason": "appraised land value of $435 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1155118",
+    "address": "CASTLEHEAD DR",
+    "acres": 13.7028,
+    "state_code": "C1",
+    "owner": "TRIANA HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1159726",
+    "address": "RAVINE PASS",
+    "acres": 10.4149,
+    "state_code": "C1",
+    "owner": "DEER CANYON HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1165583",
+    "address": "RANCHO DIANA",
+    "acres": 13.2193,
+    "state_code": "C1",
+    "owner": "RESERVE AT SONOMA VERDE HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1166526",
+    "address": "CIELO VIS",
+    "acres": 54.295,
+    "state_code": "C1",
+    "owner": "STONEWALL ESTATES HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1178027",
+    "address": "WRANGLER VIEW",
+    "acres": 12.485,
+    "state_code": "C1",
+    "owner": "SOUTHTON ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1179331",
+    "address": "HUNT ESTATE",
+    "acres": 10.092,
+    "state_code": "C1",
+    "owner": "ALAMO RANCH COMMUNITY ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1180515",
+    "address": "AMOROSA WAY",
+    "acres": 11.971,
+    "state_code": "C1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1180515",
+    "address": "AMOROSA WAY",
+    "acres": 11.971,
+    "state_code": "C1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1181372",
+    "address": "GRAYTOWN RD",
+    "acres": 36.885,
+    "state_code": "C1",
+    "owner": "QUIET CREEK HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1181374",
+    "address": "5917  SCENIC LAKE DR",
+    "acres": 16.7144,
+    "state_code": "C1",
+    "owner": "QUIET CREEK HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1182497",
+    "address": "REMBRANDT HILL",
+    "acres": 15.1968,
+    "state_code": "C1",
+    "owner": "STONEWALL ESTATES HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1188615",
+    "address": "FALCON WOLF",
+    "acres": 26.6,
+    "state_code": "E1",
+    "owner": "SA WOLFCREEK HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1189741",
+    "address": "N FM 1560",
+    "acres": 40.192,
+    "state_code": "E1",
+    "owner": "CROSSCREEK HOA INC",
+    "appraised_land_value": 200,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1190347",
+    "address": "PALATINE HILL",
+    "acres": 26.026,
+    "state_code": "C1",
+    "owner": "BELLA VISTA OWNERS ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1191797",
+    "address": "GYSPY WAY",
+    "acres": 28.6113,
+    "state_code": "C1",
+    "owner": "WORTHAM OAKS HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1192205",
+    "address": "GOERGE BEERE",
+    "acres": 11.8047,
+    "state_code": "C1",
+    "owner": "BALCONES CREEK RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1192872",
+    "address": "HURON PK",
+    "acres": 12.7544,
+    "state_code": "C1",
+    "owner": "SANCTUARY TEXAS HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1193591",
+    "address": "TALLEY RD",
+    "acres": 16.799,
+    "state_code": "E1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1195774",
+    "address": "FARLEY RANCH",
+    "acres": 13.8487,
+    "state_code": "C1",
+    "owner": "THE PARK AT CIMARRON ENLAVE POA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1198894",
+    "address": "BOUVARDIA",
+    "acres": 14.5778,
+    "state_code": "C1",
+    "owner": "ALAMO RANCH HOMEOWNERS ASSN INC",
+    "appraised_land_value": 150,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1200246",
+    "address": "SMALL CRK",
+    "acres": 16.944,
+    "state_code": "C1",
+    "owner": "HASTINGS RIDGE AT KINDER RANCH HOMEOWNERS ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1200267",
+    "address": "TRISTANT RIDGE",
+    "acres": 22.56,
+    "state_code": "C1",
+    "owner": "HASTINGS RIDGE AT KINDER RANCH HOMEOWNERS ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1201175",
+    "address": "DEL WEBB BLVD",
+    "acres": 11.2888,
+    "state_code": "C1",
+    "owner": "HILL COUNTRY RETREAT COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1202336",
+    "address": "LA CANTERA TER",
+    "acres": 10.259,
+    "state_code": "F3",
+    "owner": "EILAN PROPERTY OWNERS ASSOCIATION INC",
+    "appraised_land_value": 4470,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1202752",
+    "address": "W LOOP 1604",
+    "acres": 96.3912,
+    "state_code": "D1",
+    "owner": "SALADO CREEK CONSERVATION ASSOCIATION INC",
+    "appraised_land_value": 35320,
+    "reason": "appraised land value of $366 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1204670",
+    "address": "22820  ESTACADO",
+    "acres": 12.7655,
+    "state_code": "C1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1205672",
+    "address": "PANDORA SECO",
+    "acres": 16.2717,
+    "state_code": "C1",
+    "owner": "RIDGE AT SALADO CREEK HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1208256",
+    "address": "EISENHAUER RD",
+    "acres": 20.9949,
+    "state_code": "C1",
+    "owner": "NEC HOA ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1209739",
+    "address": "KENDALL CANYON",
+    "acres": 21.7469,
+    "state_code": "C1",
+    "owner": "CANYONS PROPERTY OWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1211819",
+    "address": "JOVE OAK",
+    "acres": 36.865,
+    "state_code": "C1",
+    "owner": "FOX GROVE (SAN ANTONIO) HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1212267",
+    "address": "STILL POND POND",
+    "acres": 11.031,
+    "state_code": "C1",
+    "owner": "KRIEWALD PLACE ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1213902",
+    "address": "CAMP LIGHT WAY",
+    "acres": 14.309,
+    "state_code": "C1",
+    "owner": "HOA FOR SEALE SUBD UNIT-1 INC",
+    "appraised_land_value": 6230,
+    "reason": "appraised land value of $435 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1217879",
+    "address": "PALATINE HILL",
+    "acres": 14.1783,
+    "state_code": "C1",
+    "owner": "BELLA VISTA OWNERS ASSOCIATION",
+    "appraised_land_value": 200,
+    "reason": "appraised land value of $14 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1219941",
+    "address": "MULHOUSE DR",
+    "acres": 21.6306,
+    "state_code": "C1",
+    "owner": "RHINE VALLEY HOMEOWNERS ASSOC INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1221291",
+    "address": "LUCKEY RIVER",
+    "acres": 26.23,
+    "state_code": "A1",
+    "owner": "LUCKEY RANCH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1223171",
+    "address": "TALLEY RD",
+    "acres": 20.566,
+    "state_code": "D1",
+    "owner": "CIUDAD DE LAS PALOMAS LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1223437",
+    "address": "STILLWATER",
+    "acres": 180.8938,
+    "state_code": "E1",
+    "owner": "SWR HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $1 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1223788",
+    "address": "W FM 471",
+    "acres": 134.146,
+    "state_code": "E1",
+    "owner": "TALISE DE CULEBRA HOA",
+    "appraised_land_value": 63470,
+    "reason": "appraised land value of $473 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1227207",
+    "address": "RUNNING FAWN",
+    "acres": 10.3507,
+    "state_code": "C1",
+    "owner": "INDIAN SPRINGS ESTATES HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1228230",
+    "address": "GENTLE FOX CREEK",
+    "acres": 12.6394,
+    "state_code": "C1",
+    "owner": "SA WOLFCREEK HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1228596",
+    "address": "CIELO RNCH",
+    "acres": 10.15,
+    "state_code": "E1",
+    "owner": "NEC HOA ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1228697",
+    "address": "VANITY HILL",
+    "acres": 13.1986,
+    "state_code": "C1",
+    "owner": "STONEWALL ESTATES HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1229736",
+    "address": "COMANCHE CREEK",
+    "acres": 21.1353,
+    "state_code": "C1",
+    "owner": "INDIAN SPRINGS ESTATES HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1230672",
+    "address": "TPC PKWY",
+    "acres": 18.4044,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1230859",
+    "address": "MONTEVERDE WAY",
+    "acres": 11.5606,
+    "state_code": "C1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1243761",
+    "address": "STEVENS PKWY",
+    "acres": 10.5873,
+    "state_code": "C1",
+    "owner": "POTRANCO 2013 LAND LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1245397",
+    "address": "15464 W FM 471",
+    "acres": 24.56,
+    "state_code": "F3",
+    "owner": "SAN GERONIMO AIRPARK PROPERTY OWNERS ASSOCIATION",
+    "appraised_land_value": 4990,
+    "reason": "appraised land value of $203 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1248091",
+    "address": "TURMOIL CURVE",
+    "acres": 19.8045,
+    "state_code": "C1",
+    "owner": "CROSSCREEK HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1249046",
+    "address": "TRANQUIL DAWN",
+    "acres": 23.0405,
+    "state_code": "E1",
+    "owner": "NEC HOA ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1250572",
+    "address": "SABER POINT",
+    "acres": 10.028,
+    "state_code": "C1",
+    "owner": "FALCON LANDING COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1250801",
+    "address": "12354  W MILITARY DR",
+    "acres": 18.9,
+    "state_code": "A1",
+    "owner": "VILLAGES OF WESTCREEK HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1251829",
+    "address": "SILVER POINTE",
+    "acres": 28.419,
+    "state_code": "E1",
+    "owner": "STILLWATER RANCH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 14240,
+    "reason": "appraised land value of $501 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1251830",
+    "address": "SILVER POINTE",
+    "acres": 29.024,
+    "state_code": "E1",
+    "owner": "STILLWATER RANCH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 15220,
+    "reason": "appraised land value of $524 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1252134",
+    "address": "RICADONNA",
+    "acres": 13.7841,
+    "state_code": "C1",
+    "owner": "BELLA VISTA OWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1253062",
+    "address": "COZY RUN",
+    "acres": 15.28,
+    "state_code": "C1",
+    "owner": "NEC HOA ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1253519",
+    "address": "MEADOW LARK",
+    "acres": 15.233,
+    "state_code": "C1",
+    "owner": "ROLLING CREEK 5 HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1253520",
+    "address": "MEADOW LARK",
+    "acres": 19.565,
+    "state_code": "C1",
+    "owner": "ROLLING CREEK 5 HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1254439",
+    "address": "LONGHORN PARK",
+    "acres": 12.026,
+    "state_code": "C1",
+    "owner": "PARC AT ESCONDIDO HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1255253",
+    "address": "DEL WEBB BLVD",
+    "acres": 11.4351,
+    "state_code": "C1",
+    "owner": "HILL COUNTRY RETREAT COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1256193",
+    "address": "9020  HIGHLAND STAR",
+    "acres": 34.6,
+    "state_code": "C1",
+    "owner": "REMUDA RANCH MASTER COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1256637",
+    "address": "BELLINI HILL",
+    "acres": 15.053,
+    "state_code": "D1",
+    "owner": "SALADO CREEK CONSERVATION ASSOCIATION INC",
+    "appraised_land_value": 6660,
+    "reason": "appraised land value of $442 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1257077",
+    "address": "NINA RDGE",
+    "acres": 56.142,
+    "state_code": "C1",
+    "owner": "CANYONS PROPERTY OWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1257255",
+    "address": "SIRIUS DR",
+    "acres": 21.3329,
+    "state_code": "C1",
+    "owner": "TEXAS RESEARCH PARK HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1261813",
+    "address": "RALPH FAIR RD",
+    "acres": 10.7813,
+    "state_code": "E1",
+    "owner": "ARBORS OF FAIR OAKS RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 4650,
+    "reason": "appraised land value of $431 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1264001",
+    "address": "W LOOP 1604",
+    "acres": 36.2148,
+    "state_code": "D1",
+    "owner": "SALADO CREEK CONSERVATION ASSOCIATION INC",
+    "appraised_land_value": 12240,
+    "reason": "appraised land value of $338 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1266057",
+    "address": "IH-10",
+    "acres": 39.9,
+    "state_code": "C1",
+    "owner": "HEIGHTS AT TWO CREEKS HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1266605",
+    "address": "BOERNE STAGE RD",
+    "acres": 34.06,
+    "state_code": "C1",
+    "owner": "GREEN LAND VENTURES LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1267859",
+    "address": "FRONTED GOOSE",
+    "acres": 13.9883,
+    "state_code": "C1",
+    "owner": "REDBIRD RANCH HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1268664",
+    "address": "SALT FORK",
+    "acres": 18.909,
+    "state_code": "C1",
+    "owner": "HILL COUNTRY RETREAT COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 150,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1269644",
+    "address": "CANTERA GOLF",
+    "acres": 21.5508,
+    "state_code": "C1",
+    "owner": "VISTAS OF LA CANTERA OWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1270043",
+    "address": "SONG FIDDLER",
+    "acres": 10.9431,
+    "state_code": "C1",
+    "owner": "ALAMO RANCH COMMUNITY ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1270425",
+    "address": "HIGHLAND CREST",
+    "acres": 15.4518,
+    "state_code": "C1",
+    "owner": "SA HIGHLAND ESTATES INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1272234",
+    "address": "PRUE RD",
+    "acres": 10.4144,
+    "state_code": "C1",
+    "owner": "LANDING AT FRENCH CREEK HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1273253",
+    "address": "Unknown",
+    "acres": 20.4683,
+    "state_code": "C1",
+    "owner": "KINDER WEST/SUNDAY CREEK HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1276321",
+    "address": "COWBOY LN",
+    "acres": 11.8888,
+    "state_code": "C1",
+    "owner": "DAVIS RANCH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1276770",
+    "address": "WOODCLIFF BEND",
+    "acres": 13.9952,
+    "state_code": "C1",
+    "owner": "FOSTER MEADOWS HOMEOWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1281056",
+    "address": "BLUE JASMINE",
+    "acres": 18.79,
+    "state_code": "C1",
+    "owner": "WPGL LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1281255",
+    "address": "BINZ-ENGLEMAN RD",
+    "acres": 13.3105,
+    "state_code": "C1",
+    "owner": "ESCONDIDO NORTH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1281510",
+    "address": "COTTONWOOD LOOP",
+    "acres": 10.378,
+    "state_code": "F1",
+    "owner": "CPI/SPARROW SOLEA ALAMO RANCH OWNER LP",
+    "appraised_land_value": 4520,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1284639",
+    "address": "BANDERA RD",
+    "acres": 13.2129,
+    "state_code": "C1",
+    "owner": "RIDGE AT BANDERA RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1285431",
+    "address": "PELICAN LANDING",
+    "acres": 25.9201,
+    "state_code": "C1",
+    "owner": "SOUTHSTAR MISSION DEL LAGO DEVELOPER LLC",
+    "appraised_land_value": 350,
+    "reason": "appraised land value of $14 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1286533",
+    "address": "COVEL RD",
+    "acres": 11.884,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1286817",
+    "address": "2700  BARKEY SPRINGS",
+    "acres": 10.5545,
+    "state_code": "C1",
+    "owner": "LADERA MASTER COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1287036",
+    "address": "BALENTINE",
+    "acres": 11.0979,
+    "state_code": "C1",
+    "owner": "SHAVANO HIGHLANDS HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1287103",
+    "address": "9818  MARBACH BROOK",
+    "acres": 10.4168,
+    "state_code": "C1",
+    "owner": "MARBACH PLACE HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1290991",
+    "address": "REDLAND RD",
+    "acres": 16.7637,
+    "state_code": "C1",
+    "owner": "SIENNA HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1291146",
+    "address": "REDLAND RD",
+    "acres": 22.412,
+    "state_code": "C1",
+    "owner": "SIENNA HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1291321",
+    "address": "SUNDAY CREEK",
+    "acres": 11.4938,
+    "state_code": "C1",
+    "owner": "KINDER WEST/SUNDAY CREEK HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1292013",
+    "address": "COLEMANS RUN",
+    "acres": 20.5051,
+    "state_code": "C1",
+    "owner": "BASILIAH LAND INVESTMENTS LLC",
+    "appraised_land_value": 8930,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1292209",
+    "address": "BINZ ENGLEMAN",
+    "acres": 47.55,
+    "state_code": "C1",
+    "owner": "GLENLOCH FARMS PROPERTY OWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1294657",
+    "address": "ROUSSEAU",
+    "acres": 41.44,
+    "state_code": "C1",
+    "owner": "STONECREEK COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1295394",
+    "address": "REEVES LOOP",
+    "acres": 10.1906,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1295630",
+    "address": "MARGARITA LOOP",
+    "acres": 14.9489,
+    "state_code": "C1",
+    "owner": "PALOMA MASTER COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1298974",
+    "address": "ESCONDIDO PASS",
+    "acres": 14.1623,
+    "state_code": "C1",
+    "owner": "MARIA INVESTMENTS LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1302513",
+    "address": "GALM RD",
+    "acres": 27.447,
+    "state_code": "E1",
+    "owner": "REMUDA RANCH MASTER COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1302891",
+    "address": "CHARISMATIC",
+    "acres": 10.1286,
+    "state_code": "C1",
+    "owner": "CHAMPIONS LANDING HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1303057",
+    "address": "TRES ARROYOS",
+    "acres": 10.317,
+    "state_code": "C1",
+    "owner": "CANYONS PROPERTY OWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1303447",
+    "address": "3101  BEGONIA BND",
+    "acres": 24.9239,
+    "state_code": "C1",
+    "owner": "FOSTER MEADOWS HOMEOWNERS ASSOCIATION",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1303737",
+    "address": "7202  ROMAIRE RUN",
+    "acres": 17.2445,
+    "state_code": "C1",
+    "owner": "LUCKEY RANCH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1304041",
+    "address": "11910  NUCIO RDG",
+    "acres": 19.8137,
+    "state_code": "C1",
+    "owner": "LUCKEY RANCH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1306302",
+    "address": "COLINA CREST",
+    "acres": 20.4633,
+    "state_code": "C1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1306479",
+    "address": "WINDING CLOUD",
+    "acres": 20.24,
+    "state_code": "C1",
+    "owner": "WINDING CREEK RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1309212",
+    "address": "FM 1516 N",
+    "acres": 15.405,
+    "state_code": "C1",
+    "owner": "BRIDGEHAVEN HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1311044",
+    "address": "ELKHORN RIDGE",
+    "acres": 15.3098,
+    "state_code": "C1",
+    "owner": "ELKHORN RIDGE HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1312160",
+    "address": "MASTERSON RD",
+    "acres": 14.859,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1313953",
+    "address": "SILOS VIEW",
+    "acres": 13.42,
+    "state_code": "C1",
+    "owner": "SILOS COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1314254",
+    "address": "8524  NICHOLS RAIN",
+    "acres": 49.72,
+    "state_code": "C1",
+    "owner": "IH 10 PARTNERS LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1315009",
+    "address": "LANGDON LANDING",
+    "acres": 12.3333,
+    "state_code": "C1",
+    "owner": "LANGDON RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1316881",
+    "address": "SNOWBIRD",
+    "acres": 21.2816,
+    "state_code": "C1",
+    "owner": "WINTERFELL HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1320929",
+    "address": "7434  SAWMILL GLADE",
+    "acres": 10.9127,
+    "state_code": "C1",
+    "owner": "WINDING BROOK HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1322172",
+    "address": "FIESTA WAY",
+    "acres": 10.924,
+    "state_code": "C1",
+    "owner": "HILL COUNTRY RETREAT COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1322635",
+    "address": "FRONTED GOOSE",
+    "acres": 12.2516,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1324128",
+    "address": "SANDLEWOOD COVE",
+    "acres": 20.8675,
+    "state_code": "C1",
+    "owner": "LYNWOOD VILLAGE ENCLAVE PROPERTY OWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1324379",
+    "address": "ARCADIA PATH",
+    "acres": 15.31,
+    "state_code": "C1",
+    "owner": "ARCADIA RIDGE HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1324484",
+    "address": "OLSON BLUFFS",
+    "acres": 19.7971,
+    "state_code": "C1",
+    "owner": "OLSON RANCH HOMEOWNERS ASSOCATION INC",
+    "appraised_land_value": 8620,
+    "reason": "appraised land value of $435 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1326544",
+    "address": "13770  SOUTHTON RD",
+    "acres": 21.33,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1327103",
+    "address": "LAS PILAS",
+    "acres": 12.1161,
+    "state_code": "C1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1327420",
+    "address": "23202  GRANDE VISTA",
+    "acres": 10.2608,
+    "state_code": "C1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1329242",
+    "address": "9611  BAYTOWN COAST",
+    "acres": 18.8209,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1329427",
+    "address": "SOOTHING CRK",
+    "acres": 19.727,
+    "state_code": "C1",
+    "owner": "KENDALL BROOK HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1329833",
+    "address": "RANCH VIEW WEST",
+    "acres": 14.708,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1330548",
+    "address": "CAPELLA CIRCLE",
+    "acres": 18.1,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1331322",
+    "address": "E IH 10",
+    "acres": 13.5418,
+    "state_code": "C1",
+    "owner": "MILLICAN GROVE RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1331538",
+    "address": "GREEN RD",
+    "acres": 10.87,
+    "state_code": "C1",
+    "owner": "PALOMA MASTER COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1332664",
+    "address": "5443  MALAKOFF DR",
+    "acres": 10.198,
+    "state_code": "C1",
+    "owner": "ESCONDIDO HEIGHTS HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1334399",
+    "address": "TALLEY RD",
+    "acres": 11.113,
+    "state_code": "E1",
+    "owner": "TALLEY ROAD DEVELOPMENT LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1337180",
+    "address": "KALLISON BEND",
+    "acres": 12.99,
+    "state_code": "C1",
+    "owner": "PHSA NW 315 LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1337681",
+    "address": "VIA SONOMA TRL",
+    "acres": 14.8107,
+    "state_code": "C1",
+    "owner": "ESCONDIDO NORTH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1337810",
+    "address": "ASHCAT",
+    "acres": 11.561,
+    "state_code": "C1",
+    "owner": "SANTA CLARA HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1340406",
+    "address": "E EVANS RD",
+    "acres": 33.7741,
+    "state_code": "E1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1340554",
+    "address": "EVANS RD",
+    "acres": 20.7327,
+    "state_code": "E1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1341928",
+    "address": "LATERITE TRAIL",
+    "acres": 16.6031,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1343287",
+    "address": "MASTERSON RD",
+    "acres": 10.4,
+    "state_code": "C1",
+    "owner": "SILOS COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1344039",
+    "address": "503  MUSCARI",
+    "acres": 62.6923,
+    "state_code": "C1",
+    "owner": "DOVE HEIGHTS RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1346654",
+    "address": "KALINOSKI",
+    "acres": 18.2086,
+    "state_code": "C1",
+    "owner": "AVENIDA RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1347579",
+    "address": "APPLEWHITE MDW",
+    "acres": 20.4694,
+    "state_code": "C1",
+    "owner": "APPLEWHITE MEADOWS LTD",
+    "appraised_land_value": 13370,
+    "reason": "appraised land value of $653 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1349120",
+    "address": "THYME WAY",
+    "acres": 10.1592,
+    "state_code": "C1",
+    "owner": "HUNTERS WAY HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1349253",
+    "address": "3510  ANGUS CROSSING",
+    "acres": 11.4113,
+    "state_code": "C1",
+    "owner": "BEXAR STONEY CREEK HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1349413",
+    "address": "LANDA FALLS",
+    "acres": 24.18,
+    "state_code": "C1",
+    "owner": "PHSA NW 315 LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1349786",
+    "address": "10843  COPPOLA",
+    "acres": 14.6091,
+    "state_code": "C1",
+    "owner": "DAVIS RANCH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1350078",
+    "address": "RANCHO GRANDE",
+    "acres": 18.3558,
+    "state_code": "C1",
+    "owner": "LOS ALTOS RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1350613",
+    "address": "MIRANDA CANYON",
+    "acres": 13.978,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1352879",
+    "address": "MAY MIST",
+    "acres": 10.9694,
+    "state_code": "C1",
+    "owner": "STEVENS RANCH PROPERTY OWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1356455",
+    "address": "12380  REID RANCH",
+    "acres": 19.7322,
+    "state_code": "C1",
+    "owner": "WESTON OAKS HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1357301",
+    "address": "5813  SEASIDE MANOR",
+    "acres": 17.8407,
+    "state_code": "C1",
+    "owner": "SUMMERHILL HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1358939",
+    "address": "MARBACH RD",
+    "acres": 36.64,
+    "state_code": "C1",
+    "owner": "OVERLOOK AT MEDIO CREEK RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1358940",
+    "address": "PUE RD",
+    "acres": 44.81,
+    "state_code": "C1",
+    "owner": "OVERLOOK AT MEDIO CREEK RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1359710",
+    "address": "BLUE FEATHER",
+    "acres": 10.9728,
+    "state_code": "C1",
+    "owner": "DAVIS RANCH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1360624",
+    "address": "RESERVOIR DRIVE",
+    "acres": 13.3712,
+    "state_code": "C1",
+    "owner": "SOUTHTON MEADOWS COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1360976",
+    "address": "TEXAS PALM DR",
+    "acres": 16.7544,
+    "state_code": "C1",
+    "owner": "ESCONDIDO NORTH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1362145",
+    "address": "7301  TRADINGHOUSE LN",
+    "acres": 16.072,
+    "state_code": "C1",
+    "owner": "CINCO LAKES HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1364867",
+    "address": "FLYING HOOVES",
+    "acres": 12.6504,
+    "state_code": "C1",
+    "owner": "JEN TEXAS 23 LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1366162",
+    "address": "ALAMO RANCH",
+    "acres": 30.717,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1366387",
+    "address": "MASTERSON RD",
+    "acres": 19.9544,
+    "state_code": "E1",
+    "owner": "ARROYO CAP II-2 LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1366511",
+    "address": "SW MILITARY DR",
+    "acres": 14.573,
+    "state_code": "E1",
+    "owner": "LENNAR HOMES OF TEXAS LAND AND CONSTRUCTION LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1366512",
+    "address": "SW MILITARY DR",
+    "acres": 14.517,
+    "state_code": "E1",
+    "owner": "LENNAR HOMES OF TEXAS LAND AND CONSTRUCTION LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1368303",
+    "address": "JEWEL CURVE",
+    "acres": 12.0844,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1369403",
+    "address": "MITRA WAY",
+    "acres": 10.1259,
+    "state_code": "C1",
+    "owner": "SOUTHSTAR AT VERANO DEVELOPER LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1370298",
+    "address": "ASTRAL COVE",
+    "acres": 43.8736,
+    "state_code": "C1",
+    "owner": "CRESCENT HILLS COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1371272",
+    "address": "ARBOR FALLS",
+    "acres": 18.1947,
+    "state_code": "C1",
+    "owner": "ARBORS OF FAIR OAKS RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1372133",
+    "address": "SULPHUR TRACE",
+    "acres": 17.0315,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1372866",
+    "address": "DOWNHILL LIE",
+    "acres": 33.5026,
+    "state_code": "C1",
+    "owner": "HDC MV4 LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1372927",
+    "address": "RANCH VIEW EAST",
+    "acres": 13.9777,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1372991",
+    "address": "RANCH VIEW WEST",
+    "acres": 70.5537,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $1 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1374075",
+    "address": "OLD ALMONTE DRIVE",
+    "acres": 26.3979,
+    "state_code": "C1",
+    "owner": "MARBELLA HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1374303",
+    "address": "17116  AUTRY FALLS",
+    "acres": 11.85,
+    "state_code": "C1",
+    "owner": "AUTRY POND HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1375653",
+    "address": "MALOU MILL",
+    "acres": 11.1315,
+    "state_code": "C1",
+    "owner": "SOUTHSTAR AT VERANO DEVELOPER LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1378241",
+    "address": "TURNESA TERRACE",
+    "acres": 16.0455,
+    "state_code": "C1",
+    "owner": "LENNAR HOMES OF TEXAS LAND AND CONSTRUCTION LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1378339",
+    "address": "COLARES WAY",
+    "acres": 10.46,
+    "state_code": "C1",
+    "owner": "KINDER WEST/SUNDAY CREEK HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1379731",
+    "address": "CANTON PASS",
+    "acres": 25.897,
+    "state_code": "C1",
+    "owner": "ESTANCIA RANCH HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1381535",
+    "address": "13066  CYGNUS",
+    "acres": 10.9388,
+    "state_code": "C1",
+    "owner": "MERIDIAN AT BLUE SKIES HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1382575",
+    "address": "NAPA FERRY",
+    "acres": 46.8449,
+    "state_code": "C1",
+    "owner": "HIGHTOP RIDGE HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1382731",
+    "address": "CRESTWAY RD",
+    "acres": 14.7659,
+    "state_code": "C1",
+    "owner": "HIGHTOP RIDGE HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1384271",
+    "address": "PEARL MEADOW",
+    "acres": 18.2955,
+    "state_code": "C1",
+    "owner": "ESCONDIDO HEIGHTS HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1385584",
+    "address": "SAGE COMMON",
+    "acres": 14.9075,
+    "state_code": "C1",
+    "owner": "181 AND 1604 LAND DEVELOPMENT PARTNERS LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1386496",
+    "address": "BELINDA WAY",
+    "acres": 22.71,
+    "state_code": "C1",
+    "owner": "SA COLGIN LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1389389",
+    "address": "NOVACULITE ROAD",
+    "acres": 29.784,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1394901",
+    "address": "S  WW WHITE RD",
+    "acres": 10.33,
+    "state_code": "E1",
+    "owner": "CASTLEROCK COMMUNITIES LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1394902",
+    "address": "S  WW WHITE RD",
+    "acres": 12.09,
+    "state_code": "E1",
+    "owner": "SA RED HAWK LANDING LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1396097",
+    "address": "BOERNE STAGE AIRFIELD",
+    "acres": 42.4884,
+    "state_code": "E1",
+    "owner": "BOERNE STAGE AIRFIELD LLC",
+    "appraised_land_value": 6480,
+    "reason": "appraised land value of $153 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1396906",
+    "address": "GOLD CANYON RD",
+    "acres": 53.869,
+    "state_code": "B2",
+    "owner": "ALAMAR SA LLC",
+    "appraised_land_value": 10890,
+    "reason": "appraised land value of $202 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1397498",
+    "address": "SAND DIVER WAY",
+    "acres": 12.6236,
+    "state_code": "C1",
+    "owner": "FOX FALLS HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1397920",
+    "address": "SAGEBROOKE RUN",
+    "acres": 11.0081,
+    "state_code": "C1",
+    "owner": "SAGEBROOKE HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1399196",
+    "address": "WHITE LDG",
+    "acres": 10.1,
+    "state_code": "C1",
+    "owner": "HDC DAVIS RANCH II LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1400449",
+    "address": "DEL LAGO PARKWAY",
+    "acres": 10.83,
+    "state_code": "C1",
+    "owner": "LENNAR HOMES OF TEXAS LAND & CONSTRUCTION LTD",
+    "appraised_land_value": 7080,
+    "reason": "appraised land value of $654 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1401612",
+    "address": "ASTRAL PLACE",
+    "acres": 32.7829,
+    "state_code": "C1",
+    "owner": "CRESCENT HILLS COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1402750",
+    "address": "GOODENOUGH LN",
+    "acres": 11.5473,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 6290,
+    "reason": "appraised land value of $545 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1403574",
+    "address": "BLUEBELL RIDGE",
+    "acres": 10.12,
+    "state_code": "C1",
+    "owner": "LENNAR HOMES OF TEXAS LAND AND CONSTRUCTION LTD",
+    "appraised_land_value": 4410,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1406377",
+    "address": "PEARL FLATS",
+    "acres": 22.1943,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1407818",
+    "address": "VISTABLUE LANE",
+    "acres": 23.158,
+    "state_code": "C1",
+    "owner": "LADERA I LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1408169",
+    "address": "TALLEY RD",
+    "acres": 12.013,
+    "state_code": "E1",
+    "owner": "VERANDA RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 1000,
+    "reason": "appraised land value of $83 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1409538",
+    "address": "STILLWATER PASS",
+    "acres": 45.2724,
+    "state_code": "C1",
+    "owner": "STILLWATER RANCH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1409913",
+    "address": "RAINWATER TRL",
+    "acres": 37.5795,
+    "state_code": "C1",
+    "owner": "THOMAS POND HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1411207",
+    "address": "CHAMPION CREEK",
+    "acres": 15.073,
+    "state_code": "C1",
+    "owner": "CINCO LAKES HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1412275",
+    "address": "RUCKER POND TRL",
+    "acres": 49.86,
+    "state_code": "C1",
+    "owner": "CINCO LAKES HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1412320",
+    "address": "SNOWY RIVER",
+    "acres": 12.95,
+    "state_code": "C1",
+    "owner": "DAVIS RANCH HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1412664",
+    "address": "WATERFOWL",
+    "acres": 23.772,
+    "state_code": "C1",
+    "owner": "ARROYO CAP II-2 LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1412751",
+    "address": "WATERFOWL",
+    "acres": 16.0466,
+    "state_code": "C1",
+    "owner": "ARROYO CAP II-2 LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1413027",
+    "address": "STILLHOUSE HOWL",
+    "acres": 20.1964,
+    "state_code": "C1",
+    "owner": "PULTE HOMES OF TEXAS LLP &",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1413235",
+    "address": "MILLICAN DRIVE",
+    "acres": 17.334,
+    "state_code": "C1",
+    "owner": "SAVANNAH PLACE HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1414429",
+    "address": "ALOE VERA TRCE",
+    "acres": 15.648,
+    "state_code": "C1",
+    "owner": "M/I HOMES OF SAN ANTONIO LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1414912",
+    "address": "W US HIGHWAY 90",
+    "acres": 17.684,
+    "state_code": "E1",
+    "owner": "378 STONEHILL INVESTMENTS LTD",
+    "appraised_land_value": 620,
+    "reason": "appraised land value of $35 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1415129",
+    "address": "FOSTER RD",
+    "acres": 10.226,
+    "state_code": "C1",
+    "owner": "WILLOW POINT FOSTER ROAD HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 6680,
+    "reason": "appraised land value of $653 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1415416",
+    "address": "KATHLEEN ST",
+    "acres": 20.865,
+    "state_code": "C1",
+    "owner": "SPRING GROVE COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1417330",
+    "address": "CALDWELL RNCH",
+    "acres": 22.89,
+    "state_code": "C1",
+    "owner": "ARCADIA RIDGE HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1417613",
+    "address": "LEMON CREEK",
+    "acres": 15.39,
+    "state_code": "E1",
+    "owner": "VEP LEMON CREEK LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1417734",
+    "address": "ONYX PL",
+    "acres": 32.754,
+    "state_code": "C1",
+    "owner": "STONE GARDEN COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1421607",
+    "address": "CLANTON PASS",
+    "acres": 19.621,
+    "state_code": "C1",
+    "owner": "ESTANCIA RANCH HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1421883",
+    "address": "FISHING TRAIL",
+    "acres": 12.41,
+    "state_code": "C1",
+    "owner": "LENNAR HOMES OF TEXAS LAND & CONSTRUCTION LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1422194",
+    "address": "KALLISON BND",
+    "acres": 11.48,
+    "state_code": "C1",
+    "owner": "PHSA NW 315 LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1422941",
+    "address": "CANYON PATH",
+    "acres": 13.792,
+    "state_code": "C1",
+    "owner": "PHSA-HIDDEN CANYON 29 LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1423092",
+    "address": "CAMP BULLIS RD",
+    "acres": 12.814,
+    "state_code": "C1",
+    "owner": "CRESTA BELLA HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1424002",
+    "address": "AZZURRO STONE",
+    "acres": 12.688,
+    "state_code": "C1",
+    "owner": "STONE GARDEN COMMUNITY ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1425362",
+    "address": "ROCK MILL DAM",
+    "acres": 25.245,
+    "state_code": "C1",
+    "owner": "BROOKMILL RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1425949",
+    "address": "NIGHTSTAR DRIVE",
+    "acres": 10.45,
+    "state_code": "C1",
+    "owner": "MEDINA CROSSING RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1427710",
+    "address": "IGNACIO COVE",
+    "acres": 29.135,
+    "state_code": "C1",
+    "owner": "EDDEB INVESTMENTS LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1428921",
+    "address": "TARADEAU",
+    "acres": 37.429,
+    "state_code": "C1",
+    "owner": "CB FOSSIL SPRINGS LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1429415",
+    "address": "SE LOOP 410",
+    "acres": 12.51,
+    "state_code": "C1",
+    "owner": "CENTURY LAND HOLDINGS II LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1430207",
+    "address": "CHILDRESS FALLS",
+    "acres": 16.008,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1431279",
+    "address": "PACIFIC MONARCH",
+    "acres": 13.987,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1431414",
+    "address": "HAMRICK CIR",
+    "acres": 35.245,
+    "state_code": "C1",
+    "owner": "CINCO LAKES HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1439584",
+    "address": "BOERNE STAGE RD",
+    "acres": 12.944,
+    "state_code": "C1",
+    "owner": "TOLL SOUTHWEST LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1439677",
+    "address": "ROCKYTOP",
+    "acres": 27.913,
+    "state_code": "C1",
+    "owner": "TOLL SOUTHWEST LLC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1440904",
+    "address": "ELM FORREST",
+    "acres": 39.145,
+    "state_code": "E1",
+    "owner": "VERANDA RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 1000,
+    "reason": "appraised land value of $26 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1440927",
+    "address": "GALM RD",
+    "acres": 15.38,
+    "state_code": "C1",
+    "owner": "PULTE HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "1440964",
+    "address": "CONFLUENCE CRK",
+    "acres": 59.384,
+    "state_code": "E1",
+    "owner": "VERANDA RESIDENTIAL COMMUNITY INC",
+    "appraised_land_value": 1000,
+    "reason": "appraised land value of $17 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "189210",
+    "address": "S STATE HWY 16",
+    "acres": 15,
+    "state_code": "J2",
+    "owner": "ENTERPRISE TEXAS PIPELINE LP",
+    "appraised_land_value": 6530,
+    "reason": "appraised land value of $435 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "192358",
+    "address": "6305  CAGNON RD",
+    "acres": 18.0928,
+    "state_code": "C1",
+    "owner": "CAMPOS DANNY",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "192625",
+    "address": "PUE RD",
+    "acres": 38.23,
+    "state_code": "A1",
+    "owner": "SUNSET VISTA ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "201167",
+    "address": "LAMBDA DR",
+    "acres": 19.01,
+    "state_code": "E1",
+    "owner": "TEXAS RESEARCH & TECHNOLOGY FOUNDATION",
+    "appraised_land_value": 16020,
+    "reason": "appraised land value of $843 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "205754",
+    "address": "W LOOP 1604",
+    "acres": 12.569,
+    "state_code": "E1",
+    "owner": "LOREDO RITA HERRERA",
+    "appraised_land_value": 5480,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "236605",
+    "address": "WIND GATE PKWY",
+    "acres": 15.55,
+    "state_code": "C1",
+    "owner": "WIND GATE RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "237061",
+    "address": "MARENGO LN",
+    "acres": 21.062,
+    "state_code": "C1",
+    "owner": "WILDHORSE HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "237297",
+    "address": "WILDHORSE PKWY",
+    "acres": 10.261,
+    "state_code": "C1",
+    "owner": "CONTINENTAL HOMES OF TEXAS LP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "241014",
+    "address": "RANCH PKWY",
+    "acres": 75,
+    "state_code": "E1",
+    "owner": "LA CANTERA DEVELOPMENT CO",
+    "appraised_land_value": 40780,
+    "reason": "appraised land value of $544 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "246546",
+    "address": "SANTA FE WALK",
+    "acres": 14.5713,
+    "state_code": "C1",
+    "owner": "SONOMA RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "246608",
+    "address": "109  RUIDOSA DOWNS",
+    "acres": 12.2839,
+    "state_code": "C1",
+    "owner": "SONOMA RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "248631",
+    "address": "SHADOW CANYON DR",
+    "acres": 14.389,
+    "state_code": "C1",
+    "owner": "SHADOW CREEK CANYON HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "253514",
+    "address": "8002  ROCKING HORSE LN",
+    "acres": 13.006,
+    "state_code": "C1",
+    "owner": "FAIR OAKS RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "254341",
+    "address": "WOODLAND GREEN",
+    "acres": 17.473,
+    "state_code": "C1",
+    "owner": "VILLAGE GREEN HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "254341",
+    "address": "WOODLAND GREEN",
+    "acres": 17.473,
+    "state_code": "C1",
+    "owner": "VILLAGE GREEN HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "254341",
+    "address": "WOODLAND GREEN",
+    "acres": 17.473,
+    "state_code": "C1",
+    "owner": "VILLAGE GREEN HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "260144",
+    "address": "LOCKHILL SELMA RD",
+    "acres": 15.4692,
+    "state_code": "C1",
+    "owner": "BENTLEY MANOR HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "260144",
+    "address": "LOCKHILL SELMA RD",
+    "acres": 15.4692,
+    "state_code": "C1",
+    "owner": "BENTLEY MANOR HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "262086",
+    "address": "999  WILD BLOOM",
+    "acres": 17.5448,
+    "state_code": "E1",
+    "owner": "WOODLAND HILLS NORTH HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "263686",
+    "address": "CLEMENTSON DR",
+    "acres": 10.7791,
+    "state_code": "C1",
+    "owner": "CLEMENTSON RANCH HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "263714",
+    "address": "26631  TIMBERLINE DR",
+    "acres": 29.638,
+    "state_code": "A1",
+    "owner": "TIMBERWOOD PARK OWNERS ASSC INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "267061",
+    "address": "ESTATE DR",
+    "acres": 11.0347,
+    "state_code": "C1",
+    "owner": "ESTATES AT STONEGATE",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "268420",
+    "address": "VERDE MOUNTAIN TRL",
+    "acres": 13.1778,
+    "state_code": "C1",
+    "owner": "VERDE MOUNTAIN ESTATES",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "268612",
+    "address": "7110  FM 1863",
+    "acres": 59.705,
+    "state_code": "F1",
+    "owner": "CEDRUS INC",
+    "appraised_land_value": 58900,
+    "reason": "appraised land value of $987 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "268757",
+    "address": "24220  BULVERDE RD",
+    "acres": 68.14,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $1 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "268763",
+    "address": "4310  JENNIFER NICOLE",
+    "acres": 13.32,
+    "state_code": "C1",
+    "owner": "CLEAR SPRINGS PARK PROPERTY",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "269317",
+    "address": "24220  BULVERDE RD",
+    "acres": 71.13,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $1 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "269329",
+    "address": "24220  BULVERDE RD",
+    "acres": 63.73,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "269362",
+    "address": "CIBOLO VIS",
+    "acres": 55.658,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "269364",
+    "address": "5047  EVANS RD",
+    "acres": 56.5456,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "269396",
+    "address": "EVANS RD",
+    "acres": 26.6993,
+    "state_code": "E1",
+    "owner": "CIBOLO CANYONS RESORT COMMUNITY INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "270812",
+    "address": "OAKLAND BEND",
+    "acres": 11.01,
+    "state_code": "C1",
+    "owner": "OAKLANDS HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "270819",
+    "address": "FAIRWAY BRIDGE",
+    "acres": 12.5278,
+    "state_code": "C1",
+    "owner": "281 EAST HOMEOWNERS ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "271058",
+    "address": "PALMER VW",
+    "acres": 39.233,
+    "state_code": "C1",
+    "owner": "SUMMERGLEN PROPERTY HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "271092",
+    "address": "WINDING VW",
+    "acres": 12.0321,
+    "state_code": "C1",
+    "owner": "SUMMERGLEN PROPERTY HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "271582",
+    "address": "MOUNTAIN LODGE",
+    "acres": 24.2242,
+    "state_code": "C1",
+    "owner": "281 EAST HOMEOWNERS ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "271706",
+    "address": "ALPINE LODGE",
+    "acres": 10.0245,
+    "state_code": "C1",
+    "owner": "281 EAST HOMEOWNERS ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "271883",
+    "address": "CANYON GOLF RD",
+    "acres": 10.66,
+    "state_code": "E1",
+    "owner": "CF CANYON SPRINGS ARCIS LLC",
+    "appraised_land_value": 4640,
+    "reason": "appraised land value of $435 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "295485",
+    "address": "AGORA PKWY",
+    "acres": 14.82,
+    "state_code": "F1",
+    "owner": "S A DEVELOPMENT COMPANY LP",
+    "appraised_land_value": 1000,
+    "reason": "appraised land value of $67 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "307338",
+    "address": "ROARING SPG",
+    "acres": 24.1718,
+    "state_code": "C1",
+    "owner": "SPRINGWOOD HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "314120",
+    "address": "7216  GLEN MIST",
+    "acres": 28.8,
+    "state_code": "A1",
+    "owner": "NEMESIO LAZARO",
+    "appraised_land_value": 27600,
+    "reason": "appraised land value of $958 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "317000",
+    "address": "5765  HOMESTEAD DR",
+    "acres": 14.42,
+    "state_code": "C1",
+    "owner": "MUSTANG VALLEY OWNERS ASSC INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "317073",
+    "address": "7950  FM 78",
+    "acres": 11.697,
+    "state_code": "E1",
+    "owner": "BRENTFIELD HOA INC",
+    "appraised_land_value": 30,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "323377",
+    "address": "BINZ ENGLEMAN RD",
+    "acres": 18.02,
+    "state_code": "C1",
+    "owner": "HORIZON POINTE HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "323389",
+    "address": "7625  INTERSTATE 10 E",
+    "acres": 29.884,
+    "state_code": "E1",
+    "owner": "MARKWARDT EDGAR K",
+    "appraised_land_value": 1000,
+    "reason": "appraised land value of $33 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "327903",
+    "address": "ST HEDWIG RD",
+    "acres": 10.79,
+    "state_code": "E1",
+    "owner": "DURST MAUREEN",
+    "appraised_land_value": 3220,
+    "reason": "appraised land value of $298 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "489631",
+    "address": "4702  WEST AVE",
+    "acres": 10.652,
+    "state_code": "C1",
+    "owner": "GRUNWALD PAMELA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "498200",
+    "address": "JONES MALTSBERGER RD",
+    "acres": 13.577,
+    "state_code": "C1",
+    "owner": "EASTGROUP PROPERTIES LP",
+    "appraised_land_value": 5910,
+    "reason": "appraised land value of $435 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "514434",
+    "address": "5611  FM 1346",
+    "acres": 20.115,
+    "state_code": "C1",
+    "owner": "MEADOWLAWN MEMORIAL PARK INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "532152",
+    "address": "APPLE GRN",
+    "acres": 11.146,
+    "state_code": "E1",
+    "owner": "AYALA JOSE MANUEL GONZALEZ & SALAZAR ANA",
+    "appraised_land_value": 4860,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "553852",
+    "address": "9426  SOMERSET RD",
+    "acres": 75,
+    "state_code": "E1",
+    "owner": "JMRS PARTNERS LTD",
+    "appraised_land_value": 45000,
+    "reason": "appraised land value of $600 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "553858",
+    "address": "9782  SOMERSET RD",
+    "acres": 99.827,
+    "state_code": "E1",
+    "owner": "JMRS PARTNERS LTD",
+    "appraised_land_value": 75000,
+    "reason": "appraised land value of $751 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "553864",
+    "address": "9426  SOMERSET RD",
+    "acres": 46.59,
+    "state_code": "F1",
+    "owner": "JMRS PARTNERS LTD",
+    "appraised_land_value": 23000,
+    "reason": "appraised land value of $494 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "553867",
+    "address": "9782  SOMERSET RD",
+    "acres": 15,
+    "state_code": "E1",
+    "owner": "JMRS PARTNERS LTD",
+    "appraised_land_value": 8000,
+    "reason": "appraised land value of $533 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "553868",
+    "address": "9782  SOMERSET RD",
+    "acres": 15,
+    "state_code": "E1",
+    "owner": "JMRS PARTNERS LTD",
+    "appraised_land_value": 8000,
+    "reason": "appraised land value of $533 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "553872",
+    "address": "SW LOOP 410",
+    "acres": 58.133,
+    "state_code": "E1",
+    "owner": "JMRS PARTNERS LTD",
+    "appraised_land_value": 47000,
+    "reason": "appraised land value of $808 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "557810",
+    "address": "5103  LINDA COLONIA",
+    "acres": 14.9563,
+    "state_code": "C1",
+    "owner": "EL DORADO HOMES ASSOC INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "558280",
+    "address": "ELM CREEK RD",
+    "acres": 56.4164,
+    "state_code": "E1",
+    "owner": "ELM CREEK OWNER ASSOC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "558334",
+    "address": "11739  WURZBACH RD",
+    "acres": 17.655,
+    "state_code": "C1",
+    "owner": "ELM CREEK OWNERS ASSOC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "558375",
+    "address": "LOCKHILL SELMA RD",
+    "acres": 68.502,
+    "state_code": "E1",
+    "owner": "ELM CREEK OWNER ASSOC",
+    "appraised_land_value": 200,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "559330",
+    "address": "COTTON TAIL LN",
+    "acres": 70.57,
+    "state_code": "E1",
+    "owner": "LA CANTERA DEVELOPMENT CO",
+    "appraised_land_value": 13750,
+    "reason": "appraised land value of $195 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "561755",
+    "address": "5912 S HAUSMAN RD",
+    "acres": 17.26,
+    "state_code": "E1",
+    "owner": "HAUSMAN ROAD LLC",
+    "appraised_land_value": 17250,
+    "reason": "appraised land value of $999 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "562489",
+    "address": "14867 W LOOP 1604",
+    "acres": 20.913,
+    "state_code": "E1",
+    "owner": "BAVARIAN FOREST HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "562733",
+    "address": "5727  FARINON DR",
+    "acres": 13.685,
+    "state_code": "C1",
+    "owner": "GOLD TOOTH DEVELOPMENT LLC",
+    "appraised_land_value": 5960,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "565776",
+    "address": "CLIFFSIDE DR",
+    "acres": 22.1342,
+    "state_code": "E1",
+    "owner": "INWOOD PUD DEVELOPMENT",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "585859",
+    "address": "18600  CREEKSIDE PASS",
+    "acres": 17.228,
+    "state_code": "E1",
+    "owner": "REDLAND RIDGE ASSOC INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "585871",
+    "address": "18567  REDLAND RD",
+    "acres": 17.5143,
+    "state_code": "C1",
+    "owner": "REDLAND HEIGHTS OWNERS ASSOC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "585962",
+    "address": "E LOOP 1604",
+    "acres": 68.056,
+    "state_code": "E1",
+    "owner": "ALEPPO INVESTMENTS INC",
+    "appraised_land_value": 1000,
+    "reason": "appraised land value of $15 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "586318",
+    "address": "16240  SAN PEDRO AVE",
+    "acres": 12.947,
+    "state_code": "C1",
+    "owner": "SAN PEDRO NORTH MOBILE HOME PARK",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "591665",
+    "address": "12755  SCARSDALE ST",
+    "acres": 17.85,
+    "state_code": "C1",
+    "owner": "LAKE ASSOCIATION OF NORTHERN HILLS INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "605975",
+    "address": "AUTUMN PARK",
+    "acres": 15.984,
+    "state_code": "A1",
+    "owner": "PARKWOOD MAINTENANCE ASSOC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "612496",
+    "address": "W LOOP 1604",
+    "acres": 20.3956,
+    "state_code": "D1",
+    "owner": "SALADO CREEK CONSERVATION ASSOCIATION INC",
+    "appraised_land_value": 4070,
+    "reason": "appraised land value of $200 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "612565",
+    "address": "BLANCO RD",
+    "acres": 12.46,
+    "state_code": "C1",
+    "owner": "VINEYARD HOMEOWNERS ASSOC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "612577",
+    "address": "HUEBNER RD",
+    "acres": 26.61,
+    "state_code": "C1",
+    "owner": "VINEYARD HOMEOWNERS ASSOC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "612578",
+    "address": "HUEBNER RD",
+    "acres": 10.01,
+    "state_code": "C1",
+    "owner": "VINEYARD HOMEOWNERS ASSOC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "612579",
+    "address": "18999  HUEBNER RD",
+    "acres": 10.729,
+    "state_code": "C1",
+    "owner": "VINEYARD HOMEOWNERS ASSOC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "612682",
+    "address": "GREYSTONE RDG",
+    "acres": 13.055,
+    "state_code": "C1",
+    "owner": "GREYSTONE COUNTRY ESTATES PROPERTY OWNERS ASSOC INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "614157",
+    "address": "2503  PLUMBROOK DR",
+    "acres": 10.666,
+    "state_code": "C1",
+    "owner": "SALADO CANYON HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "620766",
+    "address": "8303  EVANS RD",
+    "acres": 11.3,
+    "state_code": "E1",
+    "owner": "BLOSSOM GROVE PROPERTIES LLC",
+    "appraised_land_value": 2100,
+    "reason": "appraised land value of $186 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "640596",
+    "address": "WOODWATERS WAY",
+    "acres": 10.1676,
+    "state_code": "C1",
+    "owner": "WOODRIDGE VILLAGE COMMUNITY",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "640596",
+    "address": "WOODWATERS WAY",
+    "acres": 10.1676,
+    "state_code": "C1",
+    "owner": "WOODRIDGE VILLAGE COMMUNITY",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "644745",
+    "address": "19278  FALL PLACE DR",
+    "acres": 21.322,
+    "state_code": "C1",
+    "owner": "FALL CREEK UT-1 HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "645454",
+    "address": "BULVERDE RD",
+    "acres": 31.967,
+    "state_code": "A1",
+    "owner": "GREEN SPRING VALLEY",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "648929",
+    "address": "8564  LAKE PATH DR",
+    "acres": 10.299,
+    "state_code": "C1",
+    "owner": "TOWNE LAKE GARDEN ASSOC INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "662812",
+    "address": "FOLONARI",
+    "acres": 10.44,
+    "state_code": "C1",
+    "owner": "PINNACLE HOMEOWNERS ASSN INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "673587",
+    "address": "BULVERDE RD",
+    "acres": 27.74,
+    "state_code": "C1",
+    "owner": "WOODVIEW AT BULVERDE CREEK",
+    "appraised_land_value": 200,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "680293",
+    "address": "CREEKSIDE BND",
+    "acres": 12.611,
+    "state_code": "C1",
+    "owner": "REDLAND RIDGE SAN ANTONIO HOMEOWNERS ASSOCIATION INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "685233",
+    "address": "CHURCHILL AVE",
+    "acres": 43.2725,
+    "state_code": "E1",
+    "owner": "MARKWARDT EDGAR K",
+    "appraised_land_value": 1500,
+    "reason": "appraised land value of $35 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "687217",
+    "address": "8189  NELSON RD",
+    "acres": 14.871,
+    "state_code": "E1",
+    "owner": "ALAMO COMMERCIAL PROPERTIES LTD",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "691691",
+    "address": "BOXTREE LN",
+    "acres": 28.8621,
+    "state_code": "C1",
+    "owner": "EMERALD FOREST HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "698115",
+    "address": "CAMP BULLIS RD",
+    "acres": 27.6957,
+    "state_code": "E1",
+    "owner": "CROWNRIDGE OF TEXAS HOA INC",
+    "appraised_land_value": 200,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "722293",
+    "address": "19  SANCTUARY DR",
+    "acres": 49.5228,
+    "state_code": "A1",
+    "owner": "INWOOD PLANNED UNIT",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $2 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "723125",
+    "address": "GRAYOAK FOREST",
+    "acres": 10.7905,
+    "state_code": "C1",
+    "owner": "OAKWOOD OWNERS ASSOC INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "724042",
+    "address": "2  RUSLIN",
+    "acres": 17.9432,
+    "state_code": "C1",
+    "owner": "HOLLOW AT INWOOD HOMEOWNERS",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "726289",
+    "address": "873  OLD WELL DR",
+    "acres": 12.5234,
+    "state_code": "A1",
+    "owner": "REDLAND HEIGHTS OWNERS ASSOC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "736799",
+    "address": "CALICO LANDING",
+    "acres": 17.49,
+    "state_code": "C1",
+    "owner": "PANTHER CREEK @ STONE OAK HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $6 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "737663",
+    "address": "CHAMPIONS WAY",
+    "acres": 26,
+    "state_code": "E1",
+    "owner": "CHAMPIONS RIDGE HOA INC",
+    "appraised_land_value": 130,
+    "reason": "appraised land value of $5 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "737806",
+    "address": "CHAMPIONS WAY",
+    "acres": 17.3934,
+    "state_code": "C1",
+    "owner": "CHAMPIONS RIDGE HOA",
+    "appraised_land_value": 130,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "738173",
+    "address": "SABLE CANYON",
+    "acres": 13.1665,
+    "state_code": "C1",
+    "owner": "MG HOMEOWNERS ASSCO INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "738603",
+    "address": "31  CHAMPIONS RUN",
+    "acres": 14.287,
+    "state_code": "C1",
+    "owner": "CHAMPIONS ESTATES HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "749826",
+    "address": "GREENBELT DR",
+    "acres": 10.8523,
+    "state_code": "C1",
+    "owner": "DOMINION HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "750558",
+    "address": "20550  BULVERDE RD",
+    "acres": 13.7022,
+    "state_code": "C1",
+    "owner": "CST REAL ESTATE HOLDINGS LLC",
+    "appraised_land_value": 5970,
+    "reason": "appraised land value of $436 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "750574",
+    "address": "GRASSMARKET",
+    "acres": 11.3764,
+    "state_code": "C1",
+    "owner": "ROSEHEART HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "751587",
+    "address": "EMERALD FOREST DR",
+    "acres": 33.036,
+    "state_code": "E1",
+    "owner": "EMERALD FOREST HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $3 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "986279",
+    "address": "20567  STATE HIGHWAY 16 S",
+    "acres": 11.97,
+    "state_code": "C1",
+    "owner": "FIRST MEMORIAL PARK INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "986540",
+    "address": "WILD PERSIMMON",
+    "acres": 11.2942,
+    "state_code": "C1",
+    "owner": "AMHURST SUBD HOA INC",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "988259",
+    "address": "N FM 1560",
+    "acres": 13.046,
+    "state_code": "E1",
+    "owner": "PEDROTTI LTD PRTNRSHP",
+    "appraised_land_value": 1000,
+    "reason": "appraised land value of $77 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "989542",
+    "address": "TRINITY PASS",
+    "acres": 11.2395,
+    "state_code": "C1",
+    "owner": "TRINITY OAKS HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $9 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "992859",
+    "address": "GREY FOX TERRACE",
+    "acres": 10.04,
+    "state_code": "C1",
+    "owner": "RED ROBIN HOMEOWNERS ASSN",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $10 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "994170",
+    "address": "HUNT LN",
+    "acres": 34.83,
+    "state_code": "E1",
+    "owner": "LEGACY TRAILS-CELL FIVE HOA",
+    "appraised_land_value": 1000,
+    "reason": "appraised land value of $29 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "994374",
+    "address": "N LOOP 1604",
+    "acres": 13.307,
+    "state_code": "C1",
+    "owner": "ROSEHEART HOMEOWNERS ASSN",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $8 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "996509",
+    "address": "24549 W IH 10",
+    "acres": 27.04,
+    "state_code": "E1",
+    "owner": "1-10/BOERNE STAGE ROAD LIMITED PARTNERSHIP",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $4 per acre is below the $1000 plausibility floor for this county"
+  },
+  {
+    "parcel_id": "999695",
+    "address": "BENTLEY MANOR",
+    "acres": 15.36,
+    "state_code": "C1",
+    "owner": "BENTLEY MANOR HOA",
+    "appraised_land_value": 100,
+    "reason": "appraised land value of $7 per acre is below the $1000 plausibility floor for this county"
+  }
+]

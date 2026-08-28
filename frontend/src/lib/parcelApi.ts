@@ -9,6 +9,8 @@ export interface ParcelSummary {
   address: string
   acres: number | null
   zoning: string
+  /** A homestead exemption is recorded, so someone lives on the land. */
+  occupied: boolean
   flood_buildable_pct: number | null
   dist_to_tx_line_m: number | null
   dist_to_ixp_km: number | null
@@ -83,6 +85,27 @@ export function fetchParcels(q: ParcelQuery): Promise<ApiResult<ParcelListRespon
 
 export function fetchParcel(id: string, county = 'bexar'): Promise<ApiResult<unknown>> {
   return get<unknown>(`/parcels/${encodeURIComponent(id)}?county=${encodeURIComponent(county)}`)
+}
+
+export interface UnpriceableParcel {
+  parcel_id: string
+  address: string
+  acres: number | null
+  state_code: string
+  owner: string
+  appraised_land_value: number | null
+  reason: string
+}
+
+export interface UnpriceableResponse {
+  county: string
+  total: number
+  parcels: UnpriceableParcel[]
+}
+
+/** Parcels left out of the ranking because their land could not be priced. */
+export function fetchUnpriceable(county = 'bexar'): Promise<ApiResult<UnpriceableResponse>> {
+  return get<UnpriceableResponse>(`/parcels/unpriceable?county=${encodeURIComponent(county)}`)
 }
 
 // ── Criteria parsing ──────────────────────────────────────────────────────────

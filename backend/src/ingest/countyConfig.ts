@@ -24,6 +24,44 @@ export interface ParcelSourceConfig {
   landValField:     string
   allowedStateCodes: Set<string>
   excludedStateCodes: Set<string>
+
+  // ── Ownership and exemption screening ───────────────────────────────────────
+  //
+  // Land-use codes alone do not say whether a parcel can be bought. A city park
+  // is coded the same as any other open land; what marks it is a tax exemption.
+  // These fields let the pipeline tell "not for sale" from "someone lives on it"
+  // from "genuinely available".
+  exemptField:      string
+  ownerField:       string
+
+  /** Exemption code prefixes meaning the owner is an institution: not for sale. */
+  institutionalExemptPrefixes: string[]
+
+  /** Exemption code prefixes meaning a private residence sits on the land. */
+  occupancyExemptPrefixes: string[]
+
+  /** Owner-name fragments that indicate public ownership. Secondary net. */
+  governmentOwnerPatterns: string[]
+
+  /**
+   * Below this modeled land price the parcel is treated as unpriceable rather
+   * than cheap. An appraisal artifact of $0 an acre would otherwise rank first,
+   * because a cost the data never captured reads as a cost that is not there.
+   */
+  minLandValuePerAcre: number
+}
+
+/**
+ * How the dominant utility's name maps to a jurisdiction label.
+ *
+ * This lived in pipeline.ts as a hardcoded `utility.includes('CPS')`, which is
+ * exactly the kind of county literal the pipeline is supposed to be free of.
+ */
+export interface PrimaryUtilityConfig {
+  /** Fragment matched against the utility name from the territory layer. */
+  match: string
+  /** Label used for parcels inside that territory. */
+  jurisdictionLabel: string
 }
 
 export interface FloodSourceConfig {
@@ -151,7 +189,7 @@ export interface CountyConfig {
   name:      string    // e.g. 'Bexar County, Texas'
   state:     string    // two-letter code
   fips:      string    // 5-digit FIPS
-  outputKey: string    // filename stem (data/parcels/<outputKey>.geojson)
+  outputKey: string    // filename stem for the generated output files
 
   // Spatial extent
   bbox: BboxConfig
@@ -176,6 +214,7 @@ export interface CountyConfig {
   territorySource:  TerritorySourceConfig | null
   territoryGap?:    GapRecord
   defaultUtility:   string
+  primaryUtility:   PrimaryUtilityConfig
 
   // Transmission lines
   transmissionSource: TransmissionSourceConfig
