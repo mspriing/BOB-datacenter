@@ -3,6 +3,7 @@ import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react'
 import { Card, Explain, Chip, StatTile, Counter, Rule } from '../components/Primitives'
 import { fetchParcel } from '../lib/parcelApi'
 import { usd } from '../lib/format'
+import type { EstimateProject, FinanceOutput } from '../lib/api'
 
 /** Shape as the API actually returns it — keys are `driver` and `region_key`. */
 interface ProvenanceRow {
@@ -32,7 +33,7 @@ interface ParcelEstimate {
     sitework_usd: number
     land_cost_usd: number
     total_usd: number
-  }
+  } | null
   capex: {
     land_usd: number
     construction_usd: number
@@ -40,13 +41,9 @@ interface ParcelEstimate {
     cooling_usd: number
     it_fitout_usd: number
     total_usd: number
-  }
-  finance: {
-    capex_per_kw: number
-    lifetime_cost_per_kw: number
-    npv_usd: number
-    payback_years: number
-  }
+  } | null
+  finance: FinanceOutput | null
+  unevaluable?: { missing_drivers: string[] } | null
   provenance: ProvenanceRow[]
   gaps: GapRow[]
   parcel_note?: string
@@ -72,7 +69,11 @@ function Row({ label, value, hint, muted = false }: {
   )
 }
 
-export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: () => void }) {
+export function ParcelDetail({ parcelId, project, onBack }: {
+  parcelId: string
+  project: EstimateProject
+  onBack: () => void
+}) {
   const [est, setEst] = useState<ParcelEstimate | null>(null)
   const [error, setError] = useState<string | null>(null)
   /** Set when this estimate came from the recording rather than the service. */
@@ -81,13 +82,19 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
   useEffect(() => {
     let live = true
     setEst(null); setError(null); setSnapshotDate(null)
-    fetchParcel(parcelId).then(r => {
+    fetchParcel(parcelId, {
+      capacity_kw: project.capacity_kw,
+      design_pue: project.design_pue,
+      design_wue: project.design_wue,
+      lifetime_years: project.lifetime_years,
+      discount_rate: project.discount_rate,
+    }).then(r => {
       if (!live) return
       if (r.error || !r.data) setError(r.error ?? 'No response')
       else { setEst(r.data as ParcelEstimate); setSnapshotDate(r.offline ? r.capturedAt ?? 'an earlier run' : null) }
     })
     return () => { live = false }
-  }, [parcelId])
+  }, [parcelId, project])
 
   if (error) {
     return (
@@ -113,6 +120,35 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
     )
   }
 
+  if (!est.finance || !est.capex || !est.parcel_capex) {
+    const missing = est.unevaluable?.missing_drivers
+      ?? est.gaps.map((gap) => gap.driver)
+    return (
+      <section className="pt-6 sm:pt-10">
+        <button onClick={onBack} className="link-inline mb-4 text-[14px]">
+          <ArrowLeft size={14} strokeWidth={2.4} aria-hidden /> Back to the search
+        </button>
+        <div className="mb-7 max-w-[68ch]">
+          <p className="label-xs mb-3">Parcel {est.parcel_id} · {est.county}</p>
+          <h1 className="text-[clamp(1.5rem,1.2rem+1.4vw,2.25rem)] font-semibold text-ink">
+            {est.address}
+          </h1>
+        </div>
+        <Card title="This parcel cannot be priced yet">
+          <div className="flex items-start gap-3 p-5">
+            <AlertTriangle size={17} className="mt-0.5 shrink-0 text-gold" aria-hidden />
+            <div className="text-[14px] leading-[1.6] text-ink2">
+              <p>The backend omitted financial totals rather than treating missing costs as zero.</p>
+              {missing.length > 0 && (
+                <p className="mt-2">Missing drivers: {missing.join(', ')}.</p>
+              )}
+            </div>
+          </div>
+        </Card>
+      </section>
+    )
+  }
+
   const pc = est.parcel_capex
   const cx = est.capex
 
@@ -121,8 +157,11 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
   // have used is shown beside it so the difference is visible rather than
   // buried in the total.
   const wholeParcelLand = cx.land_usd
-  const campusAcres     = 12   // engine rule: ~1.2 acres per MW, 10 MW default
-  const perAcre         = est.acres ? wholeParcelLand / est.acres : null
+  const landRate = est.provenance.find((item) => item.driver === 'land_cost_per_acre_usd')?.value
+  const perAcre = typeof landRate === 'number' ? landRate : null
+  const footprintContext = snapshotDate
+    ? 'the recorded estimate’s project settings'
+    : `this ${(project.capacity_kw / 1000).toLocaleString()} MW project`
 
   return (
     <section className="pt-6 sm:pt-10">
@@ -175,8 +214,8 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
           value={<><Counter to={Math.abs(est.finance.npv_usd) / 1e6} prefix="$" decimals={1} />M</>}
           explain="Net present value of the whole build and its running cost." />
         <StatTile label="Payback"
-          value={<><Counter to={est.finance.payback_years} decimals={1} /> yrs</>}
-          explain="Years of running cost to equal the build." />
+          value={<span className="text-[19px]">Not applicable</span>}
+          explain="A cost-only model has no revenue or investment return, so payback is not applicable." />
       </div>
 
       <div className="grid gap-3.5 lg:grid-cols-[1fr_380px] lg:items-start">
@@ -241,8 +280,8 @@ export function ParcelDetail({ parcelId, onBack }: { parcelId: string; onBack: (
               <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-blue" aria-hidden />
               <p className="text-[13.5px] leading-[1.6] text-mid">
                 <span className="font-semibold text-ink2">The whole parcel is priced, not just
-                the footprint.</span> A 10 MW campus occupies roughly {campusAcres} acres, but this
-                listing is {Math.round(est.acres)}, and a seller will not usually split it. The
+                the footprint.</span> The backend sizes the campus footprint for {footprintContext},
+                but this listing is {Math.round(est.acres)} acres and a seller will not usually split it. The
                 total charges all {Math.round(est.acres)} acres at {usd(perAcre)} each. A
                 region-level comparison would have counted only the footprint, which is why a
                 large cheap parcel can rank worse here than its price per acre suggests.

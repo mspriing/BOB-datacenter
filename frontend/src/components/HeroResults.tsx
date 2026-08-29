@@ -25,9 +25,9 @@ const FRAGILITY = ['constructionPerKw', 'powerRate', 'staffIndex', 'landPerAcre'
  * This matters more than it looks. The generated last frame of the video reads
  * "Northgate AI Campus" and "Lauddnn County, Viiginis" because a video model
  * invents type it cannot spell. Every figure here is the engine's own output for
- * the three sites shipped with the repo, run at load, through the same SiteRow
- * the results screen uses. Nothing is transcribed and nothing can drift: change
- * a driver in the dataset and this changes with it.
+ * the three sites shipped with the repo, run locally at load. It is an
+ * illustrative offline demo only; submitted comparisons use the backend and
+ * never read these values.
  *
  * It is also live. The rows and the button are real controls that open the real
  * screen, so the hero is not a trailer for the product, it is the product at a
@@ -80,7 +80,12 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
       {/* top bar */}
       <div style={step(0)}
         className="mb-3 flex items-center justify-between rounded-[11px] border border-line bg-white px-4 py-2.5">
-        <span className="text-[17px] font-semibold tracking-[-.02em] text-ink">leepr</span>
+        <span>
+          <span className="text-[17px] font-semibold tracking-[-.02em] text-ink">leepr</span>
+          <span className="ml-2 rounded-full bg-card2 px-2 py-1 text-[10px] font-bold uppercase tracking-[.07em] text-mid">
+            Offline example
+          </span>
+        </span>
         <div className="flex gap-1.5">
           {/* The same three steps the real bar shows, in the same order. A
               miniature that disagrees with the thing it stands for is worse

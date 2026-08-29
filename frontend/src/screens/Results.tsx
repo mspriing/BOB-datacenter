@@ -1,472 +1,338 @@
-import { useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
-import { Lightbulb, Shield, Leaf, Gauge, SlidersHorizontal, X } from 'lucide-react'
-import * as Dialog from '@radix-ui/react-dialog'
+import { useState } from 'react'
+import { AlertTriangle, ArrowLeft, Leaf, Shield, Gauge } from 'lucide-react'
 import {
-  Card, FoldCard, StatTile, Counter, CostCaseToggle, Rule, Explain,
+  Card, FoldCard, StatTile, Counter, CostCaseToggle, Rule, Chip,
 } from '../components/Primitives'
-import { SiteRow } from '../components/SiteRow'
-import { ProjectionSliders } from '../components/ProjectionSliders'
-import { PROJECT, COVERAGE } from '../data/project'
-import { useSites } from '../lib/useSites'
-import {
-  applyProjections, priceSite, rank, flipMultiplier, PROJECTION_DRIVERS,
-  type ProjectParams, type Projections, type Weights,
-} from '../lib/engine'
 import { usd } from '../lib/format'
-import type { EstimateOutput } from '../lib/api'
+import type { EstimateOutput, EstimateProject } from '../lib/api'
 import type { Route } from '../lib/routes'
 
-const P: ProjectParams = {
-  capacityKw: PROJECT.capacityMw * 1000, pue: PROJECT.pue,
-  lifetimeYears: PROJECT.lifetimeYears, discountRate: PROJECT.discountRate, designWue: 0.4,
+type CostCase = 'low' | 'base' | 'high'
+type SiteOutput = EstimateOutput['sites'][string]
+
+const DRIVER_NAMES: Record<string, string> = {
+  construction_cost_per_kw: 'construction cost',
+  power_rate_usd_per_kwh: 'power rate',
+  land_cost_per_acre_usd: 'land cost',
+  staff_cost_index: 'staffing index',
+  risk_score: 'hazard risk',
+  renewable_pct: 'renewable share',
+  latency_ms_to_hub: 'latency to hub',
 }
 
+function moneyM(value: number) {
+  return `$${(Math.abs(value) / 1e6).toFixed(2)}M`
+}
 
-export function Results({ projections, setProjections, pinned, chosen, go, server, serverError }: {
-  projections: Projections
-  setProjections: (p: Projections) => void
-  weights: Weights
-  setWeights: (w: Weights) => void
-  pinned: string[]
-  chosen: string[]
-  go: (r: Route) => void
-  /** The server's run. Null when it failed or has not returned. */
+function Breakdown({ site }: { site: SiteOutput }) {
+  const capex = [
+    ['Land', site.capex.land_usd],
+    ['Construction', site.capex.construction_usd],
+    ['Electrical (included in construction)', site.capex.electrical_usd],
+    ['Cooling (included in construction)', site.capex.cooling_usd],
+    ['IT fit-out (not priced)', site.capex.it_fitout_usd],
+  ] as const
+  const usage = [
+    ['Power', site.opex_annual.power_usd],
+    ['Water', site.opex_annual.water_usd],
+  ] as const
+  const fixed = [
+    ['Staff', site.opex_annual.staff_usd],
+    ['Maintenance', site.opex_annual.maintenance_usd],
+    ['Property tax', site.opex_annual.taxes_usd],
+    ['Connectivity', site.opex_annual.connectivity_usd],
+  ] as const
+
+  const rows = (items: ReadonlyArray<readonly [string, number]>) => items.map(([label, value]) => (
+    <div key={label} className="flex items-center justify-between gap-4 text-[13.5px]">
+      <span className="text-mid">{label}</span>
+      <span className="num font-medium text-ink2">{moneyM(value)}</span>
+    </div>
+  ))
+
+  return (
+    <div className="grid gap-4 border-t border-[var(--line2)] p-5 md:grid-cols-3">
+      <div>
+        <p className="label-xs mb-2.5">CapEx · fixed upfront</p>
+        <div className="space-y-1.5">{rows(capex)}</div>
+        <div className="mt-2 flex items-center justify-between border-t border-[var(--line2)] pt-2 text-[13.5px] font-semibold">
+          <span>Total CapEx</span><span className="num">{moneyM(site.capex.total_usd)}</span>
+        </div>
+      </div>
+      <div>
+        <p className="label-xs mb-2.5">OpEx · usage-linked annual</p>
+        <div className="space-y-1.5">{rows(usage)}</div>
+      </div>
+      <div>
+        <p className="label-xs mb-2.5">OpEx · fixed/modelled annual</p>
+        <div className="space-y-1.5">{rows(fixed)}</div>
+        <div className="mt-2 flex items-center justify-between border-t border-[var(--line2)] pt-2 text-[13.5px] font-semibold">
+          <span>Total annual OpEx</span><span className="num">{moneyM(site.opex_annual.total_usd)}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function Results({ project, server, serverError, go }: {
+  project: EstimateProject
   server: EstimateOutput | null
   serverError: string | null
+  go: (route: Route) => void
 }) {
-  const [costCase, setCostCase] = useState('base')
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const { sites, source: siteSource } = useSites(pinned, chosen)
+  const [costCase, setCostCase] = useState<CostCase>('base')
 
-  const build = useMemo(() => (over?: { key: string; driver: any; mult: number }) => {
-    const priced = sites.map(s => {
-      const p = { ...(projections[s.key] ?? {}) }
-      if (over && over.key === s.key) p[over.driver as keyof typeof p] = over.mult
-      return priceSite(s.key, s.label, s.place, P, applyProjections(s.base, p))
-    })
-    return rank(priced)
-  }, [sites, projections])
+  if (!server) {
+    return (
+      <section className="pt-8">
+        <Card title="No authoritative result is available">
+          <div className="flex items-start gap-3 p-6">
+            <AlertTriangle size={18} className="mt-0.5 shrink-0 text-bad" aria-hidden />
+            <div>
+              <p className="text-[15px] leading-[1.65] text-ink2">
+                {serverError ?? 'Run the comparison before opening results.'}
+              </p>
+              <p className="mt-2 text-[13.5px] leading-[1.55] text-mid">
+                This screen does not substitute browser-calculated financials for a failed backend run.
+              </p>
+              <button className="pill mt-4 text-[13px]" onClick={() => go('setup')}>
+                <ArrowLeft size={14} aria-hidden />Back to setup
+              </button>
+            </div>
+          </div>
+        </Card>
+      </section>
+    )
+  }
 
-  const ranked = build()
+  const ranked = server.ranking
+    .map(siteId => ({ siteId, label: server.site_labels[siteId] ?? siteId, site: server.sites[siteId] }))
+    .filter((entry): entry is { siteId: string; label: string; site: SiteOutput } => !!entry.site)
   const leader = ranked[0]
-  const second = ranked[1] ?? ranked[0]
-  const cheapest = [...ranked].sort((a, b) => a.lifetimePerKw - b.lifetimePerKw)[0]
 
-  const perKw = (s: typeof leader) =>
-    costCase === 'low' ? s.rangeLow : costCase === 'high' ? s.rangeHigh : s.lifetimePerKw
+  if (!leader) {
+    return (
+      <section className="pt-8">
+        <Card title="The backend returned no ranked sites">
+          <div className="p-6 text-[15px] text-mid">
+            Review the unevaluable sites and data gaps below, then choose candidates with enough cost data.
+          </div>
+        </Card>
+      </section>
+    )
+  }
 
-  const premiumPct = ((leader.lifetimePerKw - cheapest.lifetimePerKw) / cheapest.lifetimePerKw) * 100
-  const gapUsdM = (leader.npvTotal - cheapest.npvTotal) / 1e6
-
-  const fragility = useMemo(() => PROJECTION_DRIVERS.map(d => {
-    const up = flipMultiplier(m => build({ key: leader.key, driver: d.key, mult: m }), leader.key, 1, 4)
-    return {
-      driver: d.name,
-      short: d.short,
-      unit: d.unit,
-      pct: up === null ? null : (up - 1) * 100,
-      from: d.fmt(leader.drivers[d.key]),
-      to: up === null ? null : d.fmt(leader.drivers[d.key] * up),
-    }
-  }).sort((a, b) => (a.pct ?? Infinity) - (b.pct ?? Infinity)), [leader, build])
-
-  const mostFragile = fragility.find(f => f.pct !== null)
-
-  // Provenance is never synthesised in the browser. If the server did not
-  // answer, the table says so rather than showing a plausible-looking fixture.
-  const provenance = server?.data_provenance ?? []
-  const sourcedCount = server
-    ? server.confidence.sourced
-    : null
-  const short = (s: string) => s.replace(/,.*$/, '')
-
-  // Count how many projection multipliers have moved away from 1.0
-  const movedCount = useMemo(() =>
-    Object.values(projections).reduce((total, p) => {
-      if (!p) return total
-      return total + Object.values(p).filter(v => v !== undefined && Math.abs((v as number) - 1) > 0.001).length
-    }, 0),
-  [projections])
+  const leaderRange = leader.site.finance.ranges[costCase]
 
   return (
     <div className="space-y-3 pt-6">
-      {/* 0. Where these numbers came from */}
-      <div className={`flex flex-wrap items-start gap-2.5 rounded-[11px] border px-4 py-3 text-[13.5px] leading-[1.6]
-        ${server ? 'border-line bg-white/70 text-mid' : 'border-[rgba(138,82,0,.3)] bg-[rgba(255,248,235,.9)] text-[#6B4300]'}`}>
-        {server ? (
-          <>
-            <span className="font-semibold text-ink2">Priced by the engine</span>
-            <Rule />
-            <span>engine {server.engine_version}</span>
-            <Rule />
-            <span>{server.data_provenance.length} figures with a source</span>
-            {movedCount > 0 && (
-              <>
-                <Rule />
-                <span className="font-semibold text-blued">
-                  showing your projections, recalculated in the browser
-                </span>
-              </>
-            )}
-          </>
-        ) : (
-          <span>
-            {serverError ?? 'The engine has not answered yet.'} The figures below come from the
-            browser&rsquo;s copy of the engine, which now reproduces the server to the dollar on the
-            published example. Run the comparison to price this on the server and pick up the
-            provenance, the gaps and the wording that come with it.
-          </span>
-        )}
+      <div className="flex flex-wrap items-center gap-2.5 rounded-[11px] border border-line bg-white/70 px-4 py-3 text-[13.5px] text-mid">
+        <span className="font-semibold text-ink2">Authoritative backend estimate</span>
+        <Rule /><span>engine {server.engine_version}</span>
+        <Rule /><span>{new Date(server.generated_at).toLocaleString()}</span>
+        <Rule /><span>{server.data_provenance.length} sourced or modelled inputs</span>
       </div>
 
-      {/* 1. Hero card */}
       <Card weave>
         <div className="p-6 sm:p-8">
-          <div className="mb-3.5 flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-[linear-gradient(135deg,#0F62FE,#0043CE)] px-3 py-[5px]
-              text-[12px] font-bold uppercase tracking-[.1em] text-white
-              shadow-[0_3px_10px_-3px_rgba(15,98,254,.55)]">Recommended</span>
+          <div className="mb-3 flex flex-wrap items-center gap-3">
+            <Chip>Recommended</Chip>
             <span className="text-[14px] text-mid">
-              {PROJECT.name}<Rule />{PROJECT.capacityMw} MW<Rule />{PROJECT.lifetimeYears} years
-              {siteSource === 'pins' && <><Rule />from your pinned set</>}
+              {project.name}<Rule />{project.capacity_kw / 1000} MW<Rule />{project.lifetime_years} years
             </span>
           </div>
-          <h1 key={leader.key}
-            className="route-enter mb-1.5 bg-[linear-gradient(120deg,#0F1720_30%,#2B4A7E)] bg-clip-text
-                       text-[clamp(2.25rem,1.7rem+2.6vw,3.375rem)] font-semibold text-transparent">
+          <h1 className="mb-7 text-[clamp(2.25rem,1.7rem+2.6vw,3.375rem)] font-semibold tracking-[-.02em] text-ink">
             {leader.label}
           </h1>
-          <p className="mb-7 text-[15px] text-mid">{leader.place}</p>
-          {/* Stat row: single bordered container with internal dividers */}
-          <div className="grid grid-cols-2 divide-x divide-y lg:grid-cols-4 lg:divide-y-0
-            divide-[var(--line2)] overflow-hidden rounded-[11px] border border-line bg-white/60">
+          <div className="grid grid-cols-2 divide-x divide-y overflow-hidden rounded-[11px] border border-line bg-white/60 lg:grid-cols-4 lg:divide-y-0 divide-[var(--line2)]">
             <StatTile bare label="Lifetime cost per kW"
-              explain="Everything the site costs across all 15 years, land, build, power, staff, water and tax, brought back to today&rsquo;s money and divided by capacity. This is not the build cost."
-              value={<Counter to={perKw(leader)} prefix="$" />}
-              foot={`${costCase === 'base' ? 'Expected case' : costCase === 'low' ? 'Optimistic case' : 'Cautious case'}, ${usd(leader.rangeLow)} to ${usd(leader.rangeHigh)}`} />
-            <StatTile bare label="Total cost in today&rsquo;s money"
-              value={<><Counter to={leader.npvTotal / 1e6} prefix="$" decimals={1} />M</>}
-              foot={gapUsdM > 0.05 ? `$${gapUsdM.toFixed(1)}M more than the cheapest site` : 'Cheapest in the set'} />
-            <StatTile bare label="Score against the set"
-              explain="How the site ranks once cost, hazard risk, clean power and distance to your users are put on the same scale."
-              value={<Counter to={leader.score} decimals={3} />}
-              foot={ranked.length > 1 ? `Next best is ${short(second.label)} at ${second.score.toFixed(3)}` : 'Only one site in the set'} />
-            <StatTile bare label="Years of running cost to equal the build"
-              value={<><Counter to={leader.opexYearsToEqualCapex} decimals={1} /> yrs</>}
-              foot="Build cost divided by one year of running cost" />
+              value={<Counter to={leaderRange.lifetime_per_kw} prefix="$" />}
+              foot={`${costCase} case; backend range ${usd(leader.site.finance.ranges.low.lifetime_per_kw)}–${usd(leader.site.finance.ranges.high.lifetime_per_kw)}`} />
+            <StatTile bare label="Build cost per kW"
+              value={<Counter to={leader.site.finance.capex_per_kw} prefix="$" />}
+              foot="Total backend CapEx divided by capacity" />
+            <StatTile bare label="Cost NPV"
+              value={<><Counter to={Math.abs(leaderRange.npv_usd) / 1e6} prefix="$" decimals={1} />M</>}
+              foot="Backend cost NPV; shown as a positive cost" />
+            <StatTile bare label="Payback"
+              value={<span className="text-[19px]">Not applicable</span>}
+              foot="A cost-only model has no revenue or investment return" />
           </div>
         </div>
       </Card>
 
-      {/* 2. How solid is this pick */}
-      <div className="flex flex-wrap items-start gap-4 rounded-[12px] border border-[rgba(138,101,22,.3)]
-        bg-[linear-gradient(100deg,rgba(255,246,229,.94),rgba(255,255,255,.86))] p-5
-        shadow-[var(--shadow-lg)] sm:flex-nowrap">
-        <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[9px]
-          bg-[linear-gradient(135deg,#E09A2B,#C06A12)] shadow-[0_3px_9px_-3px_rgba(192,106,18,.6)]">
-          <Lightbulb size={16} strokeWidth={2.4} className="text-white" aria-hidden />
-        </div>
-        <div>
-          <p className="mb-1 text-[12px] font-bold uppercase tracking-[.1em] text-gold">
-            How solid is this pick?
-          </p>
-          <p className="max-w-[86ch] text-[15.5px] leading-[1.65] text-[#5C4310]">
-            {mostFragile && mostFragile.pct !== null ? (
-              <>
-                {leader.label} stops winning once its {mostFragile.short} reaches{' '}
-                <b className="num font-semibold text-[#3A2A06]">{mostFragile.to}{mostFragile.unit ? ' ' + mostFragile.unit : ''}</b>, which is{' '}
-                <b className="num font-semibold text-[#3A2A06]">{mostFragile.pct.toFixed(1)}%</b>{' '}
-                above today&rsquo;s {mostFragile.from}. At that point {short(second.label)} takes
-                first place. Every other driver is more forgiving, and the sliders mark the
-                crossing point on each track.
-              </>
-            ) : (
-              <>{leader.label} holds first place across the whole range these sliders cover. No
-                single driver moves far enough by itself to change the order.</>
-            )}
-          </p>
-        </div>
+      <div className="sticky top-0 z-30 -mx-4 border-b border-white/90 bg-white/[.82] px-4 py-3 backdrop-blur-[18px] sm:-mx-7 sm:px-7">
+        <CostCaseToggle value={costCase} onChange={value => setCostCase(value as CostCase)} />
       </div>
 
-      {/* 3. Sticky control bar */}
-      <div className="sticky top-0 z-30 -mx-4 flex items-center justify-between gap-4
-        border-b border-white/90 bg-white/[.82] px-4 py-3 backdrop-blur-[18px] backdrop-saturate-[160%]
-        shadow-[var(--shadow-lg)] sm:-mx-7 sm:px-7">
-        <CostCaseToggle value={costCase} onChange={setCostCase} />
-        <button
-          className="btn btn-quiet relative flex items-center gap-2 text-[14px]"
-          onClick={() => setDrawerOpen(true)}
-          aria-haspopup="dialog">
-          <SlidersHorizontal size={15} strokeWidth={2.2} aria-hidden />
-          Adjust projections
-          {movedCount > 0 && (
-            <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full
-              bg-[linear-gradient(135deg,#0F62FE,#0043CE)] px-1 text-[11px] font-bold text-white
-              shadow-[0_2px_6px_-2px_rgba(15,98,254,.6)]">
-              {movedCount}
-            </span>
+      <Card title={`All ${ranked.length} priced sites, ranked`}
+        note="Order, scores and every financial value come from the backend response">
+        <div className="divide-y divide-[var(--line2)]">
+          {ranked.map(({ siteId, label, site }) => {
+            const scenario = site.finance.ranges[costCase]
+            return (
+              <article key={siteId}>
+                <div className="grid gap-4 p-5 sm:grid-cols-[42px_1fr_auto] sm:items-center">
+                  <span className={`flex h-9 w-9 items-center justify-center rounded-[10px] text-[15px] font-bold
+                    ${site.rank === 1 ? 'bg-blue text-white' : 'border border-line bg-card2 text-mid'}`}>
+                    {site.rank}
+                  </span>
+                  <div>
+                    <h2 className="flex flex-wrap items-center gap-2 text-[18px] font-semibold text-ink">
+                      {label}{site.rank === 1 && <Chip>Recommended</Chip>}
+                    </h2>
+                    <p className="mt-1 text-[13.5px] text-mid">
+                      Score {site.weighted_score.toFixed(3)}
+                      <Rule />CapEx {moneyM(site.capex.total_usd)}
+                      <Rule />annual OpEx {moneyM(site.opex_annual.total_usd)}
+                    </p>
+                  </div>
+                  <div className="sm:text-right">
+                    <p className="num text-[22px] font-semibold text-ink">
+                      {usd(scenario.lifetime_per_kw)} <span className="text-[13px] font-medium text-mid">per kW</span>
+                    </p>
+                    <p className="text-[12.5px] text-mid">
+                      low {usd(site.finance.ranges.low.lifetime_per_kw)} · base {usd(site.finance.ranges.base.lifetime_per_kw)} · high {usd(site.finance.ranges.high.lifetime_per_kw)}
+                    </p>
+                    <p className="text-[12.5px] text-mid">
+                      NPV low {moneyM(site.finance.ranges.low.npv_usd)} · base {moneyM(site.finance.ranges.base.npv_usd)} · high {moneyM(site.finance.ranges.high.npv_usd)}
+                    </p>
+                  </div>
+                </div>
+                <Breakdown site={site} />
+              </article>
+            )
+          })}
+        </div>
+      </Card>
+
+      <Card title="Recommendation" note={`Narrative source: ${server.narrative.source}`}>
+        <div className="space-y-4 p-6 text-[15.5px] leading-[1.7] text-ink2">
+          <p>{server.narrative.recommendation}</p>
+          <p className="rounded-[10px] border border-[#E4D2A8] bg-[#FBF3E2] p-4 font-medium text-gold">
+            {server.flip_sentence}
+          </p>
+          {server.narrative.sensitivity_callouts.length > 0 && (
+            <ul className="list-disc space-y-1 pl-5">
+              {server.narrative.sensitivity_callouts.map((item, index) => (
+                <li key={`${item.site_id}-${index}`}>{item.callout}</li>
+              ))}
+            </ul>
           )}
-        </button>
+        </div>
+      </Card>
+
+      <div className="grid gap-3 md:grid-cols-3">
+        {[
+          { icon: Shield, label: 'Hazard risk', value: leader.site.non_cost_scores.risk_score?.toFixed(1) ?? 'No data' },
+          { icon: Leaf, label: 'Renewable share', value: leader.site.non_cost_scores.renewable_pct === null ? 'No data' : `${Math.round(leader.site.non_cost_scores.renewable_pct * 100)}%` },
+          { icon: Gauge, label: 'Latency to hub', value: leader.site.non_cost_scores.latency_ms === null ? 'No data' : `${leader.site.non_cost_scores.latency_ms} ms` },
+        ].map(({ icon: Icon, label, value }) => (
+          <Card key={label}>
+            <div className="flex items-center gap-3 p-5">
+              <Icon size={17} className="text-blue" aria-hidden />
+              <div><p className="label-xs">{label}</p><p className="num mt-1 font-semibold text-ink">{value}</p></div>
+            </div>
+          </Card>
+        ))}
       </div>
 
-      {/* 4+5. Ranked sites and engine conclusion — merged into one card */}
-      <section className="g">
-        <header className="panel-head">
-          <h3>All {ranked.length} sites, ranked</h3>
-        </header>
-        <div className="relative z-[2]">
-          {ranked.map((s, i) => (
-            <SiteRow key={s.key} site={s} rank={i + 1} perKw={perKw(s)} winner={i === 0} />
-          ))}
-        </div>
-        <div className="border-t border-[var(--line2)]">
-          <header className="panel-head">
-            <h3>What the engine concluded</h3>
-            <span className="panel-note">Calculated first, then written up. No language model wrote any of it.</span>
-          </header>
-          <div className="relative z-[2] p-6">
-            <div className="space-y-4 text-[16px] leading-[1.75] text-ink2">
-              <p>
-                <b className="font-semibold text-ink">
-                  {leader.label} finishes first while costing {premiumPct.toFixed(1)}% more than
-                  the cheapest option.
-                </b>{' '}
-                {short(cheapest.label)} prices at {usd(cheapest.lifetimePerKw)} per kW against{' '}
-                {short(leader.label)}&rsquo;s {usd(leader.lifetimePerKw)}, a difference of $
-                {gapUsdM.toFixed(1)}M in today&rsquo;s money across {PROJECT.lifetimeYears} years.
-                The ranking still favors {short(leader.label)} because hazard risk, clean power
-                and distance to your users are scored alongside cost rather than folded into it.
-              </p>
-              <p>
-                The gap is almost entirely in the build. {short(leader.label)} builds at{' '}
-                <b className="num font-semibold text-ink">
-                  {usd(leader.drivers.constructionPerKw)} per kW
-                </b>{' '}
-                against {short(cheapest.label)}&rsquo;s {usd(cheapest.drivers.constructionPerKw)}.
-                Some of that comes back through power. {short(leader.label)} pays $
-                {leader.drivers.powerRate.toFixed(3)} per kWh and spends $
-                {(leader.powerAnnual / 1e6).toFixed(2)}M a year on electricity, where{' '}
-                {short(cheapest.label)} runs up ${(cheapest.powerAnnual / 1e6).toFixed(2)}M.
-              </p>
-              {ranked.length > 2 && (
-                <p>
-                  <b className="font-semibold text-ink">
-                    {ranked[ranked.length - 1].label} finishes last.
-                  </b>{' '}
-                  Its ${(ranked[ranked.length - 1].opexYear1.total / 1e6).toFixed(2)}M of annual
-                  running cost is{' '}
-                  {(((ranked[ranked.length - 1].opexYear1.total / leader.opexYear1.total) - 1) * 100).toFixed(0)}%
-                  above {short(leader.label)}&rsquo;s, driven by $
-                  {(ranked[ranked.length - 1].opexYear1.power / 1e6).toFixed(2)}M of power and $
-                  {(ranked[ranked.length - 1].opexYear1.taxes / 1e6).toFixed(2)}M in property tax.
-                </p>
-              )}
-              {server && server.data_gaps.length > 0 && (
-                <p className="text-[15px] leading-[1.65] text-warn">
-                  {server.data_gaps.length} driver{server.data_gaps.length === 1 ? '' : 's'} had no
-                  published value for this set and {server.data_gaps.length === 1 ? 'was' : 'were'} left
-                  out of the score rather than filled with a benchmark.
-                </p>
-              )}
-            </div>
-            {server && (
-              <div className="mt-6 flex items-start gap-3 border-t border-[var(--line2)] pt-5">
-                <p className="text-[13.5px] leading-[1.55] text-mid">
-                  The figures above recalculate in your browser as you move the projections. The
-                  source table below comes from the server&rsquo;s own run.
-                </p>
+      {(server.data_gaps.length > 0 || server.unevaluable.length > 0 || server.narrative.uncertainty_flags.length > 0) && (
+        <Card title="Gaps and sites not included in the ranking">
+          <div className="space-y-5 p-5">
+            {server.unevaluable.length > 0 && (
+              <div>
+                <p className="label-xs mb-2">Unevaluable sites</p>
+                <ul className="list-disc space-y-1 pl-5 text-[14px] text-ink2">
+                  {server.unevaluable.map(site => (
+                    <li key={site.site_id}>{site.label}: missing {site.missing_drivers.map(driver => DRIVER_NAMES[driver] ?? driver).join(', ')}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {server.data_gaps.length > 0 && (
+              <div>
+                <p className="label-xs mb-2">Data gaps</p>
+                <ul className="list-disc space-y-1 pl-5 text-[14px] text-ink2">
+                  {server.data_gaps.map((gap, index) => (
+                    <li key={`${gap.site_id}-${gap.driver}-${index}`}>
+                      {server.site_labels[gap.site_id] ?? gap.site_id}: {DRIVER_NAMES[gap.driver] ?? gap.driver} — {gap.reason}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {server.narrative.uncertainty_flags.length > 0 && (
+              <div>
+                <p className="label-xs mb-2">Narrative uncertainty flags</p>
+                <ul className="list-disc space-y-1 pl-5 text-[14px] text-ink2">
+                  {server.narrative.uncertainty_flags.map((flag, index) => (
+                    <li key={`${flag.site_id}-${flag.field}-${index}`}>{server.site_labels[flag.site_id] ?? flag.site_id}: {flag.field} — {flag.reason}</li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
-        </div>
-      </section>
+        </Card>
+      )}
 
-      {/* 6. What would have to change + Things cost cannot tell you — side by side */}
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Card title="What would have to change" note="Most fragile first">
-          <div className="space-y-4 p-5">
-            {fragility.map(f => (
-              <div key={f.driver}>
-                <div className="mb-1.5 flex items-baseline justify-between gap-3">
-                  <span className="text-[14.5px] font-medium text-ink2">{f.driver}</span>
-                  <span className={`num text-[14.5px] font-bold
-                    ${f.pct === null ? 'text-mid' : f.pct < 15 ? 'text-bad' : f.pct < 50 ? 'text-warn' : 'text-ok'}`}>
-                    {f.pct === null ? 'holds' : `+${f.pct.toFixed(1)}%`}
-                  </span>
-                </div>
-                <div className="h-[8px] overflow-hidden rounded-full bg-card2
-                                shadow-[inset_0_1px_2px_rgba(15,23,32,.08)]">
-                  <motion.div className="h-full rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: f.pct === null ? '100%' : `${Math.min(f.pct, 100)}%` }}
-                    transition={{ duration: 0.7, ease: [0.2, 0.8, 0.3, 1] }}
-                    style={{ background: f.pct === null ? '#C8D0DA'
-                      : f.pct < 15 ? 'linear-gradient(90deg,#C22F2F,#EE6A55)'
-                      : f.pct < 50 ? 'linear-gradient(90deg,#9A5E00,#E0A03B)'
-                      : 'linear-gradient(90deg,#0B7A4B,#48C08A)' }} />
-                </div>
-                <p className="mt-1.5 text-[13px] text-mid">
-                  {f.pct === null
-                    ? 'No change in the order, even at four times the current figure'
-                    : `${f.from} rising to ${f.to} swaps first and second place`}
-                </p>
+      {server.parsed_fields.length > 0 && (
+        <Card title="Figures parsed from your site notes"
+          note="These backend-validated values were used in the engine run">
+          <div className="divide-y divide-[var(--line2)]">
+            {server.parsed_fields.map((field, index) => (
+              <div key={`${field.site_id}-${field.field}-${index}`} className="flex flex-wrap items-center justify-between gap-3 p-4">
+                <span className="text-[14px] text-ink2">
+                  {server.site_labels[field.site_id] ?? field.site_id}: {DRIVER_NAMES[field.field] ?? field.field}
+                </span>
+                <span className="num text-[13.5px] font-semibold text-ink">
+                  {field.value.toLocaleString('en-US', { maximumFractionDigits: 4 })}
+                  {field.inferred ? ' · inferred by parser' : ' · stated explicitly'}
+                </span>
               </div>
             ))}
           </div>
         </Card>
+      )}
 
-        <Card title="The things cost cannot tell you">
-          <div className="space-y-5 p-5">
-            {[
-              { icon: <Shield size={15} strokeWidth={2.2} aria-hidden />, label: 'Risk of disruption',
-                hint: 'Natural hazard exposure scored 1 to 10. Lower is calmer.',
-                get: (s: typeof leader) => s.drivers.riskScore, max: 10,
-                good: (v: number) => v < 3, fmt: (v: number) => v.toFixed(1) },
-              { icon: <Leaf size={15} strokeWidth={2.2} aria-hidden />, label: 'Clean power on the grid',
-                hint: 'Share of local generation that comes from renewables.',
-                get: (s: typeof leader) => s.drivers.renewablePct === null ? null : s.drivers.renewablePct * 100,
-                max: 100, good: (v: number) => v > 60, fmt: (v: number) => `${Math.round(v)}%` },
-              { icon: <Gauge size={15} strokeWidth={2.2} aria-hidden />, label: 'Distance to your users',
-                hint: 'Round trip to the nearest major hub. Lower is closer.',
-                get: (s: typeof leader) => s.drivers.latencyMs, max: 50,
-                good: (v: number) => v < 10, fmt: (v: number) => `${v < 1 ? v.toFixed(1) : Math.round(v)} ms` },
-            ].map(row => (
-              <div key={row.label}>
-                <div className="mb-2.5 flex items-center gap-2">
-                  <span className="text-blue">{row.icon}</span>
-                  <span className="text-[14.5px] font-medium text-ink2">
-                    <Explain text={row.hint}>{row.label}</Explain>
-                  </span>
-                </div>
-                <div className="space-y-2">
-                  {ranked.map(s => {
-                    const v = row.get(s)
-                    return (
-                      <div key={s.key} className="flex items-center gap-3">
-                        <span className="w-[110px] shrink-0 text-[13px] leading-[1.3] text-mid">
-                          {short(s.label)}
-                        </span>
-                        <div className="h-[7px] min-w-[24px] flex-1 overflow-hidden rounded-full bg-card2
-                                        shadow-[inset_0_1px_2px_rgba(15,23,32,.07)]">
-                          {v !== null && (
-                            <motion.div className="h-full rounded-full"
-                              style={{ background: row.good(v) ? '#0B7A4B' : '#7B93B0' }}
-                              initial={{ width: 0 }}
-                              animate={{ width: `${Math.min(100, (v / row.max) * 100)}%` }}
-                              transition={{ duration: 0.6, ease: [0.2, 0.8, 0.3, 1] }} />
-                          )}
-                        </div>
-                        <span className="num w-[54px] shrink-0 text-right text-[13px] font-semibold text-ink2">
-                          {v === null ? 'no data' : row.fmt(v)}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
-
-      {/* 7. Where every number came from */}
-      <FoldCard title="Where every number came from"
-        note={sourcedCount !== null
-          ? `${sourcedCount} of the values behind this run are traced to a named source`
-          : 'Unavailable. The engine did not answer'}>
-        <div className="p-5 pb-2">
-          <p className="mb-4 max-w-[76ch] text-[15px] leading-[1.65] text-mid">
-            This run reads {COVERAGE.drivers} cost drivers for each site. Values marked{' '}
-            <b className="font-semibold text-ink2">sourced</b> come straight from a public
-            dataset with a date attached. Values marked{' '}
-            <b className="font-semibold text-ink2">modeled</b> were derived from a sourced
-            figure, and the derivation sits alongside them on{' '}
-            <button onClick={() => go('sources')} className="link-inline">the sources page</button>.
-          </p>
-        </div>
-        {provenance.length === 0 ? (
-          <div className="px-5 pb-5">
-            <p className="rounded-[10px] border border-line bg-card2 px-4 py-3 text-[14px] leading-[1.6] text-ink2">
-              The provenance of every driver is held by the engine, not by this page, and the
-              engine did not answer on this run. Rather than show you a list this page made up,
-              it is showing you nothing. Run the comparison again to load it.
-            </p>
-          </div>
-        ) : (
+      <FoldCard title="Where every backend number came from"
+        note={`${server.confidence.sourced} sourced, ${server.confidence.modeled} modeled, ${server.confidence.assumed} assumed, ${server.confidence.missing} missing`}>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-[13.5px]">
-            <thead>
-              <tr>
-                {['Site', 'Driver', 'Value', 'Basis', 'Source', 'Checked'].map(h => (
-                  <th key={h} className="border-y border-[var(--line2)] bg-card2 px-5 py-2.5
-                    text-left text-[11px] font-bold uppercase tracking-[.09em] text-dim">{h}</th>
-                ))}
-              </tr>
-            </thead>
+            <thead><tr>
+              {['Region', 'Driver', 'Value', 'Basis', 'Source', 'Checked'].map(head => (
+                <th key={head} className="border-y border-[var(--line2)] bg-card2 px-5 py-2.5 text-left label-xs">{head}</th>
+              ))}
+            </tr></thead>
             <tbody>
-              {provenance.map((r, i) => {
-                const host = (() => {
-                  try { return new URL(r.source_url).hostname.replace(/^www\./, '') }
-                  catch { return r.source_url }
-                })()
-                return (
-                <tr key={i} className="transition-colors hover:bg-[rgba(228,238,255,.5)]">
-                  <td className="num border-b border-[var(--line2)] px-5 py-3 text-mid">{r.region_key}</td>
-                  <td className="border-b border-[var(--line2)] px-5 py-3 text-ink2">{r.driver}</td>
-                  <td className="num border-b border-[var(--line2)] px-5 py-3 text-ink2">
-                    {r.value === null
-                      ? <span className="text-warn">not found</span>
-                      : r.value.toLocaleString('en-US', { maximumFractionDigits: 4 })}
-                  </td>
+              {server.data_provenance.map((item, index) => (
+                <tr key={`${item.region_key}-${item.driver}-${index}`}>
+                  <td className="border-b border-[var(--line2)] px-5 py-3">{item.region_key}</td>
+                  <td className="border-b border-[var(--line2)] px-5 py-3">{item.driver}</td>
+                  <td className="num border-b border-[var(--line2)] px-5 py-3">{item.value ?? 'not found'}</td>
+                  <td className="border-b border-[var(--line2)] px-5 py-3">{item.basis ?? 'unstated'}</td>
                   <td className="border-b border-[var(--line2)] px-5 py-3">
-                    <span className={`rounded-full px-2 py-[2px] text-[11.5px] font-semibold
-                      ${r.basis === 'sourced' ? 'bg-[#D7F0E2] text-okd'
-                        : r.basis === 'assumed' ? 'bg-[#FBEED2] text-gold' : 'bg-bluex text-blued'}`}>
-                      {r.basis ?? 'unstated'}
-                    </span>
+                    {item.source_url ? <a className="link-inline" href={item.source_url} target="_blank" rel="noreferrer">Open source</a> : 'No public source'}
                   </td>
-                  <td className="border-b border-[var(--line2)] px-5 py-3">
-                    <a href={r.source_url} className="link-inline" target="_blank" rel="noreferrer">
-                      {host}
-                    </a>
-                  </td>
-                  <td className="num border-b border-[var(--line2)] px-5 py-3 text-mid">{r.last_verified}</td>
+                  <td className="border-b border-[var(--line2)] px-5 py-3">{item.last_verified}</td>
                 </tr>
-                )
-              })}
+              ))}
             </tbody>
           </table>
         </div>
-        )}
       </FoldCard>
 
-      {/* Projection sliders drawer */}
-      <Dialog.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-40 bg-[rgba(15,23,32,.28)] backdrop-blur-[2px]" />
-          <Dialog.Content
-            className="drawer-content fixed bottom-0 right-0 top-0 z-50 w-full overflow-y-auto
-              bg-white/[.96] shadow-[var(--shadow-lg)] backdrop-blur-[24px] sm:w-[420px]">
-            <Dialog.Title className="sr-only">Projection sliders</Dialog.Title>
-            <div className="flex items-center justify-between border-b border-[var(--line2)] px-5 py-4">
-              <span className="text-[13px] font-bold uppercase tracking-[.1em] text-ink2">
-                Your projections
-              </span>
-              <Dialog.Close asChild>
-                <button className="rounded-[8px] p-1.5 text-mid transition-colors hover:bg-card2 hover:text-ink"
-                  aria-label="Close projections">
-                  <X size={18} strokeWidth={2} aria-hidden />
-                </button>
-              </Dialog.Close>
+      <FoldCard title="Project-level engine assumptions" note={`${server.assumptions.length} published with this run`}>
+        <div className="divide-y divide-[var(--line2)]">
+          {server.assumptions.map(item => (
+            <div key={item.key} className="p-5">
+              <p className="font-semibold text-ink">{item.label}</p>
+              <p className="num mt-1 text-[13.5px] text-mid">{item.value} {item.unit} · {item.basis} · checked {item.last_verified}</p>
+              <p className="mt-2 text-[13.5px] leading-[1.55] text-ink2">{item.method}</p>
             </div>
-            <div className="p-4">
-              <ProjectionSliders sites={sites} project={P} projections={projections}
-                onChange={setProjections} onReset={() => setProjections({})} />
-            </div>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+          ))}
+        </div>
+      </FoldCard>
     </div>
   )
 }

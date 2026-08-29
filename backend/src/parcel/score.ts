@@ -333,7 +333,11 @@ export function estimateParcel(
     tax_rate:                 drivers.tax_rate ?? 0,
     tax_abatement_years:      drivers.tax_abatement_years,
     current_year:             1,
-    capex_total_usd:          capex.total_usd,
+    capex_total_usd:          capex.land_usd
+      + capex.construction_usd
+      + capex.electrical_usd
+      + capex.cooling_usd
+      + capex.it_fitout_usd,
   }
   const opexYear1 = computeOpex(opexParams)
 
@@ -350,7 +354,14 @@ export function estimateParcel(
     power_rate_high:         drivers.power_rate_high,
     construction_cost_low:   drivers.construction_cost_low,
     construction_cost_high:  drivers.construction_cost_high,
-    incentive_usd:           0,  // parcel extra already baked into capexParams.incentive_usd
+    land_cost_low:           landCostPerAcre,
+    land_cost_high:          landCostPerAcre,
+    water_rate_low:          drivers.water_rate_usd_per_kgal ?? 0,
+    water_rate_high:         drivers.water_rate_usd_per_kgal ?? 0,
+    staff_cost_index_low:    drivers.staff_cost_index as number,
+    staff_cost_index_high:   drivers.staff_cost_index as number,
+    tax_rate_low:            drivers.tax_rate ?? 0,
+    tax_rate_high:           drivers.tax_rate ?? 0,
   })
 
   // ── Parcel capex provenance (one entry per component) ─────────────────────

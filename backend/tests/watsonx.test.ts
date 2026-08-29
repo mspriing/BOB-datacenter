@@ -122,6 +122,46 @@ describe('watsonx live path', () => {
     expect(result.recommendation).toBe('WRAPPED_IN_PROSE')
   })
 
+  it('rejects a valid-shaped narrative containing a figure not supplied by the engine', async () => {
+    const out = await engineOutput()
+    installFetch([() => response(200, graniteBody('The project will save $999M.'))])
+
+    const result = await generateNarrative(out, labels, { skipCache: true })
+
+    expect(result.source).toBe('fallback')
+    expect(result.recommendation).not.toContain('$999M')
+  })
+
+  it('does not authorize a dollar claim from an unrelated project-year number', async () => {
+    const out = await engineOutput()
+    installFetch([() => response(200, graniteBody('This choice saves $15M.'))])
+
+    const result = await generateNarrative(out, labels, { skipCache: true })
+
+    expect(result.source).toBe('fallback')
+    expect(result.recommendation).not.toContain('$15M')
+  })
+
+  it('rejects an unsupported capacity claim even when its number appears elsewhere', async () => {
+    const out = await engineOutput()
+    installFetch([() => response(200, graniteBody('The facility is 1 MW.'))])
+
+    const result = await generateNarrative(out, labels, { skipCache: true })
+
+    expect(result.source).toBe('fallback')
+    expect(result.recommendation).not.toContain('1 MW')
+  })
+
+  it('does not confuse kWh claims with kW figures', async () => {
+    const out = await engineOutput()
+    installFetch([() => response(200, graniteBody('Annual usage is 10 kWh.'))])
+
+    const result = await generateNarrative(out, labels, { skipCache: true })
+
+    expect(result.source).toBe('fallback')
+    expect(result.recommendation).not.toContain('10 kWh')
+  })
+
   it('retries once on a transient 500, then succeeds on watsonx', async () => {
     const out = await engineOutput()
     const fetchMock = installFetch([

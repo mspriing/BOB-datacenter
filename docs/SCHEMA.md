@@ -91,10 +91,10 @@
       "capex": {
         "land_usd":         4200000,
         "construction_usd": 85000000,
-        "electrical_usd":   12000000,
-        "cooling_usd":       9500000,
-        "it_fitout_usd":    18000000,
-        "total_usd":       128700000
+        "electrical_usd":          0, // included in construction_usd
+        "cooling_usd":             0, // included in construction_usd
+        "it_fitout_usd":           0, // not priced by this model
+        "total_usd":        89200000
       },
 
       "opex_annual": {
@@ -108,15 +108,15 @@
       },
 
       "finance": {
-        "capex_per_kw":          12870,      // $/kW; total construction capital ÷ capacity. This is the figure comparable to published data-center build costs.
-        "lifetime_cost_per_kw":  1842,       // $/kW; NPV of total cost ÷ capacity_kw
+        "capex_per_kw":           8920,      // $/kW; total construction capital ÷ capacity
+        "lifetime_cost_per_kw":  19800,      // $/kW; absolute cost NPV ÷ capacity_kw
         "npv_usd":               -198000000, // negative = cost NPV
-        "payback_years":          7.4,
+        "payback_years":          null,      // cost-only model has no positive cash flow
 
         "ranges": {
-          "low":  { "npv_usd": -178000000, "lifetime_per_kw": 1640 },
-          "base": { "npv_usd": -198000000, "lifetime_per_kw": 1842 },
-          "high": { "npv_usd": -231000000, "lifetime_per_kw": 2140 }
+          "low":  { "npv_usd": -178000000, "lifetime_per_kw": 17800 },
+          "base": { "npv_usd": -198000000, "lifetime_per_kw": 19800 },
+          "high": { "npv_usd": -231000000, "lifetime_per_kw": 23100 }
         }
       },
 
@@ -131,7 +131,7 @@
     // … repeated for each submitted site_id
   },
 
-  // Top-5 flip-point drivers, sorted by smallest pct_change (most fragile first)
+  // Up to five flip-point drivers, sorted by smallest pct_change (most fragile first)
   "sensitivity": [
     {
       "driver":         "power_rate_usd_per_kwh",
@@ -141,12 +141,19 @@
       "affected_sites": ["site-A", "site-B"]
     }
   ],
+  // When current_value is zero, pct_change is null and absolute_change is
+  // provided instead; a percentage change from zero is undefined.
 
   // Single most fragile flip point, written as a plain-English sentence
   "flip_sentence": "This ranking flips if Phoenix power rates rise above $0.061/kWh (+45%).",
 
-  // LLM-generated paragraph citing engine numbers — no new figures introduced
-  "narrative": "string",
+  // LLM or deterministic prose; every figure is checked against engine output
+  "narrative": {
+    "recommendation": "string",
+    "sensitivity_callouts": [],
+    "uncertainty_flags": [],
+    "source": "watsonx"
+  },
 
   // Fields parsed out of free_text by the LLM/regex extractor, per site
   "parsed_fields": [
@@ -266,7 +273,7 @@
 | `project.design_wue` | 0.0–2.5 (default 0.4) |
 | `project.lifetime_years` | 5–40 |
 | `project.discount_rate` | 0.01–0.30 |
-| `project.weights` sum | Must equal 1.0 (±0.001 tolerance) |
+| `project.weights` | Each value is 0–1; at least one must be positive; values are normalized to sum to 1 |
 | `site_id` uniqueness | All `site_id` values must be distinct |
 | `region_key` | Must exist as a key in `data/regions.json` |
 | `overrides.risk_score` | 0–10 if provided |

@@ -9,10 +9,23 @@ const RegionDriverSchema = z.object({
   value:         z.number().nullable(),
   low:           z.number().nullable().optional(),
   high:          z.number().nullable().optional(),
-  source_url:    z.string(),
-  last_verified: z.string(),
+  source_url:    z.string().url(),
+  last_verified: z.string().regex(/^\d{4}(?:-\d{2}(?:-\d{2})?)?$/),
   basis:         z.enum(['sourced', 'modeled', 'assumed']),
   method:        z.string().nullable().optional(),
+}).superRefine((driver, ctx) => {
+  if (driver.basis === 'modeled' && !driver.method?.trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['method'],
+      message: 'Modeled figures require a calculation method',
+    })
+  }
+}).transform((driver) => {
+  if (driver.value !== null && /example\.com|placeholder/i.test(driver.source_url)) {
+    return { ...driver, value: null, low: null, high: null }
+  }
+  return driver
 })
 
 export const RegionSchema = z.object({
@@ -56,6 +69,19 @@ export function loadRegions(): RegionsFile {
     return fromCwd
   })()
   const raw = JSON.parse(readFileSync(filePath, 'utf-8'))
+  const placeholderFigures = Object.values(raw as Record<string, Record<string, unknown>>)
+    .flatMap((region) => Object.values(region))
+    .filter((driver) => {
+      if (!driver || typeof driver !== 'object') return false
+      const entry = driver as { value?: unknown; source_url?: unknown }
+      return entry.value !== null
+        && typeof entry.value === 'number'
+        && typeof entry.source_url === 'string'
+        && /example\.com|placeholder/i.test(entry.source_url)
+    }).length
+  if (placeholderFigures > 0) {
+    console.warn(`[data] ignored ${placeholderFigures} unsourced placeholder figure(s) in regions.json`)
+  }
   const result = RegionsFileSchema.safeParse(raw)
   if (!result.success) {
     throw new Error(`data/regions.json failed validation: ${JSON.stringify(result.error.flatten())}`)

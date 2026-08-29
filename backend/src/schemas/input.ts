@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 // ── Per-site overrides (all optional / nullable) ──────────────────────────────
-const OverridesSchema = z.object({
+export const OverrideValuesSchema = z.object({
   land_cost_per_acre_usd:       z.number().positive().nullable().optional(),
   construction_cost_per_kw:     z.number().positive().nullable().optional(),
   power_rate_usd_per_kwh:       z.number().positive().nullable().optional(),
@@ -16,11 +16,15 @@ const OverridesSchema = z.object({
   low_carbon_pct:                z.number().min(0).max(1).nullable().optional(),
   latency_ms_to_hub:             z.number().min(0).nullable().optional(),
   grid_interconnection_years:    z.number().min(0).max(30).nullable().optional(),
-}).optional()
+})
+const OverridesSchema = OverrideValuesSchema.optional()
 
 // ── Single candidate site ─────────────────────────────────────────────────────
 const SiteInputSchema = z.object({
-  site_id:    z.string().min(1),
+  site_id:    z.string().min(1).refine(
+    (id) => !['__proto__', 'prototype', 'constructor'].includes(id),
+    { message: 'site_id uses a reserved object key' },
+  ),
   label:      z.string().min(1),
   region_key: z.string().min(1),
   free_text:  z.string().nullable().optional(),
@@ -33,7 +37,10 @@ const WeightsSchema = z.object({
   risk:           z.number().min(0).max(1).optional(),
   sustainability: z.number().min(0).max(1).optional(),
   latency:        z.number().min(0).max(1).optional(),
-}).optional()
+}).refine(
+  (weights) => Object.values(weights).some((weight) => weight != null && weight > 0),
+  { message: 'At least one ranking weight must be greater than zero' },
+).optional()
 
 // ── Project parameters ────────────────────────────────────────────────────────
 const ProjectSchema = z.object({

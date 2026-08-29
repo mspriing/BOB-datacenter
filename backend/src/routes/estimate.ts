@@ -1,8 +1,10 @@
 import { Router } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { InputSchema } from '../schemas/input.js'
+import { OutputSchema } from '../schemas/output.js'
 import { runEngine, UnpriceableError } from '../engine/index.js'
 import type { EstimateInput } from '../schemas/input.js'
+import { loadRegions } from '../regions.js'
 
 export const estimateRouter = Router()
 
@@ -20,8 +22,18 @@ estimateRouter.post('/', async (req, res) => {
   }
 
   try {
+    const regions = loadRegions()
+    const unknownRegion = input.sites.find((site) => !regions[site.region_key])
+    if (unknownRegion) {
+      res.status(400).json({
+        error: 'Invalid input',
+        message: `Unknown region_key: ${unknownRegion.region_key}`,
+      })
+      return
+    }
+
     // 2. Run deterministic engine + narrative (LLM or fallback)
-    const output = await runEngine(input)
+    const output = OutputSchema.parse(await runEngine(input))
 
     // 3. Respond
     res.json(output)

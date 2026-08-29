@@ -29,7 +29,10 @@ services:
     staticPublishPath: dist
     envVars:
       # Set this to the backend URL once the backend service is live, e.g.
-      # https://leepr-backend-xxxx.onrender.com
-      # Vite inlines it at build time, so changing it triggers a rebuild.
+      # Render injects the backend host at build time so a fresh Blueprint
+      # deployment does not send API requests to the static frontend.
       - key: VITE_API_URL
-        sync: false
+        fromService:
+          type: web
+          name: leepr-backend
+          property: host

@@ -100,7 +100,9 @@ describe('the published figures, checked against longhand arithmetic', () => {
       + (cooling * WUE / LITRES_PER_KGAL) * v('water_rate_usd_per_kgal')
       + CAPACITY * BASE_STAFF_COST_PER_KW * v('staff_cost_index', 1)
       + capex * MAINTENANCE_RATE
-      + (year <= v('tax_abatement_years') ? 0 : capex * v('tax_rate'))
+      // Regional incentive programs are not negotiated property-tax holidays.
+      // With no explicit candidate-site override, property tax starts in year 1.
+      + capex * v('tax_rate')
       + CAPACITY * BASE_CONNECTIVITY_PER_KW
 
     let discounted = 0

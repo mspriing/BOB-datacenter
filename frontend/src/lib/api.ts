@@ -9,7 +9,14 @@
  * server, or it is not shown at all.
  */
 
-export const API_BASE = import.meta.env.VITE_API_URL ?? ''
+function normalizeApiBase(value: string | undefined): string {
+  const base = value?.trim().replace(/\/+$/, '') ?? ''
+  if (!base || /^https?:\/\//i.test(base)) return base
+  if (/^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(base)) return `http://${base}`
+  return `https://${base}`
+}
+
+export const API_BASE = normalizeApiBase(import.meta.env.VITE_API_URL)
 
 export interface ProvenanceItem {
   region_key: string
@@ -18,9 +25,26 @@ export interface ProvenanceItem {
   source_url: string
   last_verified: string
   basis?: 'sourced' | 'modeled' | 'assumed'
+  method?: string
 }
 
 export interface DataGap { site_id: string; driver: string; reason: string }
+export interface UnevaluableSite {
+  site_id: string
+  label: string
+  missing_drivers: string[]
+}
+
+export interface Assumption {
+  key: string
+  label: string
+  value: number
+  unit: string
+  basis: 'sourced' | 'modeled' | 'assumed'
+  source_url: string
+  last_verified: string
+  method: string
+}
 
 export interface Confidence {
   sourced: number
@@ -36,6 +60,19 @@ export interface NarrativeResult {
   source: 'watsonx' | 'fallback' | 'cache'
 }
 
+export interface FinanceOutput {
+  capex_per_kw: number
+  lifetime_cost_per_kw: number
+  npv_usd: number
+  lifetime_years: number
+  /** Required by the response schema and always null for this cost-only model. */
+  payback_years: null
+  ranges: Record<'low' | 'base' | 'high', {
+    npv_usd: number
+    lifetime_per_kw: number
+  }>
+}
+
 export interface EstimateOutput {
   request_id: string
   generated_at: string
@@ -45,16 +82,62 @@ export interface EstimateOutput {
   sites: Record<string, {
     rank: number
     weighted_score: number
-    finance: { capex_per_kw: number; lifetime_cost_per_kw: number; npv_usd: number; payback_years: number }
+    capex: {
+      land_usd: number
+      construction_usd: number
+      electrical_usd: number
+      cooling_usd: number
+      it_fitout_usd: number
+      total_usd: number
+    }
+    opex_annual: {
+      power_usd: number
+      water_usd: number
+      staff_usd: number
+      maintenance_usd: number
+      taxes_usd: number
+      connectivity_usd: number
+      total_usd: number
+    }
+    finance: FinanceOutput
+    non_cost_scores: {
+      risk_score: number | null
+      renewable_pct: number | null
+      low_carbon_pct: number | null
+      latency_ms: number | null
+      grid_interconnection_years: number | null
+    }
+  }>
+  sensitivity: Array<{
+    driver: string
+    current_value: number
+    flip_value: number
+    pct_change: number | null
+    absolute_change?: number
+    affected_sites: string[]
+    stable?: boolean
   }>
   flip_sentence: string
   narrative: NarrativeResult
+  parsed_fields: Array<{
+    site_id: string
+    field: string
+    value: number
+    inferred: boolean
+  }>
   data_provenance: ProvenanceItem[]
   data_gaps: DataGap[]
+  unevaluable: UnevaluableSite[]
   confidence: Confidence
+  assumptions: Assumption[]
 }
 
-export interface EstimateSiteInput { site_id: string; label: string; region_key: string }
+export interface EstimateSiteInput {
+  site_id: string
+  label: string
+  region_key: string
+  free_text?: string | null
+}
 
 export interface EstimateRequest {
   project: {
@@ -68,6 +151,9 @@ export interface EstimateRequest {
   }
   sites: EstimateSiteInput[]
 }
+
+export type EstimateProject = Omit<EstimateRequest['project'], 'weights'>
+export type SiteSetup = Record<string, { label: string; free_text: string }>
 
 const SLOW_MS = 3_000
 const TIMEOUT_MS = 90_000

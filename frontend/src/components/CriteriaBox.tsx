@@ -1,7 +1,12 @@
 import { useState } from 'react'
 import { Sparkles, X, Loader2, AlertTriangle } from 'lucide-react'
 import { Card, Chip } from './Primitives'
-import { parseCriteria, type ParcelFilters, type CriteriaResult } from '../lib/parcelApi'
+import {
+  parseCriteria,
+  type ParcelFilters,
+  type ParcelWeights,
+  type CriteriaResult,
+} from '../lib/parcelApi'
 import { usd } from '../lib/format'
 
 /**
@@ -21,7 +26,16 @@ const FILTER_LABEL: Record<keyof ParcelFilters, (v: number | boolean) => string>
   exclude_flood:          () => 'no flood exposure',
 }
 
-export function CriteriaBox({ onApply }: { onApply: (f: ParcelFilters) => void }) {
+const WEIGHT_LABEL: Record<keyof ParcelWeights, string> = {
+  total_cost: 'cost',
+  risk: 'hazard risk',
+  sustainability: 'sustainability',
+  latency: 'latency',
+}
+
+export function CriteriaBox({ onApply }: {
+  onApply: (filters: ParcelFilters, weights: ParcelWeights) => void
+}) {
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState<CriteriaResult | null>(null)
@@ -39,6 +53,8 @@ export function CriteriaBox({ onApply }: { onApply: (f: ParcelFilters) => void }
 
   const entries = Object.entries(result?.filters ?? {})
     .filter(([k, v]) => v !== undefined && v !== null && !dropped.has(k)) as Array<[keyof ParcelFilters, number | boolean]>
+  const weightEntries = Object.entries(result?.weights ?? {})
+    .filter(([, value]) => value !== undefined && value !== null) as Array<[keyof ParcelWeights, number]>
 
   return (
     <Card title="Describe what you are looking for" note="Optional">
@@ -75,9 +91,11 @@ export function CriteriaBox({ onApply }: { onApply: (f: ParcelFilters) => void }
             </p>
 
             {entries.length === 0 ? (
-              <p className="text-[13.5px] leading-[1.55] text-mid">
-                Nothing here could be turned into a filter.
-              </p>
+              weightEntries.length === 0 && (
+                <p className="text-[13.5px] leading-[1.55] text-mid">
+                  Nothing here could be turned into a filter or ranking preference.
+                </p>
+              )
             ) : (
               <div className="flex flex-wrap gap-2">
                 {entries.map(([k, v]) => (
@@ -92,6 +110,19 @@ export function CriteriaBox({ onApply }: { onApply: (f: ParcelFilters) => void }
                     </button>
                   </span>
                 ))}
+              </div>
+            )}
+
+            {weightEntries.length > 0 && (
+              <div>
+                <p className="mb-2 text-[13px] font-medium text-ink2">Ranking weights</p>
+                <div className="flex flex-wrap gap-2">
+                  {weightEntries.map(([key, value]) => (
+                    <span key={key} className="rounded-full border border-line bg-white px-2.5 py-1 text-[13px] text-ink2">
+                      {WEIGHT_LABEL[key]} {Math.round(value * 100)}%
+                    </span>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -110,14 +141,14 @@ export function CriteriaBox({ onApply }: { onApply: (f: ParcelFilters) => void }
               </div>
             )}
 
-            {entries.length > 0 && (
+            {(entries.length > 0 || weightEntries.length > 0) && (
               <button className="btn btn-primary w-full"
                 onClick={() => {
                   const f: ParcelFilters = {}
                   for (const [k, v] of entries) (f as Record<string, unknown>)[k] = v
-                  onApply(f)
+                  onApply(f, result.weights)
                 }}>
-                Apply these filters
+                Apply filters and ranking
               </button>
             )}
           </div>

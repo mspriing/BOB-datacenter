@@ -1,15 +1,9 @@
 /**
- * Front-end port of the backend cost engine.
+ * Deterministic, offline-only worked-example engine.
  *
- * This mirrors backend/src/engine/{capex,opex,finance,rank}.ts exactly so the
- * numbers on screen match the numbers the API returns. Verified 2026-08-24
- * against the published fixture at 10 MW, cooling overhead 1.4, fifteen years
- * and an eight percent discount rate: Nordic Hydro build cost $123.2M and
- * lifetime $21,962 per kW, Texas ERCOT $17,579 per kW, Northern Virginia
- * $28,394 per kW.
- *
- * Every constant below is a copy of the backend constant of the same name.
- * If one changes there it has to change here.
+ * This powers the clearly labelled homepage demo and pre-run data-gap hints.
+ * It is never used for a submitted comparison or results screen: ranking,
+ * financials, ranges, gaps and narrative there come only from /api/estimate.
  */
 
 import type { UsRegion } from '../data/usRegions'

@@ -238,6 +238,23 @@ describe('parseSiteDescription (regex fallback)', () => {
     expect(result.overrides.renewable_pct).toBeCloseTo(0.68, 2)
   })
 
+  it('drops a renewable percentage outside the input schema bounds', async () => {
+    const result = await parseSiteDescription(
+      'Grid is 500% renewable',
+      { forceFallback: true },
+    )
+    expect(result.overrides.renewable_pct).toBeUndefined()
+  })
+
+  it('keeps valid extracted fields when a different field is out of bounds', async () => {
+    const result = await parseSiteDescription(
+      'Power is $0.08/kWh and the grid is 500% renewable',
+      { forceFallback: true },
+    )
+    expect(result.overrides.power_rate_usd_per_kwh).toBe(0.08)
+    expect(result.overrides.renewable_pct).toBeUndefined()
+  })
+
   it('extracts latency', async () => {
     const result = await parseSiteDescription(
       'Network hub reachable in 12ms from this location',

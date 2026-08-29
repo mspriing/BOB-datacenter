@@ -4,50 +4,50 @@ import { AlertTriangle, Check, Loader2 } from 'lucide-react'
 import { Card } from '../components/Primitives'
 import { useReducedMotion } from '../lib/useReducedMotion'
 
-const STEPS = [
-  'Reading the regional figures for every candidate',
-  'Pricing land, build, power, water, staff and tax',
-  'Discounting 15 years of running cost to today',
-  'Applying your projections to each driver',
-  'Testing every driver for the point where the ranking flips',
-  'Writing the summary and citing each figure',
-]
-
-export function Running({ done, pending, slow, error, retry }: {
+export function Running({ done, pending, slow, error, retry, lifetimeYears }: {
   done: () => void
   pending: boolean
   slow: boolean
   error: string | null
   retry: () => void
+  lifetimeYears: number
 }) {
   const [step, setStep] = useState(0)
   const reduced = useReducedMotion()
+  const steps = [
+    'Reading the regional figures for every candidate',
+    'Validating any site-specific figures you supplied',
+    'Pricing land, build, power, water, staff and tax',
+    `Discounting ${lifetimeYears} years of running cost to today`,
+    'Applying the ranking weights and testing where the order flips',
+    'Writing the recommendation from the engine output',
+  ]
 
   // The checklist paces itself, but it never runs ahead of the server. The last
   // step stays lit until the request settles, so the interface cannot claim to
   // have finished work the engine has not done.
   useEffect(() => {
     if (error) return
-    if (step >= STEPS.length) {
+    if (step >= steps.length) {
       if (pending) return
       const t = setTimeout(done, 420)
       return () => clearTimeout(t)
     }
     const t = setTimeout(() => setStep(s => s + 1), step === 0 ? 520 : 460)
     return () => clearTimeout(t)
-  }, [step, done, pending, error])
+  }, [step, done, pending, error, steps.length])
 
   return (
     <section className="flex min-h-[68vh] items-center justify-center py-14">
       <Card className="w-full max-w-[560px]" weave>
         <div className="p-7 sm:p-8">
-          <p className="label-xs mb-3">Step two of two</p>
+          <p className="label-xs mb-3">Step three of three</p>
           <h1 className="mb-1.5 text-[26px] font-semibold text-ink">Working through the numbers</h1>
           <p className="mb-7 text-[15px] text-mid">
             Every figure below is calculated, not estimated by a language model.
           </p>
           <ol className="space-y-3.5">
-            {STEPS.map((s, i) => {
+            {steps.map((s, i) => {
               const state = i < step ? 'done' : i === step ? 'now' : 'next'
               return (
                 <li key={s} className="flex items-start gap-3.5">

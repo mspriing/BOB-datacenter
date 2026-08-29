@@ -51,6 +51,13 @@ export interface ParcelFilters {
   exclude_flood?: boolean
 }
 
+export interface ParcelWeights {
+  total_cost?: number
+  risk?: number
+  sustainability?: number
+  latency?: number
+}
+
 export type SortBy = 'rank' | 'acres' | 'lifetime_cost_per_kw' | 'land_cost_per_acre'
 
 export interface ParcelQuery extends ParcelFilters {
@@ -58,13 +65,19 @@ export interface ParcelQuery extends ParcelFilters {
   page?: number
   per_page?: number
   sort_by?: SortBy
+  capacity_kw?: number
+  design_pue?: number
+  design_wue?: number
+  lifetime_years?: number
+  discount_rate?: number
+  weights?: ParcelWeights
 }
 
 function toQueryString(q: ParcelQuery): string {
   const p = new URLSearchParams()
   for (const [k, v] of Object.entries(q)) {
     if (v === undefined || v === null || v === '') continue
-    p.set(k, String(v))
+    p.set(k, k === 'weights' ? JSON.stringify(v) : String(v))
   }
   return p.toString()
 }
@@ -128,9 +141,20 @@ export async function fetchParcels(q: ParcelQuery): Promise<ApiResult<ParcelList
   return { data: offlineParcels(q), error: null, offline: true, capturedAt: SNAPSHOT_DATE }
 }
 
-export async function fetchParcel(id: string, county = 'bexar'): Promise<ApiResult<unknown>> {
+export async function fetchParcel(
+  id: string,
+  query: Pick<ParcelQuery, 'county' | 'capacity_kw' | 'design_pue' | 'design_wue' | 'lifetime_years' | 'discount_rate'> = {},
+): Promise<ApiResult<unknown>> {
+  const detailQuery = toQueryString({
+    county: query.county ?? 'bexar',
+    capacity_kw: query.capacity_kw,
+    design_pue: query.design_pue,
+    design_wue: query.design_wue,
+    lifetime_years: query.lifetime_years,
+    discount_rate: query.discount_rate,
+  })
   const r = await get<unknown>(
-    `/parcels/${encodeURIComponent(id)}?county=${encodeURIComponent(county)}`)
+    `/parcels/${encodeURIComponent(id)}?${detailQuery}`)
   if (!('unreachable' in r)) return r
   const { offlineParcel, SNAPSHOT_DATE } = await import('./parcelOffline')
   const hit = offlineParcel(id)
@@ -148,7 +172,7 @@ export async function fetchParcel(id: string, county = 'bexar'): Promise<ApiResu
 
 export interface CriteriaResult {
   filters: ParcelFilters
-  weights: Record<string, number>
+  weights: ParcelWeights
   /** Phrases the parser could not express as a filter. Always shown. */
   unparsed: string[]
   source: 'watsonx' | 'fallback'

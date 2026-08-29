@@ -121,9 +121,9 @@ One `git push` provisions both services automatically.
 | Backend | Node web service | `leepr-backend` |
 | Frontend | Static site | `leepr-frontend` |
 
-The two services wire themselves together: Render injects the backend URL into
-`VITE_API_URL` at frontend build time, and the frontend URL into `CORS_ORIGIN`
-on the backend at startup.
+Render injects the backend host into `VITE_API_URL` at frontend build time.
+`CORS_ORIGIN` may be set to the deployed frontend URL after provisioning; when
+it is unset, the backend accepts all origins.
 
 ### Secrets, entered in the Render dashboard
 

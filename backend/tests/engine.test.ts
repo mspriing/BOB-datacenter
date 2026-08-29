@@ -12,6 +12,7 @@ import { rankSites }       from '../src/engine/rank.js'
 import { computeSensitivity } from '../src/engine/sensitivity.js'
 import { runEngine, UnpriceableError }        from '../src/engine/index.js'
 import { _resetRegionsCache } from '../src/regions.js'
+import { InputSchema } from '../src/schemas/input.js'
 
 // ── capex.ts ─────────────────────────────────────────────────────────────────
 describe('computeCapex', () => {
@@ -177,6 +178,7 @@ describe('computeFinance', () => {
       incentive_usd: 300_000,
     })
     expect(f.capex_per_kw).toBeCloseTo(capex.total_usd / 10_000, 2)
+    expect(f.payback_years).toBeNull()
   })
 })
 
@@ -637,6 +639,7 @@ describe('runEngine — missing data degradation', () => {
 
     // A fully priced site contributes nothing to unevaluable.
     expect(out.unevaluable.map((u) => u.site_id)).not.toContain('nova')
+    expect(out.sites).not.toHaveProperty('alabama')
   })
 
   /**
@@ -660,6 +663,96 @@ describe('runEngine — missing data degradation', () => {
     }
 
     await expect(runEngine(input, opts)).rejects.toThrow(UnpriceableError)
+  })
+
+  describe('request safety and corrected cost semantics', () => {
+    const opts = { forceFallback: true, skipCache: true }
+
+    it('rejects reserved object keys and all-zero ranking weights', () => {
+      const base = {
+        project: {
+          name: 'Safety test',
+          capacity_kw: 10_000,
+          design_pue: 1.4,
+          lifetime_years: 15,
+          discount_rate: 0.08,
+        },
+        sites: [
+          { site_id: '__proto__', label: 'A', region_key: 'us-va-northern' },
+          { site_id: 'b', label: 'B', region_key: 'us-tx-ercot' },
+        ],
+      }
+      expect(InputSchema.safeParse(base).success).toBe(false)
+      expect(InputSchema.safeParse({
+        ...base,
+        project: {
+          ...base.project,
+          weights: { total_cost: 0, risk: 0, sustainability: 0, latency: 0 },
+        },
+        sites: [
+          { site_id: 'a', label: 'A', region_key: 'us-va-northern' },
+          { site_id: 'b', label: 'B', region_key: 'us-tx-ercot' },
+        ],
+      }).success).toBe(false)
+    })
+
+    it('does not let a one-time incentive reduce annual maintenance or property tax', async () => {
+      const input = {
+        request_id: '00000000-0000-0000-0000-000000000020',
+        project: {
+          name: 'Incentive basis test',
+          capacity_kw: 10_000,
+          design_pue: 1.4,
+          lifetime_years: 15,
+          discount_rate: 0.08,
+        },
+        sites: [
+          { site_id: 'nova', label: 'Northern Virginia', region_key: 'us-va-northern' },
+          { site_id: 'ercot', label: 'Texas ERCOT', region_key: 'us-tx-ercot' },
+        ],
+      }
+      const withoutIncentive = await runEngine(input, opts)
+      const withIncentive = await runEngine({
+        ...input,
+        request_id: '00000000-0000-0000-0000-000000000021',
+        sites: [
+          { ...input.sites[0], overrides: { incentive_usd: 10_000_000 } },
+          input.sites[1],
+        ],
+      }, opts)
+      expect(withIncentive.sites.nova.capex.total_usd)
+        .toBe(withoutIncentive.sites.nova.capex.total_usd - 10_000_000)
+      expect(withIncentive.sites.nova.opex_annual.maintenance_usd)
+        .toBe(withoutIncentive.sites.nova.opex_annual.maintenance_usd)
+      expect(withIncentive.sites.nova.opex_annual.taxes_usd)
+        .toBe(withoutIncentive.sites.nova.opex_annual.taxes_usd)
+    })
+
+    it('keeps every scenario ordered when a site overrides a regional cost', async () => {
+      const out = await runEngine({
+        request_id: '00000000-0000-0000-0000-000000000022',
+        project: {
+          name: 'Override range test',
+          capacity_kw: 10_000,
+          design_pue: 1.4,
+          lifetime_years: 15,
+          discount_rate: 0.08,
+        },
+        sites: [
+          {
+            site_id: 'ercot',
+            label: 'Texas ERCOT',
+            region_key: 'us-tx-ercot',
+            overrides: { power_rate_usd_per_kwh: 0.001 },
+          },
+          { site_id: 'nova', label: 'Northern Virginia', region_key: 'us-va-northern' },
+        ],
+      }, opts)
+      for (const site of Object.values(out.sites)) {
+        expect(site.finance.ranges.low.npv_usd).toBeGreaterThanOrEqual(site.finance.ranges.base.npv_usd)
+        expect(site.finance.ranges.base.npv_usd).toBeGreaterThanOrEqual(site.finance.ranges.high.npv_usd)
+      }
+    })
   })
 
   /**
@@ -741,7 +834,7 @@ describe('region key coverage (Part 2b)', () => {
 describe('hero fixture exact scores and flip point (Part 2e)', () => {
   beforeEach(() => { _resetRegionsCache() })
 
-  it('Nordic 0.647, ERCOT 0.622, NoVA 0.315 — the lead now flips on a small build cost move', async () => {
+  it('uses negotiated abatements only and reports the corrected hero ranking', async () => {
     const out = await runEngine({
       request_id: '00000000-0000-0000-0000-000000000099',
       project: {
@@ -759,13 +852,10 @@ describe('hero fixture exact scores and flip point (Part 2e)', () => {
       ],
     }, { forceFallback: true, skipCache: true })
 
-    // Nordic moved from 0.672 in two steps. First the engine corrections a
-    // working data-center operator asked for. Then the thirty places where the
-    // published demo numbers disagreed with the July collection were settled in
-    // favour of the collection, which raised the build cost in every one of
-    // these three regions and raised Northern Virginia's land from $420,000 an
-    // acre to $4.4M. Nordic's lead over ERCOT is now thin.
-    expect(out.sites['nordic'].weighted_score).toBeCloseTo(0.647, 2)
+    // Regional incentive metadata is not treated as an automatic property-tax
+    // holiday. ERCOT therefore carries tax from year 1 unless the candidate
+    // explicitly supplies a negotiated abatement.
+    expect(out.sites['nordic'].weighted_score).toBeCloseTo(0.698, 2)
     expect(out.sites['ercot'].weighted_score).toBeCloseTo(0.622, 2)
     expect(out.sites['nova'].weighted_score).toBeCloseTo(0.315, 2)
 
@@ -773,15 +863,13 @@ describe('hero fixture exact scores and flip point (Part 2e)', () => {
     expect(out.sites['ercot'].rank).toBe(2)
     expect(out.sites['nova'].rank).toBe(3)
 
-    // Ranking flips when Nordic construction cost rises by ~8%
+    // Ranking flips when Nordic construction cost rises by roughly 10%.
     const constructionFlip = out.sensitivity.find(
       (s) => s.driver === 'construction_cost_per_kw' && !s.stable,
     )
     expect(constructionFlip).toBeDefined()
-    // Under 5% now. Nordic's build cost rose to the Nordic index level while
-    // ERCOT's rose to the Dallas level, and the gap between them closed.
-    expect(constructionFlip!.pct_change).toBeGreaterThan(0.5)
-    expect(constructionFlip!.pct_change).toBeLessThan(6)
+    expect(constructionFlip!.pct_change).toBeGreaterThan(9)
+    expect(constructionFlip!.pct_change).toBeLessThan(12)
   })
 
   it('provenance includes basis field on every item from regions.json', async () => {
@@ -809,5 +897,3 @@ describe('hero fixture exact scores and flip point (Part 2e)', () => {
     }
   })
 })
-
-

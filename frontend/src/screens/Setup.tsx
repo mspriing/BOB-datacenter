@@ -1,25 +1,22 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { ArrowRight, MapPin, AlertTriangle } from 'lucide-react'
 import { Card, FoldCard, Field } from '../components/Primitives'
-import { ProjectionSliders } from '../components/ProjectionSliders'
-import { PROJECT, COVERAGE } from '../data/project'
+import { COVERAGE } from '../data/project'
 import { ALL_REGIONS } from '../lib/useSites'
 import { gapsFor } from '../lib/engine'
 import { DEFAULT_SITES } from '../data/defaultSites'
 import { useSites } from '../lib/useSites'
-import type { Projections, ProjectParams } from '../lib/engine'
+import type { EstimateProject, SiteSetup } from '../lib/api'
 import type { Route } from '../lib/routes'
 
-const P: ProjectParams = {
-  capacityKw: PROJECT.capacityMw * 1000, pue: PROJECT.pue,
-  lifetimeYears: PROJECT.lifetimeYears, discountRate: PROJECT.discountRate, designWue: 0.4,
-}
-
 export function Setup({
-  projections, setProjections, pinned, chosen, setChosen, zoom, setZoom, run, go,
+  project, setProject, siteSetup, setSiteSetup,
+  pinned, chosen, setChosen, zoom, setZoom, run, go,
 }: {
-  projections: Projections
-  setProjections: (p: Projections) => void
+  project: EstimateProject
+  setProject: React.Dispatch<React.SetStateAction<EstimateProject>>
+  siteSetup: SiteSetup
+  setSiteSetup: React.Dispatch<React.SetStateAction<SiteSetup>>
   pinned: string[]
   chosen: string[]
   setChosen: (f: (c: string[]) => string[]) => void
@@ -31,7 +28,6 @@ export function Setup({
   const atParcelGrain = zoom === 'parcels'
   const { sites, source } = useSites(pinned, chosen)
   const fromPins = source === 'pins'
-  const [freeText, setFreeText] = useState('')
 
   // Every selectable region, the published three first so the default set reads
   // in the order the worked example uses.
@@ -46,8 +42,8 @@ export function Setup({
   const active = fromPins ? sites.map(s => s.key) : chosen
 
   // A region the dataset has not finished pricing must say so here, before the
-  // run, not afterwards. The browser's preview reads a missing cost as zero,
-  // which would quietly flatter an unpriced market into first place.
+  // run, not afterwards. The backend keeps sites with missing cost drivers out
+  // of the ranking, and the results screen reports them as unevaluable.
   const PLAIN: Record<string, string> = {
     power_rate_usd_per_kwh: 'power price',
     construction_cost_per_kw: 'cost to build',
@@ -77,10 +73,33 @@ export function Setup({
   const setSlot = (i: number, key: string) =>
     setChosen(c => c.map((v, j) => (j === i ? key : v)))
 
+  const patchProject = <K extends keyof EstimateProject>(key: K, value: EstimateProject[K]) =>
+    setProject(current => ({ ...current, [key]: value }))
+
+  const patchSite = (key: string, patch: Partial<SiteSetup[string]>) =>
+    setSiteSetup(current => ({
+      ...current,
+      [key]: {
+        label: current[key]?.label ?? sites.find(site => site.key === key)?.label ?? key,
+        free_text: current[key]?.free_text ?? '',
+        ...patch,
+      },
+    }))
+
+  const validProject =
+    project.name.trim().length > 0
+    && project.capacity_kw >= 100 && project.capacity_kw <= 500_000
+    && project.lifetime_years >= 5 && project.lifetime_years <= 40
+    && Number.isInteger(project.lifetime_years)
+    && project.design_pue >= 1 && project.design_pue <= 3
+    && (project.design_wue ?? 0.4) >= 0 && (project.design_wue ?? 0.4) <= 2.5
+    && project.discount_rate >= 0.01 && project.discount_rate <= 0.30
+    && sites.every(site => (siteSetup[site.key]?.label ?? site.label).trim().length > 0)
+
   return (
     <section className="pt-6 sm:pt-10">
       <div className="mb-8">
-        <p className="label-xs mb-3">Step one of two</p>
+        <p className="label-xs mb-3">Step two of three</p>
         <h1 className="mb-4 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
           font-semibold leading-[1.08] tracking-[-.02em] text-ink">
           Pick how close to look, then describe the build.
@@ -102,7 +121,7 @@ export function Setup({
               It is the only control here that changes what the rest of the page
               shows, so it opens the page. */}
           <Card title="How close do you want to look?"
-            note="The same fifteen years get priced whichever you pick">
+            note={`The same ${project.lifetime_years} years get priced whichever you pick`}>
             <div className="grid gap-3 p-5 sm:grid-cols-2">
               {([
                 {
@@ -144,15 +163,35 @@ export function Setup({
           <div key={zoom} className="swap-enter space-y-3.5">
           <Card title="The build" note="What you are putting up, and for how long">
             <div className="grid gap-5 p-5 sm:grid-cols-2">
-              <Field label="Project name" defaultValue={PROJECT.name}
+              <Field label="Project name" value={project.name}
+                onChange={value => patchProject('name', value)}
                 hint="Your label for this comparison. It appears on the results and changes nothing in the arithmetic."
                 explain="Your label for this comparison. It appears on the results and changes nothing in the arithmetic." />
-              <Field label="How much power the servers draw" defaultValue="10 MW"
-                hint="10 MW is a mid-size campus. This is the servers alone, before anything spent on cooling them."
-                explain="Capacity is normally quoted this way, so a 10 MW campus pulls more than 10 MW at the meter once cooling is added." />
-              <Field label="How many years to price" defaultValue="15"
-                hint="15 years is the usual planning life. A longer horizon puts more weight on power and staff and less on the build."
-                explain="Running cost is added up across this many years and brought back to today's money." />
+              <label className="block">
+                <span className="mb-1.5 block text-[15px] font-medium text-ink2">
+                  How much power the servers draw
+                </span>
+                <div className="flex items-center gap-2">
+                  <input className="field num" type="number" min={0.1} max={500} step={0.1}
+                    value={project.capacity_kw / 1000}
+                    onChange={event => patchProject('capacity_kw', Number(event.target.value) * 1000)} />
+                  <span className="text-[13px] text-mid">MW</span>
+                </div>
+                <p className="mt-1.5 text-[13px] leading-[1.5] text-mid">
+                  Server load before cooling and electrical overhead. Accepted range: 0.1–500 MW.
+                </p>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-[15px] font-medium text-ink2">
+                  How many years to price
+                </span>
+                <input className="field num" type="number" min={5} max={40} step={1}
+                  value={project.lifetime_years}
+                  onChange={event => patchProject('lifetime_years', Number(event.target.value))} />
+                <p className="mt-1.5 text-[13px] leading-[1.5] text-mid">
+                  The engine accepts whole planning lives from 5 to 40 years.
+                </p>
+              </label>
             </div>
           </Card>
 
@@ -162,15 +201,39 @@ export function Setup({
           <FoldCard title="Three assumptions worth understanding"
             note="Filled in already. Open it if you have a reason to change one">
             <div className="grid gap-5 p-5 sm:grid-cols-3">
-              <Field label="Cooling overhead" defaultValue="1.25"
-                hint="Total site power divided by what the servers draw. 1.25 means a quarter again goes to cooling and electrical losses. A new build aims for about that. Running data centers average 1.54, and those above 20 MW average 1.44."
-                explain="Known in the industry as PUE. Lower is better, and it multiplies the electricity bill directly." />
-              <Field label="Discount rate" defaultValue="8%"
-                hint="What money in the future is worth to you today. A dollar of running cost in year 15 counts for less than one spent now. 8% is a common starting point. A higher rate favors sites that are cheap to build. A lower one favors sites that are cheap to run."
-                explain="The rate used to bring every future year of running cost back to today's money." />
-              <Field label="Water your cooling uses" defaultValue="0.4 L per kWh"
-                hint="Liters of water for each kilowatt hour of cooling. 0.4 is a normal design figure. Air cooled runs lower and evaporative runs higher. It is a choice in the design rather than something the region decides, which is why it sits here."
-                explain="Multiplied by the local water tariff to give the annual water bill." />
+              <label className="block">
+                <span className="mb-1.5 block text-[15px] font-medium text-ink2">Cooling overhead (PUE)</span>
+                <input className="field num" type="number" min={1} max={3} step={0.01}
+                  value={project.design_pue}
+                  onChange={event => patchProject('design_pue', Number(event.target.value))} />
+                <p className="mt-1.5 text-[13px] leading-[1.5] text-mid">
+                  Total facility power divided by server power. Accepted range: 1.0–3.0.
+                </p>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-[15px] font-medium text-ink2">Discount rate</span>
+                <div className="flex items-center gap-2">
+                  <input className="field num" type="number" min={1} max={30} step={0.1}
+                    value={project.discount_rate * 100}
+                    onChange={event => patchProject('discount_rate', Number(event.target.value) / 100)} />
+                  <span className="text-[13px] text-mid">%</span>
+                </div>
+                <p className="mt-1.5 text-[13px] leading-[1.5] text-mid">
+                  Used to discount each future year. Accepted range: 1–30%.
+                </p>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-[15px] font-medium text-ink2">Water use (WUE)</span>
+                <div className="flex items-center gap-2">
+                  <input className="field num" type="number" min={0} max={2.5} step={0.1}
+                    value={project.design_wue ?? 0.4}
+                    onChange={event => patchProject('design_wue', Number(event.target.value))} />
+                  <span className="text-[13px] text-mid">L/kWh</span>
+                </div>
+                <p className="mt-1.5 text-[13px] leading-[1.5] text-mid">
+                  Litres of water per kWh of cooling energy. Accepted range: 0–2.5.
+                </p>
+              </label>
             </div>
           </FoldCard>
 
@@ -204,7 +267,11 @@ export function Setup({
                       {i + 1}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <div className="text-[15px] font-medium text-ink">{s.label}</div>
+                      <label className="block">
+                        <span className="label-xs mb-1.5 block">Your name for it</span>
+                        <input className="field" value={siteSetup[s.key]?.label ?? s.label}
+                          onChange={event => patchSite(s.key, { label: event.target.value })} />
+                      </label>
                       <div className="text-[13px] text-mid">{s.place}</div>
                     </div>
                   </div>
@@ -237,7 +304,8 @@ export function Setup({
                     <label className="min-w-[150px] flex-1">
                       <span className="label-xs mb-1.5 block">Your name for it</span>
                       <input className="field"
-                        defaultValue={options.find(o => o.key === key)?.label.replace(/,.*$/, '')} />
+                        value={siteSetup[key]?.label ?? options.find(o => o.key === key)?.label.replace(/,.*$/, '') ?? key}
+                        onChange={event => patchSite(key, { label: event.target.value })} />
                     </label>
                     {chosen.length > 2 && (
                       <button onClick={() => setChosen(c => c.filter((_, j) => j !== i))}
@@ -308,48 +376,43 @@ export function Setup({
           )}
 
           {!atParcelGrain && (
-          <FoldCard title="Anything else you know" note="Optional. A quote, an abatement, a figure you were given">
-            <div className="p-5">
-              <label className="block">
-                <span className="mb-1.5 block text-[15px] font-medium text-ink2">
-                  Write it in plain sentences
-                </span>
-                <textarea className="field font-normal" value={freeText}
-                  onChange={e => setFreeText(e.target.value)}
-                  placeholder="Loudoun has a five year tax abatement on the table. Sweden quoted us 10,400 per kW last month, not 10,200." />
-              </label>
-              <p className="mt-2 text-[13.5px] leading-[1.55] text-mid">
-                The tool pulls any figures out of what you write and shows them back to you before
-                pricing starts. It never infers a number by itself, and it will not move a site to
-                a region already in the set.
-              </p>
-            </div>
-          </FoldCard>
+            <FoldCard title="Anything else you know"
+              note="Optional site-specific quotes, abatements or figures">
+              <div className="divide-y divide-[var(--line2)]">
+                {sites.map(site => (
+                  <label key={site.key} className="block p-5">
+                    <span className="mb-1.5 block text-[15px] font-medium text-ink2">
+                      {siteSetup[site.key]?.label || site.label}
+                    </span>
+                    <textarea className="field font-normal"
+                      value={siteSetup[site.key]?.free_text ?? ''}
+                      onChange={event => patchSite(site.key, { free_text: event.target.value })}
+                      placeholder="Five-year property-tax abatement offered; quoted construction cost is $10,400 per kW." />
+                  </label>
+                ))}
+                <p className="p-5 text-[13.5px] leading-[1.55] text-mid">
+                  Each note is sent as that site&rsquo;s <span className="num">free_text</span>.
+                  The backend validates any parsed figure before it reaches the deterministic engine.
+                </p>
+              </div>
+            </FoldCard>
           )}
 
           </div>
-
-        {/* The projections used to ride a tall sticky rail beside a shorter
-            column, which left the page ending on two different lines. They sit
-            full width below the thing they act on instead. */}
-        {!atParcelGrain && (
-          <ProjectionSliders
-            sites={sites} project={P} projections={projections}
-            onChange={setProjections} onReset={() => setProjections({})} />
-        )}
 
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-[12px]
                         border border-line bg-white/80 px-5 py-4">
           <p className="max-w-[52ch] text-[13.5px] leading-[1.55] text-mid">
             {atParcelGrain
-              ? `Bexar County parcels, priced across ${PROJECT.lifetimeYears} years.`
-              : `${active.length} regions, priced across ${PROJECT.lifetimeYears} years.`}{' '}
+              ? `Bexar County parcels, priced across ${project.lifetime_years} years.`
+              : `${active.length} regions, priced across ${project.lifetime_years} years.`}{' '}
             The run happens on the server, which is where the sources, the gaps and the wording
             come from.
           </p>
           <button className="btn btn-primary" onClick={run}
-            disabled={!atParcelGrain && duplicates.length > 0}
-            style={!atParcelGrain && duplicates.length > 0 ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}>
+            disabled={!validProject || (!atParcelGrain && duplicates.length > 0)}
+            style={!validProject || (!atParcelGrain && duplicates.length > 0)
+              ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}>
             {atParcelGrain ? 'Look at the parcels' : 'Run the comparison'}
             <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
           </button>

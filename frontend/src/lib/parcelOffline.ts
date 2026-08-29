@@ -80,18 +80,22 @@ export function offlineParcels(q: ParcelQuery): ParcelListResponse {
     }
   })
 
-  // Renumber down the filtered list, which is what the live service does after
-  // it re-scores. Parcels it could not price keep rank 0 and stay unranked.
-  const renumbered = sorted.map((r, i) => ({ ...r, rank: r.rank === 0 ? 0 : i + 1 }))
+  // A rank-sort can be renumbered down the filtered snapshot. For every other
+  // sort, preserve the recorded score rank: otherwise the cheapest-land or
+  // largest parcel would be assigned rank 1 merely because that column put it
+  // first, and the UI would falsely call it "Best fit".
+  const output = q.sort_by === undefined || q.sort_by === 'rank'
+    ? sorted.map((r, i) => ({ ...r, rank: r.rank === 0 ? 0 : i + 1 }))
+    : sorted
 
   const page = q.page ?? 1
   const perPage = q.per_page ?? 50
   return {
     county: q.county ?? 'bexar',
-    total: renumbered.length,
+    total: output.length,
     page,
     per_page: perPage,
-    parcels: renumbered.slice((page - 1) * perPage, page * perPage),
+    parcels: output.slice((page - 1) * perPage, page * perPage),
   }
 }
 

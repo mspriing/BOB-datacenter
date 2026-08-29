@@ -255,7 +255,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
               ])} />
           </Card>
           <Card title="Three that get misread"><Prose>
-            <p><b className="text-ink">Cost to build is not the whole cost.</b> It covers shell, structure and site works. Electrical plant, cooling plant and IT fit out are priced separately at fixed rates per kW, so two sites with the same build cost can still land in different places.</p>
+            <p><b className="text-ink">Cost to build is not the whole cost.</b> The published construction index already includes shell and core, architectural fit-out, and mechanical and electrical fit-out and equipment. The engine adds land separately; active IT equipment, utility connection work, abnormal groundworks and professional fees are not priced.</p>
             <p><b className="text-ink">Water use is yours. Water price is theirs.</b> The region sets the rate. How many liters per kWh your cooling design consumes is a decision you make, which is why it sits on the setup screen rather than in the regional data.</p>
             <p><b className="text-ink">Distance to your users is a proxy.</b> It measures the round trip to the nearest major interconnection hub rather than to your customers. If your users sit somewhere unusual, this driver will mislead you.</p>
           </Prose></Card>
@@ -270,11 +270,8 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
             <p className="num text-[14px] text-ink">acres = max(5, capacity_MW × 1.2)</p>
             <p className="num text-[14px] text-ink">land = acres × land_price_per_acre</p>
             <p className="num text-[14px] text-ink">construction = capacity_kW × cost_to_build_per_kW</p>
-            <p className="num text-[14px] text-ink">electrical = capacity_kW × $550</p>
-            <p className="num text-[14px] text-ink">cooling = capacity_kW × $400</p>
-            <p className="num text-[14px] text-ink">IT fit out = capacity_kW × $200</p>
-            <p className="num text-[14px] text-ink">capex = land + construction + electrical + cooling + fit out − incentive</p>
-            <p className="text-mid">Electrical covers switchgear, uninterruptible supply, distribution units and transformers. Cooling is a baseline air cooled plant. Fit out is racks, trays and structured cabling. All three are held flat across regions, so any regional difference in build cost shows up in the construction line alone.</p>
+            <p className="num text-[14px] text-ink">capex = max(0, land + construction − user-supplied incentive)</p>
+            <p className="text-mid">Electrical and cooling are not added again: the construction index already includes mechanical and electrical fit-out and equipment. Their response fields remain zero for compatibility. IT fit-out is not priced by this model.</p>
           </Prose></Card>
 
           <Card title="Running cost, per year"><Prose>
@@ -283,7 +280,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
             <p className="num text-[14px] text-ink">cooling energy = capacity_kW × (PUE − 1) × 8,760</p>
             <p className="num text-[14px] text-ink">water = cooling energy × WUE ÷ 3,785.4 × water_price_per_kgal</p>
             <p className="num text-[14px] text-ink">staff = capacity_kW × $280 × staff_cost_index</p>
-            <p className="num text-[14px] text-ink">maintenance = capex × 1.5%</p>
+            <p className="num text-[14px] text-ink">maintenance = capex × 1.0%</p>
             <p className="num text-[14px] text-ink">tax = capex × tax_rate, and zero during the abatement years</p>
             <p className="num text-[14px] text-ink">connectivity = capacity_kW × $60</p>
             <p className="text-mid">Tax is computed year by year rather than as an average, which is what lets a ten year abatement show up properly instead of being smeared across the whole life.</p>
@@ -291,13 +288,16 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
 
           <Card title="Bringing it back to today"><Prose>
             <p className="num text-[14px] text-ink">running cost NPV = Σ over each year t of (running cost in year t) ÷ (1 + discount rate)^t</p>
-            <p className="num text-[14px] text-ink">total = capex + running cost NPV</p>
-            <p className="num text-[14px] text-ink">lifetime cost per kW = total ÷ capacity_kW</p>
+            <p className="num text-[14px] text-ink">cost NPV = −(capex + running cost NPV)</p>
+            <p className="num text-[14px] text-ink">lifetime cost per kW = |cost NPV| ÷ capacity_kW</p>
+            <p className="num text-[14px] text-ink">build cost per kW = capex ÷ capacity_kW</p>
+            <p className="num text-[14px] text-ink">payback = null (not applicable)</p>
             <p className="text-mid">Each year is priced separately and then discounted, rather than one year being repeated across the whole term. That matters where a site has a property tax abatement: a ten year abatement on a fifteen year build has to stop in year eleven. At fifteen years and an eight percent discount rate, a site whose running cost never changes carries about eight and a half years of it in today&rsquo;s money.</p>
+            <p className="text-mid">Payback is deliberately null because this cost-only model has no revenue, savings stream or investment return from which a payback period could be calculated.</p>
           </Prose></Card>
 
           <Card title="The band around each figure"><Prose>
-            <p>Each site carries a low and a high alongside the expected figure. The band comes from the low and high values published for each driver rather than from a confidence interval. Treat it as the range the inputs support rather than a statistical claim.</p>
+            <p>Each site carries low, base and high scenarios. The engine recomputes the full CapEx, annual OpEx and discounted lifetime cost using the dataset&rsquo;s low/high power-rate and construction-cost bounds. It is an input-supported scenario band, not a statistical confidence interval.</p>
           </Prose></Card>
 
           <Card title="Where the modeled build cost comes from" note="Applies to 56 of the 63 US regions"><Prose>

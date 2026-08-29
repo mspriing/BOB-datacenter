@@ -34,7 +34,9 @@ const FinanceSchema = z.object({
   lifetime_cost_per_kw: z.number(),
   npv_usd:              z.number(),
   lifetime_years:       z.number(),
-  payback_years:        z.number(),
+  // A cost-only model has no positive cash flow from which to calculate
+  // payback. Keep the required field explicit rather than fabricating a ratio.
+  payback_years:        z.null(),
   ranges: z.object({
     low:  RangeSchema,
     base: RangeSchema,
@@ -82,7 +84,8 @@ const SensitivityItemSchema = z.object({
   driver:          z.string(),
   current_value:   z.number(),
   flip_value:      z.number(),
-  pct_change:      z.number(),
+  pct_change:      z.number().nullable(),
+  absolute_change: z.number().optional(),
   affected_sites:  z.array(z.string()),
   /** True when no weighted-score flip occurs within the search range. */
   stable:          z.boolean().optional(),

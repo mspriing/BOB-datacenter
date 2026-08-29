@@ -4,6 +4,7 @@ import { Card, Explain, Chip, Rule } from '../components/Primitives'
 import { CriteriaBox } from '../components/CriteriaBox'
 import { ParcelMap, PARCEL_SHADE, type ParcelShadeKey } from '../components/map/ParcelMap'
 import { fetchParcels, type ParcelSummary, type ParcelQuery, type SortBy } from '../lib/parcelApi'
+import type { EstimateProject } from '../lib/api'
 import { usd } from '../lib/format'
 import type { Route } from '../lib/routes'
 
@@ -16,14 +17,6 @@ import type { Route } from '../lib/routes'
  * rail, map and list all derive from `query` here, and nothing derives from
  * anything else.
  */
-const DEFAULT_QUERY: ParcelQuery = {
-  county: 'bexar',
-  min_acres: 25,
-  page: 1,
-  per_page: 50,
-  sort_by: 'rank',
-}
-
 const SORTS: Array<{ key: SortBy; label: string }> = [
   { key: 'rank',                 label: 'Best fit' },
   { key: 'lifetime_cost_per_kw', label: 'Cheapest lifetime' },
@@ -61,11 +54,24 @@ function NumberFilter({ label, hint, value, onChange, placeholder, suffix }: {
   )
 }
 
-export function ParcelSearch({ onOpenParcel, go }: {
+export function ParcelSearch({ project, onOpenParcel, go }: {
+  project: EstimateProject
   onOpenParcel: (id: string) => void
   go: (r: Route) => void
 }) {
-  const [query, setQuery] = useState<ParcelQuery>(DEFAULT_QUERY)
+  const defaultQuery = useMemo<ParcelQuery>(() => ({
+    county: 'bexar',
+    min_acres: 25,
+    page: 1,
+    per_page: 50,
+    sort_by: 'rank',
+    capacity_kw: project.capacity_kw,
+    design_pue: project.design_pue,
+    design_wue: project.design_wue,
+    lifetime_years: project.lifetime_years,
+    discount_rate: project.discount_rate,
+  }), [project])
+  const [query, setQuery] = useState<ParcelQuery>(defaultQuery)
   const [shade, setShade] = useState<ParcelShadeKey>('lifetime_cost_per_kw')
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
@@ -111,20 +117,36 @@ export function ParcelSearch({ onOpenParcel, go }: {
   }, [query])
 
   useEffect(() => {
-    fetchParcels({ county: 'bexar', per_page: 1 }).then(r => {
+    fetchParcels({
+      county: 'bexar',
+      per_page: 1,
+      capacity_kw: project.capacity_kw,
+      design_pue: project.design_pue,
+      design_wue: project.design_wue,
+      lifetime_years: project.lifetime_years,
+      discount_rate: project.discount_rate,
+    }).then(r => {
       if (r.data) setBaseline(r.data.total)
     })
-  }, [])
+  }, [project])
 
   const removed = useMemo(
     () => (baseline !== null && total !== null ? baseline - total : null),
     [baseline, total])
 
+  const activeWeightLabel = query.weights && Object.keys(query.weights).length > 0
+    ? `ranking: ${Object.entries(query.weights)
+        .map(([key, value]) => `${key.replace('total_cost', 'cost')} ${Math.round((value ?? 0) * 100)}%`)
+        .join(', ')}`
+    : false
+
   const activeFilters = [
     query.min_acres !== undefined && `${query.min_acres}+ acres`,
+    query.max_acres !== undefined && `at most ${query.max_acres} acres`,
     query.max_land_cost_per_acre !== undefined && `land under ${usd(query.max_land_cost_per_acre)}/ac`,
     query.max_dist_tx_m !== undefined && `within ${(query.max_dist_tx_m / 1000).toFixed(1)} km of transmission`,
     query.exclude_flood && 'no flood exposure',
+    activeWeightLabel,
   ].filter(Boolean) as string[]
 
   return (
@@ -135,7 +157,7 @@ export function ParcelSearch({ onOpenParcel, go }: {
             <ArrowLeft size={14} strokeWidth={2.4} aria-hidden />
             Back to the build
           </button>
-          <p className="label-xs">Step two of two<Rule />Bexar County, Texas</p>
+          <p className="label-xs">Step two of three<Rule />Bexar County, Texas</p>
         </div>
         <h1 className="mb-3 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
           font-semibold leading-[1.08] tracking-[-.02em] text-ink">
@@ -158,6 +180,9 @@ export function ParcelSearch({ onOpenParcel, go }: {
               on the default build. The order is the one it gave for the whole county, and the
               number beside each entry counts down the set your filters left. Open a row and
               you get the estimate as it stood then rather than a fresh one.
+              {query.weights && Object.keys(query.weights).length > 0
+                ? ' Custom ranking weights are sent to the live API, but cannot be recomputed from this recording.'
+                : ''}
             </p>
           </div>
         )}
@@ -168,7 +193,7 @@ export function ParcelSearch({ onOpenParcel, go }: {
         <div className="space-y-3.5 lg:sticky lg:top-4">
           {/* Applying merges onto the same `query` the rail writes to, so the
               sentence and the controls can never disagree about what is set. */}
-          <CriteriaBox onApply={f => patch(f)} />
+          <CriteriaBox onApply={(filters, weights) => patch({ ...filters, weights, sort_by: 'rank' })} />
 
           <Card title="Narrow the set"
             note={total === null ? 'counting' : `${total.toLocaleString('en-US')} match`}>
@@ -176,6 +201,10 @@ export function ParcelSearch({ onOpenParcel, go }: {
               <NumberFilter label="Smallest site" hint="A 10 MW campus needs roughly 12 acres at 1.2 acres per megawatt, so 25 is a working floor with room for setbacks."
                 value={query.min_acres} onChange={v => patch({ min_acres: v })}
                 placeholder="25" suffix="acres" />
+
+              <NumberFilter label="Largest site" hint="Use this when a maximum parcel size or acquisition envelope matters."
+                value={query.max_acres} onChange={v => patch({ max_acres: v })}
+                placeholder="any" suffix="acres" />
 
               <NumberFilter label="Most per acre" hint="Land price is modeled from the appraisal district's land value, not a sale price. Texas does not publish sale prices."
                 value={query.max_land_cost_per_acre} onChange={v => patch({ max_land_cost_per_acre: v })}
@@ -205,7 +234,17 @@ export function ParcelSearch({ onOpenParcel, go }: {
               )}
 
               {activeFilters.length > 0 && (
-                <button onClick={() => setQuery(DEFAULT_QUERY)}
+                <div className="flex flex-wrap gap-2">
+                  {activeFilters.map(filter => (
+                    <span key={filter} className="rounded-full border border-line bg-card2 px-2.5 py-1 text-[12.5px] text-ink2">
+                      {filter}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {activeFilters.length > 0 && (
+                <button onClick={() => setQuery(defaultQuery)}
                   className="link-inline text-[13.5px]">Reset filters</button>
               )}
             </div>
@@ -227,10 +266,15 @@ export function ParcelSearch({ onOpenParcel, go }: {
 
         {/* ── Map + list ────────────────────────────────────────────────── */}
         <div className="space-y-3.5">
-          <Card>
+          <Card title="Map of this page"
+            note={`${parcels.length.toLocaleString('en-US')} of ${total?.toLocaleString('en-US') ?? '…'} matching parcels`}>
             <div className="p-4 sm:p-5">
               <ParcelMap parcels={parcels} shade={shade} selectedId={selectedId}
                 onSelect={setSelectedId} className="h-[440px]" />
+              <p className="mt-3 text-[13px] leading-[1.55] text-mid">
+                The map shows only the rows on page {query.page ?? 1}, not the full result set.
+                Use Previous and Next below to map another bounded page.
+              </p>
             </div>
           </Card>
 
@@ -266,13 +310,14 @@ export function ParcelSearch({ onOpenParcel, go }: {
               <div className="divide-y divide-[var(--line2)]">
                 {parcels.map((p, i) => {
                   const isSel = p.parcel_id === selectedId
+                  const isBestFit = p.rank === 1
                   return (
                     <div key={p.parcel_id}
                       onMouseEnter={() => setSelectedId(p.parcel_id)}
                       className={`flex items-start gap-3 p-4 transition-colors ${isSel ? 'bg-bluex' : ''}`}>
                       <span className={`flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[9px]
                                        text-[13.5px] font-bold
-                                       ${i === 0 && query.page === 1
+                                       ${isBestFit
                                          ? 'bg-[linear-gradient(135deg,#0F62FE,#0043CE)] text-white'
                                          : 'border border-line bg-card2 text-mid'}`}>
                         {(query.page! - 1) * query.per_page! + i + 1}
@@ -280,7 +325,7 @@ export function ParcelSearch({ onOpenParcel, go }: {
                       <div className="min-w-0 flex-1">
                         <div className="mb-0.5 flex flex-wrap items-center gap-2">
                           <span className="text-[14.5px] font-medium text-ink">{p.address}</span>
-                          {i === 0 && query.page === 1 && p.rank === 1 && <Chip>Best fit</Chip>}
+                          {isBestFit && <Chip>Best fit</Chip>}
                           {p.unevaluable !== null && <Chip tone="grey">Not priced</Chip>}
                           {p.zoning === 'outside-jurisdiction' && <Chip tone="grey">No zoning</Chip>}
                         </div>

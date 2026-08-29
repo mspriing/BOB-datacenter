@@ -198,11 +198,18 @@ export function driversForParcel(row: ParcelRow, county: CountyConfig): DriversR
   )
   provenance.push(waterRes.prov)
 
-  // ── Staff, tax, abatement — always region (parcel ingest does not supply these) ──
+  // ── Staff and tax — region fallback (parcel ingest does not supply these) ──
   const staffRes    = resolveDriver(null, region.staff_cost_index,     'staff_cost_index',     parcelId, regionKey)
   const taxRes      = resolveDriver(null, region.tax_rate,             'tax_rate',             parcelId, regionKey)
-  const abateRes    = resolveDriver(null, region.tax_abatement_years,  'tax_abatement_years',  parcelId, regionKey)
-  provenance.push(staffRes.prov, taxRes.prov, abateRes.prov)
+  provenance.push(staffRes.prov, taxRes.prov, {
+    region_key: parcelId,
+    driver: 'tax_abatement_years',
+    value: 0,
+    basis: 'assumed',
+    source_url: 'https://github.com/mspriing/BOB-datacenter/blob/main/docs/SCHEMA.md',
+    last_verified: '2026-08',
+    method: 'No negotiated parcel-specific property-tax abatement was supplied; regional incentive programs are not treated as property-tax holidays.',
+  })
 
   // ── Non-cost scoring (all region; parcel ingest does not supply these yet) ──
   const riskRes      = resolveDriver(null, region.risk_score,                 'risk_score',                 parcelId, regionKey)
@@ -234,7 +241,7 @@ export function driversForParcel(row: ParcelRow, county: CountyConfig): DriversR
     water_rate_usd_per_kgal:  waterRes.value,
     staff_cost_index:          staffRes.value,
     tax_rate:                  taxRes.value,
-    tax_abatement_years:       abateRes.value  ?? 0,
+    tax_abatement_years:       0,
 
     risk_score:                 riskRes.value,
     renewable_pct:              renewRes.value,

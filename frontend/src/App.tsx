@@ -5,9 +5,13 @@ import { Logo } from './components/Primitives'
 import { Footer } from './components/Footer'
 import { useReducedMotion } from './lib/useReducedMotion'
 import { isRoute, type Route } from './lib/routes'
-import { DEFAULT_WEIGHTS, type Projections, type Weights } from './lib/engine'
 
-import { fetchEstimate, type EstimateOutput } from './lib/api'
+import {
+  fetchEstimate,
+  type EstimateOutput,
+  type EstimateProject,
+  type SiteSetup,
+} from './lib/api'
 import { PROJECT } from './data/project'
 import { DEFAULT_SITES } from './data/defaultSites'
 import { useSites } from './lib/useSites'
@@ -60,9 +64,20 @@ function readHash(): Route {
 export default function App() {
   const [route, setRoute] = useState<Route>(() =>
     typeof window === 'undefined' ? 'home' : readHash())
-  const [projections, setProjections] = useState<Projections>({})
-  const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS)
   const [pinned, setPinned] = useState<string[]>([])
+  const [project, setProject] = useState<EstimateProject>({
+    name: PROJECT.name,
+    capacity_kw: PROJECT.capacityMw * 1000,
+    design_pue: PROJECT.pue,
+    design_wue: 0.4,
+    lifetime_years: PROJECT.lifetimeYears,
+    discount_rate: PROJECT.discountRate,
+  })
+  const [siteSetup, setSiteSetup] = useState<SiteSetup>(() =>
+    Object.fromEntries(DEFAULT_SITES.map(site => [
+      site.key,
+      { label: site.label, free_text: '' },
+    ])))
   // The setup screen's candidate picks. This lives here, not inside Setup:
   // when Setup owned it the run never saw it and always priced the default three.
   const [chosen, setChosen] = useState<string[]>(() => DEFAULT_SITES.map(s => s.key))
@@ -87,6 +102,7 @@ export default function App() {
   const [serverError, setServerError] = useState<string | null>(null)
   const [serverSlow, setServerSlow] = useState(false)
   const [serverPending, setServerPending] = useState(false)
+  const [submittedProject, setSubmittedProject] = useState<EstimateProject | null>(null)
   const runToken = useRef(0)
 
   const { sites: candidateSites } = useSites(pinned, chosen)
@@ -94,32 +110,30 @@ export default function App() {
   const run = useCallback(() => {
     const token = ++runToken.current
     setServer(null); setServerError(null); setServerSlow(false); setServerPending(true)
+    setSubmittedProject({ ...project })
     go('running')
     fetchEstimate({
       project: {
-        name: PROJECT.name,
-        capacity_kw: PROJECT.capacityMw * 1000,
-        design_pue: PROJECT.pue,
-        design_wue: 0.4,
-        lifetime_years: PROJECT.lifetimeYears,
-        discount_rate: PROJECT.discountRate,
-        // weights.cost/risk/clean/distance are integers (50,20,15,15); backend expects decimals.
+        ...project,
         weights: {
-          total_cost: weights.cost / 100, risk: weights.risk / 100,
-          sustainability: weights.clean / 100, latency: weights.distance / 100,
+          total_cost: 0.50,
+          risk: 0.20,
+          sustainability: 0.15,
+          latency: 0.15,
         },
       },
       sites: candidateSites.map((s, i) => ({
         site_id: `site-${String.fromCharCode(65 + i)}`,
-        label: s.label,
+        label: siteSetup[s.key]?.label.trim() || s.label,
         region_key: s.key,
+        free_text: siteSetup[s.key]?.free_text.trim() || undefined,
       })),
     }, () => { if (token === runToken.current) setServerSlow(true) })
       .then(r => {
         if (token !== runToken.current) return
         setServer(r.data); setServerError(r.error); setServerPending(false)
       })
-  }, [candidateSites, weights, go])
+  }, [candidateSites, project, siteSetup, go])
 
   useEffect(() => {
     const on = () => setRoute(readHash())
@@ -188,28 +202,32 @@ export default function App() {
                   onClear={() => setPinned([])} go={go} />
               )}
               {route === 'setup' && (
-                <Setup projections={projections} setProjections={setProjections}
+                <Setup project={project} setProject={setProject}
+                  siteSetup={siteSetup} setSiteSetup={setSiteSetup}
                   pinned={pinned} chosen={chosen} setChosen={setChosen}
                   zoom={zoom} setZoom={setZoom}
                   run={() => (zoom === 'parcels' ? go('parcels') : run())} go={go} />
               )}
               {route === 'running' && (
                 <Running done={() => go('results')} pending={serverPending}
-                  slow={serverSlow} error={serverError} retry={run} />
+                  slow={serverSlow} error={serverError} retry={run}
+                  lifetimeYears={project.lifetime_years} />
               )}
               {route === 'results' && (
-                <Results projections={projections} setProjections={setProjections}
-                  weights={weights} setWeights={setWeights} pinned={pinned} chosen={chosen} go={go}
-                  server={server} serverError={serverError} />
+                <Results project={submittedProject ?? project} server={server} serverError={serverError}
+                  go={go} />
               )}
               {route === 'parcels' && (
-                <ParcelSearch go={go} onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
+                <ParcelSearch project={project} go={go}
+                  onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
               )}
               {route === 'parcel' && openParcel && (
-                <ParcelDetail parcelId={openParcel} onBack={() => go('parcels')} />
+                <ParcelDetail parcelId={openParcel} project={project}
+                  onBack={() => go('parcels')} />
               )}
               {route === 'parcel' && !openParcel && (
-                <ParcelSearch go={go} onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
+                <ParcelSearch project={project} go={go}
+                  onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
               )}
               {isDoc && <DocPage route={route} go={go} />}
           </div>

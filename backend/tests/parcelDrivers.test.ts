@@ -123,6 +123,14 @@ describe('driversForParcel', () => {
     expect(gridProv!.value).toBeNull()
   })
 
+  it('does not treat a regional sales-tax incentive as a property-tax abatement', () => {
+    const { drivers, provenance } = driversForParcel(BASE_ROW, bexarConfig)
+    expect(drivers.tax_abatement_years).toBe(0)
+    const abatement = provenance.find(p => p.driver === 'tax_abatement_years')
+    expect(abatement?.value).toBe(0)
+    expect(abatement?.basis).toBe('assumed')
+  })
+
   it('provenance has exactly one entry per expected driver', () => {
     const { provenance } = driversForParcel(BASE_ROW, bexarConfig)
     const expectedDrivers = [

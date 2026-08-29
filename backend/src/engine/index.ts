@@ -85,12 +85,19 @@ export async function runEngine(
     construction_cost_base: number
     construction_cost_low:  number
     construction_cost_high: number
+    land_cost_low:           number
+    land_cost_high:          number
+    water_rate_low:          number
+    water_rate_high:         number
+    staff_cost_index_low:    number
+    staff_cost_index_high:   number
+    tax_rate_low:            number
+    tax_rate_high:           number
     risk_score:                   number | null
     renewable_pct:                number | null
     low_carbon_pct:               number | null
     latency_ms:                   number | null
     grid_interconnection_years:   number | null
-    incentive_usd: number
     /** Raw resolved cost drivers, before the coalesce to 0. null = no value. */
     cost_drivers: Record<CostDriver, number | null>
   }
@@ -133,7 +140,7 @@ export async function runEngine(
       field: keyof typeof region,
       overrideVal: number | null | undefined,
     ): number | null {
-      const driver = region[field] as { value: number | null; low?: number | null; high?: number | null; source_url: string; last_verified: string; basis?: string } | undefined
+      const driver = region[field] as { value: number | null; low?: number | null; high?: number | null; source_url: string; last_verified: string; basis?: string; method?: string | null } | undefined
       if (!driver) return null
 
       const parsedVal = parsed?.overrides[field as keyof typeof parsed.overrides] ?? null
@@ -147,7 +154,8 @@ export async function runEngine(
 
       const isInferred = fromParsed && (parsed!.inferred_fields.includes(field as string))
 
-      const basisVal = fromParsed ? 'sourced'
+      const fromUser = fromExplicit || fromParsed
+      const basisVal = fromUser ? 'sourced'
         : (driver.basis === 'sourced' || driver.basis === 'modeled' || driver.basis === 'assumed'
             ? driver.basis as 'sourced' | 'modeled' | 'assumed'
             : null)
@@ -156,9 +164,14 @@ export async function runEngine(
         region_key:    site.region_key,
         driver:        field as string,
         value:         val,
-        source_url:    fromParsed ? 'user-supplied description' : driver.source_url,
-        last_verified: fromParsed ? 'unverified'               : driver.last_verified,
+        source_url:    fromParsed ? 'user-supplied description'
+                     : fromExplicit ? 'user-supplied override'
+                     : driver.source_url,
+        last_verified: fromUser ? 'unverified' : driver.last_verified,
         basis:         basisVal,
+        ...(fromUser ? { method: 'Value supplied for this candidate site; regional baseline not used.' }
+                     : driver.method ? { method: driver.method }
+                     : {}),
       })
 
       if (fromParsed) {
@@ -187,6 +200,23 @@ export async function runEngine(
       return val
     }
 
+    function bounds(
+      field: keyof typeof region,
+      base: number,
+      overrideVal: number | null | undefined,
+      fallbackPct: number,
+    ): { low: number; high: number } {
+      const parsedVal = parsed?.overrides[field as keyof typeof parsed.overrides] ?? null
+      if (overrideVal != null || parsedVal != null) return { low: base, high: base }
+      const driver = region[field] as { low?: number | null; high?: number | null }
+      const candidates = [
+        base,
+        driver.low ?? base * (1 - fallbackPct),
+        driver.high ?? base * (1 + fallbackPct),
+      ]
+      return { low: Math.min(...candidates), high: Math.max(...candidates) }
+    }
+
     const power_rate    = resolve('power_rate_usd_per_kwh',       ov.power_rate_usd_per_kwh)
     const water_rate    = resolve('water_rate_usd_per_kgal',      ov.water_rate_usd_per_kgal)
     const land_cost     = resolve('land_cost_per_acre_usd',       ov.land_cost_per_acre_usd)
@@ -199,7 +229,7 @@ export async function runEngine(
     const abatement: number =
       ov.tax_abatement_years != null         ? ov.tax_abatement_years
       : (parsed?.overrides.tax_abatement_years != null ? parsed.overrides.tax_abatement_years
-      : (region.tax_abatement_years?.value ?? 0))
+      : 0)
     // incentive_usd: similarly user-supplied; no longer derived from regional incentive_usd_per_kw.
     const incentive_usd = ov.incentive_usd != null
       ? ov.incentive_usd
@@ -211,6 +241,35 @@ export async function runEngine(
     const low_carbon    = resolve('low_carbon_pct',                ov.low_carbon_pct)
     const latency       = resolve('latency_ms_to_hub',             ov.latency_ms_to_hub)
     const grid_ix_years = resolve('grid_interconnection_years',    ov.grid_interconnection_years)
+
+    function recordNegotiated(
+      driver: 'tax_abatement_years' | 'incentive_usd',
+      value: number,
+      source: 'user-supplied override' | 'user-supplied description',
+    ): void {
+      provenance.push({
+        region_key: site.region_key,
+        driver,
+        value,
+        source_url: source,
+        last_verified: 'unverified',
+        basis: 'sourced',
+        method: 'Negotiated candidate-site value; no regional default applied.',
+      })
+      confidence.sourced++
+      if (source === 'user-supplied description') {
+        parsed_fields.push({
+          site_id: site.site_id,
+          field: driver,
+          value,
+          inferred: false,
+        })
+      }
+    }
+    if (ov.tax_abatement_years != null) recordNegotiated('tax_abatement_years', abatement, 'user-supplied override')
+    else if (parsed?.overrides.tax_abatement_years != null) recordNegotiated('tax_abatement_years', abatement, 'user-supplied description')
+    if (ov.incentive_usd != null) recordNegotiated('incentive_usd', incentive_usd, 'user-supplied override')
+    else if (parsed?.overrides.incentive_usd != null) recordNegotiated('incentive_usd', incentive_usd, 'user-supplied description')
 
     // design_wue comes from project (default 0.4 via Zod)
     const design_wue = input.project.design_wue ?? 0.4
@@ -224,6 +283,18 @@ export async function runEngine(
 
     // Compute capex first so we have total for opex maintenance calc
     const capex = computeCapex(capexParams)
+    const grossCapexBasis = capex.land_usd
+      + capex.construction_usd
+      + capex.electrical_usd
+      + capex.cooling_usd
+      + capex.it_fitout_usd
+
+    const powerBounds       = bounds('power_rate_usd_per_kwh', power_rate ?? 0, ov.power_rate_usd_per_kwh, 0.15)
+    const constructionBounds = bounds('construction_cost_per_kw', construction ?? 0, ov.construction_cost_per_kw, 0.10)
+    const landBounds        = bounds('land_cost_per_acre_usd', land_cost ?? 0, ov.land_cost_per_acre_usd, 0.15)
+    const waterBounds       = bounds('water_rate_usd_per_kgal', water_rate ?? 0, ov.water_rate_usd_per_kgal, 0.15)
+    const staffBounds       = bounds('staff_cost_index', staff_index ?? 1, ov.staff_cost_index, 0.10)
+    const taxBounds         = bounds('tax_rate', tax_rate ?? 0, ov.tax_rate, 0.10)
 
     const opexParams: OpexParams = {
       capacity_kw:             input.project.capacity_kw,
@@ -235,7 +306,9 @@ export async function runEngine(
       tax_rate:                tax_rate ?? 0,
       tax_abatement_years:     abatement,
       current_year:            1,             // Year 1 opex (abatement applies)
-      capex_total_usd:         capex.total_usd,
+      // Incentives reduce acquisition cost, not the physical asset basis used
+      // for maintenance and property-tax calculations.
+      capex_total_usd:         grossCapexBasis,
     }
 
     return {
@@ -245,17 +318,24 @@ export async function runEngine(
       opexParams,
       provenance,
       power_rate_base:        power_rate ?? 0,
-      power_rate_low:         region.power_rate_usd_per_kwh.low   ?? (power_rate ?? 0) * 0.85,
-      power_rate_high:        region.power_rate_usd_per_kwh.high  ?? (power_rate ?? 0) * 1.15,
+      power_rate_low:         powerBounds.low,
+      power_rate_high:        powerBounds.high,
       construction_cost_base: construction ?? 0,
-      construction_cost_low:  region.construction_cost_per_kw.low  ?? (construction ?? 0) * 0.90,
-      construction_cost_high: region.construction_cost_per_kw.high ?? (construction ?? 0) * 1.10,
+      construction_cost_low:  constructionBounds.low,
+      construction_cost_high: constructionBounds.high,
+      land_cost_low:          landBounds.low,
+      land_cost_high:         landBounds.high,
+      water_rate_low:         waterBounds.low,
+      water_rate_high:        waterBounds.high,
+      staff_cost_index_low:   staffBounds.low,
+      staff_cost_index_high:  staffBounds.high,
+      tax_rate_low:           taxBounds.low,
+      tax_rate_high:          taxBounds.high,
       risk_score:                 risk,
       renewable_pct:              renewable,
       low_carbon_pct:             low_carbon,
       latency_ms:                 latency,
       grid_interconnection_years: grid_ix_years,
-      incentive_usd,
       cost_drivers: {
         construction_cost_per_kw: construction,
         power_rate_usd_per_kwh:   power_rate,
@@ -266,52 +346,10 @@ export async function runEngine(
   }))
 
   // ── Compute per-site cost outputs ──────────────────────────────────────────
-  const siteOutputs: Record<string, SiteOutput> = {}
+  const siteOutputs: Record<string, SiteOutput> = Object.create(null)
   const rankInputs:  RankInput[]                = []
 
   for (const b of bundles) {
-    const capex = computeCapex(b.capexParams)
-
-    const opexYear1 = computeOpex({
-      ...b.opexParams,
-      current_year:    1,
-      capex_total_usd: capex.total_usd,
-    })
-
-    const finance = computeFinance({
-      lifetime_years:          input.project.lifetime_years,
-      discount_rate:           input.project.discount_rate,
-      capacity_kw:             input.project.capacity_kw,
-      capex,
-      opexBase:                opexYear1,
-      opexParamsBase:          b.opexParams,
-      capexParamsBase:         b.capexParams,
-      power_rate_low:          b.power_rate_low,
-      power_rate_high:         b.power_rate_high,
-      construction_cost_low:   b.construction_cost_low,
-      construction_cost_high:  b.construction_cost_high,
-      incentive_usd:           b.incentive_usd,
-    })
-
-    siteOutputs[b.site_id] = {
-      rank:           0,   // filled after ranking
-      weighted_score: 0,   // filled after ranking
-      capex,
-      opex_annual:    opexYear1,
-      finance,
-      non_cost_scores: {
-        risk_score:                 b.risk_score,
-        renewable_pct:              b.renewable_pct,
-        low_carbon_pct:             b.low_carbon_pct,
-        latency_ms:                 b.latency_ms,
-        grid_interconnection_years: b.grid_interconnection_years,
-      },
-    }
-
-    // A cost driver with no value became 0 when this bundle was built, because
-    // arithmetic cannot hold a null. That makes an uncollected cost read as a
-    // free one. Record the gap by name and keep the site out of the ranking
-    // rather than publishing a total the data does not support.
     const missing_cost_drivers = COST_DRIVERS.filter((d) => b.cost_drivers[d] === null)
 
     for (const driver of missing_cost_drivers) {
@@ -328,16 +366,54 @@ export async function runEngine(
         label:           b.label,
         missing_drivers: [...missing_cost_drivers],
       })
-    } else {
-      // Pass true nulls — rank.ts will exclude null dimensions and renormalise.
-      rankInputs.push({
-        site_id:       b.site_id,
-        npv_usd:       finance.npv_usd,
-        risk_score:    b.risk_score,
-        renewable_pct: b.renewable_pct,
-        latency_ms:    b.latency_ms,
-      })
+      continue
     }
+
+    const capex = computeCapex(b.capexParams)
+    const opexYear1 = computeOpex({ ...b.opexParams, current_year: 1 })
+    const finance = computeFinance({
+      lifetime_years:          input.project.lifetime_years,
+      discount_rate:           input.project.discount_rate,
+      capacity_kw:             input.project.capacity_kw,
+      capex,
+      opexBase:                opexYear1,
+      opexParamsBase:          b.opexParams,
+      capexParamsBase:         b.capexParams,
+      power_rate_low:          b.power_rate_low,
+      power_rate_high:         b.power_rate_high,
+      construction_cost_low:   b.construction_cost_low,
+      construction_cost_high:  b.construction_cost_high,
+      land_cost_low:           b.land_cost_low,
+      land_cost_high:          b.land_cost_high,
+      water_rate_low:          b.water_rate_low,
+      water_rate_high:         b.water_rate_high,
+      staff_cost_index_low:    b.staff_cost_index_low,
+      staff_cost_index_high:   b.staff_cost_index_high,
+      tax_rate_low:            b.tax_rate_low,
+      tax_rate_high:           b.tax_rate_high,
+    })
+
+    siteOutputs[b.site_id] = {
+      rank: 0,
+      weighted_score: 0,
+      capex,
+      opex_annual: opexYear1,
+      finance,
+      non_cost_scores: {
+        risk_score: b.risk_score,
+        renewable_pct: b.renewable_pct,
+        low_carbon_pct: b.low_carbon_pct,
+        latency_ms: b.latency_ms,
+        grid_interconnection_years: b.grid_interconnection_years,
+      },
+    }
+    rankInputs.push({
+      site_id: b.site_id,
+      npv_usd: finance.npv_usd,
+      risk_score: b.risk_score,
+      renewable_pct: b.renewable_pct,
+      latency_ms: b.latency_ms,
+    })
 
     // Record data_gaps for ranked dimensions that are null.
     if (b.risk_score    === null) data_gaps.push({ site_id: b.site_id, driver: 'risk_score',    reason: 'no value in regions.json' })
@@ -352,10 +428,14 @@ export async function runEngine(
   }
 
   // ── Rank sites ─────────────────────────────────────────────────────────────
-  const weights = {
+  const rawWeights = {
     ...DEFAULT_WEIGHTS,
     ...(input.project.weights ?? {}),
   }
+  const weightTotal = Object.values(rawWeights).reduce((sum, value) => sum + value, 0)
+  const weights = Object.fromEntries(
+    Object.entries(rawWeights).map(([key, value]) => [key, value / weightTotal]),
+  ) as typeof DEFAULT_WEIGHTS
   const ranks = rankSites(rankInputs, weights)
   const ranking: string[] = []
   for (const r of ranks) {
@@ -399,16 +479,31 @@ export async function runEngine(
     const rank1Label = rank1bundle.label
     const rank2Label = rank2bundle.label
     if (topFlip.driver === 'power_rate_usd_per_kwh') {
+      const change = topFlip.pct_change === null
+        ? `an absolute increase of ${topFlip.absolute_change ?? topFlip.flip_value} from zero`
+        : `+${topFlip.pct_change.toFixed(1)}% vs. current $${topFlip.current_value.toFixed(4)}/kWh`
       flip_sentence =
         `This ranking flips if ${rank1Label} power rates rise above ` +
         `$${topFlip.flip_value.toFixed(4)}/kWh ` +
-        `(+${topFlip.pct_change.toFixed(1)}% vs. current $${topFlip.current_value.toFixed(4)}/kWh), ` +
+        `(${change}), ` +
         `at which point ${rank2Label} becomes the preferred option.`
     } else if (topFlip.driver === 'construction_cost_per_kw') {
+      const change = topFlip.pct_change === null
+        ? `an absolute increase of ${topFlip.absolute_change ?? topFlip.flip_value} from zero`
+        : `+${topFlip.pct_change.toFixed(1)}% vs. current $${topFlip.current_value.toFixed(0)}/kW`
       flip_sentence =
         `This ranking flips if ${rank1Label} construction costs exceed ` +
         `$${topFlip.flip_value.toFixed(0)}/kW ` +
-        `(+${topFlip.pct_change.toFixed(1)}% vs. current $${topFlip.current_value.toFixed(0)}/kW).`
+        `(${change}).`
+    } else {
+      const driverLabel = topFlip.driver.replace(/_/g, ' ')
+      const change = topFlip.pct_change === null
+        ? `an absolute increase of ${topFlip.absolute_change ?? topFlip.flip_value} from zero`
+        : `+${topFlip.pct_change.toFixed(1)}% versus the current value`
+      flip_sentence =
+        `This ranking flips if ${rank1Label}'s ${driverLabel} reaches ` +
+        `${topFlip.flip_value} (${change}), ` +
+        `at which point ${rank2Label} becomes the preferred option.`
     }
   }
 
@@ -426,7 +521,7 @@ export async function runEngine(
   }
 
   // ── Build site labels map ──────────────────────────────────────────────────
-  const siteLabels: Record<string, string> = {}
+  const siteLabels: Record<string, string> = Object.create(null)
   for (const site of input.sites) {
     siteLabels[site.site_id] = site.label
   }

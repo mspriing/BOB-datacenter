@@ -48,7 +48,9 @@ export interface SensitivityItem {
   driver:         string
   current_value:  number
   flip_value:     number
-  pct_change:     number
+  pct_change:     number | null
+  /** Used when current_value is zero and a percentage change is undefined. */
+  absolute_change?: number
   affected_sites: string[]
   /** True when no weighted-score flip occurs within the search range. */
   stable?:        boolean
@@ -71,7 +73,12 @@ function siteNPV(
   years: number,
 ): number {
   const cap = computeCapex(capexParams)
-  return -(cap.total_usd + npvOpexStream(opexParams, cap.total_usd, r, years))
+  const grossCapexBasis = cap.land_usd
+    + cap.construction_usd
+    + cap.electrical_usd
+    + cap.cooling_usd
+    + cap.it_fitout_usd
+  return -(cap.total_usd + npvOpexStream(opexParams, grossCapexBasis, r, years))
 }
 
 // ── Full-N-site ranking helper ────────────────────────────────────────────────
@@ -211,6 +218,45 @@ function findFlipConstruction(
   return { flip_value: (left + right) / 2, stable: false }
 }
 
+function findFlipPatched(
+  target: SensitivitySiteParams,
+  allSites: SensitivitySiteParams[],
+  baseNPVs: Map<string, number>,
+  weights: Partial<Weights>,
+  current: number,
+  high: number,
+  tolerance: number,
+  patch: (value: number) => { capex: CapexParams; opex: OpexParams },
+): { flip_value: number; stable: boolean } {
+  const currentNPV = baseNPVs.get(target.site_id)!
+  if (!targetHoldsRank1(target, allSites, currentNPV, baseNPVs, weights)) {
+    return { flip_value: current, stable: true }
+  }
+
+  const highParams = patch(high)
+  const highNPV = siteNPV(
+    highParams.capex,
+    highParams.opex,
+    target.discount_rate,
+    target.lifetime_years,
+  )
+  if (targetHoldsRank1(target, allSites, highNPV, baseNPVs, weights)) {
+    return { flip_value: high, stable: true }
+  }
+
+  let left = current
+  let right = high
+  for (let i = 0; i < 64; i++) {
+    const mid = (left + right) / 2
+    const params = patch(mid)
+    const npv = siteNPV(params.capex, params.opex, target.discount_rate, target.lifetime_years)
+    if (targetHoldsRank1(target, allSites, npv, baseNPVs, weights)) left = mid
+    else right = mid
+    if (right - left < tolerance) break
+  }
+  return { flip_value: (left + right) / 2, stable: false }
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /**
@@ -266,11 +312,99 @@ export function computeSensitivity(
     })
   }
 
+  const additionalDrivers: Array<{
+    driver: string
+    current: number
+    high: number
+    tolerance: number
+    decimals: 2 | 4
+    patch: (value: number) => { capex: CapexParams; opex: OpexParams }
+  }> = [
+    {
+      driver: 'land_cost_per_acre_usd',
+      current: rank1.capexParams.land_cost_per_acre_usd,
+      high: rank1.capexParams.land_cost_per_acre_usd * 3,
+      tolerance: 0.01,
+      decimals: 2,
+      patch: (value) => ({
+        capex: { ...rank1.capexParams, land_cost_per_acre_usd: value },
+        opex: rank1.opexParams,
+      }),
+    },
+    {
+      driver: 'staff_cost_index',
+      current: rank1.opexParams.staff_cost_index,
+      high: rank1.opexParams.staff_cost_index * 3,
+      tolerance: 0.0001,
+      decimals: 4,
+      patch: (value) => ({
+        capex: rank1.capexParams,
+        opex: { ...rank1.opexParams, staff_cost_index: value },
+      }),
+    },
+    {
+      driver: 'water_rate_usd_per_kgal',
+      current: rank1.opexParams.water_rate_usd_per_kgal,
+      high: rank1.opexParams.water_rate_usd_per_kgal > 0
+        ? rank1.opexParams.water_rate_usd_per_kgal * 3
+        : 25,
+      tolerance: 0.0001,
+      decimals: 4,
+      patch: (value) => ({
+        capex: rank1.capexParams,
+        opex: { ...rank1.opexParams, water_rate_usd_per_kgal: value },
+      }),
+    },
+    {
+      driver: 'tax_rate',
+      current: rank1.opexParams.tax_rate,
+      high: rank1.opexParams.tax_rate > 0
+        ? Math.min(1, rank1.opexParams.tax_rate * 3)
+        : 0.3,
+      tolerance: 0.000001,
+      decimals: 4,
+      patch: (value) => ({
+        capex: rank1.capexParams,
+        opex: { ...rank1.opexParams, tax_rate: value },
+      }),
+    },
+  ]
+
+  for (const spec of additionalDrivers) {
+    const result = findFlipPatched(
+      rank1,
+      allSites,
+      baseNPVs,
+      weights,
+      spec.current,
+      spec.high,
+      spec.tolerance,
+      spec.patch,
+    )
+    const pct = spec.current === 0
+      ? null
+      : round1(Math.abs((result.flip_value - spec.current) / spec.current) * 100)
+    items.push({
+      driver: spec.driver,
+      current_value: spec.decimals === 2 ? round2(spec.current) : round4(spec.current),
+      flip_value: spec.decimals === 2 ? round2(result.flip_value) : round4(result.flip_value),
+      pct_change: pct,
+      ...(spec.current === 0
+        ? { absolute_change: spec.decimals === 2
+            ? round2(result.flip_value - spec.current)
+            : round4(result.flip_value - spec.current) }
+        : {}),
+      affected_sites: [rank1.site_id, rank2.site_id],
+      ...(result.stable ? { stable: true } : {}),
+    })
+  }
+
   // Sort: non-stable (real flips) first by smallest pct_change, then stable items
   items.sort((a, b) => {
     if (a.stable && !b.stable) return 1
     if (!a.stable && b.stable) return -1
-    return a.pct_change - b.pct_change
+    return (a.pct_change ?? Number.POSITIVE_INFINITY)
+      - (b.pct_change ?? Number.POSITIVE_INFINITY)
   })
 
   return items.slice(0, 5)

@@ -90,12 +90,17 @@ export function rankSites(sites: RankInput[], weights?: Partial<Weights>): RankR
 
     return {
       site_id:        site.site_id,
-      weighted_score: Math.round(score * 1000) / 1000,
+      raw_score:      score,
     }
   })
 
-  // Sort descending by score
-  scored.sort((a, b) => b.weighted_score - a.weighted_score)
+  // Sort on full precision. Rounding before sorting can reverse two close
+  // candidates by falling back to their input order.
+  scored.sort((a, b) => b.raw_score - a.raw_score)
 
-  return scored.map((s, i) => ({ ...s, rank: i + 1 }))
+  return scored.map((s, i) => ({
+    site_id: s.site_id,
+    weighted_score: Math.round(s.raw_score * 1000) / 1000,
+    rank: i + 1,
+  }))
 }

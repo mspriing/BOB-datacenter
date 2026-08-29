@@ -65,14 +65,15 @@ export function Home({ go }: { go: (r: Route) => void }) {
             with a card beside it, and once the card moved down the page the
             right of the screen was empty. */}
         <p className="label-xs mb-4">Data center siting</p>
-        <h1 className="mb-6 max-w-[24ch] text-[clamp(2.25rem,1.4rem+3.6vw,4.25rem)]
+        <h1 className="mb-6 max-w-[27ch] text-[clamp(2.25rem,1.4rem+3.6vw,4.25rem)]
           font-semibold leading-[1.06] tracking-[-.02em] text-ink">
-          Choose a data center site with the whole 15 years priced in.
+          The cheapest site to buy is rarely the cheapest site to run.
         </h1>
         <div className="max-w-[62ch]">
           <p className="mb-8 text-[clamp(1.0625rem,1rem+.3vw,1.3125rem)] leading-[1.6] text-mid">
-            It prices the whole 15 years for each place you are weighing, then names the one
-            figure that would change the answer.
+            leepr prices fifteen years for each place you are weighing: build, power, staff,
+            water, hazard and the wait to connect. Then it names the single figure that would
+            put a different one first.
           </p>
           {/* Into the flow, rather than sideways into the map. The map is one of
               the two ways to name regions, and that choice is made on setup. */}

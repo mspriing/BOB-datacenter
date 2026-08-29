@@ -13,25 +13,37 @@
 import { watsonxConfigFromEnv, watsonxGenerate } from './client.js'
 import { buildParseInputPrompt } from './prompts.js'
 import { loadRegions } from '../regions.js'
+import { z } from 'zod'
+import { OverrideValuesSchema } from '../schemas/input.js'
 
 export interface ParsedSiteInput {
   region_key?:      string | null
   label?:           string | null
   inferred_fields:  string[]
-  overrides: {
-    land_cost_per_acre_usd?:    number | null
-    construction_cost_per_kw?:  number | null
-    power_rate_usd_per_kwh?:    number | null
-    water_rate_usd_per_kgal?:   number | null
-    staff_cost_index?:           number | null
-    tax_rate?:                   number | null
-    incentive_usd?:              number | null
-    /** Years of property-tax abatement negotiated with the jurisdiction. User-supplied only. */
-    tax_abatement_years?:        number | null
-    risk_score?:                 number | null
-    renewable_pct?:              number | null
-    latency_ms_to_hub?:          number | null
+  overrides: z.infer<typeof OverrideValuesSchema>
+}
+
+const ParsedSiteInputSchema = z.object({
+  region_key: z.string().nullable().optional(),
+  label: z.string().nullable().optional(),
+  inferred_fields: z.array(z.string()).default([]),
+  overrides: OverrideValuesSchema.default({}),
+})
+
+function validatedParsed(value: unknown): ParsedSiteInput | null {
+  if (!value || typeof value !== 'object') return null
+  const raw = value as Record<string, unknown>
+  const topLevel = ParsedSiteInputSchema.omit({ overrides: true }).safeParse(raw)
+  if (!topLevel.success || !raw.overrides || typeof raw.overrides !== 'object') return null
+
+  const overrides: ParsedSiteInput['overrides'] = {}
+  const rawOverrides = raw.overrides as Record<string, unknown>
+  for (const key of Object.keys(OverrideValuesSchema.shape) as Array<keyof typeof OverrideValuesSchema.shape>) {
+    if (!(key in rawOverrides)) continue
+    const field = OverrideValuesSchema.shape[key].safeParse(rawOverrides[key])
+    if (field.success) overrides[key] = field.data
   }
+  return { ...topLevel.data, overrides }
 }
 
 // ── Regex-based fallback extractor ────────────────────────────────────────────
@@ -107,7 +119,8 @@ function regexExtract(text: string, exclude: Set<string> = new Set()): ParsedSit
     if (region_key) inferred.push('region_key')
   } catch { /* regions may not be available in all test contexts */ }
 
-  return { region_key, label: null, inferred_fields: inferred, overrides }
+  return validatedParsed({ region_key, label: null, inferred_fields: inferred, overrides })
+    ?? { region_key, label: null, inferred_fields: inferred, overrides: {} }
 }
 
 // ── Main export ───────────────────────────────────────────────────────────────
@@ -129,8 +142,8 @@ export async function parseSiteDescription(
       const raw       = await watsonxGenerate(prompt, cfg, { maxTokens: 400 })
       const jsonMatch = raw.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]) as ParsedSiteInput
-        if (parsed.overrides) {
+        const parsed = validatedParsed(JSON.parse(jsonMatch[0]))
+        if (parsed) {
           // Drop a hallucinated or duplicate region rather than trusting it.
           if (parsed.region_key && exclude.has(parsed.region_key)) {
             parsed.region_key = null
