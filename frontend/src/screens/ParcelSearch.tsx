@@ -266,7 +266,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
 
         {/* ── Map + list ────────────────────────────────────────────────── */}
         <div className="space-y-3.5">
-          <Card title="Map of this page"
+          <Card title="Parcel map"
             note={`${parcels.length.toLocaleString('en-US')} of ${total?.toLocaleString('en-US') ?? '…'} matching parcels`}>
             <div className="p-4 sm:p-5">
               <ParcelMap parcels={parcels} shade={shade} selectedId={selectedId}
