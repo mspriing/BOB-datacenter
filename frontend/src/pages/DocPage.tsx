@@ -1,9 +1,21 @@
 import { useMemo, useState } from 'react'
-import { ArrowLeft, Mail, ExternalLink, Check } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Mail, ExternalLink, Check } from 'lucide-react'
 import { Card, Chip } from '../components/Primitives'
 import { US_REGIONS, US_METROS, US_STATES } from '../data/usRegions'
-import { COVERAGE } from '../data/project'
+import { COVERAGE, PROJECT } from '../data/project'
+import { DEFAULT_SITES } from '../data/defaultSites'
+import { INTL_REGIONS } from '../data/intlRegions'
 import { ROUTE_TITLES, CONTACT_URL, FOOTER_GROUPS, type Route } from '../lib/routes'
+import {
+  priceSite, rank, flipMultiplier, applyProjections, PROJECTION_DRIVERS,
+  type ProjectParams,
+} from '../lib/engine'
+import { usd } from '../lib/format'
+
+const P: ProjectParams = {
+  capacityKw: PROJECT.capacityMw * 1000, pue: PROJECT.pue,
+  lifetimeYears: PROJECT.lifetimeYears, discountRate: PROJECT.discountRate, designWue: 0.4,
+}
 
 /* ── shell ────────────────────────────────────────────────────────────────── */
 function groupOf(route: Route): string | null {
@@ -118,35 +130,6 @@ function ContactForm({ subject, fields, blurb }: {
 }
 
 /* ── the thirteen drivers, in plain English ──────────────────────────────── */
-const DRIVERS: Array<{ key: string; name: string; plain: string; unit: string }> = [
-  { key: 'power_rate_usd_per_kwh', name: 'Power price', unit: '$ per kWh',
-    plain: 'What you pay for a unit of electricity on an industrial tariff. The single largest running cost for most sites.' },
-  { key: 'construction_cost_per_kw', name: 'Cost to build', unit: '$ per kW',
-    plain: 'What one kilowatt of capacity costs to put in the ground, covering shell, structure and site works.' },
-  { key: 'staff_cost_index', name: 'Staff cost', unit: 'index, 1.00 is median',
-    plain: 'Local fully loaded operations pay against the national median. 1.20 means twenty percent above.' },
-  { key: 'land_cost_per_acre_usd', name: 'Land price', unit: '$ per acre',
-    plain: 'What an acre costs locally. A 10 MW campus is sized at 12 acres, and never below 5.' },
-  { key: 'water_rate_usd_per_kgal', name: 'Water price', unit: '$ per thousand gallons',
-    plain: 'The rate for the water cooling consumes. How much you use is a design choice rather than a property of the region.' },
-  { key: 'tax_rate', name: 'Property tax rate', unit: 'share of assessed value',
-    plain: 'The annual property tax applied to the built value of the site.' },
-  { key: 'tax_abatement_years', name: 'Tax abatement', unit: 'years',
-    plain: 'How many years of property tax a local incentive removes at the start of the life of the build.' },
-  { key: 'incentive_usd_per_kw', name: 'Capital incentive', unit: '$ per kW',
-    plain: 'One off capital support, netted off the build cost rather than spread across the years.' },
-  { key: 'risk_score', name: 'Hazard risk', unit: '1 to 10',
-    plain: 'Exposure to natural hazards such as flood, wind, quake and wildfire. Lower is calmer.' },
-  { key: 'renewable_pct', name: 'Renewable share', unit: 'share of generation',
-    plain: 'How much of the local grid runs on renewables. Drives the carbon position and exposure to fuel prices alike.' },
-  { key: 'low_carbon_pct', name: 'Low carbon share', unit: 'share of generation',
-    plain: 'Renewables plus nuclear. Always at least as large as the renewable share.' },
-  { key: 'latency_ms_to_hub', name: 'Distance to your users', unit: 'ms round trip',
-    plain: 'Round trip time to the nearest major interconnection hub. A proxy for how far the site sits from the people it serves.' },
-  { key: 'grid_interconnection_years', name: 'Interconnection wait', unit: 'years',
-    plain: 'How long the queue is to energize a large load on the local grid. In 2026 this binds harder than the tariff does.' },
-]
-
 const SOURCES = [
   { name: 'US Energy Information Administration', short: 'eia.gov', url: 'https://www.eia.gov/electricity/',
     covers: 'Industrial electricity rates and generation mix for all 50 states',
@@ -197,115 +180,12 @@ const SOURCES = [
 
 /* ── page bodies ─────────────────────────────────────────────────────────── */
 export function DocPage({ route, go }: { route: Route; go: (r: Route) => void }) {
-  const coverage = useMemo(() => DRIVERS.map(d => {
-    const filled = US_REGIONS.filter(r => r.drivers[d.key])
-    const sourced = filled.filter(r => r.drivers[d.key]!.basis === 'sourced').length
-    const modeled = filled.filter(r => r.drivers[d.key]!.basis === 'modeled').length
-    // Interconnection wait carries placeholders. Counting them as derived would
-    // tell the reader a documented derivation exists, and none does.
-    const placeholder = d.key === 'grid_interconnection_years'
-    return {
-      ...d, filled: filled.length, total: US_REGIONS.length, placeholder,
-      sourced: placeholder ? 0 : sourced,
-      modeled: placeholder ? 0 : modeled,
-    }
-  }), [])
-
   switch (route) {
     /* ── The tool ────────────────────────────────────────────────────────── */
     case 'how-ranking-works':
-      return (
-        <Page go={go} route={route} title={ROUTE_TITLES[route]}
-          lead="The engine measures four things, puts them on the same scale, and combines them into one number. What follows is the arithmetic, what changed in it, and why.">
-          <Card title="The short version"><Prose>
-            <p>Every candidate is priced across the full fifteen years. That gives one cost figure per site. Three more things that cost alone will not tell you are measured alongside it: hazard risk, how clean the local grid is, and how far the site sits from your users.</p>
-            <p>Each of the four is normalized across the sites in your set, so the best performer scores 1 and the worst scores 0. The four scores are combined and the highest total ranks first.</p>
-            <p>When a site has no figure for one of the four, that dimension is dropped from its score and the remaining weights are renormalized. A missing figure never counts as a zero because a gap in the data is not the same as bad performance.</p>
-          </Prose></Card>
-
-          <Card title="Why the percentage sliders are gone"><Prose>
-            <p>An earlier version asked how much you cared about clean power on a scale of nought to a hundred. That question has no honest answer. The number you pick is arbitrary, and because it feeds straight into the ranking, the output inherits that arbitrariness.</p>
-            <p>The sliders now ask something you have a real view on, which is what you think the cost to build, the power price and the staff cost will do over the life of the build. Those are forecasts a person can defend in a meeting.</p>
-            <p>Each slider also carries the point where the ranking changes hands, marked on the track itself. The sensitivity analysis and the control are now the same object, so you can see how much room you have before an assumption starts to matter.</p>
-          </Prose></Card>
-
-          <Card title="Normalising, in full"><Prose>
-            <p>For a driver where lower is better, such as cost or hazard risk, a site scores <code className="num">1 - (v - min) / (max - min)</code>. For a driver where higher is better, such as renewable share, it scores <code className="num">(v - min) / (max - min)</code>.</p>
-            <p>Each formula is computed across the sites you are comparing rather than against a national benchmark. A score of 1 means best in your set rather than best in the country. Comparing two different sets of sites is comparing two different scales.</p>
-            <p>When every site shares the same value on a driver, that driver contributes 0.5 to all of them, which is neutral.</p>
-          </Prose></Card>
-
-          <Card title="What the ranking will not do"><Prose>
-            <p>It prices what is measurable about a site and stays silent on everything else. The list of what it does not model sits on the known gaps page.</p>
-            <p>It also will not rank a single site. With one candidate there is nothing to normalize against.</p>
-          </Prose></Card>
-        </Page>
-      )
-
     case 'driver-meanings':
-      return (
-        <Page go={go} route={route} title={ROUTE_TITLES[route]}
-          lead="Thirteen drivers, each in one sentence and carrying its unit.">
-          <Card title="All thirteen">
-            <Table head={['Driver', 'Unit', 'What it means']}
-              rows={DRIVERS.map(d => [
-                <span className="font-medium text-ink">{d.name}</span>,
-                <span className="num text-mid">{d.unit}</span>,
-                <span className="text-mid">{d.plain}</span>,
-              ])} />
-          </Card>
-          <Card title="Three that get misread"><Prose>
-            <p><b className="text-ink">Cost to build is not the whole cost.</b> The published construction index already includes shell and core, architectural fit-out, and mechanical and electrical fit-out and equipment. The engine adds land separately; active IT equipment, utility connection work, abnormal groundworks and professional fees are not priced.</p>
-            <p><b className="text-ink">Water use is yours. Water price is theirs.</b> The region sets the rate. How many liters per kWh your cooling design consumes is a decision you make, which is why it sits on the setup screen rather than in the regional data.</p>
-            <p><b className="text-ink">Distance to your users is a proxy.</b> It measures the round trip to the nearest major interconnection hub rather than to your customers. If your users sit somewhere unusual, this driver will mislead you.</p>
-          </Prose></Card>
-        </Page>
-      )
-
     case 'cost-method':
-      return (
-        <Page go={go} route={route} title={ROUTE_TITLES[route]}
-          lead="Every formula the engine runs, and the constants written out. Nothing here is estimated by a language model.">
-          <Card title="Capital cost"><Prose>
-            <p className="num text-[14px] text-ink">acres = max(5, capacity_MW × 1.2)</p>
-            <p className="num text-[14px] text-ink">land = acres × land_price_per_acre</p>
-            <p className="num text-[14px] text-ink">construction = capacity_kW × cost_to_build_per_kW</p>
-            <p className="num text-[14px] text-ink">capex = max(0, land + construction − user-supplied incentive)</p>
-            <p className="text-mid">Electrical and cooling are not added again: the construction index already includes mechanical and electrical fit-out and equipment. Their response fields remain zero for compatibility. IT fit-out is not priced by this model.</p>
-          </Prose></Card>
-
-          <Card title="Running cost, per year"><Prose>
-            <p className="num text-[14px] text-ink">facility energy = capacity_kW × PUE × 8,760</p>
-            <p className="num text-[14px] text-ink">power = facility energy × power_price_per_kWh</p>
-            <p className="num text-[14px] text-ink">cooling energy = capacity_kW × (PUE − 1) × 8,760</p>
-            <p className="num text-[14px] text-ink">water = cooling energy × WUE ÷ 3,785.4 × water_price_per_kgal</p>
-            <p className="num text-[14px] text-ink">staff = capacity_kW × $280 × staff_cost_index</p>
-            <p className="num text-[14px] text-ink">maintenance = capex × 1.0%</p>
-            <p className="num text-[14px] text-ink">tax = capex × tax_rate, and zero during the abatement years</p>
-            <p className="num text-[14px] text-ink">connectivity = capacity_kW × $60</p>
-            <p className="text-mid">Tax is computed year by year rather than as an average, which is what lets a ten year abatement show up properly instead of being smeared across the whole life.</p>
-          </Prose></Card>
-
-          <Card title="Bringing it back to today"><Prose>
-            <p className="num text-[14px] text-ink">running cost NPV = Σ over each year t of (running cost in year t) ÷ (1 + discount rate)^t</p>
-            <p className="num text-[14px] text-ink">cost NPV = −(capex + running cost NPV)</p>
-            <p className="num text-[14px] text-ink">lifetime cost per kW = |cost NPV| ÷ capacity_kW</p>
-            <p className="num text-[14px] text-ink">build cost per kW = capex ÷ capacity_kW</p>
-            <p className="num text-[14px] text-ink">payback = null (not applicable)</p>
-            <p className="text-mid">Each year is priced separately and then discounted, rather than one year being repeated across the whole term. That matters where a site has a property tax abatement: a ten year abatement on a fifteen year build has to stop in year eleven. At fifteen years and an eight percent discount rate, a site whose running cost never changes carries about eight and a half years of it in today&rsquo;s money.</p>
-            <p className="text-mid">Payback is deliberately null because this cost-only model has no revenue, savings stream or investment return from which a payback period could be calculated.</p>
-          </Prose></Card>
-
-          <Card title="The band around each figure"><Prose>
-            <p>Each site carries low, base and high scenarios. The engine recomputes the full CapEx, annual OpEx and discounted lifetime cost using the dataset&rsquo;s low/high power-rate and construction-cost bounds. It is an input-supported scenario band, not a statistical confidence interval.</p>
-          </Prose></Card>
-
-          <Card title="Where the modeled build cost comes from" note="Applies to 56 of the 63 US regions"><Prose>
-            <p>Seven US regions carry a published cost to build. The other 56 come from the state staff cost index, fitted by least squares against those seven sourced figures, since labor drives most of the regional variation in what it costs to put capacity in the ground. This is not a published construction index.</p>
-            <p>Any figure produced this way is labeled <Chip tone="blue">modeled</Chip> wherever it appears, including on the map. It is a defensible estimate rather than a measurement, and it should not be quoted as one.</p>
-          </Prose></Card>
-        </Page>
-      )
+      return <HowToUsePage go={go} />
 
     case 'release-notes':
       return (
@@ -371,36 +251,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
       )
 
     case 'the-drivers':
-      return (
-        <Page go={go} route={route} title={ROUTE_TITLES[route]} maxW="max-w-[1100px]"
-          lead="How well each of the thirteen drivers is filled across the 63 US regions, and how much of that is measured rather than derived. These counts are read from a snapshot of the dataset taken on 30 July 2026 that ships inside this page, not from the live engine, so they move only when the snapshot is regenerated. Water, land, tax and interconnection read low here because the hand-collected figures for the 25 real markets are committed to the repository but have not yet been merged into the regional dataset.">
-          <Card title="Coverage by driver" note="Across the 63 US regions">
-            <Table head={['Driver', 'Filled', 'Sourced', 'Derived', 'Coverage']}
-              // interconnection wait shows its count as placeholder rather than derived
-              rows={coverage.map(c => [
-                <span className="font-medium text-ink">{c.name}</span>,
-                <span className="num">{c.filled} of {c.total}</span>,
-                <span className="num">{c.sourced}</span>,
-                <span className="num">{c.placeholder ? `0, ${c.filled} placeholder` : c.modeled}</span>,
-                <span className="flex items-center gap-2">
-                  <span className="h-[7px] w-[90px] overflow-hidden rounded-full bg-card2">
-                    <span className="block h-full rounded-full"
-                      style={{ width: `${(c.filled / c.total) * 100}%`,
-                               background: c.placeholder ? '#C8D0DA'
-                                 : c.filled === c.total ? '#0B7A4B'
-                                 : c.filled > c.total / 2 ? '#8A5200' : '#C22F2F' }} />
-                  </span>
-                  <span className="num text-mid">{Math.round((c.filled / c.total) * 100)}%</span>
-                </span>,
-              ])} />
-          </Card>
-          <Card title="How to read this"><Prose>
-            <p>One driver is complete and measured for every US region, which is hazard risk. Power price and staff cost are complete and sourced for 57 of the 63, and six are derived. Renewable share and low carbon share are complete in the table above and almost entirely derived.</p>
-            <p>Distance to a hub and cost to build are complete and mostly derived. They are good enough to shade a map and to sort a shortlist, and too rough for a board paper without checking the underlying region.</p>
-            <p>Land price, property tax, water price, abatement and capital incentive exist for seven regions. Everywhere else they are blank. They are not estimated, since a wrong land price moves the answer more than a missing one does.</p>
-          </Prose></Card>
-        </Page>
-      )
+      return <HowToUsePage go={go} />
 
     case 'sources':
       return (
@@ -543,7 +394,292 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
         </Page>
       )
 
+    /* ── How to use ────────────────────────────────────────────────────────── */
+    case 'how-to-use':
+      return <HowToUsePage go={go} />
+
     default:
       return null
   }
+}
+
+/* ── how-to-use page — one place for everything ─────────────────────────── */
+function HowToUsePage({ go }: { go: (r: Route) => void }) {
+  const [showExample, setShowExample] = useState(false)
+
+  const eg = useMemo(() => {
+    const build = (over?: { key: string; driver: any; mult: number }) =>
+      rank(DEFAULT_SITES.map(s =>
+        priceSite(s.key, s.label, s.place, P,
+          applyProjections(s.base, over && over.key === s.key ? { [over.driver]: over.mult } : undefined))))
+    const ranked = build()
+    const leader = ranked[0]
+    const cheapest = [...ranked].sort((a, b) => a.lifetimePerKw - b.lifetimePerKw)[0]
+    const flip = (k: string) => {
+      const d = PROJECTION_DRIVERS.find(x => x.key === k)!
+      const m = flipMultiplier(mm => build({ key: leader.key, driver: k, mult: mm }), leader.key, 1, 4)
+      return m === null ? null : { pct: (m - 1) * 100, at: d.fmt(leader.drivers[d.key] * m) }
+    }
+    return {
+      leader, cheapest,
+      premium: ((leader.lifetimePerKw - cheapest.lifetimePerKw) / cheapest.lifetimePerKw) * 100,
+      renewable: leader.drivers.renewablePct === null ? null : Math.round(leader.drivers.renewablePct * 100),
+      hazard: leader.drivers.riskScore,
+      buildFlip: flip('constructionPerKw'),
+      powerFlip: flip('powerRate'),
+    }
+  }, [])
+
+  // Three interconnection examples from the dataset, each carrying a named source.
+  const QUEUE_KEYS = ['ca-toronto', 'fr-paris', 'nl-amsterdam'] as const
+  const queueRows = QUEUE_KEYS.flatMap(key => {
+    const r = INTL_REGIONS.find(x => x.key === key)
+    const cell = r?.drivers['grid_interconnection_years']
+    if (!r || !cell) return []
+    const [city, country] = r.label.split(/,\s*/)
+    return [{ key, city, country: country ?? '', v: cell.v }]
+  })
+
+  const short = (x: string) => x.replace(/,.*$/, '')
+
+  return (
+    <Page go={go} route="how-to-use" title={ROUTE_TITLES['how-to-use']}
+      lead="How to run a comparison, how the ranking is built, what each variable measures, how the cost is calculated, and a finished example."
+      maxW="max-w-[860px]">
+
+      {/* ── 1. Using the tool ────────────────────────────────────────────── */}
+      <Card title="Using the tool">
+        <Prose>
+          <H>Step 1 — compare regions inputted on parcel projections</H>
+          <p>Enter two to four candidate regions on the setup screen. For each one you can type a
+            free-text description — the name of a county, a metro, an operator zone, or anything
+            else that narrows the region down. The engine prices each candidate across the same
+            fifteen-year horizon so the results sit on a common scale, and the narrative names
+            the single driver that would put a different site first.</p>
+
+          <H>Step 2 — find parcels in top data center markets (beta)</H>
+          <p>Switch the zoom level to parcels on the setup screen and the tool searches the
+            candidate parcel inventory for the markets you are considering. Each parcel carries
+            a cost waterfall and a provenance table showing where every figure came from. The
+            parcel layer is in beta: coverage is limited to a handful of high-activity US
+            markets, and parcels without a land price or an interconnection estimate are shown
+            but excluded from any ranked comparison.</p>
+
+          <H>Step 3 — calculate the TCO for your data center</H>
+          <p>Enter your project parameters — capacity in kW, design PUE, design WUE, lifetime
+            in years, and discount rate — on the setup screen, then run. The engine returns a
+            ranked list with an itemized CapEx and OpEx breakdown per site, a lifetime cost per
+            kW, a build cost per kW, a low/base/high scenario band, and the sentence that says
+            which assumption the ranking rests on. Nothing here is estimated by a language
+            model: the numbers come from the engine and the figures in the dataset.</p>
+        </Prose>
+      </Card>
+
+      {/* ── 2. How the ranking works ─────────────────────────────────────── */}
+      <Card title="How the ranking works">
+        <Prose>
+          <p>Every candidate is priced across the full fifteen years. That gives one cost figure
+            per site. Three more things that cost alone will not tell you are measured alongside
+            it: hazard risk, how clean the local grid is, and how far the site sits from your
+            users.</p>
+          <p>Each of the four is normalized across the sites in your set, so the best performer
+            scores 1 and the worst scores 0. The four scores are combined and the highest total
+            ranks first.</p>
+          <p>When a site has no figure for one of the four, that dimension is dropped from its
+            score and the remaining weights are renormalized. A missing figure never counts as a
+            zero because a gap in the data is not the same as bad performance.</p>
+
+          <H>Why the percentage sliders are gone</H>
+          <p>An earlier version asked how much you cared about clean power on a scale of nought
+            to a hundred. That question has no honest answer. The number you pick is arbitrary,
+            and because it feeds straight into the ranking, the output inherits that
+            arbitrariness.</p>
+          <p>The sliders now ask something you have a real view on, which is what you think the
+            cost to build, the power price and the staff cost will do over the life of the build.
+            Those are forecasts a person can defend in a meeting.</p>
+          <p>Each slider also carries the point where the ranking changes hands, marked on the
+            track itself. The sensitivity analysis and the control are now the same object, so
+            you can see how much room you have before an assumption starts to matter.</p>
+
+          <H>Normalising, in full</H>
+          <p>For a driver where lower is better, such as cost or hazard risk, a site scores{' '}
+            <code className="num">1 - (v - min) / (max - min)</code>. For a driver where higher
+            is better, such as renewable share, it scores{' '}
+            <code className="num">(v - min) / (max - min)</code>.</p>
+          <p>Each formula is computed across the sites you are comparing rather than against a
+            national benchmark. A score of 1 means best in your set rather than best in the
+            country. Comparing two different sets of sites is comparing two different scales.</p>
+          <p>When every site shares the same value on a driver, that driver contributes 0.5 to
+            all of them, which is neutral.</p>
+
+          <H>What the ranking will not do</H>
+          <p>It prices what is measurable about a site and stays silent on everything else. The
+            list of what it does not model sits on the known gaps page.</p>
+          <p>It also will not rank a single site. With one candidate there is nothing to
+            normalize against.</p>
+        </Prose>
+      </Card>
+
+      {/* ── 3. Why each variable matters ─────────────────────────────────── */}
+      <Card title="Why each variable matters">
+        <Prose>
+          <p>Location dominates whole-life cost, and these four categories are why. Each one
+            is present across every site from the first day, and each compounds differently
+            over fifteen years.</p>
+
+          <H>Land</H>
+          <p>The one cost paid before anything is built, and the acreage sets a ceiling on how
+            much can ever go there. A 10 MW campus is sized at 12 acres and never below 5,
+            so a high land price in a constrained market hits the build budget before a single
+            kilowatt goes online. Land is not modeled for regions without a published figure,
+            because a wrong land price moves the answer more than a missing one does.</p>
+
+          <H>Energy</H>
+          <p>Priced across the whole fifteen years, and the wait to connect can hold a build
+            back longer than the price does. The power tariff is the single largest running
+            cost for most sites, computed as facility energy at the design PUE times the
+            annual hours times the rate. That is the straightforward part.</p>
+          <p>The binding question in 2026 is whether you can get power at all. The queue to
+            connect a large load to the grid runs years long in many markets, and it varies
+            more between regions than the tariff does. A site that is two cents cheaper per
+            kWh and four years slower to energize is not the cheaper site. So the wait is
+            priced as a separate driver alongside the tariff.</p>
+          {queueRows.length > 0 && (
+            <Table
+              head={['Region', 'Country', 'Years to connect', 'Source']}
+              rows={queueRows.map(r => [
+                <span className="font-medium text-ink">{r.city}</span>,
+                <span className="text-mid">{r.country}</span>,
+                <span className="num">{r.v}</span>,
+                <span className="text-mid">IESO, RTE, TenneT</span>,
+              ])}
+            />
+          )}
+
+          <H>Regulations and taxes</H>
+          <p>A rate that repeats every year of the life, and an abatement that moves the total
+            more than most single line items. Property tax is computed year by year — not as
+            an average — which is what lets a ten-year abatement show up properly instead of
+            being smeared across the whole term. A capital incentive is netted off the build
+            cost rather than spread across the years. A state with a high tax rate and a
+            ten-year abatement can outperform one with a low rate and no abatement, depending
+            on the discount rate and the life of the build.</p>
+
+          <H>Other costs</H>
+          <p>Construction, staff, water, hazard exposure and distance to users: the lines that
+            separate two otherwise similar sites. Construction is the largest single CapEx
+            item. Staff cost is the largest variable OpEx item after power. Water consumption
+            depends on the cooling design rather than the region, so the rate is a regional
+            figure and the liters per kWh is a project parameter. Hazard exposure and distance
+            to users do not appear in the cost formula but feed the normalized scoring, so a
+            site that wins on cost can still lose on the composite if it sits in a high-hazard
+            zone or a long way from the users it will serve.</p>
+        </Prose>
+      </Card>
+
+      {/* ── 4. How the cost is calculated ─────────────────────────────────── */}
+      <Card title="How the cost is calculated">
+        <Prose>
+          <H>Capital cost</H>
+          <p className="num text-[14px] text-ink">acres = max(5, capacity_MW × 1.2)</p>
+          <p className="num text-[14px] text-ink">land = acres × land_price_per_acre</p>
+          <p className="num text-[14px] text-ink">construction = capacity_kW × cost_to_build_per_kW</p>
+          <p className="num text-[14px] text-ink">capex = max(0, land + construction − user-supplied incentive)</p>
+          <p>Electrical and cooling are not added again: the construction index already includes
+            mechanical and electrical fit-out and equipment. IT fit-out is not priced by this
+            model.</p>
+
+          <H>Running cost, per year</H>
+          <p className="num text-[14px] text-ink">facility energy = capacity_kW × PUE × 8,760</p>
+          <p className="num text-[14px] text-ink">power = facility energy × power_price_per_kWh</p>
+          <p className="num text-[14px] text-ink">cooling energy = capacity_kW × (PUE − 1) × 8,760</p>
+          <p className="num text-[14px] text-ink">water = cooling energy × WUE ÷ 3,785.4 × water_price_per_kgal</p>
+          <p className="num text-[14px] text-ink">staff = capacity_kW × $280 × staff_cost_index</p>
+          <p className="num text-[14px] text-ink">maintenance = capex × 1.0%</p>
+          <p className="num text-[14px] text-ink">tax = capex × tax_rate, and zero during the abatement years</p>
+          <p className="num text-[14px] text-ink">connectivity = capacity_kW × $60</p>
+          <p>Tax is computed year by year rather than as an average, which is what lets a ten
+            year abatement show up properly instead of being smeared across the whole life.</p>
+
+          <H>Bringing it back to today</H>
+          <p className="num text-[14px] text-ink">running cost NPV = Σ over each year t of (running cost in year t) ÷ (1 + discount rate)^t</p>
+          <p className="num text-[14px] text-ink">cost NPV = −(capex + running cost NPV)</p>
+          <p className="num text-[14px] text-ink">lifetime cost per kW = |cost NPV| ÷ capacity_kW</p>
+          <p className="num text-[14px] text-ink">build cost per kW = capex ÷ capacity_kW</p>
+          <p>Each year is priced separately and then discounted, rather than one year being
+            repeated across the whole term. That matters where a site has a property tax
+            abatement. At {PROJECT.lifetimeYears} years and a{' '}
+            {(PROJECT.discountRate * 100).toFixed(0)}% discount rate, a site whose running
+            cost never changes carries about eight and a half years of it in today&rsquo;s
+            money.</p>
+          <p>Payback is deliberately null because this cost-only model has no revenue, savings
+            stream or investment return from which a payback period could be calculated.</p>
+
+          <H>The band around each figure</H>
+          <p>Each site carries low, base and high scenarios. The engine recomputes the full
+            CapEx, annual OpEx and discounted lifetime cost using the dataset&rsquo;s low/high
+            power-rate and construction-cost bounds. It is an input-supported scenario band,
+            not a statistical confidence interval.</p>
+        </Prose>
+      </Card>
+
+      {/* ── 5. A worked example — live figures ────────────────────────────── */}
+      <Card title="A worked example" note={`${PROJECT.capacityMw} MW, ${PROJECT.lifetimeYears} years`}>
+        {!showExample && (
+          <div className="p-6 text-center sm:p-8">
+            <p className="mx-auto mb-5 max-w-[52ch] text-[15.5px] leading-[1.65] text-mid">
+              A three-site comparison already run. It ends on the sentence that says which input is
+              worth checking before anyone commits money.
+            </p>
+            <button className="btn btn-primary" onClick={() => setShowExample(true)}>
+              See a finished comparison
+              <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
+            </button>
+          </div>
+        )}
+        {showExample && (
+          <div className="p-5 sm:p-6">
+            <p className="mb-4 max-w-[70ch] text-[15.5px] leading-[1.7] text-ink2">
+              In the run below, the cheapest site loses. {short(eg.cheapest.label)} prices at{' '}
+              <b className="num font-semibold text-ink">{usd(eg.cheapest.lifetimePerKw)}</b> per kW
+              against {short(eg.leader.label)}&rsquo;s{' '}
+              <b className="num font-semibold text-ink">{usd(eg.leader.lifetimePerKw)}</b> and
+              still finishes second. A {eg.hazard?.toFixed(1)} hazard score and a{' '}
+              {eg.renewable}% renewable grid outweigh a {eg.premium.toFixed(1)}% cost premium.
+            </p>
+            <div className="rounded-[11px] border border-line bg-card2 p-4">
+              <p className="text-[12px] font-bold uppercase tracking-[.09em] text-dim mb-2">The number worth remembering</p>
+              <p className="max-w-[70ch] text-[15px] leading-[1.6] text-ink2">
+                {eg.buildFlip ? (
+                  <>
+                    {short(eg.leader.label)} stops winning the moment its build cost rises{' '}
+                    <b className="num font-semibold text-ink">{eg.buildFlip.pct.toFixed(1)}%</b>.{' '}
+                    {eg.powerFlip
+                      ? <>Its power price would have to rise{' '}
+                          <b className="num font-semibold text-ink">{eg.powerFlip.pct.toFixed(1)}%</b>{' '}
+                          to do the same damage. The build estimate is more fragile than the
+                          energy contract.</>
+                      : <>Its power price never moves the order at all. The build estimate is
+                          the fragile figure here.</>}
+                  </>
+                ) : (
+                  <>{short(eg.leader.label)} holds first place across the whole range these
+                    sliders cover.</>
+                )}
+              </p>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <button className="btn btn-primary" onClick={() => go('results')}>
+                Open the full comparison
+                <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
+              </button>
+              <button className="btn btn-quiet" onClick={() => setShowExample(false)}>
+                Hide this
+              </button>
+            </div>
+          </div>
+        )}
+      </Card>
+    </Page>
+  )
 }
