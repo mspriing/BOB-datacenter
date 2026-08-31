@@ -176,6 +176,24 @@ describe('GET /parcels', () => {
     const { status } = await get('/parcels?per_page=999')
     expect(status).toBe(400)
   })
+
+  it('returns 400 with a useful message for malformed weights JSON', async () => {
+    const { status, json } = await get('/parcels?weights=%7Bbad')
+    expect(status).toBe(400)
+    expect(JSON.stringify(json)).toContain('weights must be valid JSON')
+  })
+
+  it('returns 400 for all-zero GET weights', async () => {
+    const weights = encodeURIComponent(JSON.stringify({
+      total_cost: 0,
+      risk: 0,
+      sustainability: 0,
+      latency: 0,
+    }))
+    const { status, json } = await get(`/parcels?weights=${weights}`)
+    expect(status).toBe(400)
+    expect(JSON.stringify(json)).toContain('at least one value greater than zero')
+  })
 })
 
 describe('GET /parcels/:id', () => {
@@ -241,6 +259,21 @@ describe('POST /parcels/search', () => {
     const { status: s2 } = await post('/parcels/search', { pagination: { per_page: 999 } })
     expect(s2).toBe(400)
     void status  // silence lint
+  })
+
+  it('returns 400 for all-zero POST weights', async () => {
+    const { status, json } = await post('/parcels/search', {
+      project: {
+        weights: {
+          total_cost: 0,
+          risk: 0,
+          sustainability: 0,
+          latency: 0,
+        },
+      },
+    })
+    expect(status).toBe(400)
+    expect(JSON.stringify(json)).toContain('At least one ranking weight must be greater than zero')
   })
 })
 

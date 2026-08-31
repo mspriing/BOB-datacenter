@@ -33,6 +33,9 @@ export function buildNarrativePrompt(output: EstimateOutput, siteLabels: Record<
   const siteLines = output.ranking.map((sid, i) => {
     const s = output.sites[sid]
     const label = siteLabels[sid] ?? sid
+    const payback = s.finance.payback_years === null
+      ? 'not reached within the modeled lifetime'
+      : `${round1(s.finance.payback_years)} years`
     return [
       `SITE ${i + 1}: ${label} (${sid})`,
       `  Rank: ${s.rank}  Score: ${s.weighted_score}`,
@@ -41,7 +44,7 @@ export function buildNarrativePrompt(output: EstimateOutput, siteLabels: Record<
       `  Annual OpEx: ${usd(s.opex_annual.total_usd)}`,
       `    Power: ${usd(s.opex_annual.power_usd)}  Water: ${usd(s.opex_annual.water_usd)}  Staff: ${usd(s.opex_annual.staff_usd)}`,
       `    Maintenance: ${usd(s.opex_annual.maintenance_usd)}  Taxes: ${usd(s.opex_annual.taxes_usd)}  Connectivity: ${usd(s.opex_annual.connectivity_usd)}`,
-      `  Finance (base): NPV ${usd(s.finance.npv_usd)}  Lifetime cost ${usd(s.finance.lifetime_cost_per_kw)}/kW  Build cost ${usd(s.finance.capex_per_kw)}/kW  Payback: not applicable in this cost-only model`,
+      `  Finance (base): NPV ${usd(s.finance.npv_usd)}  Lifetime cost ${usd(s.finance.lifetime_cost_per_kw)}/kW  Build cost ${usd(s.finance.capex_per_kw)}/kW  Payback: ${payback}`,
       `  Finance low:  NPV ${usd(s.finance.ranges.low.npv_usd)}  Lifetime cost ${usd(s.finance.ranges.low.lifetime_per_kw)}/kW`,
       `  Finance high: NPV ${usd(s.finance.ranges.high.npv_usd)}  Lifetime cost ${usd(s.finance.ranges.high.lifetime_per_kw)}/kW`,
       `  Risk score: ${s.non_cost_scores.risk_score ?? 'N/A'}/10  Renewable: ${pct(s.non_cost_scores.renewable_pct ?? 0)}  Latency: ${s.non_cost_scores.latency_ms} ms`,

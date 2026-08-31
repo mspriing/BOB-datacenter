@@ -74,6 +74,9 @@ export function buildFallbackNarrative(
   const costGap = Math.abs(rank1.finance.npv_usd) - Math.abs(rank2.finance.npv_usd)
   const cheaper = costGap > 0 ? rank2Label : rank1Label   // whichever has lower absolute NPV cost
   const pricedBetter = Math.abs(rank1.finance.lifetime_cost_per_kw) < Math.abs(rank2.finance.lifetime_cost_per_kw)
+  const rank2Renewable = rank2.non_cost_scores.renewable_pct === null
+    ? ''
+    : ` and ${pct(rank2.non_cost_scores.renewable_pct)} renewable power availability`
 
   const recommendation =
     `Based on a ${output.ranking.length}-site analysis, ${rank1Label} is the recommended site ` +
@@ -86,17 +89,24 @@ export function buildFallbackNarrative(
     `${usd(rank1.finance.ranges.high.lifetime_per_kw)}/kW. ` +
     `${output.flip_sentence} ` +
     `${rank2Label} is the strongest alternative, with a lifetime cost of ` +
-    `${usd(rank2.finance.lifetime_cost_per_kw)}/kW and ${pct(rank2.non_cost_scores.renewable_pct ?? 0)} renewable power availability.`
+    `${usd(rank2.finance.lifetime_cost_per_kw)}/kW${rank2Renewable}.`
 
   // ── Sensitivity callouts — one per site ────────────────────────────────────
   const sensitivity_callouts: SensitivityCallout[] = output.ranking.map((sid) => {
     const label   = siteLabels[sid] ?? sid
     const s       = output.sites[sid]
     const drivers = dominantDrivers(output, sid)
+    const nonCostClauses: string[] = []
+    if (s.non_cost_scores.renewable_pct !== null) {
+      nonCostClauses.push(`renewable energy availability stands at ${pct(s.non_cost_scores.renewable_pct)}`)
+    }
+    if (s.non_cost_scores.risk_score !== null) {
+      nonCostClauses.push(`the risk score is ${s.non_cost_scores.risk_score.toFixed(1)}/10`)
+    }
     const callout =
-      `${label}: ${drivers} drive most of the cost structure, ` +
-      `accounting for the majority of the ${usd(s.finance.npv_usd)} base-case NPV; ` +
-      `renewable energy availability stands at ${pct(s.non_cost_scores.renewable_pct ?? 0)} with a risk score of ${(s.non_cost_scores.risk_score ?? 0).toFixed(1)}/10.`
+      `${label}: ${drivers} are the largest modeled cost components in the ` +
+      `${usd(s.finance.npv_usd)} base-case NPV` +
+      (nonCostClauses.length > 0 ? `; ${nonCostClauses.join(' and ')}.` : '.')
     return { site_id: sid, label, callout }
   })
 

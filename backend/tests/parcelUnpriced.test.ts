@@ -18,6 +18,7 @@ import { driversForParcel } from '../src/parcel/drivers.js'
 import { estimateParcel, scoreAll, rerank, _clearScoreCache, _cacheSize,
          type ParcelProject, type ParcelResult } from '../src/parcel/score.js'
 import { bexarConfig } from '../src/ingest/counties/bexar.js'
+import { loadRegions, _resetRegionsCache } from '../src/regions.js'
 import type { ParcelRow } from '../src/parcel/repository.js'
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
@@ -131,6 +132,31 @@ describe('a parcel with no land price is named, not priced at zero', () => {
     expect(ranked[1].parcel_id).toBe('TEST-NO-LAND')
     expect(ranked[1].rank).toBe(0)
     expect(ranked[1].finance).toBeNull()
+  })
+
+  it('keeps optional water and tax arithmetic at zero but records both gaps', () => {
+    const regions = loadRegions()
+    const ercot = regions['us-tx-ercot']
+    const original = {
+      water: ercot.water_rate_usd_per_kgal.value,
+      tax: ercot.tax_rate.value,
+    }
+    ercot.water_rate_usd_per_kgal.value = null
+    ercot.tax_rate.value = null
+
+    try {
+      const estimate = estimateParcel(row(), PROJECT, bexarConfig)
+      expect(estimate.finance).not.toBeNull()
+      expect(estimate.opex_annual?.water_usd).toBe(0)
+      expect(estimate.opex_annual?.taxes_usd).toBe(0)
+      expect(estimate.gaps.map(gap => gap.driver)).toEqual(
+        expect.arrayContaining(['water_rate_usd_per_kgal', 'tax_rate']),
+      )
+    } finally {
+      ercot.water_rate_usd_per_kgal.value = original.water
+      ercot.tax_rate.value = original.tax
+      _resetRegionsCache()
+    }
   })
 })
 

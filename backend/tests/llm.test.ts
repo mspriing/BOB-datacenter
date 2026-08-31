@@ -84,6 +84,24 @@ describe('buildFallbackNarrative', () => {
     }
   })
 
+  it('omits renewable and risk claims when those figures are missing', async () => {
+    const out = await getOutput()
+    const siteId = out.ranking[0]
+    const alternativeId = out.ranking[1]
+    out.sites[siteId].non_cost_scores.renewable_pct = null
+    out.sites[siteId].non_cost_scores.risk_score = null
+    out.sites[alternativeId].non_cost_scores.renewable_pct = null
+
+    const result = buildFallbackNarrative(out, siteLabels)
+    const callout = result.sensitivity_callouts.find(item => item.site_id === siteId)!.callout
+
+    expect(callout).not.toContain('renewable energy availability')
+    expect(callout).not.toContain('risk score')
+    expect(callout).not.toContain('majority')
+    expect(callout).not.toContain('drive most')
+    expect(result.recommendation).not.toContain('0% renewable power availability')
+  })
+
   it('uncertainty_flags is an array', async () => {
     const out    = await getOutput()
     const result = buildFallbackNarrative(out, siteLabels)
@@ -235,6 +253,21 @@ describe('buildNarrativePrompt', () => {
     const out    = await getOutput()
     const prompt = buildNarrativePrompt(out, siteLabels)
     expect(prompt).toContain('STRICT RULES')
+  })
+
+  it('states when payback is not reached', async () => {
+    const out = await getOutput()
+    const prompt = buildNarrativePrompt(out, siteLabels)
+    expect(prompt).toContain('Payback: not reached within the modeled lifetime')
+    expect(prompt).not.toContain('not applicable in this cost-only model')
+  })
+
+  it('includes the engine payback value when one exists', async () => {
+    const out = await getOutput()
+    const siteId = out.ranking[0]
+    out.sites[siteId].finance.payback_years = 7.25
+    const prompt = buildNarrativePrompt(out, siteLabels)
+    expect(prompt).toContain('Payback: 7.3 years')
   })
 })
 

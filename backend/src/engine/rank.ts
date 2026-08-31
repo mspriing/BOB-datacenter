@@ -60,6 +60,9 @@ function normalise(values: (number | null)[], higherIsBetter: boolean): (number 
 
 export function rankSites(sites: RankInput[], weights?: Partial<Weights>): RankResult[] {
   const w: Weights = { ...DEFAULT_WEIGHTS, ...weights }
+  if (!Object.values(w).some((weight) => weight > 0)) {
+    throw new Error('At least one ranking weight must be greater than zero')
+  }
 
   const npvs         = sites.map((s) => s.npv_usd)        // always non-null
   const risks        = sites.map((s) => s.risk_score)
@@ -86,7 +89,7 @@ export function rankSites(sites: RankInput[], weights?: Partial<Weights>): RankR
     const totalWeight = dims.reduce((s, d) => s + d.weight, 0)
     const rawScore    = dims.reduce((s, d) => s + d.weight * d.score, 0)
     // Renormalise to keep the score on [0,1]
-    const score = totalWeight > 0 ? rawScore / totalWeight : 0.5
+    const score = rawScore / totalWeight
 
     return {
       site_id:        site.site_id,

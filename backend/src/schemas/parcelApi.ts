@@ -26,7 +26,10 @@ const WeightsSchema = z.object({
   risk:           z.number().min(0).max(1).optional(),
   sustainability: z.number().min(0).max(1).optional(),
   latency:        z.number().min(0).max(1).optional(),
-}).optional()
+}).refine(
+  (weights) => Object.values(weights).some((weight) => weight != null && weight > 0),
+  { message: 'At least one ranking weight must be greater than zero' },
+).optional()
 
 // ── Filter vocabulary (shared by GET query params and POST body) ──────────────
 
@@ -75,9 +78,19 @@ export const ListQuerySchema = ScoringContextSchema.extend({
   sort_by: z.enum(['rank', 'acres', 'lifetime_cost_per_kw', 'land_cost_per_acre']).default('rank'),
 
   // weights as JSON string
-  weights: z.string().optional().transform((s) => {
+  weights: z.string().optional().transform((s, ctx) => {
     if (!s) return undefined
-    try { return WeightsSchema.parse(JSON.parse(s)) } catch { return undefined }
+    try {
+      return WeightsSchema.parse(JSON.parse(s))
+    } catch (error) {
+      ctx.addIssue({
+        code: 'custom',
+        message: error instanceof SyntaxError
+          ? 'weights must be valid JSON'
+          : 'weights must contain values from 0 to 1 with at least one value greater than zero',
+      })
+      return z.NEVER
+    }
   }),
 })
 

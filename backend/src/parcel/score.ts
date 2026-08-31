@@ -232,6 +232,19 @@ export function estimateParcel(
 ): ParcelDraft {
   // ── Resolve drivers ────────────────────────────────────────────────────────
   const { drivers, provenance, missing_cost_drivers } = driversForParcel(row, county)
+  const optionalCostGaps: ParcelEstimateBase['gaps'] = []
+  if (drivers.water_rate_usd_per_kgal === null) {
+    optionalCostGaps.push({
+      driver: 'water_rate_usd_per_kgal',
+      reason: 'No water rate is available; water cost is set to 0 in this estimate',
+    })
+  }
+  if (drivers.tax_rate === null) {
+    optionalCostGaps.push({
+      driver: 'tax_rate',
+      reason: 'No property-tax rate is available; property-tax cost is set to 0 in this estimate',
+    })
+  }
 
   // A parcel missing any cost driver is named and left unpriced. Coalescing the
   // gap to 0 further down would have made it the cheapest parcel in the county
@@ -257,10 +270,13 @@ export function estimateParcel(
         grid_interconnection_years: null,
       },
       provenance,
-      gaps: missing_cost_drivers.map((driver) => ({
-        driver,
-        reason: 'no value at parcel or county level, so this parcel cannot be priced',
-      })),
+      gaps: [
+        ...missing_cost_drivers.map((driver) => ({
+          driver,
+          reason: 'no value at parcel or county level, so this parcel cannot be priced',
+        })),
+        ...optionalCostGaps,
+      ],
       confidence: countConfidence(provenance, row),
     }
   }
@@ -327,9 +343,8 @@ export function estimateParcel(
     capacity_kw:             project.capacity_kw,
     design_pue:              project.design_pue,
     power_rate_usd_per_kwh:  drivers.power_rate_usd_per_kwh as number,
-    // Water is not a cost driver the ranking depends on, and a county with no
-    // published tariff still gets compared. 0 here means "no water charge in
-    // this figure", and the gap is recorded below rather than hidden.
+    // Water and tax are optional cost lines, so a county without either can
+    // still be compared. Their zero arithmetic is disclosed in gaps below.
     water_rate_usd_per_kgal: drivers.water_rate_usd_per_kgal ?? 0,
     design_wue:              project.design_wue,
     staff_cost_index:         drivers.staff_cost_index as number,
@@ -441,7 +456,7 @@ export function estimateParcel(
   })
 
   // ── Gaps ───────────────────────────────────────────────────────────────────
-  const gaps: ParcelEstimateBase['gaps'] = []
+  const gaps: ParcelEstimateBase['gaps'] = [...optionalCostGaps]
   if (drivers.grid_interconnection_years === null) {
     gaps.push({
       driver: 'grid_interconnection_years',

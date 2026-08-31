@@ -39,9 +39,9 @@ export interface SensitivitySiteParams {
   discount_rate:  number
   lifetime_years: number
   /** Non-cost scoring inputs (unchanged across driver sweeps). */
-  risk_score:     number
-  renewable_pct:  number
-  latency_ms:     number
+  risk_score:     number | null
+  renewable_pct:  number | null
+  latency_ms:     number | null
 }
 
 export interface SensitivityItem {

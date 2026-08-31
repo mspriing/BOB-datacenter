@@ -548,8 +548,10 @@ function HowToUsePage({ go, route = 'how-to-use', surface = 'docs' }: {
           <p>The binding question in 2026 is whether you can get power at all. The queue to
             connect a large load to the grid runs years long in many markets, and it varies
             more between regions than the tariff does. A site that is two cents cheaper per
-            kWh and four years slower to energize is not the cheaper site. So the wait is
-            priced as a separate driver alongside the tariff.</p>
+            kWh and four years slower to energize may not be the better site. The wait is
+            surfaced with its source so it can inform that judgment, but it is deliberately
+            excluded from both the cost model and the ranking because a published queue time
+            is not the same thing as a committed energization date for a specific project.</p>
           {queueRows.length > 0 && (
             <Table
               head={['Region', 'Country', 'Years to connect', 'Source']}
@@ -618,8 +620,10 @@ function HowToUsePage({ go, route = 'how-to-use', surface = 'docs' }: {
             {(PROJECT.discountRate * 100).toFixed(0)}% discount rate, a site whose running
             cost never changes carries about eight and a half years of it in today&rsquo;s
             money.</p>
-          <p>Payback is deliberately null because this cost-only model has no revenue, savings
-            stream or investment return from which a payback period could be calculated.</p>
+          <p>When you enter expected monthly revenue per kW, the engine applies the occupancy
+            assumption to calculate annual revenue, subtracts the first year&rsquo;s operating
+            cost, and divides capital cost by that positive annual balance to derive payback.
+            If no revenue is entered or operating cost consumes it, payback is not reached.</p>
 
           <H>The band around each figure</H>
           <p>Each site carries low, base and high scenarios. The engine recomputes the full
@@ -675,8 +679,8 @@ function HowToUsePage({ go, route = 'how-to-use', surface = 'docs' }: {
               </p>
             </div>
             <div className="mt-5 flex flex-wrap gap-3">
-              <button className="btn btn-primary" onClick={() => go('results')}>
-                Open the full comparison
+              <button className="btn btn-primary" onClick={() => go('setup')}>
+                Run your own comparison
                 <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
               </button>
               <button className="btn btn-quiet" onClick={() => setShowExample(false)}>

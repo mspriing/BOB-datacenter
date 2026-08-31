@@ -93,6 +93,8 @@ export async function runEngine(
     staff_cost_index_high:   number
     tax_rate_low:            number
     tax_rate_high:           number
+    water_rate:                   number | null
+    tax_rate:                     number | null
     risk_score:                   number | null
     renewable_pct:                number | null
     low_carbon_pct:               number | null
@@ -331,6 +333,8 @@ export async function runEngine(
       staff_cost_index_high:  staffBounds.high,
       tax_rate_low:           taxBounds.low,
       tax_rate_high:          taxBounds.high,
+      water_rate,
+      tax_rate,
       risk_score:                 risk,
       renewable_pct:              renewable,
       low_carbon_pct:             low_carbon,
@@ -351,6 +355,21 @@ export async function runEngine(
 
   for (const b of bundles) {
     const missing_cost_drivers = COST_DRIVERS.filter((d) => b.cost_drivers[d] === null)
+
+    if (b.water_rate === null) {
+      data_gaps.push({
+        site_id: b.site_id,
+        driver: 'water_rate_usd_per_kgal',
+        reason: 'no value in regions.json; water cost is omitted from this estimate',
+      })
+    }
+    if (b.tax_rate === null) {
+      data_gaps.push({
+        site_id: b.site_id,
+        driver: 'tax_rate',
+        reason: 'no value in regions.json; property-tax cost is omitted from this estimate',
+      })
+    }
 
     for (const driver of missing_cost_drivers) {
       data_gaps.push({
@@ -462,10 +481,9 @@ export async function runEngine(
       opexParams:     b.opexParams,
       discount_rate:  input.project.discount_rate,
       lifetime_years: input.project.lifetime_years,
-      // Sensitivity analysis requires concrete numbers; treat null as neutral midpoints.
-      risk_score:     b.risk_score     ?? 5,
-      renewable_pct:  b.renewable_pct  ?? 0,
-      latency_ms:     b.latency_ms     ?? 50,
+      risk_score:     b.risk_score,
+      renewable_pct:  b.renewable_pct,
+      latency_ms:     b.latency_ms,
     }))
 
   const rank1SensParams = allSensParams.find((s) => s.site_id === ranking[0])!

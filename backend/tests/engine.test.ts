@@ -11,7 +11,7 @@ import { computeFinance }  from '../src/engine/finance.js'
 import { rankSites }       from '../src/engine/rank.js'
 import { computeSensitivity } from '../src/engine/sensitivity.js'
 import { runEngine, UnpriceableError }        from '../src/engine/index.js'
-import { _resetRegionsCache } from '../src/regions.js'
+import { _resetRegionsCache, loadRegions } from '../src/regions.js'
 import { InputSchema } from '../src/schemas/input.js'
 
 // ── capex.ts ─────────────────────────────────────────────────────────────────
@@ -214,6 +214,18 @@ describe('rankSites', () => {
       expect(r.weighted_score).toBeCloseTo(0.5, 5)
     }
   })
+
+  it('rejects all-zero weights instead of ranking by input order', () => {
+    expect(() => rankSites([
+      { site_id: 'A', npv_usd: -100, risk_score: 1, renewable_pct: 0.8, latency_ms: 10 },
+      { site_id: 'B', npv_usd: -200, risk_score: 2, renewable_pct: 0.4, latency_ms: 20 },
+    ], {
+      total_cost: 0,
+      risk: 0,
+      sustainability: 0,
+      latency: 0,
+    })).toThrow('At least one ranking weight must be greater than zero')
+  })
 })
 
 // ── sensitivity.ts ────────────────────────────────────────────────────────────
@@ -365,6 +377,46 @@ describe('computeSensitivity', () => {
     for (const item of items.filter(i => !i.stable)) {
       expect(item.pct_change).toBeGreaterThan(0)
       expect(item.flip_value).not.toBeCloseTo(item.current_value, 3)
+    }
+  })
+
+  it('uses the displayed ranking missing-data policy for sensitivity', async () => {
+    const regions = loadRegions()
+    const ercot = regions['us-tx-ercot']
+    const original = {
+      risk: ercot.risk_score.value,
+      renewable: ercot.renewable_pct.value,
+      latency: ercot.latency_ms_to_hub.value,
+    }
+    ercot.risk_score.value = null
+    ercot.renewable_pct.value = null
+    ercot.latency_ms_to_hub.value = null
+
+    try {
+      const out = await runEngine({
+        request_id: '00000000-0000-0000-0000-000000000003',
+        project: {
+          name: 'Sensitivity null policy',
+          capacity_kw: 10_000,
+          design_pue: 1.4,
+          lifetime_years: 15,
+          discount_rate: 0.08,
+          weights: { total_cost: 0.4, risk: 0.2, sustainability: 0.2, latency: 0.2 },
+        },
+        sites: [
+          { site_id: 'nova', label: 'Northern Virginia', region_key: 'us-va-northern' },
+          { site_id: 'ercot', label: 'Texas ERCOT', region_key: 'us-tx-ercot' },
+          { site_id: 'nordic', label: 'Nordic Hydro', region_key: 'eu-nordic-hydro' },
+        ],
+      }, { forceFallback: true, skipCache: true })
+
+      expect(out.ranking[0]).toBe('ercot')
+      expect(out.sensitivity.every(item => item.flip_value > item.current_value)).toBe(true)
+    } finally {
+      ercot.risk_score.value = original.risk
+      ercot.renewable_pct.value = original.renewable
+      ercot.latency_ms_to_hub.value = original.latency
+      _resetRegionsCache()
     }
   })
 })
@@ -663,6 +715,44 @@ describe('runEngine — missing data degradation', () => {
     }
 
     await expect(runEngine(input, opts)).rejects.toThrow(UnpriceableError)
+  })
+
+  it('keeps optional water and tax arithmetic at zero but records both gaps', async () => {
+    const regions = loadRegions()
+    const nova = regions['us-va-northern']
+    const original = {
+      water: nova.water_rate_usd_per_kgal.value,
+      tax: nova.tax_rate.value,
+    }
+    nova.water_rate_usd_per_kgal.value = null
+    nova.tax_rate.value = null
+
+    try {
+      const out = await runEngine({
+        request_id: '00000000-0000-0000-0000-000000000012',
+        project: {
+          name: 'Optional cost gap test',
+          capacity_kw: 10_000,
+          design_pue: 1.4,
+          lifetime_years: 15,
+          discount_rate: 0.08,
+        },
+        sites: [
+          { site_id: 'nova', label: 'Northern Virginia', region_key: 'us-va-northern' },
+          { site_id: 'ercot', label: 'Texas ERCOT', region_key: 'us-tx-ercot' },
+        ],
+      }, opts)
+
+      expect(out.ranking).toContain('nova')
+      expect(out.sites.nova.opex_annual.water_usd).toBe(0)
+      expect(out.sites.nova.opex_annual.taxes_usd).toBe(0)
+      const gaps = out.data_gaps.filter(gap => gap.site_id === 'nova').map(gap => gap.driver)
+      expect(gaps).toEqual(expect.arrayContaining(['water_rate_usd_per_kgal', 'tax_rate']))
+    } finally {
+      nova.water_rate_usd_per_kgal.value = original.water
+      nova.tax_rate.value = original.tax
+      _resetRegionsCache()
+    }
   })
 
   describe('request safety and corrected cost semantics', () => {
