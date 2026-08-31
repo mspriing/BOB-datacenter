@@ -88,6 +88,8 @@ export function ParcelDetail({ parcelId, project, onBack }: {
       design_wue: project.design_wue,
       lifetime_years: project.lifetime_years,
       discount_rate: project.discount_rate,
+      revenue_per_kw_month: project.revenue_per_kw_month,
+      occupancy_pct: project.occupancy_pct,
     }).then(r => {
       if (!live) return
       if (r.error || !r.data) setError(r.error ?? 'No response')
@@ -211,9 +213,17 @@ export function ParcelDetail({ parcelId, project, onBack }: {
         <StatTile label="Total in today's money"
           value={<><Counter to={Math.abs(est.finance.npv_usd) / 1e6} prefix="$" decimals={1} />M</>}
           explain="Net present value of the whole build and its running cost." />
-        <StatTile label="Payback"
-          value={<span className="text-[19px]">Not applicable</span>}
-          explain="A cost-only model has no revenue or investment return, so payback is not applicable." />
+        {/* Payback appears only when the reader supplied revenue on the setup
+            screen. Without it the model knows costs and nothing else. */}
+        {est.finance.payback_years !== null && est.finance.payback_years !== undefined ? (
+          <StatTile label="Payback"
+            value={<><Counter to={est.finance.payback_years} decimals={1} /> yrs</>}
+            explain="From revenue you entered, not from sourced data." />
+        ) : (
+          <StatTile label="Payback"
+            value={<span className="text-[19px]">Not applicable</span>}
+            explain="Enter expected revenue on the setup screen to see a payback figure." />
+        )}
       </div>
 
       <div className="grid min-w-0 gap-3.5 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">

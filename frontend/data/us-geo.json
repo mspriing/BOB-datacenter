@@ -1,0 +1,1382 @@
+{
+ "us-al": {
+  "label": "Alabama, AL",
+  "precision": "state",
+  "parentState": "AL",
+  "lon": -86.83015610486343,
+  "lat": 32.77594003320647,
+  "x": 671.6,
+  "y": 432.2,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7640,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 4.5,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Telx Atlanta, 252 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ak": {
+  "label": "Alaska, AK",
+  "precision": "state",
+  "parentState": "AK",
+  "lon": -152.37941922510493,
+  "lat": 63.9244182508806,
+  "x": 102.3,
+  "y": 523.1,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9080,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 36.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Seattle Internet Exchange, 2568 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-az": {
+  "label": "Arizona, AZ",
+  "precision": "state",
+  "parentState": "AZ",
+  "lon": -111.66048095979063,
+  "lat": 34.27476546518652,
+  "x": 208,
+  "y": 382.4,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8160,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 2.4,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Phoenix IX, 100 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ar": {
+  "label": "Arkansas, AR",
+  "precision": "state",
+  "parentState": "AR",
+  "lon": -92.44305904799495,
+  "lat": 34.894239046866126,
+  "x": 563.6,
+  "y": 391,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7460,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 7.5,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Dallas, 466 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ga-atlanta": {
+  "label": "Atlanta, GA",
+  "precision": "metro",
+  "parentState": "us-ga",
+  "lon": -84.388,
+  "lat": 33.749,
+  "x": 715,
+  "y": 405.1,
+  "fallbackDrivers": {}
+ },
+ "us-ca": {
+  "label": "California, CA",
+  "precision": "state",
+  "parentState": "CA",
+  "lon": -119.4729251207924,
+  "lat": 37.183973371029076,
+  "x": 82.1,
+  "y": 288.1,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9400,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 4,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix San Jose, 214 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-il-chicago": {
+  "label": "Chicago, IL",
+  "precision": "metro",
+  "parentState": "us-il",
+  "lon": -87.6298,
+  "lat": 41.8781,
+  "x": 638.2,
+  "y": 226.1,
+  "fallbackDrivers": {}
+ },
+ "us-co": {
+  "label": "Colorado, CO",
+  "precision": "state",
+  "parentState": "CO",
+  "lon": -105.54795634775772,
+  "lat": 38.997256788375026,
+  "x": 331.5,
+  "y": 289.9,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8630,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 2.3,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Denver, 95 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-oh-columbus": {
+  "label": "Columbus, OH",
+  "precision": "metro",
+  "parentState": "us-oh",
+  "lon": -82.9988,
+  "lat": 39.9612,
+  "x": 721.4,
+  "y": 260.8,
+  "fallbackDrivers": {}
+ },
+ "us-ct": {
+  "label": "Connecticut, CT",
+  "precision": "state",
+  "parentState": "CT",
+  "lon": -72.72710913375451,
+  "lat": 41.62050945222984,
+  "x": 885.9,
+  "y": 190.5,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9070,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 3.1,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (DE-CIX New York, 147 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-tx-dfw": {
+  "label": "Dallas-Fort Worth, TX",
+  "precision": "metro",
+  "parentState": "us-tx",
+  "lon": -96.797,
+  "lat": 32.7767,
+  "x": 482.9,
+  "y": 440.5,
+  "fallbackDrivers": {}
+ },
+ "us-de": {
+  "label": "Delaware, DE",
+  "precision": "state",
+  "parentState": "DE",
+  "lon": -75.50015575689865,
+  "lat": 38.990527008105204,
+  "x": 853.3,
+  "y": 259.9,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8460,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 3.4,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Ashburn, 172 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ia-des-moines": {
+  "label": "Des Moines, IA",
+  "precision": "metro",
+  "parentState": "us-ia",
+  "lon": -93.6091,
+  "lat": 41.5868,
+  "x": 538.3,
+  "y": 238.4,
+  "fallbackDrivers": {}
+ },
+ "us-fl": {
+  "label": "Florida, FL",
+  "precision": "state",
+  "parentState": "FL",
+  "lon": -82.45494968342572,
+  "lat": 28.606457561412764,
+  "x": 767.5,
+  "y": 516.2,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7930,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 6.4,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (NOTA Miami, 387 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ga": {
+  "label": "Georgia, GA",
+  "precision": "state",
+  "parentState": "GA",
+  "lon": -83.43585880538147,
+  "lat": 32.637767058040126,
+  "x": 736,
+  "y": 428,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8170,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 3.1,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Telx Atlanta, 152 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-hi": {
+  "label": "Hawaii, HI",
+  "precision": "state",
+  "parentState": "HI",
+  "lon": -156.33720648960426,
+  "lat": 20.252540261297437,
+  "x": 299.4,
+  "y": 573,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9350,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 54.6,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix San Jose, 3826 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-id": {
+  "label": "Idaho, ID",
+  "precision": "state",
+  "parentState": "ID",
+  "lon": -114.61267638404291,
+  "lat": 44.3502488412275,
+  "x": 198.8,
+  "y": 146.5,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8230,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 10.8,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Seattle Internet Exchange, 697 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-il": {
+  "label": "Illinois, IL",
+  "precision": "state",
+  "parentState": "IL",
+  "lon": -89.19686696689182,
+  "lat": 40.0421155101639,
+  "x": 615,
+  "y": 270.1,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9250,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 4.4,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Chicago, 243 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-in": {
+  "label": "Indiana, IN",
+  "precision": "state",
+  "parentState": "IN",
+  "lon": -86.28162180603383,
+  "lat": 39.894582485849064,
+  "x": 665.4,
+  "y": 269.1,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8210,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 4.5,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Chicago, 248 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ia": {
+  "label": "Iowa, IA",
+  "precision": "state",
+  "parentState": "IA",
+  "lon": -93.49572480349838,
+  "lat": 42.075142817357914,
+  "x": 539.9,
+  "y": 227.2,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8040,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 7.8,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Chicago, 485 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ks": {
+  "label": "Kansas, KS",
+  "precision": "state",
+  "parentState": "KS",
+  "lon": -98.37872873001912,
+  "lat": 38.493655217417974,
+  "x": 456.2,
+  "y": 309.2,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8050,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 9.2,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Denver, 587 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ky": {
+  "label": "Kentucky, KY",
+  "precision": "state",
+  "parentState": "KY",
+  "lon": -85.30200559812197,
+  "lat": 37.53502330485208,
+  "x": 688.2,
+  "y": 321,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8050,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 7,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Telx Atlanta, 429 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-la": {
+  "label": "Louisiana, LA",
+  "precision": "state",
+  "parentState": "LA",
+  "lon": -91.9601530898089,
+  "lat": 31.041326066244228,
+  "x": 576.3,
+  "y": 478.5,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7970,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 7.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Dallas, 496 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-me": {
+  "label": "Maine, ME",
+  "precision": "state",
+  "parentState": "ME",
+  "lon": -69.23567170739291,
+  "lat": 45.34766893818744,
+  "x": 919,
+  "y": 93.6,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8350,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 10,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (DE-CIX New York, 645 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-md": {
+  "label": "Maryland, MD",
+  "precision": "state",
+  "parentState": "MD",
+  "lon": -76.75896188257609,
+  "lat": 39.032170748682745,
+  "x": 831.6,
+  "y": 263.5,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9210,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 1.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Ashburn, 63 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ma": {
+  "label": "Massachusetts, MA",
+  "precision": "state",
+  "parentState": "MA",
+  "lon": -71.79242034600799,
+  "lat": 42.254264460382466,
+  "x": 897.5,
+  "y": 172.5,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9340,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 4.5,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (DE-CIX New York, 252 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-mi": {
+  "label": "Michigan, MI",
+  "precision": "state",
+  "parentState": "MI",
+  "lon": -85.37776779647247,
+  "lat": 44.32043723743926,
+  "x": 669.6,
+  "y": 167,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8330,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 5.6,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Chicago, 327 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-mn": {
+  "label": "Minnesota, MN",
+  "precision": "state",
+  "parentState": "MN",
+  "lon": -94.305317559317,
+  "lat": 46.280638057274764,
+  "x": 524.7,
+  "y": 131.8,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9030,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 11.1,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Chicago, 723 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ms": {
+  "label": "Mississippi, MS",
+  "precision": "state",
+  "parentState": "MS",
+  "lon": -89.6670839210739,
+  "lat": 32.73434137635463,
+  "x": 618.1,
+  "y": 437.6,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7660,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 8.1,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Telx Atlanta, 504 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-mo": {
+  "label": "Missouri, MO",
+  "precision": "state",
+  "parentState": "MO",
+  "lon": -92.45786671044071,
+  "lat": 38.356522745311985,
+  "x": 560.4,
+  "y": 311.7,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8160,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 8.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Chicago, 567 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-mt": {
+  "label": "Montana, MT",
+  "precision": "state",
+  "parentState": "MT",
+  "lon": -109.63302925840128,
+  "lat": 47.052466279516324,
+  "x": 287,
+  "y": 99.5,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7950,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 13.5,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Denver, 895 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ne": {
+  "label": "Nebraska, NE",
+  "precision": "state",
+  "parentState": "NE",
+  "lon": -99.79454737470444,
+  "lat": 41.53800102904502,
+  "x": 434.1,
+  "y": 238.8,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8040,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 7.7,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Denver, 482 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-nv": {
+  "label": "Nevada, NV",
+  "precision": "state",
+  "parentState": "NV",
+  "lon": -116.63138695435414,
+  "lat": 39.329069004142255,
+  "x": 142.2,
+  "y": 251.8,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8830,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 8.1,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix San Jose, 509 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-nh": {
+  "label": "New Hampshire, NH",
+  "precision": "state",
+  "parentState": "NH",
+  "lon": -71.58044498121944,
+  "lat": 43.67908684358273,
+  "x": 892.6,
+  "y": 140.2,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8430,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 6.4,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (DE-CIX New York, 386 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-nj": {
+  "label": "New Jersey, NJ",
+  "precision": "state",
+  "parentState": "NJ",
+  "lon": -74.66361835510956,
+  "lat": 40.17860815283356,
+  "x": 861.5,
+  "y": 230.2,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9480,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 2.1,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (DE-CIX New York, 81 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-nm": {
+  "label": "New Mexico, NM",
+  "precision": "state",
+  "parentState": "NM",
+  "lon": -106.11243637126111,
+  "lat": 34.4072715118104,
+  "x": 310.6,
+  "y": 393.4,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7840,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 8.8,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Phoenix IX, 560 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ny": {
+  "label": "New York, NY",
+  "precision": "state",
+  "parentState": "NY",
+  "lon": -75.50744171594228,
+  "lat": 42.93656617324849,
+  "x": 833.9,
+  "y": 171.8,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9320,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 4.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (DE-CIX New York, 277 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-nc": {
+  "label": "North Carolina, NC",
+  "precision": "state",
+  "parentState": "NC",
+  "lon": -79.35587324335985,
+  "lat": 35.55215701532512,
+  "x": 801,
+  "y": 350.5,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7960,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 6.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Ashburn, 422 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-nd": {
+  "label": "North Dakota, ND",
+  "precision": "state",
+  "parentState": "ND",
+  "lon": -100.46617339754724,
+  "lat": 47.45052672753281,
+  "x": 429.1,
+  "y": 104,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8140,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 14,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Denver, 931 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-va-northern": {
+  "label": "Northern Virginia (Loudoun County)",
+  "precision": "metro",
+  "parentState": "us-va",
+  "lon": -77.4875,
+  "lat": 39.0438,
+  "x": 819.1,
+  "y": 265.8,
+  "fallbackDrivers": {}
+ },
+ "us-oh": {
+  "label": "Ohio, OH",
+  "precision": "state",
+  "parentState": "OH",
+  "lon": -82.79443033256564,
+  "lat": 40.28894810011204,
+  "x": 723.8,
+  "y": 252.9,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8480,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 7.2,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Chicago, 442 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ok": {
+  "label": "Oklahoma, OK",
+  "precision": "state",
+  "parentState": "OK",
+  "lon": -97.49322972354906,
+  "lat": 35.588323039468165,
+  "x": 470.7,
+  "y": 376.1,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7830,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 5.5,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Dallas, 319 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ne-omaha": {
+  "label": "Omaha, NE",
+  "precision": "metro",
+  "parentState": "us-ne",
+  "lon": -95.9345,
+  "lat": 41.2565,
+  "x": 499.1,
+  "y": 246.5,
+  "fallbackDrivers": {}
+ },
+ "us-or": {
+  "label": "Oregon, OR",
+  "precision": "state",
+  "parentState": "OR",
+  "lon": -120.56200520337052,
+  "lat": 43.93465032631587,
+  "x": 102.6,
+  "y": 134,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9400,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 7,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Seattle Internet Exchange, 431 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-pa": {
+  "label": "Pennsylvania, PA",
+  "precision": "state",
+  "parentState": "PA",
+  "lon": -77.80013468498298,
+  "lat": 40.87828064942818,
+  "x": 805.7,
+  "y": 225.6,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8360,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 3.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Ashburn, 206 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-az-phoenix": {
+  "label": "Phoenix, AZ",
+  "precision": "metro",
+  "parentState": "us-az",
+  "lon": -112.074,
+  "lat": 33.4484,
+  "x": 197.2,
+  "y": 399.8,
+  "fallbackDrivers": {}
+ },
+ "us-or-portland": {
+  "label": "Portland, OR",
+  "precision": "metro",
+  "parentState": "us-or",
+  "lon": -122.6784,
+  "lat": 45.5152,
+  "x": 79.4,
+  "y": 90.3,
+  "fallbackDrivers": {}
+ },
+ "us-nv-reno": {
+  "label": "Reno, NV",
+  "precision": "metro",
+  "parentState": "us-nv",
+  "lon": -119.8138,
+  "lat": 39.5296,
+  "x": 89.5,
+  "y": 234.6,
+  "fallbackDrivers": {}
+ },
+ "us-ri": {
+  "label": "Rhode Island, RI",
+  "precision": "state",
+  "parentState": "RI",
+  "lon": -71.55242102673799,
+  "lat": 41.67539723552107,
+  "x": 904.7,
+  "y": 184.3,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8770,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 4.2,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (DE-CIX New York, 232 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ut-salt-lake-city": {
+  "label": "Salt Lake City, UT",
+  "precision": "metro",
+  "parentState": "us-ut",
+  "lon": -111.891,
+  "lat": 40.7608,
+  "x": 228.5,
+  "y": 235.3,
+  "fallbackDrivers": {}
+ },
+ "us-tx-san-antonio": {
+  "label": "San Antonio, TX",
+  "precision": "metro",
+  "parentState": "us-tx",
+  "lon": -98.4936,
+  "lat": 29.4241,
+  "x": 448.7,
+  "y": 516.3,
+  "fallbackDrivers": {}
+ },
+ "us-sc": {
+  "label": "South Carolina, SC",
+  "precision": "state",
+  "parentState": "SC",
+  "lon": -80.88970180019263,
+  "lat": 33.90573898725426,
+  "x": 779.3,
+  "y": 392.4,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8120,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 5.5,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Telx Atlanta, 324 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-sd": {
+  "label": "South Dakota, SD",
+  "precision": "state",
+  "parentState": "SD",
+  "lon": -100.22752309700869,
+  "lat": 44.44450122047051,
+  "x": 429.7,
+  "y": 172.2,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7580,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 10.2,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Denver, 654 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-tn": {
+  "label": "Tennessee, TN",
+  "precision": "state",
+  "parentState": "TN",
+  "lon": -86.35095230477917,
+  "lat": 35.858025691919536,
+  "x": 673.5,
+  "y": 361.2,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7990,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 5.1,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Telx Atlanta, 295 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-tx-ercot": {
+  "label": "Texas Hill Country / ERCOT (Hays County)",
+  "precision": "state",
+  "parentState": null,
+  "lon": -98.0336,
+  "lat": 30.0502,
+  "x": 458.1,
+  "y": 502.3,
+  "fallbackDrivers": {}
+ },
+ "us-tx": {
+  "label": "Texas, TX",
+  "precision": "state",
+  "parentState": "TX",
+  "lon": -99.32049108119729,
+  "lat": 31.46283926556831,
+  "x": 434,
+  "y": 469.4,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8180,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 4.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Dallas, 279 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-ut": {
+  "label": "Utah, UT",
+  "precision": "state",
+  "parentState": "UT",
+  "lon": -111.67014978137745,
+  "lat": 39.30563386025317,
+  "x": 226.7,
+  "y": 268.7,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8360,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Denver, 575 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-vt": {
+  "label": "Vermont, VT",
+  "precision": "state",
+  "parentState": "VT",
+  "lon": -72.66662403678198,
+  "lat": 44.06885768500312,
+  "x": 873.3,
+  "y": 136,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8350,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 6.4,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (DE-CIX New York, 389 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-va": {
+  "label": "Virginia, VA",
+  "precision": "state",
+  "parentState": "VA",
+  "lon": -78.81841247568964,
+  "lat": 37.5212672869256,
+  "x": 802.5,
+  "y": 304.4,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8790,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 3.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Ashburn, 205 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-wa": {
+  "label": "Washington, WA",
+  "precision": "state",
+  "parentState": "WA",
+  "lon": -120.45642003254535,
+  "lat": 47.38413412581608,
+  "x": 124.2,
+  "y": 58.8,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 9460,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 3,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Seattle Internet Exchange, 143 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-wv": {
+  "label": "West Virginia, WV",
+  "precision": "state",
+  "parentState": "WV",
+  "lon": -80.6250662046316,
+  "lat": 38.639806750412845,
+  "x": 766.7,
+  "y": 284.6,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 7650,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 4.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Ashburn, 275 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-wi": {
+  "label": "Wisconsin, WI",
+  "precision": "state",
+  "parentState": "WI",
+  "lon": -89.99316336068556,
+  "lat": 44.62584839989367,
+  "x": 594.7,
+  "y": 166.6,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8300,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 6,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Chicago, 360 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ },
+ "us-wy": {
+  "label": "Wyoming, WY",
+  "precision": "state",
+  "parentState": "WY",
+  "lon": -107.55135765579136,
+  "lat": 42.99566416717276,
+  "x": 307.9,
+  "y": 195.2,
+  "fallbackDrivers": {
+   "construction_cost_per_kw": {
+    "v": 8000,
+    "basis": "modeled",
+    "method": "derived from the state staff cost index by least squares against the 7 sourced construction figures in this dataset; labor is the dominant source of regional variance in build cost. Not a published construction index.",
+    "source": null,
+    "verified": null
+   },
+   "latency_ms_to_hub": {
+    "v": 6.9,
+    "basis": "modeled",
+    "method": "great-circle to nearest major IXP (Equinix Denver, 420 km); intra-continental 1.4 ms per 100 km plus 1 ms",
+    "source": null,
+    "verified": null
+   }
+  }
+ }
+}

@@ -65,8 +65,10 @@ export interface FinanceOutput {
   lifetime_cost_per_kw: number
   npv_usd: number
   lifetime_years: number
-  /** Required by the response schema and always null for this cost-only model. */
-  payback_years: null
+  /** Null unless revenue was supplied and it clears the annual running cost. */
+  payback_years: number | null
+  annual_revenue_usd: number | null
+  net_annual_usd: number | null
   ranges: Record<'low' | 'base' | 'high', {
     npv_usd: number
     lifetime_per_kw: number
@@ -147,6 +149,9 @@ export interface EstimateRequest {
     design_wue?: number
     lifetime_years: number
     discount_rate: number
+    /** The reader's own revenue assumption. Absent means no payback figure. */
+    revenue_per_kw_month?: number
+    occupancy_pct?: number
     weights?: { total_cost?: number; risk?: number; sustainability?: number; latency?: number }
   }
   sites: EstimateSiteInput[]

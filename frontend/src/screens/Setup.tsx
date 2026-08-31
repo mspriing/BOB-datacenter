@@ -29,37 +29,40 @@ export function Setup({
   const { sites, source } = useSites(pinned, chosen)
   const fromPins = source === 'pins'
 
-  // The five drivers the engine requires. Mirrors the REQUIRED array in
-  // frontend/scripts/gen-coverage.mjs, which produces the priceable count the
-  // setup card already shows. Do not add or remove a driver here.
-  const REQUIRED_DRIVERS = [
-    'construction_cost_per_kw',
-    'power_rate_usd_per_kwh',
-    'land_cost_per_acre_usd',
-    'staff_cost_index',
-    'water_rate_usd_per_kgal',
+  /**
+   * A region can be ranked only when it carries all five of these.
+   *
+   * This mirrors the engine's own unevaluable rule and the REQUIRED list in
+   * frontend/scripts/gen-coverage.mjs, which is what produces COVERAGE.priceable.
+   * grid_interconnection_years is deliberately absent: nobody publishes the
+   * large-load queue, so it is null everywhere and requiring it would empty the
+   * picker completely.
+   */
+  const PRICEABLE_DRIVERS = [
+    'construction_cost_per_kw', 'power_rate_usd_per_kwh',
+    'land_cost_per_acre_usd', 'staff_cost_index', 'water_rate_usd_per_kgal',
   ] as const
 
-  const isPriceable = (r: { drivers: Record<string, { v: number } | null> }) =>
-    REQUIRED_DRIVERS.every(d => r.drivers[d]?.v != null)
+  const isPriceable = (key: string) => {
+    const r = ALL_REGIONS.find(x => x.key === key)
+    if (!r) return false
+    return PRICEABLE_DRIVERS.every(d => Boolean(r.drivers[d]))
+  }
 
-  const total     = ALL_REGIONS.length
-  const priceable = ALL_REGIONS.filter(isPriceable).length
-
-  // Every selectable region, the published three first so the default set reads
-  // in the order the worked example uses. Filtered to priceable regions only so
-  // the reader cannot choose a region the engine will refuse to rank.
   const options = useMemo(() => {
     const seen = new Set<string>()
     const out: Array<{ key: string; label: string }> = []
-    for (const s of DEFAULT_SITES) {
-      const r = ALL_REGIONS.find(x => x.key === s.key)
-      if (r && isPriceable(r)) { out.push({ key: s.key, label: `${s.label}, ${s.place}` }); seen.add(s.key) }
+    for (const s of DEFAULT_SITES) { out.push({ key: s.key, label: `${s.label}, ${s.place}` }); seen.add(s.key) }
+    for (const r of ALL_REGIONS) {
+      if (seen.has(r.key)) continue
+      if (!isPriceable(r.key)) continue
+      out.push({ key: r.key, label: r.label })
     }
-    for (const r of ALL_REGIONS) if (!seen.has(r.key) && isPriceable(r)) out.push({ key: r.key, label: r.label })
     return out
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const hiddenRegionCount = ALL_REGIONS.length - ALL_REGIONS.filter(r => isPriceable(r.key)).length
 
   const active = fromPins ? sites.map(s => s.key) : chosen
 
@@ -126,10 +129,10 @@ export function Setup({
           Set up your comparison
         </h1>
         <p className="max-w-[62ch] text-[17px] leading-[1.65] text-mid">
-          First choose how closely to look: whole markets against each other, or individual parcels
-          inside one county. Then describe the build you are pricing. Every field below arrives
-          filled in with a figure a mid-size campus would use, so change what you know, leave the
-          rest, and run it.
+          First choose how closely to look: whole markets against each other, or individual
+          parcels inside one county. Then describe the build you are pricing. Every field below
+          arrives filled in with a figure a mid-size campus would use, so change what you know,
+          leave the rest, and run it.
         </p>
       </div>
 
@@ -259,6 +262,52 @@ export function Setup({
             </div>
           </FoldCard>
 
+          {/* Its own card, not folded in with the assumptions that arrive
+              filled in. Revenue is the one input here the reader must supply
+              themselves, and supplying it changes what the tool returns: the
+              payback figure exists only once this is set. */}
+          <Card title="What it will earn"
+            note="Optional. Fill this in to get a payback figure">
+            <div className="grid gap-5 p-5 sm:grid-cols-2">
+              {/* Revenue is the reader's own commercial assumption, not a figure
+                  this project sources, so it is optional and its absence is the
+                  normal case. Left empty, the tool prices cost only, exactly as
+                  it did before these two fields existed. */}
+              <label className="block">
+                <span className="mb-1.5 block text-[15px] font-medium text-ink2">
+                  Expected revenue, per kW per month
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[13px] text-mid">$</span>
+                  <input className="field num" type="number" min={0} max={10000} step={5}
+                    placeholder="optional"
+                    value={project.revenue_per_kw_month ?? ''}
+                    onChange={event => patchProject('revenue_per_kw_month',
+                      event.target.value === '' ? undefined : Number(event.target.value))} />
+                </div>
+                <p className="mt-1.5 text-[13px] leading-[1.5] text-mid">
+                  What you expect to charge per kilowatt of IT capacity each month. Leave it
+                  empty and the tool prices cost only, with no payback figure. Colocation
+                  commonly runs between $100 and $200.
+                </p>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-[15px] font-medium text-ink2">Occupancy</span>
+                <div className="flex items-center gap-2">
+                  <input className="field num" type="number" min={0} max={100} step={1}
+                    value={Math.round((project.occupancy_pct ?? 0.85) * 100)}
+                    onChange={event => patchProject('occupancy_pct',
+                      Number(event.target.value) / 100)} />
+                  <span className="text-[13px] text-mid">%</span>
+                </div>
+                <p className="mt-1.5 text-[13px] leading-[1.5] text-mid">
+                  The share of capacity earning revenue. Capacity that is built but unsold
+                  costs money and earns none.
+                </p>
+              </label>
+            </div>
+          </Card>
+
 
           {atParcelGrain ? (
             <Card title="The county" note="Bexar County, Texas — pilot county">
@@ -352,6 +401,18 @@ export function Setup({
                     Pick them on the map instead
                   </button>
                 </div>
+                {/* What the picker holds back, and why. Hiding 64 of 77 entries
+                    silently would leave a reader who saw Singapore last week
+                    unable to find it, with no way to learn where it went. */}
+                {hiddenRegionCount > 0 && (
+                  <p className="border-t border-[var(--line2)] px-5 py-4 text-[13.5px] leading-[1.6] text-mid">
+                    {hiddenRegionCount} of {ALL_REGIONS.length} regions are in the dataset but{' '}
+                    <button onClick={() => go('known-gaps')} className="link-inline">
+                      not yet priced
+                    </button>
+                    . They are hidden here because the engine cannot rank them.
+                  </p>
+                )}
               </div>
             )}
           </Card>

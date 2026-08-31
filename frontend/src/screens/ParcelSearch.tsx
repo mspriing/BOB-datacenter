@@ -75,6 +75,8 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
     design_wue: project.design_wue,
     lifetime_years: project.lifetime_years,
     discount_rate: project.discount_rate,
+    revenue_per_kw_month: project.revenue_per_kw_month,
+    occupancy_pct: project.occupancy_pct,
   }), [project])
   const [query, setQuery] = useState<ParcelQuery>(defaultQuery)
   const [draft, setDraft] = useState<ParcelQuery>(defaultQuery)
@@ -265,6 +267,10 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
           font-semibold leading-[1.08] tracking-[-.02em] text-ink">
           Parcels priced and ranked before you call a broker.
         </h1>
+        <p className="mb-3 max-w-[68ch] text-[17px] leading-[1.65] text-mid">
+          Bexar County, Texas is the pilot county. The same pricing runs on any county once its
+          parcel data is ingested.
+        </p>
         <p className="max-w-[68ch] text-[17px] leading-[1.65] text-mid">
           Bexar County, Texas is the pilot county. The same pricing runs on any county once its
           parcel data is ingested.
