@@ -209,7 +209,7 @@ export function Logo({ size = 42 }: { size?: number }) {
     <span className="carbon relative block shrink-0 overflow-hidden" aria-hidden
       style={{ width: size, height: size, borderRadius: size * 0.26,
                boxShadow: '0 3px 12px -3px rgba(15,98,254,.45), inset 0 1px 0 rgba(255,255,255,.4)' }}>
-      <span className="absolute inset-0 bg-[linear-gradient(140deg,#0F62FE,#00A3B8)] opacity-95" />
+      <span className="absolute inset-0 bg-[linear-gradient(140deg,var(--blue),var(--cyan))] opacity-95" />
       <span className="absolute inset-0 opacity-[.34]" style={{
         backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.7) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.7) 75%),linear-gradient(135deg,rgba(0,0,0,.35) 25%,transparent 25%,transparent 75%,rgba(0,0,0,.35) 75%)',
         backgroundSize: '5px 5px', backgroundPosition: '0 0,2.5px 2.5px' }} />

@@ -10,7 +10,7 @@ export function SiteRow({ site, rank, perKw, winner, lifetimeYears = 15 }: {
   // slices, charged on top of the cost to build. The published build cost per kW
   // already covers mechanical and electrical work, so they were counted twice.
   const parts = [
-    { label: 'Cost to build', usdM: site.capex.construction / 1e6, color: '#0F62FE' },
+    { label: 'Cost to build', usdM: site.capex.construction / 1e6, color: 'var(--blue)' },
     { label: 'Land', usdM: site.capex.land / 1e6, color: '#8A73C4' },
     { label: `Running cost over ${lifetimeYears} years`, usdM: site.opexNpv / 1e6, color: '#B9C4D0' },
   ]
@@ -26,12 +26,12 @@ export function SiteRow({ site, rank, perKw, winner, lifetimeYears = 15 }: {
         ${winner ? 'bg-[linear-gradient(95deg,rgba(228,238,255,.72),rgba(255,255,255,0)_66%)]' : ''}`}>
       {winner && (
         <span aria-hidden className="absolute bottom-0 left-0 top-0 w-[3px]
-          bg-[linear-gradient(180deg,#0F62FE,#00A3B8)]" />
+          bg-[linear-gradient(180deg,var(--blue),var(--cyan))]" />
       )}
       <div className={`flex h-[34px] w-[34px] items-center justify-center rounded-[10px]
         text-[15px] font-bold transition-transform
         ${winner
-          ? 'border border-transparent bg-[linear-gradient(135deg,#0F62FE,#0043CE)] text-white shadow-[0_3px_10px_-3px_rgba(15,98,254,.55)]'
+          ? 'border border-transparent bg-[linear-gradient(135deg,var(--blue),var(--blue-d))] text-white shadow-[0_3px_10px_-3px_rgba(15,98,254,.55)]'
           : 'border border-line bg-card2 text-mid'}`}>{rank}</div>
 
       <div className="min-w-0">

@@ -4,6 +4,7 @@ import type { Map as MlMap, StyleSpecification, ErrorEvent } from 'maplibre-gl'
 import { Minus, Plus } from 'lucide-react'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { quantileScale, rampColor, NO_DATA } from '../../lib/ramp'
+import { cssColor } from '../../lib/theme'
 import { useReducedMotion } from '../../lib/useReducedMotion'
 import type { ParcelSummary } from '../../lib/parcelApi'
 
@@ -208,13 +209,15 @@ export function ParcelMap({
     if (m.getLayer(LYR_FILL)) return
 
     // The plot itself, shaded by the driver in the rail.
+    const accent = cssColor('--blue')
+    const accentWash = cssColor('--blue-x')
     m.addLayer({
       id: LYR_FILL,
       type: 'fill',
       source: SHAPES,
       paint: {
         'fill-color': ['case', ['boolean', ['feature-state', 'hover'], false],
-          '#E4EEFF', ['get', 'color']],
+          accentWash, ['get', 'color']],
         // Solid enough to read the ramp, open enough to see the streets under it.
         'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false],
           0.78, ['interpolate', ['linear'], ['zoom'],
@@ -230,7 +233,7 @@ export function ParcelMap({
       source: SHAPES,
       paint: {
         'line-color': ['case', ['boolean', ['feature-state', 'hover'], false],
-          '#0F62FE', 'rgba(15,32,64,.55)'],
+          accent, 'rgba(15,32,64,.55)'],
         'line-width': ['case', ['boolean', ['feature-state', 'hover'], false],
           1.8, ['interpolate', ['linear'], ['zoom'], HANDOVER[0], 0.45, 14, 1.2]],
         'line-opacity': ['interpolate', ['linear'], ['zoom'],
@@ -266,7 +269,7 @@ export function ParcelMap({
       source: SHAPES,
       filter: ['==', ['get', 'parcel_id'], '__none__'],
       paint: {
-        'line-color': '#0F62FE',
+        'line-color': accent,
         'line-width': 7,
         'line-blur': 3,
         'line-opacity': 0.28,
@@ -280,7 +283,7 @@ export function ParcelMap({
       source: SHAPES,
       filter: ['==', ['get', 'parcel_id'], '__none__'],
       paint: {
-        'line-color': '#0F62FE',
+        'line-color': accent,
         'line-width': 2.5,
         'line-opacity': 1,
       },

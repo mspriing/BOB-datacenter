@@ -1,3 +1,5 @@
+@import '../theme.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,7 +9,6 @@
     --bg:#E9ECF1; --card:#FFF; --card2:#F6F8FA;
     --line:#DFE4EA; --line2:#EDF0F4;
     --ink:#0F1720; --ink2:#333E4A; --mid:#55606D; --dim:#5E6874;
-    --blue:#0F62FE; --blue-l:#4589FF; --blue-x:#E4EEFF; --blue-d:#0043CE; --cyan:#00A3B8;
     --ok:#0B7A4B; --warn:#8A5200; --bad:#C22F2F; --gold:#7A5A12;
     --weave:6px;
     --shadow-sm:0 1px 2px rgba(15,23,32,.05);
@@ -77,7 +78,7 @@
     transition:transform .15s ease-out,box-shadow .15s ease-out,background-color .15s ease-out,border-color .15s ease-out;
   }
   .btn-primary {
-    color:#fff; background:linear-gradient(135deg,#0F62FE,#0353E9);
+    color:#fff; background:linear-gradient(135deg,var(--blue),var(--blue-d));
     box-shadow:0 3px 12px -3px rgba(15,98,254,.5); position:relative; overflow:hidden;
   }
   .btn-primary:hover { transform:translateY(-2px); box-shadow:0 6px 18px -4px rgba(15,98,254,.55); }

@@ -110,7 +110,7 @@ export function Home({ go }: { go: (r: Route) => void }) {
               className="flex items-start gap-3.5 rounded-[13px] border border-line bg-white/70 p-5
                          shadow-[var(--shadow-sm)] transition-colors hover:bg-white">
               <span className="num flex h-[30px] w-[30px] shrink-0 items-center justify-center
-                               rounded-[9px] bg-[linear-gradient(135deg,#0F62FE,#0043CE)]
+                               rounded-[9px] bg-[linear-gradient(135deg,var(--blue),var(--blue-d))]
                                text-[14px] font-bold text-white
                                shadow-[0_3px_9px_-3px_rgba(15,98,254,.55)]">
                 {s.n}

@@ -123,7 +123,7 @@ export function ProjectionSliders({
                       className="relative flex h-6 w-full touch-none select-none items-center">
                       <Slider.Track className="relative h-[5px] w-full grow rounded-full bg-card2
                                                shadow-[inset_0_1px_2px_rgba(15,23,32,.08)]">
-                        <Slider.Range className="absolute h-full rounded-full bg-[linear-gradient(90deg,#0F62FE,#4589FF)]" />
+                        <Slider.Range className="absolute h-full rounded-full bg-[linear-gradient(90deg,var(--blue),var(--blue-l))]" />
                         {/* today's figure */}
                         <span aria-hidden
                           className="absolute top-[-4px] h-[13px] w-px bg-[#98A3B0]"

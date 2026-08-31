@@ -134,7 +134,7 @@ export function UsMap({
                   <Tooltip.Root key={s.abbr} delayDuration={60}>
                     <Tooltip.Trigger asChild>
                       <path d={s.d} className="state-shape"
-                        fill={isHover ? '#0F62FE' : fillFor(s.regionKey)}
+                        fill={isHover ? 'var(--blue)' : fillFor(s.regionKey)}
                         onMouseEnter={() => setHover(s.regionKey)}
                         onMouseLeave={() => setHover(null)}
                         tabIndex={0}
@@ -177,10 +177,10 @@ export function UsMap({
                         }}
                         style={{ opacity: full ? 0.45 : 1 }}>
                         <circle cx={m.x} cy={m.y} r={isPinned ? 9 : 6.5}
-                          fill={isPinned ? '#0F62FE' : '#FFFFFF'}
-                          stroke={isPinned ? '#0043CE' : '#0F1720'}
+                          fill={isPinned ? 'var(--blue)' : 'var(--card)'}
+                          stroke={isPinned ? 'var(--blue-d)' : 'var(--ink)'}
                           strokeWidth={isPinned ? 2.4 : 1.8} />
-                        {isPinned && <circle cx={m.x} cy={m.y} r={3} fill="#FFFFFF" />}
+                        {isPinned && <circle cx={m.x} cy={m.y} r={3} fill="var(--card)" />}
                       </g>
                     </Tooltip.Trigger>
                     <Tooltip.Portal>
@@ -217,7 +217,7 @@ export function UsMap({
             {driver.fmt(driver.lowIsGood ? max : min)} to {driver.fmt(driver.lowIsGood ? min : max)}
           </span>
           <span className="flex items-center gap-1.5 text-[12.5px] text-mid">
-            <svg width="13" height="13" aria-hidden><circle cx="6.5" cy="6.5" r="5" fill="#fff" stroke="#0F1720" strokeWidth="1.8" /></svg>
+            <svg width="13" height="13" aria-hidden><circle cx="6.5" cy="6.5" r="5" fill="var(--card)" stroke="var(--ink)" strokeWidth="1.8" /></svg>
             metro, deepest coverage
           </span>
           <span className="flex items-center gap-1.5 text-[12.5px] text-mid">

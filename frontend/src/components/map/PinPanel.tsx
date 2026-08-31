@@ -111,7 +111,7 @@ export function PinPanel({ pinned, onUnpin, onClear }: {
                 <span className={`flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[9px]
                                  text-[13.5px] font-bold
                                  ${i === 0
-                                   ? 'bg-[linear-gradient(135deg,#0F62FE,#0043CE)] text-white shadow-[0_3px_9px_-3px_rgba(15,98,254,.55)]'
+                                   ? 'bg-[linear-gradient(135deg,var(--blue),var(--blue-d))] text-white shadow-[0_3px_9px_-3px_rgba(15,98,254,.55)]'
                                    : 'border border-line bg-card2 text-mid'}`}>{i + 1}</span>
                 <div className="min-w-0 flex-1">
                   <div className="mb-0.5 flex flex-wrap items-center gap-2">

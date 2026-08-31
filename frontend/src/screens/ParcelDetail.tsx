@@ -221,7 +221,7 @@ export function ParcelDetail({ parcelId, project, onBack }: {
           {est.parcel_note && (
             <div className="flex items-start gap-3 rounded-[12px] border border-line bg-white p-4">
               <span className="mt-[1px] flex h-[26px] w-[26px] shrink-0 items-center justify-center
-                               rounded-[8px] bg-[linear-gradient(135deg,#0F62FE,#0043CE)]
+                               rounded-[8px] bg-[linear-gradient(135deg,var(--blue),var(--blue-d))]
                                text-[11px] font-bold text-white">
                 {est.parcel_note_source === 'watsonx' ? 'wx' : '≡'}
               </span>
