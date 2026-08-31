@@ -132,7 +132,7 @@ export function Results({ project, server, serverError, go }: {
 
   return (
     <div className="space-y-3 pt-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-[11px] border border-line bg-white/70 px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-[11px] border border-line bg-[var(--soft-surface)] px-4 py-3">
         <div className="flex flex-wrap items-center gap-2.5 text-[13.5px] text-mid">
           <span className="font-semibold text-ink2">Authoritative backend estimate</span>
           <Rule /><span>engine {server.engine_version}</span>
@@ -155,7 +155,7 @@ export function Results({ project, server, serverError, go }: {
           <h1 className="mb-7 text-[clamp(2.25rem,1.7rem+2.6vw,3.375rem)] font-semibold tracking-[-.02em] text-ink">
             {leader.label}
           </h1>
-          <div className="grid grid-cols-2 divide-x divide-y overflow-hidden rounded-[11px] border border-line bg-white/60 lg:grid-cols-4 lg:divide-y-0 divide-[var(--line2)]">
+          <div className="grid grid-cols-2 divide-x divide-y overflow-hidden rounded-[11px] border border-line bg-[var(--soft-surface)] lg:grid-cols-4 lg:divide-y-0 divide-[var(--line2)]">
             <StatTile bare label="Lifetime cost per kW"
               value={<Counter to={leaderRange.lifetime_per_kw} prefix="$" />}
               foot={`${costCase} case; backend range ${usd(leader.site.finance.ranges.low.lifetime_per_kw)}–${usd(leader.site.finance.ranges.high.lifetime_per_kw)}`} />
@@ -181,7 +181,7 @@ export function Results({ project, server, serverError, go }: {
         </div>
       </Card>
 
-      <div className="sticky top-0 z-30 -mx-4 border-b border-white/90 bg-white/[.82] px-4 py-3 backdrop-blur-[18px] sm:-mx-7 sm:px-7">
+      <div className="sticky top-0 z-30 -mx-4 border-b border-[var(--glass-border)] bg-[var(--glass-fill)] px-4 py-3 backdrop-blur-[18px] sm:-mx-7 sm:px-7">
         <CostCaseToggle value={costCase} onChange={value => setCostCase(value as CostCase)} />
       </div>
 
@@ -192,7 +192,7 @@ export function Results({ project, server, serverError, go }: {
             {server.flip_sentence}
           </p>
           {server.narrative.sensitivity_callouts.length > 0 && (
-            <details className="rounded-[10px] border border-line bg-white/70 px-4 py-3">
+            <details className="rounded-[10px] border border-line bg-[var(--soft-surface)] px-4 py-3">
               <summary className="cursor-pointer text-[14px] font-semibold text-ink2">
                 Cost-driver notes for every candidate
               </summary>
@@ -215,7 +215,7 @@ export function Results({ project, server, serverError, go }: {
               <article key={siteId} className={site.rank === 1 ? 'border-l-[3px] border-l-blue' : ''}>
                 <div className="grid gap-4 p-5 sm:grid-cols-[42px_1fr_auto] sm:items-center">
                   <span className={`flex h-9 w-9 items-center justify-center rounded-[10px] text-[15px] font-bold
-                    ${site.rank === 1 ? 'bg-blue text-white' : 'border border-line bg-card2 text-mid'}`}>
+                    ${site.rank === 1 ? 'bg-blue text-onaccent' : 'border border-line bg-card2 text-mid'}`}>
                     {site.rank}
                   </span>
                   <div>

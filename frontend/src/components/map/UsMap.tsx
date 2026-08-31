@@ -31,8 +31,8 @@ export type ShadeKey = typeof SHADE_DRIVERS[number]['key']
 
 // Blue ramp, light to dark. Every step clears 4.5:1 against the white stroke
 // and carries no text, so the ramp is decoration over a hover readout.
-const RAMP = ['#EEF3FB', '#D7E4F8', '#B6CDF2', '#8FB1E9', '#6592DC', '#3D71CB', '#1E52B4', '#0F3C93']
-const NO_DATA = '#E4E7EC'
+const RAMP = Array.from({ length: 8 }, (_, i) => `var(--ramp-${i})`)
+const NO_DATA = 'var(--map-no-data)'
 
 function ramp(t: number) {
   const i = Math.min(RAMP.length - 1, Math.max(0, Math.round(t * (RAMP.length - 1))))
@@ -123,7 +123,7 @@ export function UsMap({
           </p>
         </div>
 
-        <div className="relative overflow-hidden rounded-[11px] border border-line bg-white/70">
+        <div className="relative overflow-hidden rounded-[11px] border border-line bg-[var(--soft-surface)]">
           <svg viewBox={MAP_VIEWBOX} className="block h-auto w-full" role="img"
             aria-label={`Map of the United States shaded by ${driver.name}`}>
             <g>
@@ -142,7 +142,7 @@ export function UsMap({
                     </Tooltip.Trigger>
                     <Tooltip.Portal>
                       <Tooltip.Content sideOffset={6} collisionPadding={12}
-                        className="z-50 rounded-[9px] border border-line bg-white px-3 py-2
+                        className="z-50 rounded-[9px] border border-line bg-card px-3 py-2
                                    text-[13px] leading-[1.45] text-ink2 shadow-[0_8px_26px_-10px_rgba(15,23,32,.3)]">
                         <span className="font-semibold text-ink">{s.name}</span>
                         <span className="mx-2 inline-block h-[10px] w-px translate-y-[1px] bg-line" />
@@ -152,7 +152,7 @@ export function UsMap({
                             modeled
                           </span>
                         )}
-                        <Tooltip.Arrow className="fill-white" width={10} height={4} />
+                        <Tooltip.Arrow className="fill-card" width={10} height={4} />
                       </Tooltip.Content>
                     </Tooltip.Portal>
                   </Tooltip.Root>
@@ -185,7 +185,7 @@ export function UsMap({
                     </Tooltip.Trigger>
                     <Tooltip.Portal>
                       <Tooltip.Content sideOffset={8} collisionPadding={12}
-                        className="z-50 max-w-[250px] rounded-[9px] border border-line bg-white px-3 py-2
+                        className="z-50 max-w-[250px] rounded-[9px] border border-line bg-card px-3 py-2
                                    text-[13px] leading-[1.45] text-ink2 shadow-[0_8px_26px_-10px_rgba(15,23,32,.3)]">
                         <div className="font-semibold text-ink">{m.label}</div>
                         <div className="num mt-0.5">{driver.name} {readout(m)}</div>
@@ -194,7 +194,7 @@ export function UsMap({
                                     : <Pin size={12} strokeWidth={2.2} aria-hidden />}
                           {isPinned ? 'Click to unpin' : full ? `Unpin one first` : 'Click to pin'}
                         </div>
-                        <Tooltip.Arrow className="fill-white" width={10} height={4} />
+                        <Tooltip.Arrow className="fill-card" width={10} height={4} />
                       </Tooltip.Content>
                     </Tooltip.Portal>
                   </Tooltip.Root>

@@ -37,7 +37,7 @@ function CompareBars({ icon, label, hint, rows, fmt }: {
                             shadow-[inset_0_1px_2px_rgba(15,23,32,.07)]">
               {r.v !== null && (
                 <motion.div className="h-full rounded-full"
-                  style={{ background: r.good ? '#0B7A4B' : '#7B93B0' }}
+                  style={{ background: r.good ? 'var(--ok)' : 'var(--marker)' }}
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.min(100, (r.v / r.max) * 100)}%` }}
                   transition={{ duration: 0.6, ease: [0.2, 0.8, 0.3, 1] }} />
@@ -111,7 +111,7 @@ export function PinPanel({ pinned, onUnpin, onClear }: {
                 <span className={`flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[9px]
                                  text-[13.5px] font-bold
                                  ${i === 0
-                                   ? 'bg-[linear-gradient(135deg,var(--blue),var(--blue-d))] text-white shadow-[0_3px_9px_-3px_rgba(15,98,254,.55)]'
+                                   ? 'bg-[linear-gradient(135deg,var(--blue),var(--blue-d))] text-onaccent shadow-[0_3px_9px_-3px_rgba(15,98,254,.55)]'
                                    : 'border border-line bg-card2 text-mid'}`}>{i + 1}</span>
                 <div className="min-w-0 flex-1">
                   <div className="mb-0.5 flex flex-wrap items-center gap-2">

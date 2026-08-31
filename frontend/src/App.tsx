@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import * as Tooltip from '@radix-ui/react-tooltip'
+import { Moon, Sun } from 'lucide-react'
 import { Logo } from './components/Primitives'
 import { Footer } from './components/Footer'
 import { useReducedMotion } from './lib/useReducedMotion'
+import { useTheme } from './lib/theme'
 import { isRoute, type Route } from './lib/routes'
 
 import {
@@ -91,6 +93,7 @@ export default function App() {
   // route change, the same reason `chosen` does.
   const [zoom, setZoom] = useState<'regions' | 'parcels'>('regions')
   const reduced = useReducedMotion()
+  const { theme, toggleTheme } = useTheme()
 
 
   const go = useCallback((r: Route) => {
@@ -181,7 +184,7 @@ export default function App() {
             </span>
           </button>
           <div className="flex items-center gap-3">
-            <div className="rounded-full border border-line bg-white/80 p-1 shadow-[var(--shadow-sm)]">
+            <div className="rounded-full border border-line bg-[var(--glass-fill)] p-1 shadow-[var(--shadow-sm)]">
               <button
                 onClick={() => go('how-to-use')}
                 aria-current={route === 'how-to-use' ? 'page' : undefined}
@@ -194,8 +197,17 @@ export default function App() {
                 <span className="relative">How to use</span>
               </button>
             </div>
+            <button type="button" onClick={toggleTheme}
+              className="flex h-[46px] w-[46px] items-center justify-center rounded-full border border-line
+                         bg-[var(--glass-fill)] text-mid shadow-[var(--shadow-sm)] transition-colors hover:text-ink"
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+              {theme === 'dark'
+                ? <Sun size={17} strokeWidth={2.2} aria-hidden />
+                : <Moon size={17} strokeWidth={2.2} aria-hidden />}
+            </button>
             <nav aria-label="Screens"
-              className="flex items-center gap-1.5 rounded-full border border-line bg-white/80 p-1 shadow-[var(--shadow-sm)]">
+              className="flex items-center gap-1.5 rounded-full border border-line bg-[var(--glass-fill)] p-1 shadow-[var(--shadow-sm)]">
               {NAV.map(n => {
                 const active = (STEP_OF[route] ?? route) === n.id
                 const unavailable = n.id === 'results' && !server
@@ -217,10 +229,10 @@ export default function App() {
                     {unavailable && (
                       <Tooltip.Portal>
                         <Tooltip.Content sideOffset={8} collisionPadding={14}
-                          className="z-50 rounded-[10px] border border-line bg-white px-3.5 py-2.5
+                          className="z-50 rounded-[10px] border border-line bg-card px-3.5 py-2.5
                                      text-[13.5px] text-ink2 shadow-[var(--shadow-md)]">
                           Run a comparison and the results land here.
-                          <Tooltip.Arrow className="fill-white" width={11} height={5} />
+                          <Tooltip.Arrow className="fill-card" width={11} height={5} />
                         </Tooltip.Content>
                       </Tooltip.Portal>
                     )}

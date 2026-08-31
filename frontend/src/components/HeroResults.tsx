@@ -79,7 +79,7 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
     <div className="bg-bg p-3 sm:p-4">
       {/* top bar */}
       <div style={step(0)}
-        className="mb-3 flex items-center justify-between rounded-[11px] border border-line bg-white px-4 py-2.5">
+        className="mb-3 flex items-center justify-between rounded-[11px] border border-line bg-card px-4 py-2.5">
         <span>
           <span className="text-[17px] font-semibold tracking-[-.02em] text-ink">leepr</span>
           <span className="ml-2 rounded-full bg-card2 px-2 py-1 text-[10px] font-bold uppercase tracking-[.07em] text-mid">
@@ -100,7 +100,7 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
 
       {/* recommended */}
       <div style={step(1)}
-        className="mb-3 grid gap-4 rounded-[13px] border border-line bg-white p-4 lg:grid-cols-[1fr_auto]">
+        className="mb-3 grid gap-4 rounded-[13px] border border-line bg-card p-4 lg:grid-cols-[1fr_auto]">
         <div>
           <span className="mb-2 inline-block rounded-full bg-blue-x px-2.5 py-1 text-[11px]
             font-semibold tracking-[.04em] text-blue-d">RECOMMENDED</span>
@@ -127,8 +127,8 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
       {/* the fragility sentence, in words */}
       {tightest && (
         <div style={step(2)}
-          className="mb-3 flex items-start gap-3 rounded-[11px] border border-[#E4D2A8] bg-[#FBF3E2] px-4 py-3">
-          <span aria-hidden className="mt-[3px] block h-[26px] w-[3px] shrink-0 rounded-[2px] bg-[#C8A24A]" />
+          className="mb-3 flex items-start gap-3 rounded-[11px] border border-[var(--warn-border)] bg-[var(--warn-surface)] px-4 py-3">
+          <span aria-hidden className="mt-[3px] block h-[26px] w-[3px] shrink-0 rounded-[2px] bg-warn" />
           <p className="text-[13.5px] leading-[1.55] text-gold">
             {leader.label} stops winning once its {tightest.label.toLowerCase()} reaches{' '}
             <b>{tightest.at}</b>, which is <b>{tightest.pct!.toFixed(1)}%</b> above the figure used here.
@@ -139,7 +139,7 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
 
       <div className="grid items-start gap-3 lg:grid-cols-[1.55fr_1fr]">
         {/* the ranked set, through the real row */}
-        <div style={step(3)} className="overflow-hidden rounded-[13px] border border-line bg-white">
+        <div style={step(3)} className="overflow-hidden rounded-[13px] border border-line bg-card">
           {ranked.map((s, i) => (
             <SiteRow key={s.key} site={s} rank={i + 1} perKw={s.lifetimePerKw} winner={i === 0}
               lifetimeYears={PROJECT.lifetimeYears} />
@@ -147,7 +147,7 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
         </div>
 
         {/* what would have to change */}
-        <div style={step(4)} className="self-start rounded-[13px] border border-line bg-white p-4">
+        <div style={step(4)} className="self-start rounded-[13px] border border-line bg-card p-4">
           <div className="mb-3 flex items-baseline justify-between">
             <h4 className="text-[15px] font-semibold text-ink">What would have to change</h4>
             <span className="text-[12px] text-mid">Most fragile first</span>
@@ -199,7 +199,7 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
           [COVERAGE.sourced, 'sourced from a named publisher'],
           [COVERAGE.priceable, 'rankable today'],
         ].map(([n, l]) => (
-          <div key={l as string} className="rounded-[11px] border border-line bg-white px-3.5 py-2.5">
+          <div key={l as string} className="rounded-[11px] border border-line bg-card px-3.5 py-2.5">
             <div className="num text-[20px] font-semibold leading-none text-ink">
               {(n as number).toLocaleString()}
             </div>

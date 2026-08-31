@@ -71,7 +71,7 @@ function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
         </thead>
         <tbody>
           {rows.map((r, i) => (
-            <tr key={i} className="transition-colors hover:bg-[rgba(228,238,255,.5)]">
+            <tr key={i} className="transition-colors hover:bg-[var(--hover-wash)]">
               {r.map((c, j) => (
                 <td key={j} className="border-b border-[var(--line2)] px-5 py-3 text-ink2">{c}</td>
               ))}

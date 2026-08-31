@@ -24,7 +24,7 @@ export function Footer({ go, route }: { go: (r: Route) => void; route: Route }) 
                   <button onClick={() => go(l.to)}
                     aria-current={route === l.to ? 'page' : undefined}
                     className={`inline-block rounded-[6px] px-2 py-1 text-left text-[14px] transition-colors
-                      ${route === l.to ? 'bg-blue font-medium text-white' : 'text-mid hover:text-blued'}`}>
+                      ${route === l.to ? 'bg-blue font-medium text-onaccent' : 'text-mid hover:text-blued'}`}>
                     {l.label}
                   </button>
                 </li>

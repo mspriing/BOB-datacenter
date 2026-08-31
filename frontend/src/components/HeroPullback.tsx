@@ -125,7 +125,7 @@ export function HeroPullback({ go }: { go: (r: Route) => void }) {
       {!reduced && !landed && ready && (
         <button
           onClick={() => setLanded(true)}
-          className="absolute bottom-3 right-3 rounded-full border border-line bg-white/90 px-3 py-1.5
+          className="absolute bottom-3 right-3 rounded-full border border-line bg-[var(--raised-surface)] px-3 py-1.5
             text-[12px] font-medium text-mid backdrop-blur transition-colors hover:text-ink">
           Skip
         </button>

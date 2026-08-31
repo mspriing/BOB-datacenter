@@ -219,10 +219,10 @@ export function ParcelDetail({ parcelId, project, onBack }: {
       <div className="grid gap-3.5 lg:grid-cols-[1fr_380px] lg:items-start">
         <div className="space-y-3.5">
           {est.parcel_note && (
-            <div className="flex items-start gap-3 rounded-[12px] border border-line bg-white p-4">
+            <div className="flex items-start gap-3 rounded-[12px] border border-line bg-card p-4">
               <span className="mt-[1px] flex h-[26px] w-[26px] shrink-0 items-center justify-center
                                rounded-[8px] bg-[linear-gradient(135deg,var(--blue),var(--blue-d))]
-                               text-[11px] font-bold text-white">
+                               text-[11px] font-bold text-onaccent">
                 {est.parcel_note_source === 'watsonx' ? 'wx' : '≡'}
               </span>
               <div>

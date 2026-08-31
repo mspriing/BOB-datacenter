@@ -471,7 +471,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
                       <span className={`flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[9px]
                                        text-[13.5px] font-bold
                                        ${isTopThree
-                                         ? 'bg-blue text-white'
+                                         ? 'bg-blue text-onaccent'
                                          : 'border border-line bg-card2 text-mid'}`}>
                         {displayRank}
                       </span>

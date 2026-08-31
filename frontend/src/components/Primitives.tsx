@@ -32,7 +32,7 @@ export function FoldCard({ title, note, children, defaultOpen = false }: {
   return (
     <Collapsible.Root open={open} onOpenChange={setOpen} className="g">
       <Collapsible.Trigger asChild>
-        <button className="panel-head w-full cursor-pointer text-left transition-colors hover:bg-[rgba(228,238,255,.42)]">
+        <button className="panel-head w-full cursor-pointer text-left transition-colors hover:bg-[var(--hover-wash)]">
           <span className="flex items-center gap-2.5">
             <ChevronDown size={16} strokeWidth={2.4} aria-hidden
               className="text-mid transition-transform duration-200"
@@ -61,10 +61,10 @@ export function Explain({ children, text }: { children: ReactNode; text: string 
       </Tooltip.Trigger>
       <Tooltip.Portal>
         <Tooltip.Content sideOffset={8} collisionPadding={14}
-          className="z-50 max-w-[270px] rounded-[10px] border border-line bg-white px-3.5 py-2.5
+          className="z-50 max-w-[270px] rounded-[10px] border border-line bg-card px-3.5 py-2.5
                      text-[13.5px] leading-[1.5] text-ink2 shadow-[0_8px_26px_-10px_rgba(15,23,32,.3)]">
           {text}
-          <Tooltip.Arrow className="fill-white" width={11} height={5} />
+          <Tooltip.Arrow className="fill-card" width={11} height={5} />
         </Tooltip.Content>
       </Tooltip.Portal>
     </Tooltip.Root>
@@ -78,11 +78,11 @@ export function Chip({ tone = 'blue', children }: {
 }) {
   const tones = {
     blue: 'bg-bluex text-blued',
-    green: 'bg-[#D7F0E2] text-ink',
+    green: 'bg-[var(--green-wash)] text-ink',
     grey: 'bg-card2 text-mid',
-    ok: 'bg-[var(--ok)] text-white',
-    warn: 'bg-[var(--warn)] text-white',
-    bad: 'bg-[var(--bad)] text-white',
+    ok: 'bg-[var(--ok)] text-onaccent',
+    warn: 'bg-[var(--warn)] text-onaccent',
+    bad: 'bg-[var(--bad)] text-onaccent',
   }
   return (
     <span className={`inline-block rounded-full px-2.5 py-[3px] text-[12px] font-bold
@@ -191,7 +191,7 @@ export function CostCaseToggle({ value, onChange }: { value: string; onChange: (
   return (
     <ToggleGroup.Root type="single" value={value} onValueChange={v => v && onChange(v)}
       aria-label="Cost scenario"
-      className="inline-flex flex-wrap rounded-full border border-line bg-white p-1 shadow-[var(--shadow-sm)]">
+      className="inline-flex flex-wrap rounded-full border border-line bg-card p-1 shadow-[var(--shadow-sm)]">
       {[{ v: 'low', label: 'Optimistic' }, { v: 'base', label: 'Expected' }, { v: 'high', label: 'Cautious' }].map(o => (
         <ToggleGroup.Item key={o.v} value={o.v}
           className="min-h-[34px] rounded-full px-3 text-[13.5px] font-medium text-mid transition-colors
@@ -208,12 +208,12 @@ export function Logo({ size = 42 }: { size?: number }) {
   return (
     <span className="carbon relative block shrink-0 overflow-hidden" aria-hidden
       style={{ width: size, height: size, borderRadius: size * 0.26,
-               boxShadow: '0 3px 12px -3px rgba(15,98,254,.45), inset 0 1px 0 rgba(255,255,255,.4)' }}>
+               boxShadow: '0 3px 12px -3px var(--accent-shadow), var(--inset-highlight)' }}>
       <span className="absolute inset-0 bg-[linear-gradient(140deg,var(--blue),var(--cyan))] opacity-95" />
       <span className="absolute inset-0 opacity-[.34]" style={{
-        backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.7) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.7) 75%),linear-gradient(135deg,rgba(0,0,0,.35) 25%,transparent 25%,transparent 75%,rgba(0,0,0,.35) 75%)',
+        backgroundImage: 'var(--logo-weave)',
         backgroundSize: '5px 5px', backgroundPosition: '0 0,2.5px 2.5px' }} />
-      <span className="absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,.42)_18%,transparent_46%)]" />
+      <span className="absolute inset-0 bg-[image:var(--logo-glint)]" />
     </span>
   )
 }

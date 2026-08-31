@@ -66,8 +66,8 @@ export function Home({ go }: { go: (r: Route) => void }) {
             },
           ]).map(v => (
             <div key={v.head}
-              className="flex items-start gap-3.5 rounded-[13px] border border-line bg-white/70 p-5
-                         shadow-[var(--shadow-sm)] transition-colors hover:bg-white">
+              className="flex items-start gap-3.5 rounded-[13px] border border-line bg-[var(--soft-surface)] p-5
+                         shadow-[var(--shadow-sm)] transition-colors hover:bg-card">
               <span className="flex h-[38px] w-[38px] shrink-0 items-center justify-center
                                rounded-[11px] bg-bluex text-blued">
                 {v.icon}
@@ -107,11 +107,11 @@ export function Home({ go }: { go: (r: Route) => void }) {
             },
           ]).map(s => (
             <li key={s.n}
-              className="flex items-start gap-3.5 rounded-[13px] border border-line bg-white/70 p-5
-                         shadow-[var(--shadow-sm)] transition-colors hover:bg-white">
+              className="flex items-start gap-3.5 rounded-[13px] border border-line bg-[var(--soft-surface)] p-5
+                         shadow-[var(--shadow-sm)] transition-colors hover:bg-card">
               <span className="num flex h-[30px] w-[30px] shrink-0 items-center justify-center
                                rounded-[9px] bg-[linear-gradient(135deg,var(--blue),var(--blue-d))]
-                               text-[14px] font-bold text-white
+                               text-[14px] font-bold text-onaccent
                                shadow-[0_3px_9px_-3px_rgba(15,98,254,.55)]">
                 {s.n}
               </span>

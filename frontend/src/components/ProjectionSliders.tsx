@@ -78,11 +78,11 @@ export function ProjectionSliders({
             to nobody. */}
         <div className="flex flex-wrap gap-x-5 gap-y-2 rounded-[10px] border border-line bg-card2 px-3.5 py-2.5">
           <span className="flex items-center gap-2 text-[12.5px] leading-[1.4] text-mid">
-            <span aria-hidden className="inline-block h-[13px] w-px shrink-0 bg-[#98A3B0]" />
+            <span aria-hidden className="inline-block h-[13px] w-px shrink-0 bg-[var(--marker)]" />
             today&rsquo;s figure
           </span>
           <span className="flex items-center gap-2 text-[12.5px] leading-[1.4] text-mid">
-            <span aria-hidden className="inline-block h-[13px] w-[2px] shrink-0 rounded-[1px] bg-[#C22F2F]" />
+            <span aria-hidden className="inline-block h-[13px] w-[2px] shrink-0 rounded-[1px] bg-bad" />
             past here the ranking changes hands
           </span>
         </div>
@@ -126,16 +126,16 @@ export function ProjectionSliders({
                         <Slider.Range className="absolute h-full rounded-full bg-[linear-gradient(90deg,var(--blue),var(--blue-l))]" />
                         {/* today's figure */}
                         <span aria-hidden
-                          className="absolute top-[-4px] h-[13px] w-px bg-[#98A3B0]"
+                          className="absolute top-[-4px] h-[13px] w-px bg-[var(--marker)]"
                           style={{ left: `${pos(1)}%` }} />
                         {/* where the ranking changes hands */}
                         {flip !== null && flip > MIN_MULT && flip < MAX_MULT && (
                           <span aria-hidden
-                            className="absolute top-[-5px] h-[15px] w-[2px] rounded-[1px] bg-[#C22F2F]"
+                            className="absolute top-[-5px] h-[15px] w-[2px] rounded-[1px] bg-bad"
                             style={{ left: `${pos(flip)}%` }} />
                         )}
                       </Slider.Track>
-                      <Slider.Thumb className="block h-[20px] w-[20px] cursor-grab rounded-full bg-white
+                      <Slider.Thumb className="block h-[20px] w-[20px] cursor-grab rounded-full bg-card
                         shadow-[0_2px_7px_rgba(15,23,32,.28),0_0_0_1px_rgba(15,23,32,.09)]
                         transition-transform hover:scale-110 focus-visible:scale-110 active:cursor-grabbing" />
                     </Slider.Root>

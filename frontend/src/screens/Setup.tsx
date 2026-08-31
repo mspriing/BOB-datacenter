@@ -144,7 +144,7 @@ export function Setup({
                     className={`rounded-[12px] border border-l-[3px] p-4 text-left transition-colors
                       ${on
                         ? 'border-blue bg-bluex shadow-[var(--shadow-sm)]'
-                        : 'border-line bg-white/70 hover:bg-card2'}`}>
+                        : 'border-line bg-[var(--soft-surface)] hover:bg-card2'}`}>
                     <div className="mb-1 text-[15px] font-semibold text-ink">
                       {o.head}
                     </div>
@@ -336,10 +336,10 @@ export function Setup({
           )}
 
           {!atParcelGrain && duplicates.length > 0 && (
-            <div className="flex items-start gap-3 rounded-[12px] border border-[rgba(194,47,47,.3)]
-                            bg-[rgba(255,240,240,.9)] p-4">
+            <div className="flex items-start gap-3 rounded-[12px] border border-[var(--error-border)]
+                            bg-[var(--error-surface)] p-4">
               <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-bad" aria-hidden />
-              <p className="text-[14px] leading-[1.6] text-[#7A1D1D]">
+              <p className="text-[14px] leading-[1.6] text-[var(--error-ink)]">
                 The same region appears twice in the candidate set. Pick a different one before
                 running, otherwise the comparison would score a site against itself.
               </p>
@@ -347,10 +347,10 @@ export function Setup({
           )}
 
           {!atParcelGrain && thin.length > 0 && (
-            <div className="flex items-start gap-3 rounded-[12px] border border-[rgba(138,82,0,.28)]
-                            bg-[rgba(255,249,238,.9)] p-4">
+            <div className="flex items-start gap-3 rounded-[12px] border border-[var(--warn-border)]
+                            bg-[var(--warn-surface)] p-4">
               <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-[var(--warn)]" aria-hidden />
-              <div className="text-[14px] leading-[1.6] text-[#5C3A00]">
+              <div className="text-[14px] leading-[1.6] text-[var(--warn-ink)]">
                 <p className="mb-1.5">
                   These places are missing context that is shown with the result but is not used
                   as a free or zero-cost input. The comparison still runs on the available drivers.

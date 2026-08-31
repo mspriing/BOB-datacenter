@@ -13,12 +13,18 @@
  * so the working region map is untouched here.
  */
 
-export const RAMP = ['#EEF3FB', '#D7E4F8', '#B6CDF2', '#8FB1E9', '#6592DC', '#3D71CB', '#1E52B4', '#0F3C93']
-export const NO_DATA = '#E4E7EC'
+import { cssColor } from './theme'
 
-export function rampColor(t: number): string {
-  const i = Math.min(RAMP.length - 1, Math.max(0, Math.round(t * (RAMP.length - 1))))
-  return RAMP[i]
+export const RAMP = Array.from({ length: 8 }, (_, i) => `var(--ramp-${i})`)
+export const NO_DATA = 'var(--map-no-data)'
+
+export function resolvedRamp(): string[] {
+  return Array.from({ length: 8 }, (_, i) => cssColor(`--ramp-${i}`))
+}
+
+export function rampColor(t: number, colors = RAMP): string {
+  const i = Math.min(colors.length - 1, Math.max(0, Math.round(t * (colors.length - 1))))
+  return colors[i]
 }
 
 /**

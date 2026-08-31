@@ -3,8 +3,8 @@ import * as maplibregl from 'maplibre-gl'
 import type { Map as MlMap, StyleSpecification, ErrorEvent } from 'maplibre-gl'
 import { Minus, Plus } from 'lucide-react'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { quantileScale, rampColor, NO_DATA } from '../../lib/ramp'
-import { cssColor } from '../../lib/theme'
+import { quantileScale, rampColor, resolvedRamp } from '../../lib/ramp'
+import { cssColor, useTheme } from '../../lib/theme'
 import { useReducedMotion } from '../../lib/useReducedMotion'
 import type { ParcelSummary } from '../../lib/parcelApi'
 
@@ -23,17 +23,22 @@ export type ParcelShadeKey = typeof PARCEL_SHADE[number]['key']
  * account or token, which keeps the tool free of per-tile billing and of any
  * credential that could expire mid-demo.
  */
-const BASEMAP_STYLE = 'https://tiles.openfreemap.org/styles/positron'
+const BASEMAP_STYLE = {
+  light: 'https://tiles.openfreemap.org/styles/positron',
+  dark: 'https://tiles.openfreemap.org/styles/dark',
+} as const
 
 /**
  * If the basemap host is unreachable the map must still work. Parcels are the
  * content, the basemap is context. This fallback draws them on plain ground
  * rather than showing an empty pane.
  */
-const FALLBACK_STYLE: StyleSpecification = {
-  version: 8,
-  sources: {},
-  layers: [{ id: 'bg', type: 'background', paint: { 'background-color': '#F3F5F9' } }],
+function fallbackStyle(): StyleSpecification {
+  return {
+    version: 8,
+    sources: {},
+    layers: [{ id: 'bg', type: 'background', paint: { 'background-color': cssColor('--map-ground') } }],
+  }
 }
 
 const SHAPES = 'parcel-shapes'
@@ -88,6 +93,9 @@ export function ParcelMap({
     driver: string
   } | null>(null)
   const reduced = useReducedMotion()
+  const { theme } = useTheme()
+  const themeRef = useRef(theme)
+  themeRef.current = theme
   const onSelectRef = useRef(onSelect)
   onSelectRef.current = onSelect
 
@@ -98,10 +106,12 @@ export function ParcelMap({
       .map(p => p[shade] as number | null)
       .filter((v): v is number => typeof v === 'number' && Number.isFinite(v))
     const scale = quantileScale(values, true)
+    const colors = resolvedRamp()
+    const noData = cssColor('--map-no-data')
     const shadeDef = PARCEL_SHADE.find(driver => driver.key === shade)!
     const colorOf = (p: ParcelSummary) => {
       const v = p[shade] as number | null
-      return typeof v === 'number' && Number.isFinite(v) ? rampColor(scale(v)) : NO_DATA
+      return typeof v === 'number' && Number.isFinite(v) ? rampColor(scale(v), colors) : noData
     }
     const propertiesOf = (p: ParcelSummary) => {
       const value = p[shade] as number | null
@@ -149,7 +159,7 @@ export function ParcelMap({
       points: { type: 'FeatureCollection' as const, features: pointFeatures },
       bounds: box,
     }
-  }, [parcels, shade])
+  }, [parcels, shade, theme])
   const dataRef = useRef({ shapes, points })
   dataRef.current = { shapes, points }
 
@@ -159,7 +169,7 @@ export function ParcelMap({
 
     const m = new maplibregl.Map({
       container: holder.current,
-      style: BASEMAP_STYLE,
+      style: BASEMAP_STYLE[themeRef.current],
       center: [-98.6, 29.45],   // Bexar County
       zoom: 8.4,
       attributionControl: { compact: true },
@@ -183,7 +193,7 @@ export function ParcelMap({
       setBasemapFailed(true)
       if (swapped.current) return
       swapped.current = true
-      try { m.setStyle(FALLBACK_STYLE) } catch { /* already gone */ }
+      try { m.setStyle(fallbackStyle()) } catch { /* already gone */ }
     })
 
     m.on('load', check)
@@ -193,6 +203,14 @@ export function ParcelMap({
 
     return () => { m.remove(); map.current = null }
   }, [])
+
+  useEffect(() => {
+    const m = map.current
+    if (!m) return
+    setBasemapFailed(false)
+    swapped.current = false
+    try { m.setStyle(BASEMAP_STYLE[theme]) } catch { /* map is being removed */ }
+  }, [theme])
 
   // ── Build layers only when a style load has removed them ───────────────────
   useEffect(() => {
@@ -233,7 +251,7 @@ export function ParcelMap({
       source: SHAPES,
       paint: {
         'line-color': ['case', ['boolean', ['feature-state', 'hover'], false],
-          accent, 'rgba(15,32,64,.55)'],
+          accent, cssColor('--map-line')],
         'line-width': ['case', ['boolean', ['feature-state', 'hover'], false],
           1.8, ['interpolate', ['linear'], ['zoom'], HANDOVER[0], 0.45, 14, 1.2]],
         'line-opacity': ['interpolate', ['linear'], ['zoom'],
@@ -255,7 +273,7 @@ export function ParcelMap({
         ],
         'circle-color': ['get', 'color'],
         'circle-stroke-width': 1,
-        'circle-stroke-color': 'rgba(15,23,32,.45)',
+        'circle-stroke-color': cssColor('--map-dot-line'),
         'circle-opacity': ['interpolate', ['linear'], ['zoom'],
           8, 0.12, 8.7, 0.04, HANDOVER[0], 0],
         'circle-stroke-opacity': ['interpolate', ['linear'], ['zoom'],
@@ -386,7 +404,7 @@ export function ParcelMap({
   return (
     <div className={`relative ${className}`}>
       <div ref={holder} className="h-full w-full overflow-hidden rounded-[11px] border border-line" />
-      <div className="absolute right-2 top-2 z-10 overflow-hidden rounded-[8px] border border-line bg-white shadow-[var(--shadow-sm)]">
+      <div className="absolute right-2 top-2 z-10 overflow-hidden rounded-[8px] border border-line bg-card shadow-[var(--shadow-sm)]">
         <button type="button" aria-label="Zoom in" onClick={() => zoomBy(1)}
           className="flex h-9 w-9 items-center justify-center text-ink2 transition-colors hover:bg-card2">
           <Plus size={17} strokeWidth={2.2} aria-hidden />
@@ -398,7 +416,7 @@ export function ParcelMap({
       </div>
       {tooltip && (
         <div className="pointer-events-none absolute z-20 w-[218px] rounded-[9px] border border-line
-          bg-white/95 px-3 py-2 shadow-[var(--shadow-md)]"
+          bg-[var(--raised-surface)] px-3 py-2 shadow-[var(--shadow-md)]"
           style={{ left: tooltip.x, top: tooltip.y }}>
           <p className="truncate text-[12.5px] font-semibold text-ink">{tooltip.parcelId}</p>
           <p className="mt-0.5 text-[12px] text-mid">{tooltip.acres}</p>
@@ -406,7 +424,7 @@ export function ParcelMap({
         </div>
       )}
       {basemapFailed && (
-        <p className="absolute bottom-2 left-2 rounded-[7px] bg-white/90 px-2 py-1 text-[12px] text-mid">
+        <p className="absolute bottom-2 left-2 rounded-[7px] bg-[var(--raised-surface)] px-2 py-1 text-[12px] text-mid">
           Streets and place names are unavailable here. The parcels are the real shapes.
         </p>
       )}

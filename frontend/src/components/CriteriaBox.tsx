@@ -103,7 +103,7 @@ export function CriteriaBox({ onApply }: {
                 {entries.map(([k, v]) => (
                   <span key={k}
                     className="inline-flex items-center gap-1.5 rounded-full border border-line
-                               bg-white px-2.5 py-1 text-[13px] text-ink2">
+                               bg-card px-2.5 py-1 text-[13px] text-ink2">
                     {FILTER_LABEL[k](v)}
                     <button onClick={() => setDropped(d => new Set(d).add(k))}
                       aria-label={`Remove ${k}`}
@@ -120,7 +120,7 @@ export function CriteriaBox({ onApply }: {
                 <p className="mb-2 text-[13px] font-medium text-ink2">Ranking weights</p>
                 <div className="flex flex-wrap gap-2">
                   {weightEntries.map(([key, value]) => (
-                    <span key={key} className="rounded-full border border-line bg-white px-2.5 py-1 text-[13px] text-ink2">
+                    <span key={key} className="rounded-full border border-line bg-card px-2.5 py-1 text-[13px] text-ink2">
                       {WEIGHT_LABEL[key]} {Math.round(value * 100)}%
                     </span>
                   ))}

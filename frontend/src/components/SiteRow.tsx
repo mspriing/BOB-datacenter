@@ -11,8 +11,8 @@ export function SiteRow({ site, rank, perKw, winner, lifetimeYears = 15 }: {
   // already covers mechanical and electrical work, so they were counted twice.
   const parts = [
     { label: 'Cost to build', usdM: site.capex.construction / 1e6, color: 'var(--blue)' },
-    { label: 'Land', usdM: site.capex.land / 1e6, color: '#8A73C4' },
-    { label: `Running cost over ${lifetimeYears} years`, usdM: site.opexNpv / 1e6, color: '#B9C4D0' },
+    { label: 'Land', usdM: site.capex.land / 1e6, color: 'var(--cost-land)' },
+    { label: `Running cost over ${lifetimeYears} years`, usdM: site.opexNpv / 1e6, color: 'var(--cost-running)' },
   ]
   const total = parts.reduce((a, p) => a + p.usdM, 0)
   const marker = ((perKw - site.rangeLow) / (site.rangeHigh - site.rangeLow)) * 100
@@ -22,8 +22,8 @@ export function SiteRow({ site, rank, perKw, winner, lifetimeYears = 15 }: {
     <motion.article layout transition={{ type: 'spring', stiffness: 420, damping: 38 }}
       className={`row-sweep relative grid grid-cols-[38px_1fr] gap-x-4 gap-y-4 border-b
         border-[var(--line2)] p-5 transition-colors last:border-b-0
-        hover:bg-[rgba(228,238,255,.42)] lg:grid-cols-[38px_1fr_210px] lg:gap-5
-        ${winner ? 'bg-[linear-gradient(95deg,rgba(228,238,255,.72),rgba(255,255,255,0)_66%)]' : ''}`}>
+        hover:bg-[var(--hover-wash)] lg:grid-cols-[38px_1fr_210px] lg:gap-5
+        ${winner ? 'bg-[image:var(--winner-wash)]' : ''}`}>
       {winner && (
         <span aria-hidden className="absolute bottom-0 left-0 top-0 w-[3px]
           bg-[linear-gradient(180deg,var(--blue),var(--cyan))]" />
@@ -31,7 +31,7 @@ export function SiteRow({ site, rank, perKw, winner, lifetimeYears = 15 }: {
       <div className={`flex h-[34px] w-[34px] items-center justify-center rounded-[10px]
         text-[15px] font-bold transition-transform
         ${winner
-          ? 'border border-transparent bg-[linear-gradient(135deg,var(--blue),var(--blue-d))] text-white shadow-[0_3px_10px_-3px_rgba(15,98,254,.55)]'
+          ? 'border border-transparent bg-[linear-gradient(135deg,var(--blue),var(--blue-d))] text-onaccent shadow-[0_3px_10px_-3px_rgba(15,98,254,.55)]'
           : 'border border-line bg-card2 text-mid'}`}>{rank}</div>
 
       <div className="min-w-0">

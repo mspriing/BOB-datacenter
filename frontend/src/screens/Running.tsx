@@ -54,9 +54,9 @@ export function Running({ done, pending, slow, retrying, error, retry, lifetimeY
                 <li key={s} className="flex items-start gap-3.5">
                   <span className={`mt-[1px] flex h-[22px] w-[22px] shrink-0 items-center justify-center
                     rounded-full border transition-colors duration-300
-                    ${state === 'done' ? 'border-transparent bg-ok text-white'
+                    ${state === 'done' ? 'border-transparent bg-ok text-onaccent'
                       : state === 'now' ? 'border-blue bg-bluex text-blue'
-                      : 'border-line bg-white text-dim'}`}>
+                      : 'border-line bg-card text-dim'}`}>
                     {state === 'done' ? <Check size={13} strokeWidth={3} aria-hidden />
                       : state === 'now' ? <Loader2 size={13} strokeWidth={2.6} aria-hidden
                           className={reduced ? '' : 'animate-spin'} />
@@ -69,11 +69,11 @@ export function Running({ done, pending, slow, retrying, error, retry, lifetimeY
             })}
           </ol>
           {error && (
-            <div className="mt-7 flex items-start gap-3 rounded-[10px] border border-[rgba(194,47,47,.3)]
-                            bg-[rgba(255,240,240,.9)] p-4">
+            <div className="mt-7 flex items-start gap-3 rounded-[10px] border border-[var(--error-border)]
+                            bg-[var(--error-surface)] p-4">
               <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-bad" aria-hidden />
               <div>
-                <p className="text-[14px] leading-[1.6] text-[#7A1D1D]">{error}</p>
+                <p className="text-[14px] leading-[1.6] text-[var(--error-ink)]">{error}</p>
                 <button onClick={retry} className="link-inline mt-2 text-[14px]">Try the run again</button>
               </div>
             </div>
