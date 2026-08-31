@@ -24,7 +24,7 @@ export function Home({ go }: { go: (r: Route) => void }) {
           Meet leepr
         </h2>
         <p className="mx-auto max-w-[68ch] text-[clamp(1.0625rem,1rem+.3vw,1.3125rem)] leading-[1.6] text-mid">
-          Leepr automates the site selection process for data centers by weighing common
+          leepr automates the site selection process for data centers by weighing common
           constraints against the user preferences. It prices the whole life of a build, not
           only what the ground costs: reaching power and fiber, getting through permitting,
           and fifteen years of running the place all land in the same total. Every figure it
@@ -45,7 +45,7 @@ export function Home({ go }: { go: (r: Route) => void }) {
       {/* ── Variables ──────────────────────────────────────────────────────── */}
       <section className="mt-14">
         <h2 className="mb-6 text-[clamp(1.5rem,1.25rem+1.1vw,2.125rem)] font-semibold text-ink">
-          leepr takes into account these variables
+          Key factors
         </h2>
         {/* Four boxes rather than a list. Each of these is a group of drivers the
             engine prices, so they read as four things of equal weight; stacked
