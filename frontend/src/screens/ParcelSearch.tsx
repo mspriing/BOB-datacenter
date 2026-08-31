@@ -6,6 +6,7 @@ import { ParcelMap, PARCEL_SHADE, type ParcelShadeKey } from '../components/map/
 import { fetchParcelMap, fetchParcels, type ParcelSummary, type ParcelQuery, type SortBy } from '../lib/parcelApi'
 import type { EstimateProject } from '../lib/api'
 import { usd } from '../lib/format'
+import { quantileScale, rampColor } from '../lib/ramp'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import type { Route } from '../lib/routes'
 
@@ -188,6 +189,11 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
       }).format(new Date(`${snapshotDate}T00:00:00Z`))
     : null
 
+  const scoreScale = useMemo(() => quantileScale(
+    mapParcels.map(parcel => parcel.weighted_score).filter(Number.isFinite),
+    false,
+  ), [mapParcels])
+
   const rowRefs = useRef(new Map<string, HTMLDivElement>())
   const selectParcel = useCallback((id: string) => {
     setSelectedId(id)
@@ -333,7 +339,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
 
         {/* ── Map + list ────────────────────────────────────────────────── */}
         <div className="space-y-3.5">
-          <Card title="Parcel map"
+          <Card weave title="Parcel map"
             note={`${mapTotal?.toLocaleString('en-US') ?? '…'} parcels`}>
             <div className="p-4 sm:p-5">
               <ParcelMap parcels={mapParcels} shade={shade} selectedId={selectedId}
@@ -345,7 +351,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
             </div>
           </Card>
 
-          <Card title="Ranked candidates"
+          <Card weave title="Ranked candidates"
             note={
               <div className="flex items-center gap-2">
                 {loading && <Loader2 size={13} className="animate-spin text-mid" aria-hidden />}
@@ -378,6 +384,11 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
                 {parcels.map((p, i) => {
                   const isSel = p.parcel_id === selectedId
                   const isBestFit = p.rank === 1
+                  const displayRank = (query.page! - 1) * query.per_page! + i + 1
+                  const isTopThree = displayRank <= 3
+                  const floodOverlap = p.flood_buildable_pct === null
+                    ? null
+                    : Math.round((1 - p.flood_buildable_pct) * 100)
                   return (
                     <div key={p.parcel_id}
                       ref={node => {
@@ -385,20 +396,39 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
                         else rowRefs.current.delete(p.parcel_id)
                       }}
                       onClick={() => setSelectedId(p.parcel_id)}
-                      className={`flex items-start gap-3 p-4 transition-colors ${isSel ? 'bg-bluex' : ''}`}>
+                      className={`flex items-start gap-3 p-4 transition-colors
+                        ${isBestFit ? 'border-l-[3px] border-l-blue' : ''}
+                        ${isSel ? 'bg-bluex' : ''}`}>
                       <span className={`flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[9px]
                                        text-[13.5px] font-bold
-                                       ${isBestFit
-                                         ? 'bg-[linear-gradient(135deg,#0F62FE,#0043CE)] text-white'
+                                       ${isTopThree
+                                         ? 'bg-blue text-white'
                                          : 'border border-line bg-card2 text-mid'}`}>
-                        {(query.page! - 1) * query.per_page! + i + 1}
+                        {displayRank}
                       </span>
                       <div className="min-w-0 flex-1">
                         <div className="mb-0.5 flex flex-wrap items-center gap-2">
                           <span className="text-[14.5px] font-medium text-ink">{p.address}</span>
                           {isBestFit && <Chip>Best fit</Chip>}
                           {p.unevaluable !== null && <Chip tone="grey">Not priced</Chip>}
-                          {p.zoning === 'outside-jurisdiction' && <Chip tone="grey">No zoning</Chip>}
+                          {p.zoning === 'outside-jurisdiction' && <Chip tone="ok">No city zoning</Chip>}
+                          {floodOverlap === null
+                            ? <Chip tone="warn">Flood unverified</Chip>
+                            : floodOverlap === 0
+                              ? <Chip tone="ok">Outside flood zone</Chip>
+                              : <Chip tone={floodOverlap <= 25 ? 'warn' : 'bad'}>
+                                  {floodOverlap}% flood overlap
+                                </Chip>}
+                        </div>
+                        <div className="mb-1.5 max-w-[280px]">
+                          <p className="num truncate text-[11.5px] text-mid">Parcel {p.parcel_id}</p>
+                          <span className="mt-1 block h-1 overflow-hidden rounded-full bg-line" aria-hidden>
+                            <span className="block h-full rounded-full"
+                              style={{
+                                width: `${Math.min(100, Math.max(5, p.weighted_score * 100))}%`,
+                                backgroundColor: rampColor(scoreScale(p.weighted_score)),
+                              }} />
+                          </span>
                         </div>
                         <div className="num text-[13px] text-mid">
                           {p.acres === null ? 'acreage unknown' : `${Math.round(p.acres)} ac`}

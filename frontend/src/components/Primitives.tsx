@@ -72,8 +72,18 @@ export function Explain({ children, text }: { children: ReactNode; text: string 
 }
 
 /* ── Chip ─────────────────────────────────────────────────────────────────── */
-export function Chip({ tone = 'blue', children }: { tone?: 'blue' | 'green' | 'grey'; children: ReactNode }) {
-  const tones = { blue: 'bg-bluex text-blued', green: 'bg-[#D7F0E2] text-okd', grey: 'bg-card2 text-mid' }
+export function Chip({ tone = 'blue', children }: {
+  tone?: 'blue' | 'green' | 'grey' | 'ok' | 'warn' | 'bad'
+  children: ReactNode
+}) {
+  const tones = {
+    blue: 'bg-bluex text-blued',
+    green: 'bg-[#D7F0E2] text-ink',
+    grey: 'bg-card2 text-mid',
+    ok: 'bg-[var(--ok)] text-white',
+    warn: 'bg-[var(--warn)] text-white',
+    bad: 'bg-[var(--bad)] text-white',
+  }
   return (
     <span className={`inline-block rounded-full px-2.5 py-[3px] text-[12px] font-bold
                       uppercase tracking-[.07em] ${tones[tone]}`}>{children}</span>
