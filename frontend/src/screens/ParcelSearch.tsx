@@ -94,7 +94,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
   const runToken = useRef(0)
 
   const patch = useCallback((p: Partial<ParcelQuery>) => {
-    // Any filter change resets to page 1: staying on page 4 of a result set that
+    // Any filter change resets to page 1: staying on page 4 of a filtered list that
     // no longer has four pages is how a list silently goes blank.
     setQuery(q => ({ ...q, ...p, page: p.page ?? 1 }))
   }, [])
@@ -272,8 +272,8 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
               <ParcelMap parcels={parcels} shade={shade} selectedId={selectedId}
                 onSelect={setSelectedId} className="h-[440px]" />
               <p className="mt-3 text-[13px] leading-[1.55] text-mid">
-                The map shows only the rows on page {query.page ?? 1}, not the full result set.
-                Use Previous and Next below to map another bounded page.
+                Showing all {total?.toLocaleString('en-US') ?? 'matching'} parcels that match
+                your filters. Zoom in to see each plot&apos;s real outline; click one to open it.
               </p>
             </div>
           </Card>
