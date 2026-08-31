@@ -217,6 +217,7 @@
     background: #FFF; backdrop-filter: none; -webkit-backdrop-filter: none;
     border-color: var(--line); box-shadow: var(--shadow-sm);
   }
+  .app-surface { position: relative; }
 
   /* ── projection drawer slide-in ─────────────────────────────────────────── */
   .drawer-content[data-state="open"] {

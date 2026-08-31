@@ -25,13 +25,13 @@ function groupOf(route: Route): string | null {
   return null
 }
 
-function Page({ title, lead, children, go, route, maxW = 'max-w-[820px]' }: {
+function Page({ title, lead, children, go, route, maxW = 'max-w-[820px]', surface = 'docs' }: {
   title: string; lead: string; children: React.ReactNode; go: (r: Route) => void
-  route?: Route; maxW?: string
+  route?: Route; maxW?: string; surface?: 'docs' | 'app'
 }) {
   const group = route ? groupOf(route) : null
   return (
-    <section className="docs-surface pt-6 sm:pt-10">
+    <section className={`${surface === 'docs' ? 'docs-surface' : 'app-surface'} pt-6 sm:pt-10`}>
       <button onClick={() => go('home')}
         className="mb-5 inline-flex items-center gap-1.5 text-[13.5px] text-mid transition-colors hover:text-blued">
         <ArrowLeft size={14} strokeWidth={2.2} aria-hidden />Back to the start
@@ -396,7 +396,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
 
     /* ── How to use ────────────────────────────────────────────────────────── */
     case 'how-to-use':
-      return <HowToUsePage go={go} />
+      return <HowToUsePage go={go} surface="app" />
 
     default:
       return null
@@ -404,7 +404,10 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
 }
 
 /* ── how-to-use page — one place for everything ─────────────────────────── */
-function HowToUsePage({ go }: { go: (r: Route) => void }) {
+function HowToUsePage({ go, surface = 'docs' }: {
+  go: (r: Route) => void
+  surface?: 'docs' | 'app'
+}) {
   const [showExample, setShowExample] = useState(false)
 
   const eg = useMemo(() => {
@@ -443,7 +446,7 @@ function HowToUsePage({ go }: { go: (r: Route) => void }) {
   const short = (x: string) => x.replace(/,.*$/, '')
 
   return (
-    <Page go={go} route="how-to-use" title={ROUTE_TITLES['how-to-use']}
+    <Page go={go} route="how-to-use" surface={surface} title={ROUTE_TITLES['how-to-use']}
       lead="How to run a comparison, how the ranking is built, what each variable measures, how the cost is calculated, and a finished example."
       maxW="max-w-[860px]">
 
