@@ -156,12 +156,22 @@ export type EstimateProject = Omit<EstimateRequest['project'], 'weights'>
 export type SiteSetup = Record<string, { label: string; free_text: string }>
 
 const SLOW_MS = 3_000
-const TIMEOUT_MS = 90_000
+const TIMEOUT_MS = 120_000
+
+let warmStarted = false
+
+/** Start waking the free-tier service before the reader submits a comparison. */
+export function warmApi(): void {
+  if (warmStarted) return
+  warmStarted = true
+  void fetch(`${API_BASE}/api/health`).catch(() => undefined)
+}
 
 export interface EstimateState {
   data: EstimateOutput | null
   error: string | null
   slow: boolean
+  retryable: boolean
 }
 
 /**
@@ -176,6 +186,7 @@ export async function fetchEstimate(
   const controller = new AbortController()
   const killer = setTimeout(() => controller.abort(), TIMEOUT_MS)
   const slowTimer = setTimeout(() => onSlow?.(), SLOW_MS)
+  let retryable = true
   try {
     const res = await fetch(`${API_BASE}/api/estimate`, {
       method: 'POST',
@@ -184,15 +195,22 @@ export async function fetchEstimate(
       signal: controller.signal,
     })
     if (!res.ok) {
+      retryable = res.status === 408 || res.status === 429 || res.status >= 500
       const body = (await res.json().catch(() => ({}))) as { error?: string }
       throw new Error(body.error ?? `The server answered ${res.status}.`)
     }
-    return { data: (await res.json()) as EstimateOutput, error: null, slow: false }
+    return {
+      data: (await res.json()) as EstimateOutput,
+      error: null,
+      slow: false,
+      retryable: false,
+    }
   } catch (err) {
     const aborted = err instanceof DOMException && err.name === 'AbortError'
     return {
       data: null,
       slow: false,
+      retryable,
       error: aborted
         ? 'The server did not answer in time. It may still be starting up — try again in a minute.'
         : err instanceof Error ? err.message : 'The server could not be reached.',

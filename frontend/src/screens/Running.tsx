@@ -4,10 +4,11 @@ import { AlertTriangle, Check, Loader2 } from 'lucide-react'
 import { Card } from '../components/Primitives'
 import { useReducedMotion } from '../lib/useReducedMotion'
 
-export function Running({ done, pending, slow, error, retry, lifetimeYears }: {
+export function Running({ done, pending, slow, retrying, error, retry, lifetimeYears }: {
   done: () => void
   pending: boolean
   slow: boolean
+  retrying: boolean
   error: string | null
   retry: () => void
   lifetimeYears: number
@@ -81,8 +82,9 @@ export function Running({ done, pending, slow, error, retry, lifetimeYears }: {
             {slow && !error && (
               <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                 className="mt-7 rounded-[10px] border border-line bg-card2 px-4 py-3 text-[13.5px] leading-[1.55] text-ink2">
-                Waking the server up. It sleeps when nobody has used it for a while, so the first
-                run after a quiet spell can take up to a minute. Everything after that is quick.
+                {retrying
+                  ? 'Still waking the server, trying once more.'
+                  : 'Waking the server up. It sleeps when nobody has used it for a while, so the first run after a quiet spell can take up to two minutes. Everything after that is quick.'}
               </motion.p>
             )}
           </AnimatePresence>

@@ -8,6 +8,7 @@ import { isRoute, type Route } from './lib/routes'
 
 import {
   fetchEstimate,
+  warmApi,
   type EstimateOutput,
   type EstimateProject,
   type SiteSetup,
@@ -102,6 +103,7 @@ export default function App() {
   const [serverError, setServerError] = useState<string | null>(null)
   const [serverSlow, setServerSlow] = useState(false)
   const [serverPending, setServerPending] = useState(false)
+  const [serverRetrying, setServerRetrying] = useState(false)
   const [submittedProject, setSubmittedProject] = useState<EstimateProject | null>(null)
   const runToken = useRef(0)
 
@@ -110,9 +112,10 @@ export default function App() {
   const run = useCallback(() => {
     const token = ++runToken.current
     setServer(null); setServerError(null); setServerSlow(false); setServerPending(true)
+    setServerRetrying(false)
     setSubmittedProject({ ...project })
     go('running')
-    fetchEstimate({
+    const request = {
       project: {
         ...project,
         weights: {
@@ -128,12 +131,28 @@ export default function App() {
         region_key: s.key,
         free_text: siteSetup[s.key]?.free_text.trim() || undefined,
       })),
-    }, () => { if (token === runToken.current) setServerSlow(true) })
-      .then(r => {
+    }
+    const onSlow = () => { if (token === runToken.current) setServerSlow(true) }
+
+    void (async () => {
+      let result = await fetchEstimate(request, onSlow)
+      if (token !== runToken.current) return
+
+      if (!result.data && result.retryable) {
+        setServerRetrying(true)
+        setServerSlow(true)
+        result = await fetchEstimate(request, onSlow)
         if (token !== runToken.current) return
-        setServer(r.data); setServerError(r.error); setServerPending(false)
-      })
+      }
+
+      setServer(result.data)
+      setServerError(result.error)
+      setServerPending(false)
+      setServerRetrying(false)
+    })()
   }, [candidateSites, project, siteSetup, go])
+
+  useEffect(() => { warmApi() }, [])
 
   useEffect(() => {
     const on = () => setRoute(readHash())
@@ -214,7 +233,8 @@ export default function App() {
               )}
               {route === 'running' && (
                 <Running done={() => go('results')} pending={serverPending}
-                  slow={serverSlow} error={serverError} retry={run}
+                  slow={serverSlow} retrying={serverRetrying}
+                  error={serverError} retry={run}
                   lifetimeYears={project.lifetime_years} />
               )}
               {route === 'results' && (
