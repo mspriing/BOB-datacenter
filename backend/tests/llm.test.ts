@@ -90,6 +90,13 @@ describe('buildFallbackNarrative', () => {
     expect(Array.isArray(result.uncertainty_flags)).toBe(true)
   })
 
+  it('uses submitted site IDs in uncertainty flags', async () => {
+    const out = await getOutput()
+    const byRegion = Object.fromEntries(heroInput.sites.map(site => [site.region_key, site.site_id]))
+    const result = buildFallbackNarrative(out, siteLabels, byRegion)
+    expect(result.uncertainty_flags.every(flag => flag.site_id in siteLabels)).toBe(true)
+  })
+
   it('no invented numbers — recommendation mentions only figures already in output', async () => {
     const out    = await getOutput()
     const result = buildFallbackNarrative(out, siteLabels)
@@ -186,6 +193,25 @@ describe('LLM cache', () => {
     // Second call (no skipCache) should hit the cache
     const result = await generateNarrative(out, siteLabels, { forceFallback: true })
     expect(result.source).toBe('cache')
+  })
+
+  it('normalizes legacy cached uncertainty flags to submitted site IDs', async () => {
+    const out = await getOutput()
+    const prompt = buildNarrativePrompt(out, siteLabels)
+    cacheSet(prompt, JSON.stringify({
+      recommendation: 'Cached recommendation without any numeric claims.',
+      sensitivity_callouts: [],
+      uncertainty_flags: [{
+        site_id: 'us-va-northern',
+        field: 'power_rate_usd_per_kwh',
+        reason: 'Check the current tariff.',
+      }],
+      source: 'fallback',
+    }))
+    const result = await generateNarrative(out, siteLabels, {
+      siteIdByRegion: { 'us-va-northern': 'nova' },
+    })
+    expect(result.uncertainty_flags[0].site_id).toBe('nova')
   })
 })
 

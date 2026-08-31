@@ -5,7 +5,7 @@
  *   WATSONX_API_KEY      — IBM Cloud IAM API key
  *   WATSONX_PROJECT_ID   — watsonx.ai project UUID
  *   WATSONX_URL          — regional endpoint (default: us-south)
- *   WATSONX_MODEL        — Granite model ID (default: ibm/granite-13b-instruct-v2)
+ *   WATSONX_MODEL        — Granite model ID (default: ibm/granite-3-3-8b-instruct)
  *   WATSONX_TIMEOUT_MS   — per-request timeout in ms (default: 20000)
  *
  * Returns the generated text string, or throws on HTTP error.
@@ -19,7 +19,7 @@
  */
 
 const DEFAULT_URL     = 'https://us-south.ml.cloud.ibm.com'
-const DEFAULT_MODEL   = 'ibm/granite-13b-instruct-v2'
+const DEFAULT_MODEL   = 'ibm/granite-3-3-8b-instruct'
 const IAM_URL         = 'https://iam.cloud.ibm.com/identity/token'
 const DEFAULT_TIMEOUT = 20_000
 const DEFAULT_RETRIES = 1

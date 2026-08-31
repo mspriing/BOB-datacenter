@@ -61,6 +61,7 @@ function dominantDrivers(
 export function buildFallbackNarrative(
   output: EstimateOutput,
   siteLabels: Record<string, string>,
+  siteIdByRegion: Record<string, string> = {},
 ): NarrativeResult {
   const rank1Id    = output.ranking[0]
   const rank2Id    = output.ranking[1]
@@ -110,7 +111,7 @@ export function buildFallbackNarrative(
       const verifiedDate = new Date(parseInt(parts[0]), (parseInt(parts[1] ?? '1') - 1))
       if (verifiedDate < cutoff) {
         uncertainty_flags.push({
-          site_id: prov.region_key,
+          site_id: siteIdByRegion[prov.region_key] ?? prov.region_key,
           field:   'power_rate_usd_per_kwh',
           reason:  `Last verified ${prov.last_verified} — may not reflect current tariffs. Recommend direct utility quote.`,
         })

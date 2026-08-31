@@ -71,6 +71,8 @@ export interface NarrativeOptions {
   forceFallback?: boolean
   /** Skip disk cache (for tests that want a fresh call each time). */
   skipCache?: boolean
+  /** Submitted site ID keyed by canonical region key, for user-facing flags. */
+  siteIdByRegion?: Record<string, string>
 }
 
 export async function generateNarrative(
@@ -88,7 +90,14 @@ export async function generateNarrative(
         const parsed = NarrativeSchema.parse(JSON.parse(cached))
         const body = NarrativeModelSchema.parse(parsed)
         if (parsed.source === 'fallback' || numbersAreGrounded(body, prompt)) {
-          return { ...parsed, source: 'cache' }
+          return {
+            ...parsed,
+            uncertainty_flags: parsed.uncertainty_flags.map(flag => ({
+              ...flag,
+              site_id: opts.siteIdByRegion?.[flag.site_id] ?? flag.site_id,
+            })),
+            source: 'cache',
+          }
         }
       } catch {
         // Corrupt cache entry — proceed to regenerate
@@ -122,7 +131,7 @@ export async function generateNarrative(
   }
 
   // ── 3. Fallback ─────────────────────────────────────────────────────────────
-  const result = buildFallbackNarrative(output, siteLabels)
+  const result = buildFallbackNarrative(output, siteLabels, opts.siteIdByRegion)
   if (!opts.skipCache) cacheSet(prompt, JSON.stringify(result))
   return result
 }

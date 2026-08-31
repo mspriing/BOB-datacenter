@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react'
+import { ArrowLeft, AlertTriangle, Info, Loader2 } from 'lucide-react'
 import { Card, Explain, Chip, StatTile, Counter, Rule } from '../components/Primitives'
 import { fetchParcel } from '../lib/parcelApi'
 import { usd } from '../lib/format'
@@ -191,13 +191,11 @@ export function ParcelDetail({ parcelId, project, onBack }: {
         </div>
 
         {snapshotDate && (
-          <div className="mt-5 flex items-start gap-3 rounded-[11px] border border-[#E4D2A8]
-            bg-[#FBF3E2] px-4 py-3">
-            <AlertTriangle size={16} strokeWidth={2.2} className="mt-[3px] shrink-0 text-gold" aria-hidden />
-            <p className="text-[13.5px] leading-[1.6] text-gold">
-              The parcel service did not answer. What follows is the estimate it returned for
-              this plot on {snapshotDate}, kept on the page so the figures and their sources
-              stay readable. Nothing here was computed in your browser.
+          <div className="mt-5 flex items-start gap-3 rounded-[11px] border border-line bg-card2 px-4 py-3">
+            <Info size={16} strokeWidth={2.2} className="mt-[3px] shrink-0 text-mid" aria-hidden />
+            <p className="text-[13.5px] leading-[1.6] text-ink2">
+              Reading the recorded estimate for this plot from {snapshotDate}. These are the
+              server&apos;s figures and sources from that run; nothing was recalculated in your browser.
             </p>
           </div>
         )}

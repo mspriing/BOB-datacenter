@@ -76,6 +76,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
   const [query, setQuery] = useState<ParcelQuery>(defaultQuery)
   const [shade, setShade] = useState<ParcelShadeKey>('lifetime_cost_per_kw')
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [previewId, setPreviewId] = useState<string | null>(null)
   const reducedMotion = useReducedMotion()
 
   const [parcels, setParcels] = useState<ParcelSummary[]>([])
@@ -176,7 +177,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
     query.max_acres !== undefined && `at most ${query.max_acres} acres`,
     query.max_land_cost_per_acre !== undefined && `land under ${usd(query.max_land_cost_per_acre)}/ac`,
     query.max_dist_tx_m !== undefined && `within ${(query.max_dist_tx_m / 1000).toFixed(1)} km of transmission`,
-    query.exclude_flood && 'no flood exposure',
+    query.exclude_flood && 'no known flood overlap',
     activeWeightLabel,
   ].filter(Boolean) as string[]
 
@@ -193,6 +194,23 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
     mapParcels.map(parcel => parcel.weighted_score).filter(Number.isFinite),
     false,
   ), [mapParcels])
+  const missingFloodCount = useMemo(
+    () => mapParcels.filter(parcel => parcel.flood_buildable_pct === null).length,
+    [mapParcels],
+  )
+  const rankOne = useMemo(
+    () => mapParcels.reduce<ParcelSummary | null>((best, parcel) => {
+      if (parcel.rank <= 0) return best
+      return !best || parcel.rank < best.rank ? parcel : best
+    }, null),
+    [mapParcels],
+  )
+  const displayedTopScoreTies = useMemo(
+    () => rankOne
+      ? mapParcels.filter(parcel => parcel.weighted_score === rankOne.weighted_score).length
+      : 0,
+    [mapParcels, rankOne],
+  )
 
   const rowRefs = useRef(new Map<string, HTMLDivElement>())
   const selectParcel = useCallback((id: string) => {
@@ -226,7 +244,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
         </div>
         <h1 className="mb-3 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
           font-semibold leading-[1.08] tracking-[-.02em] text-ink">
-          Every parcel worth pricing, ranked before you call a broker.
+          Bexar County parcels, priced and ranked before you call a broker.
         </h1>
         <p className="max-w-[68ch] text-[17px] leading-[1.65] text-mid">
           Candidate parcels are priced on the whole build: land, reaching the transmission
@@ -258,6 +276,34 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
               </p>
             </details>
           </div>
+        )}
+
+        {rankOne && (
+          <Card weave className="mt-5 border-l-[3px] !border-l-blue"
+            title="Best-ranked match for these filters"
+            note={snapshotDate ? 'First in this filtered list' : `Engine rank ${rankOne.rank}`}>
+            <div className="flex flex-wrap items-center justify-between gap-4 p-5">
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[20px] font-semibold text-ink">{rankOne.address}</span>
+                  <Chip>Best fit</Chip>
+                </div>
+                <p className="num mt-1 text-[13.5px] text-mid">
+                  Parcel {rankOne.parcel_id}
+                  <Rule />
+                  {rankOne.acres === null ? 'acreage unknown' : `${Math.round(rankOne.acres)} acres`}
+                  <Rule />
+                  {rankOne.lifetime_cost_per_kw === null
+                    ? 'not priced'
+                    : `${usd(rankOne.lifetime_cost_per_kw)} lifetime cost per kW`}
+                </p>
+              </div>
+              <button className="btn btn-primary" onClick={() => onOpenParcel(rankOne.parcel_id)}>
+                Open this parcel
+                <ArrowRight size={15} strokeWidth={2.3} aria-hidden />
+              </button>
+            </div>
+          </Card>
         )}
       </div>
 
@@ -293,8 +339,8 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
                   checked={query.exclude_flood ?? false}
                   onChange={e => patch({ exclude_flood: e.target.checked || undefined })} />
                 <span className="text-[14px] leading-[1.5] text-ink2">
-                  <Explain text="Drops parcels with more than a quarter of their area inside a 100-year flood zone.">
-                    Exclude flood-exposed parcels
+                  <Explain text="Drops parcels with published flood geometry showing any overlap. Parcels without flood coverage remain in the list and are identified as unknown.">
+                    Exclude known flood overlap
                   </Explain>
                 </span>
               </label>
@@ -342,7 +388,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
           <Card weave title="Parcel map"
             note={`${mapTotal?.toLocaleString('en-US') ?? '…'} parcels`}>
             <div className="p-4 sm:p-5">
-              <ParcelMap parcels={mapParcels} shade={shade} selectedId={selectedId}
+              <ParcelMap parcels={mapParcels} shade={shade} selectedId={previewId ?? selectedId}
                 onSelect={selectParcel} className="h-[440px]" />
               <p className="mt-3 text-[13px] leading-[1.55] text-mid">
                 Showing all {mapTotal?.toLocaleString('en-US') ?? 'matching'} parcels that match
@@ -361,6 +407,27 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
                 </select>
               </div>
             }>
+            {(missingFloodCount > 0 || displayedTopScoreTies > 1) && (
+              <div className="flex items-start gap-2.5 border-b border-[var(--line2)] bg-card2 px-4 py-3">
+                <Info size={15} strokeWidth={2.1} className="mt-[2px] shrink-0 text-mid" aria-hidden />
+                <p className="text-[12.5px] leading-[1.55] text-mid">
+                  {missingFloodCount > 0 && (
+                    <>
+                      Flood coverage is unavailable for{' '}
+                      {missingFloodCount.toLocaleString('en-US')} matching parcel
+                      {missingFloodCount === 1 ? '' : 's'}; unknown parcels remain included.
+                    </>
+                  )}
+                  {missingFloodCount > 0 && displayedTopScoreTies > 1 && ' '}
+                  {displayedTopScoreTies > 1 && (
+                    <>
+                      {displayedTopScoreTies.toLocaleString('en-US')} parcels share the displayed
+                      top score; the engine uses full precision to order close matches.
+                    </>
+                  )}
+                </p>
+              </div>
+            )}
             {error ? (
               <div className="flex items-start gap-3 p-5">
                 <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-bad" aria-hidden />
@@ -395,6 +462,8 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
                         if (node) rowRefs.current.set(p.parcel_id, node)
                         else rowRefs.current.delete(p.parcel_id)
                       }}
+                      onMouseEnter={() => setPreviewId(p.parcel_id)}
+                      onMouseLeave={() => setPreviewId(null)}
                       onClick={() => setSelectedId(p.parcel_id)}
                       className={`flex items-start gap-3 p-4 transition-colors
                         ${isBestFit ? 'border-l-[3px] border-l-blue' : ''}
@@ -411,9 +480,8 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
                           <span className="text-[14.5px] font-medium text-ink">{p.address}</span>
                           {isBestFit && <Chip>Best fit</Chip>}
                           {p.unevaluable !== null && <Chip tone="grey">Not priced</Chip>}
-                          {p.zoning === 'outside-jurisdiction' && <Chip tone="ok">No city zoning</Chip>}
                           {floodOverlap === null
-                            ? <Chip tone="warn">Flood unverified</Chip>
+                            ? null
                             : floodOverlap === 0
                               ? <Chip tone="ok">Outside flood zone</Chip>
                               : <Chip tone={floodOverlap <= 25 ? 'warn' : 'bad'}>

@@ -522,8 +522,10 @@ export async function runEngine(
 
   // ── Build site labels map ──────────────────────────────────────────────────
   const siteLabels: Record<string, string> = Object.create(null)
+  const siteIdByRegion: Record<string, string> = Object.create(null)
   for (const site of input.sites) {
     siteLabels[site.site_id] = site.label
+    siteIdByRegion[site.region_key] = site.site_id
   }
 
   // ── Generate narrative (async: watsonx if configured, else fallback) ───────
@@ -550,7 +552,10 @@ export async function runEngine(
     assumptions: ASSUMPTIONS,
   }
 
-  const narrative = await generateNarrative(partialOutput, siteLabels, narrativeOpts)
+  const narrative = await generateNarrative(partialOutput, siteLabels, {
+    ...narrativeOpts,
+    siteIdByRegion,
+  })
 
   return { ...partialOutput, narrative }
 }

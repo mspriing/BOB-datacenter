@@ -38,6 +38,12 @@ describe('deterministic criteria matcher', () => {
     expect(r.filters.min_acres).toBe(30)
   })
 
+  it('understands a plain request to favor cost', () => {
+    const r = parseCriteriaFallback('Favor cost')
+    expect(r.weights.total_cost).toBe(0.70)
+    expect(r.unparsed).toEqual([])
+  })
+
   it('reports an unsupported criterion rather than dropping it silently', () => {
     const r = parseCriteriaFallback('at least 40 acres and existing water rights')
     expect(r.filters.min_acres).toBe(40)

@@ -23,7 +23,7 @@ const FILTER_LABEL: Record<keyof ParcelFilters, (v: number | boolean) => string>
   max_acres:              v => `at most ${Number(v).toLocaleString('en-US')} acres`,
   max_land_cost_per_acre: v => `land under ${usd(Number(v))} per acre`,
   max_dist_tx_m:          v => `within ${(Number(v) / 1000).toFixed(1)} km of transmission`,
-  exclude_flood:          () => 'no flood exposure',
+  exclude_flood:          () => 'no known flood overlap',
 }
 
 const WEIGHT_LABEL: Record<keyof ParcelWeights, string> = {
@@ -57,7 +57,7 @@ export function CriteriaBox({ onApply }: {
     .filter(([, value]) => value !== undefined && value !== null) as Array<[keyof ParcelWeights, number]>
 
   return (
-    <Card title="Describe what you are looking for" note="Optional">
+    <Card title="Describe your criteria" note="Optional">
       <div className="space-y-3.5 p-5">
         <label className="block">
           <textarea
@@ -72,9 +72,9 @@ export function CriteriaBox({ onApply }: {
           <button className="btn btn-primary" onClick={run} disabled={busy || !text.trim()}>
             {busy ? <Loader2 size={15} className="animate-spin" aria-hidden />
                   : <Sparkles size={15} strokeWidth={2.2} aria-hidden />}
-            Read this
+            Turn into filters
           </button>
-          <span className="text-[13px] text-mid">Nothing changes until you apply it.</span>
+          <span className="text-[13px] text-mid">Review the interpretation before applying it.</span>
         </div>
 
         {error && (
@@ -87,7 +87,9 @@ export function CriteriaBox({ onApply }: {
         {result && (
           <div className="space-y-3 rounded-[11px] border border-line bg-card2 p-4">
             <p className="label-xs">
-              Read as {result.source === 'watsonx' ? 'watsonx Granite' : 'the deterministic matcher'}
+              {result.source === 'watsonx'
+                ? 'Interpreted by watsonx Granite'
+                : 'Matched to the available filters'}
             </p>
 
             {entries.length === 0 ? (

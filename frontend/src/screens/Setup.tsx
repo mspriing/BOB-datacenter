@@ -352,8 +352,8 @@ export function Setup({
               <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-[var(--warn)]" aria-hidden />
               <div className="text-[14px] leading-[1.6] text-[#5C3A00]">
                 <p className="mb-1.5">
-                  These places are missing a figure. The comparison still runs, and the ranking
-                  stays partial until the figure exists.
+                  These places are missing context that is shown with the result but is not used
+                  as a free or zero-cost input. The comparison still runs on the available drivers.
                 </p>
                 <ul className="mb-2 list-disc pl-5">
                   {thin.map(t => (
@@ -365,8 +365,9 @@ export function Setup({
                     nobody having looked, and a reader deciding on a site deserves to
                     know which it is. */}
                 <p className="text-[13.5px] leading-[1.55]">
-                  The grid wait is the one that matters most here, and it is empty because
-                  neither ERCOT nor Svenska kraftnat publishes a connection time in years.{' '}
+                  Grid wait is shown as an unresolved decision risk, not included in the cost or
+                  ranking, because neither ERCOT nor Svenska kraftnat publishes a connection time
+                  in years.{' '}
                   <button onClick={() => go('known-gaps')} className="link-inline">
                     What was checked
                   </button>

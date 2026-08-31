@@ -94,6 +94,13 @@ vi.mock('../src/parcel/repository.js', async (importOriginal) => {
   }
 })
 
+vi.mock('../src/llm/parcelNote.js', () => ({
+  parcelNote: vi.fn().mockResolvedValue({
+    text: 'Fixture parcel note.',
+    source: 'fallback',
+  }),
+}))
+
 // Import app AFTER mock is registered
 const { app } = await import('../src/server.js')
 

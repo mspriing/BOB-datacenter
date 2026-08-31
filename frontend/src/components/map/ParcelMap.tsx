@@ -254,9 +254,9 @@ export function ParcelMap({
         'circle-stroke-width': 1,
         'circle-stroke-color': 'rgba(15,23,32,.45)',
         'circle-opacity': ['interpolate', ['linear'], ['zoom'],
-          8, 0.25, HANDOVER[0], 0.12, HANDOVER[1], 0],
+          8, 0.12, 8.7, 0.04, HANDOVER[0], 0],
         'circle-stroke-opacity': ['interpolate', ['linear'], ['zoom'],
-          8, 0.35, HANDOVER[0], 0.16, HANDOVER[1], 0],
+          8, 0.16, 8.7, 0.05, HANDOVER[0], 0],
       },
     })
 

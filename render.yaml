@@ -13,6 +13,8 @@ services:
         sync: false
       - key: WATSONX_PROJECT_ID
         sync: false
+      - key: WATSONX_MODEL
+        value: ibm/granite-3-3-8b-instruct
       - key: EIA_API_KEY
         sync: false
       # Leave blank on first deploy: the server allows all origins when this is
@@ -32,11 +34,8 @@ services:
         source: /*
         destination: /index.html
     envVars:
-      # Set this to the backend URL once the backend service is live, e.g.
-      # Render injects the backend host at build time so a fresh Blueprint
-      # deployment does not send API requests to the static frontend.
+      # This value is compiled into browser JavaScript, so it must be the public
+      # origin. Render's fromService "host" property is the private hostname
+      # "leepr-backend", which browsers outside Render cannot resolve.
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: leepr-backend
-          property: host
+        value: https://leepr-backend.onrender.com

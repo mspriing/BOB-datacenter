@@ -123,14 +123,27 @@ export function Results({ project, server, serverError, go }: {
   }
 
   const leaderRange = leader.site.finance.ranges[costCase]
+  const cheapest = [...ranked].sort(
+    (a, b) => a.site.finance.lifetime_cost_per_kw - b.site.finance.lifetime_cost_per_kw,
+  )[0]
+  const narrativeSource = server.narrative.source === 'watsonx'
+    ? 'watsonx Granite, checked against engine figures'
+    : server.narrative.source === 'cache'
+      ? 'Reused checked explanation'
+      : 'Deterministic explanation from engine output'
 
   return (
     <div className="space-y-3 pt-6">
-      <div className="flex flex-wrap items-center gap-2.5 rounded-[11px] border border-line bg-white/70 px-4 py-3 text-[13.5px] text-mid">
-        <span className="font-semibold text-ink2">Authoritative backend estimate</span>
-        <Rule /><span>engine {server.engine_version}</span>
-        <Rule /><span>{new Date(server.generated_at).toLocaleString()}</span>
-        <Rule /><span>{server.data_provenance.length} sourced or modelled inputs</span>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-[11px] border border-line bg-white/70 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2.5 text-[13.5px] text-mid">
+          <span className="font-semibold text-ink2">Authoritative backend estimate</span>
+          <Rule /><span>engine {server.engine_version}</span>
+          <Rule /><span>{new Date(server.generated_at).toLocaleString()}</span>
+          <Rule /><span>{server.data_provenance.length} sourced or modelled inputs</span>
+        </div>
+        <button className="pill text-[13px]" onClick={() => go('setup')}>
+          <ArrowLeft size={14} aria-hidden />Edit comparison
+        </button>
       </div>
 
       <Card weave>
@@ -158,6 +171,15 @@ export function Results({ project, server, serverError, go }: {
               value={<span className="text-[19px]">Not applicable</span>}
               foot="A cost-only model has no revenue or investment return" />
           </div>
+          {cheapest.siteId !== leader.siteId && (
+            <p className="mt-5 border-l-[3px] border-l-blue bg-bluex px-4 py-3 text-[14px] leading-[1.6] text-ink2">
+              <span className="font-semibold">{leader.label} wins the weighted decision, not
+              the cost column alone.</span>{' '}
+              {cheapest.label} has the lower engine-calculated lifetime cost at{' '}
+              {usd(cheapest.site.finance.lifetime_cost_per_kw)} per kW. The weighted score also
+              includes risk, clean power and network distance.
+            </p>
+          )}
         </div>
       </Card>
 
@@ -165,13 +187,34 @@ export function Results({ project, server, serverError, go }: {
         <CostCaseToggle value={costCase} onChange={value => setCostCase(value as CostCase)} />
       </div>
 
+      <Card weave title="Why this ranks first" note={narrativeSource}>
+        <div className="space-y-4 p-6 text-[15.5px] leading-[1.7] text-ink2">
+          <p>{server.narrative.recommendation}</p>
+          <p className="border-l-[3px] border-l-blue bg-bluex px-4 py-3 font-medium text-ink">
+            {server.flip_sentence}
+          </p>
+          {server.narrative.sensitivity_callouts.length > 0 && (
+            <details className="rounded-[10px] border border-line bg-white/70 px-4 py-3">
+              <summary className="cursor-pointer text-[14px] font-semibold text-ink2">
+                Cost-driver notes for every candidate
+              </summary>
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-[14px] text-mid">
+                {server.narrative.sensitivity_callouts.map((item, index) => (
+                  <li key={`${item.site_id}-${index}`}>{item.callout}</li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </div>
+      </Card>
+
       <Card title={`All ${ranked.length} priced sites, ranked`}
         note="Order, scores and every financial value come from the backend response">
         <div className="divide-y divide-[var(--line2)]">
           {ranked.map(({ siteId, label, site }) => {
             const scenario = site.finance.ranges[costCase]
             return (
-              <article key={siteId}>
+              <article key={siteId} className={site.rank === 1 ? 'border-l-[3px] border-l-blue' : ''}>
                 <div className="grid gap-4 p-5 sm:grid-cols-[42px_1fr_auto] sm:items-center">
                   <span className={`flex h-9 w-9 items-center justify-center rounded-[10px] text-[15px] font-bold
                     ${site.rank === 1 ? 'bg-blue text-white' : 'border border-line bg-card2 text-mid'}`}>
@@ -203,22 +246,6 @@ export function Results({ project, server, serverError, go }: {
               </article>
             )
           })}
-        </div>
-      </Card>
-
-      <Card title="Recommendation" note={`Narrative source: ${server.narrative.source}`}>
-        <div className="space-y-4 p-6 text-[15.5px] leading-[1.7] text-ink2">
-          <p>{server.narrative.recommendation}</p>
-          <p className="rounded-[10px] border border-[#E4D2A8] bg-[#FBF3E2] p-4 font-medium text-gold">
-            {server.flip_sentence}
-          </p>
-          {server.narrative.sensitivity_callouts.length > 0 && (
-            <ul className="list-disc space-y-1 pl-5">
-              {server.narrative.sensitivity_callouts.map((item, index) => (
-                <li key={`${item.site_id}-${index}`}>{item.callout}</li>
-              ))}
-            </ul>
-          )}
         </div>
       </Card>
 

@@ -62,7 +62,9 @@ export function HeroPullback({ go }: { go: (r: Route) => void }) {
   useEffect(() => {
     const el = ref.current
     if (!el || reduced) return
-    const HANDOFF_AT = 0.45 // seconds before the end
+    // The generated film's final dashboard frame contains old coverage figures.
+    // Hand off before that frame appears; the live component carries current data.
+    const HANDOFF_AT = 2.5 // seconds before the end
     const tick = () => {
       if (el.duration && el.duration - el.currentTime <= HANDOFF_AT) setLanded(true)
     }

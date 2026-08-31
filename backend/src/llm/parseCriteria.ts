@@ -118,7 +118,7 @@ const RULES: Rule[] = [
   },
   {
     name: 'cost emphasis',
-    re: /\b(?:cheapest|lowest cost|cost is (?:the )?most important|prioriti[sz]e cost|budget[- ]driven|as cheap as possible)\b/i,
+    re: /\b(?:cheapest|lowest cost|cost is (?:the )?most important|prioriti[sz]e cost|favou?r cost|cost first|budget[- ]driven|as cheap as possible)\b/i,
     apply: (_m, _f, w) => { w.total_cost = 0.70; w.risk = 0.10; w.sustainability = 0.10; w.latency = 0.10; return true },
   },
   {
