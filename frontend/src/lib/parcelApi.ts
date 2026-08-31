@@ -141,6 +141,70 @@ export async function fetchParcels(q: ParcelQuery): Promise<ApiResult<ParcelList
   return { data: offlineParcels(q), error: null, offline: true, capturedAt: SNAPSHOT_DATE }
 }
 
+const mapRequests = new Map<string, Promise<ApiResult<ParcelListResponse>>>()
+
+/**
+ * Fetches every matching parcel for the map while the ranked list stays paged.
+ * The live API caps a response at 200 rows, so the remaining pages are joined
+ * client-side and the completed request is cached by filters and build inputs.
+ */
+export function fetchParcelMap(q: ParcelQuery): Promise<ApiResult<ParcelListResponse>> {
+  const mapQuery = { ...q, page: 1, per_page: 200, sort_by: 'rank' as const }
+  const key = toQueryString(mapQuery)
+  const cached = mapRequests.get(key)
+  if (cached) return cached
+
+  const request = (async () => {
+    const first = await fetchParcels(mapQuery)
+    if (first.error || !first.data) return first
+    if (first.offline) {
+      const { offlineParcelMap, SNAPSHOT_DATE } = await import('./parcelOffline')
+      const parcels = offlineParcelMap(mapQuery)
+      return {
+        data: {
+          county: mapQuery.county ?? 'bexar',
+          total: parcels.length,
+          page: 1,
+          per_page: parcels.length,
+          parcels,
+        },
+        error: null,
+        offline: true,
+        capturedAt: SNAPSHOT_DATE,
+      }
+    }
+
+    const pageCount = Math.ceil(first.data.total / mapQuery.per_page)
+    const rest = await Promise.all(
+      Array.from({ length: Math.max(0, pageCount - 1) }, (_, index) =>
+        fetchParcels({ ...mapQuery, page: index + 2 })),
+    )
+    const failed = rest.find(result => result.error || !result.data)
+    if (failed) return {
+      data: null,
+      error: failed.error ?? 'Could not load all matching parcels for the map',
+    }
+
+    return {
+      data: {
+        ...first.data,
+        per_page: first.data.total,
+        parcels: [
+          ...first.data.parcels,
+          ...rest.flatMap(result => result.data?.parcels ?? []),
+        ],
+      },
+      error: null,
+    }
+  })()
+
+  mapRequests.set(key, request)
+  request.then(result => {
+    if (result.error) mapRequests.delete(key)
+  })
+  return request
+}
+
 export async function fetchParcel(
   id: string,
   query: Pick<ParcelQuery, 'county' | 'capacity_kw' | 'design_pue' | 'design_wue' | 'lifetime_years' | 'discount_rate'> = {},

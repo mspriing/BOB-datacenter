@@ -46,7 +46,7 @@ function missingLast(
   return compare(a, b)
 }
 
-export function offlineParcels(q: ParcelQuery): ParcelListResponse {
+export function offlineParcelMap(q: ParcelQuery): ParcelSummary[] {
   let rows = ROWS
 
   if (q.min_acres !== undefined)
@@ -88,6 +88,11 @@ export function offlineParcels(q: ParcelQuery): ParcelListResponse {
     ? sorted.map((r, i) => ({ ...r, rank: r.rank === 0 ? 0 : i + 1 }))
     : sorted
 
+  return output
+}
+
+export function offlineParcels(q: ParcelQuery): ParcelListResponse {
+  const output = offlineParcelMap(q)
   const page = q.page ?? 1
   const perPage = q.per_page ?? 50
   return {

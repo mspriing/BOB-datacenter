@@ -3,7 +3,7 @@ import { ArrowRight, ArrowLeft, MapPin, AlertTriangle, Info, Loader2 } from 'luc
 import { Card, Explain, Chip, Rule } from '../components/Primitives'
 import { CriteriaBox } from '../components/CriteriaBox'
 import { ParcelMap, PARCEL_SHADE, type ParcelShadeKey } from '../components/map/ParcelMap'
-import { fetchParcels, type ParcelSummary, type ParcelQuery, type SortBy } from '../lib/parcelApi'
+import { fetchParcelMap, fetchParcels, type ParcelSummary, type ParcelQuery, type SortBy } from '../lib/parcelApi'
 import type { EstimateProject } from '../lib/api'
 import { usd } from '../lib/format'
 import type { Route } from '../lib/routes'
@@ -76,6 +76,8 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const [parcels, setParcels] = useState<ParcelSummary[]>([])
+  const [mapParcels, setMapParcels] = useState<ParcelSummary[]>([])
+  const [mapTotal, setMapTotal] = useState<number | null>(null)
   const [total, setTotal] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -110,6 +112,35 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
     }, 250)
     return () => clearTimeout(t)
   }, [query])
+
+  const mapQuery = useMemo<ParcelQuery>(() => ({
+    county: query.county,
+    min_acres: query.min_acres,
+    max_acres: query.max_acres,
+    max_land_cost_per_acre: query.max_land_cost_per_acre,
+    max_dist_tx_m: query.max_dist_tx_m,
+    exclude_flood: query.exclude_flood,
+    capacity_kw: query.capacity_kw,
+    design_pue: query.design_pue,
+    design_wue: query.design_wue,
+    lifetime_years: query.lifetime_years,
+    discount_rate: query.discount_rate,
+    weights: query.weights,
+  }), [
+    query.county, query.min_acres, query.max_acres, query.max_land_cost_per_acre,
+    query.max_dist_tx_m, query.exclude_flood, query.capacity_kw, query.design_pue,
+    query.design_wue, query.lifetime_years, query.discount_rate, query.weights,
+  ])
+
+  const mapToken = useRef(0)
+  useEffect(() => {
+    const token = ++mapToken.current
+    fetchParcelMap(mapQuery).then(r => {
+      if (token !== mapToken.current || r.error || !r.data) return
+      setMapParcels(r.data.parcels)
+      setMapTotal(r.data.total)
+    })
+  }, [mapQuery])
 
   useEffect(() => {
     fetchParcels({
@@ -279,12 +310,12 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
         {/* ── Map + list ────────────────────────────────────────────────── */}
         <div className="space-y-3.5">
           <Card title="Parcel map"
-            note={`${parcels.length.toLocaleString('en-US')} of ${total?.toLocaleString('en-US') ?? '…'} matching parcels`}>
+            note={`${mapTotal?.toLocaleString('en-US') ?? '…'} parcels`}>
             <div className="p-4 sm:p-5">
-              <ParcelMap parcels={parcels} shade={shade} selectedId={selectedId}
+              <ParcelMap parcels={mapParcels} shade={shade} selectedId={selectedId}
                 onSelect={setSelectedId} className="h-[440px]" />
               <p className="mt-3 text-[13px] leading-[1.55] text-mid">
-                Showing all {total?.toLocaleString('en-US') ?? 'matching'} parcels that match
+                Showing all {mapTotal?.toLocaleString('en-US') ?? 'matching'} parcels that match
                 your filters. Zoom in to see each plot&apos;s real outline; click one to open it.
               </p>
             </div>
