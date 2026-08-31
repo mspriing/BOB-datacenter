@@ -1,6 +1,7 @@
 export type Route =
   | 'home' | 'setup' | 'running' | 'results' | 'map'
   | 'parcels' | 'parcel'
+  | 'how-to-use'
   | 'how-ranking-works' | 'driver-meanings' | 'cost-method' | 'release-notes'
   | 'all-regions' | 'the-drivers' | 'sources' | 'known-gaps'
   | 'request-region' | 'report-figure' | 'talk-to-team'
@@ -8,6 +9,7 @@ export type Route =
 export const ROUTE_TITLES: Record<Route, string> = {
   home: 'Start', setup: 'Set up', running: 'Working', results: 'Results', map: 'Map',
   parcels: 'Parcels', parcel: 'Parcel',
+  'how-to-use': 'How to use',
   'how-ranking-works': 'How the ranking works',
   'driver-meanings': 'What each driver means',
   'cost-method': 'Cost method and formulas',
@@ -23,9 +25,7 @@ export const ROUTE_TITLES: Record<Route, string> = {
 
 export const FOOTER_GROUPS: Array<{ heading: string; links: Array<{ to: Route; label: string }> }> = [
   { heading: 'The tool', links: [
-    { to: 'how-ranking-works', label: 'How the ranking works' },
-    { to: 'driver-meanings', label: 'What each driver means' },
-    { to: 'cost-method', label: 'Cost method and formulas' },
+    { to: 'how-to-use', label: 'How to use' },
     { to: 'release-notes', label: 'Release notes' },
   ]},
   { heading: 'Coverage', links: [
