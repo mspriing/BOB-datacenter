@@ -29,14 +29,36 @@ export function Setup({
   const { sites, source } = useSites(pinned, chosen)
   const fromPins = source === 'pins'
 
+  // The five drivers the engine requires. Mirrors the REQUIRED array in
+  // frontend/scripts/gen-coverage.mjs, which produces the priceable count the
+  // setup card already shows. Do not add or remove a driver here.
+  const REQUIRED_DRIVERS = [
+    'construction_cost_per_kw',
+    'power_rate_usd_per_kwh',
+    'land_cost_per_acre_usd',
+    'staff_cost_index',
+    'water_rate_usd_per_kgal',
+  ] as const
+
+  const isPriceable = (r: { drivers: Record<string, { v: number } | null> }) =>
+    REQUIRED_DRIVERS.every(d => r.drivers[d]?.v != null)
+
+  const total     = ALL_REGIONS.length
+  const priceable = ALL_REGIONS.filter(isPriceable).length
+
   // Every selectable region, the published three first so the default set reads
-  // in the order the worked example uses.
+  // in the order the worked example uses. Filtered to priceable regions only so
+  // the reader cannot choose a region the engine will refuse to rank.
   const options = useMemo(() => {
     const seen = new Set<string>()
     const out: Array<{ key: string; label: string }> = []
-    for (const s of DEFAULT_SITES) { out.push({ key: s.key, label: `${s.label}, ${s.place}` }); seen.add(s.key) }
-    for (const r of ALL_REGIONS) if (!seen.has(r.key)) out.push({ key: r.key, label: r.label })
+    for (const s of DEFAULT_SITES) {
+      const r = ALL_REGIONS.find(x => x.key === s.key)
+      if (r && isPriceable(r)) { out.push({ key: s.key, label: `${s.label}, ${s.place}` }); seen.add(s.key) }
+    }
+    for (const r of ALL_REGIONS) if (!seen.has(r.key) && isPriceable(r)) out.push({ key: r.key, label: r.label })
     return out
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const active = fromPins ? sites.map(s => s.key) : chosen
@@ -333,6 +355,14 @@ export function Setup({
               </div>
             )}
           </Card>
+          )}
+
+          {!atParcelGrain && !fromPins && (
+            <p className="text-[13px] leading-[1.55] text-mid">
+              {total - priceable} of {total} regions are in the dataset but{' '}
+              <button onClick={() => go('known-gaps')} className="link-inline">not yet priced</button>
+              . They are hidden here because the engine cannot rank them.
+            </p>
           )}
 
           {!atParcelGrain && duplicates.length > 0 && (
