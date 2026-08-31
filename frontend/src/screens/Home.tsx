@@ -11,10 +11,9 @@ export function Home({ go }: { go: (r: Route) => void }) {
           font-semibold leading-[1.06] tracking-[-.02em] text-ink">
           Find it. Price it. Build it.
         </h1>
-        <p className="mb-8 max-w-[70ch] text-[clamp(1.0625rem,1rem+.3vw,1.3125rem)]
+        <p className="mb-8 max-w-[70ch] text-[clamp(1.1875rem,1.05rem+.45vw,1.5rem)]
           leading-[1.6] text-mid">
-          Leepr is a cost model and a search tool in one: it prices the whole life of a data
-          center, then ranks every place you could put it.
+          The all-in-one tool for data center developers
         </p>
         <HeroPullback go={go} />
       </section>
@@ -24,8 +23,13 @@ export function Home({ go }: { go: (r: Route) => void }) {
         <h2 className="mb-3 text-[clamp(1.5rem,1.25rem+1.1vw,2.125rem)] font-semibold text-ink">
           Meet leepr
         </h2>
-        <p className="max-w-[62ch] text-[clamp(1.1875rem,1.05rem+.45vw,1.5rem)] leading-[1.6] text-mid">
-          The all-in-one tool for data center developers
+        <p className="max-w-[68ch] text-[clamp(1.0625rem,1rem+.3vw,1.3125rem)] leading-[1.6] text-mid">
+          Leepr automates the site selection process for data centers by weighing common
+          constraints against the user preferences. It prices the whole life of a build, not
+          only what the ground costs: reaching power and fiber, getting through permitting,
+          and fifteen years of running the place all land in the same total. Every figure it
+          shows carries the source it came from, or the formula it was derived with, so a
+          number you disagree with is one you can go and check.
         </p>
         <div className="mt-7 flex flex-wrap items-center gap-3">
           <button className="btn btn-primary" onClick={() => go('setup')}>
