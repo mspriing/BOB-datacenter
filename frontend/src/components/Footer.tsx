@@ -1,7 +1,7 @@
 import { Logo } from './Primitives'
 import { FOOTER_GROUPS, type Route } from '../lib/routes'
 
-export function Footer({ go }: { go: (r: Route) => void }) {
+export function Footer({ go, route }: { go: (r: Route) => void; route: Route }) {
   return (
     <footer className="relative z-[1] mt-16 border-t border-line pt-10">
       <div className="grid gap-8 pb-9 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
@@ -22,7 +22,9 @@ export function Footer({ go }: { go: (r: Route) => void }) {
               {g.links.map(l => (
                 <li key={l.to}>
                   <button onClick={() => go(l.to)}
-                    className="inline-block py-1 text-left text-[14px] text-mid transition-colors hover:text-blued">
+                    aria-current={route === l.to ? 'page' : undefined}
+                    className={`inline-block rounded-[6px] px-2 py-1 text-left text-[14px] transition-colors
+                      ${route === l.to ? 'bg-blue font-medium text-white' : 'text-mid hover:text-blued'}`}>
                     {l.label}
                   </button>
                 </li>

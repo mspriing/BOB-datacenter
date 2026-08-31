@@ -97,7 +97,7 @@ export function Setup({
     && sites.every(site => (siteSetup[site.key]?.label ?? site.label).trim().length > 0)
 
   return (
-    <section className="pt-6 sm:pt-10">
+    <section className="setup-flow pt-6 sm:pt-10">
       <div className="mb-8">
         <p className="label-xs mb-3">Step two of three</p>
         <h1 className="mb-4 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
@@ -141,11 +141,11 @@ export function Setup({
                 return (
                   <button key={o.id} type="button" onClick={() => setZoom(o.id)}
                     aria-pressed={on}
-                    className={`rounded-[12px] border p-4 text-left transition-colors
+                    className={`rounded-[12px] border border-l-[3px] p-4 text-left transition-colors
                       ${on
                         ? 'border-blue bg-bluex shadow-[var(--shadow-sm)]'
                         : 'border-line bg-white/70 hover:bg-card2'}`}>
-                    <div className={`mb-1 text-[15px] font-semibold ${on ? 'text-blued' : 'text-ink'}`}>
+                    <div className="mb-1 text-[15px] font-semibold text-ink">
                       {o.head}
                     </div>
                     <div className="mb-2 text-[13.5px] leading-[1.55] text-mid">{o.body}</div>
@@ -401,23 +401,24 @@ export function Setup({
 
           </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-[12px]
-                        border border-line bg-white/80 px-5 py-4">
-          <p className="max-w-[52ch] text-[13.5px] leading-[1.55] text-mid">
-            {atParcelGrain
-              ? `Bexar County parcels, priced across ${project.lifetime_years} years.`
-              : `${active.length} regions, priced across ${project.lifetime_years} years.`}{' '}
-            The run happens on the server, which is where the sources, the gaps and the wording
-            come from.
-          </p>
-          <button className="btn btn-primary" onClick={run}
-            disabled={!validProject || (!atParcelGrain && duplicates.length > 0)}
-            style={!validProject || (!atParcelGrain && duplicates.length > 0)
-              ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}>
-            {atParcelGrain ? 'Look at the parcels' : 'Run the comparison'}
-            <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
-          </button>
-        </div>
+        <Card weave>
+          <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
+            <p className="max-w-[52ch] text-[13.5px] leading-[1.55] text-mid">
+              {atParcelGrain
+                ? `Bexar County parcels, priced across ${project.lifetime_years} years.`
+                : `${active.length} regions, priced across ${project.lifetime_years} years.`}{' '}
+              The run happens on the server, which is where the sources, the gaps and the wording
+              come from.
+            </p>
+            <button className="btn btn-primary" onClick={run}
+              disabled={!validProject || (!atParcelGrain && duplicates.length > 0)}
+              style={!validProject || (!atParcelGrain && duplicates.length > 0)
+                ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}>
+              {atParcelGrain ? 'Look at the parcels' : 'Run the comparison'}
+              <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
+            </button>
+          </div>
+        </Card>
       </div>
     </section>
   )

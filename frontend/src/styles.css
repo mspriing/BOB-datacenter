@@ -68,6 +68,7 @@
   }
   .panel-head h3 { font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink2); }
   .panel-note { font-size:13px; color:var(--mid); }
+  .setup-flow .panel-head h3 { color:var(--dim); }
 
   .btn {
     display:inline-flex; align-items:center; justify-content:center; gap:9px;

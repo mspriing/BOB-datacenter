@@ -280,7 +280,7 @@ export default function App() {
           </div>
         </main>
 
-        <Footer go={go} />
+        <Footer go={go} route={route} />
       </div>
     </Tooltip.Provider>
   )

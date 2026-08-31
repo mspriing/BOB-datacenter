@@ -37,16 +37,7 @@ function Page({ title, lead, children, go, route, maxW = 'max-w-[820px]', surfac
         <ArrowLeft size={14} strokeWidth={2.2} aria-hidden />Back to the start
       </button>
       <div className="mb-8 max-w-[68ch]">
-        <nav aria-label="Breadcrumb" className="mb-3 flex items-center gap-1.5 label-xs">
-          <button onClick={() => go('home')}
-            className="transition-colors hover:text-blued">Reference</button>
-          {group && (
-            <>
-              <span aria-hidden>/</span>
-              <span>{group}</span>
-            </>
-          )}
-        </nav>
+        <p className="label-xs mb-3">{group ?? 'Reference'}</p>
         <h1 className="mb-3 text-[clamp(1.875rem,1.5rem+1.6vw,2.75rem)] font-semibold text-ink">{title}</h1>
         <p className="text-[17px] leading-[1.65] text-mid">{lead}</p>
       </div>
@@ -60,7 +51,12 @@ function Prose({ children }: { children: React.ReactNode }) {
 }
 
 function H({ children }: { children: React.ReactNode }) {
-  return <h2 className="pt-2 text-[19px] font-semibold text-ink">{children}</h2>
+  return (
+    <h2 className="pt-2 text-[19px] font-semibold text-ink">
+      <span aria-hidden className="mb-3 block h-px w-8 bg-blue" />
+      {children}
+    </h2>
+  )
 }
 
 function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
@@ -185,7 +181,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
     case 'how-ranking-works':
     case 'driver-meanings':
     case 'cost-method':
-      return <HowToUsePage go={go} />
+      return <HowToUsePage go={go} route={route} />
 
     case 'release-notes':
       return (
@@ -251,7 +247,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
       )
 
     case 'the-drivers':
-      return <HowToUsePage go={go} />
+      return <HowToUsePage go={go} route={route} />
 
     case 'sources':
       return (
@@ -396,7 +392,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
 
     /* ── How to use ────────────────────────────────────────────────────────── */
     case 'how-to-use':
-      return <HowToUsePage go={go} surface="app" />
+      return <HowToUsePage go={go} route={route} surface="app" />
 
     default:
       return null
@@ -404,8 +400,9 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
 }
 
 /* ── how-to-use page — one place for everything ─────────────────────────── */
-function HowToUsePage({ go, surface = 'docs' }: {
+function HowToUsePage({ go, route = 'how-to-use', surface = 'docs' }: {
   go: (r: Route) => void
+  route?: Route
   surface?: 'docs' | 'app'
 }) {
   const [showExample, setShowExample] = useState(false)
@@ -446,7 +443,7 @@ function HowToUsePage({ go, surface = 'docs' }: {
   const short = (x: string) => x.replace(/,.*$/, '')
 
   return (
-    <Page go={go} route="how-to-use" surface={surface} title={ROUTE_TITLES['how-to-use']}
+    <Page go={go} route={route} surface={surface} title={ROUTE_TITLES['how-to-use']}
       lead="How to run a comparison, how the ranking is built, what each variable measures, how the cost is calculated, and a finished example."
       maxW="max-w-[860px]">
 
