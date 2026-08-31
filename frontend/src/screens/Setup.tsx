@@ -29,15 +29,46 @@ export function Setup({
   const { sites, source } = useSites(pinned, chosen)
   const fromPins = source === 'pins'
 
-  // Every selectable region, the published three first so the default set reads
-  // in the order the worked example uses.
+  /**
+   * A region can be ranked only when it carries all five of these.
+   *
+   * This mirrors the engine's own unevaluable rule and the REQUIRED list in
+   * frontend/scripts/gen-coverage.mjs, which is what produces COVERAGE.priceable.
+   * grid_interconnection_years is deliberately absent: nobody publishes the
+   * large-load queue, so it is null everywhere and requiring it would empty the
+   * picker completely.
+   */
+  const PRICEABLE_DRIVERS = [
+    'construction_cost_per_kw', 'power_rate_usd_per_kwh',
+    'land_cost_per_acre_usd', 'staff_cost_index', 'water_rate_usd_per_kgal',
+  ] as const
+
+  const isPriceable = (key: string) => {
+    const r = ALL_REGIONS.find(x => x.key === key)
+    if (!r) return false
+    // Truthiness is the test gapsFor already uses: a driver with no figure is
+    // stored as null rather than as a cell with a null value.
+    return PRICEABLE_DRIVERS.every(d => Boolean(r.drivers[d]))
+  }
+
+  // Only regions the engine can actually rank. The picker used to offer all 77,
+  // of which 64 are missing at least one required driver, so choosing one
+  // produced a site the backend refused to rank and the reader found out after
+  // running. Nothing is removed from the dataset — this is what the picker
+  // offers, not what the tool holds, so a pinned or saved key still resolves.
   const options = useMemo(() => {
     const seen = new Set<string>()
     const out: Array<{ key: string; label: string }> = []
     for (const s of DEFAULT_SITES) { out.push({ key: s.key, label: `${s.label}, ${s.place}` }); seen.add(s.key) }
-    for (const r of ALL_REGIONS) if (!seen.has(r.key)) out.push({ key: r.key, label: r.label })
+    for (const r of ALL_REGIONS) {
+      if (seen.has(r.key)) continue
+      if (!isPriceable(r.key)) continue
+      out.push({ key: r.key, label: r.label })
+    }
     return out
   }, [])
+
+  const hiddenRegionCount = ALL_REGIONS.length - ALL_REGIONS.filter(r => isPriceable(r.key)).length
 
   const active = fromPins ? sites.map(s => s.key) : chosen
 
@@ -101,12 +132,13 @@ export function Setup({
       <div className="mb-8">
         <h1 className="mb-4 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
           font-semibold leading-[1.08] tracking-[-.02em] text-ink">
-          Pick how close to look, then describe the build.
+          Set up your comparison
         </h1>
         <p className="max-w-[62ch] text-[17px] leading-[1.65] text-mid">
-          The choice below decides what this page asks for next. Everything under it arrives
-          filled in with a figure a mid-size campus would use, and each field says what a normal
-          value looks like. Change what you know, leave the rest, and run it.
+          First choose how closely to look: whole markets against each other, or individual
+          parcels inside one county. Then describe the build you are pricing. Every field below
+          arrives filled in with a figure a mid-size campus would use, so change what you know,
+          leave the rest, and run it.
         </p>
       </div>
 
@@ -132,8 +164,8 @@ export function Setup({
                 {
                   id: 'parcels' as const,
                   head: 'Compare parcels in one county',
-                  body: 'Individual plots in Bexar County, Texas, priced on the whole build: land, reaching the transmission line, reaching fiber, leveling the ground and getting through entitlement. Use this once you know where.',
-                  foot: `${COVERAGE.parcels.toLocaleString('en-US')} candidate parcels of 25 acres and above`,
+                  body: 'Individual plots priced on the whole build: land, reaching the transmission line, reaching fiber, leveling the ground and getting through entitlement. Bexar County, Texas is the pilot county, with more markets to follow. Use this once you know roughly where.',
+                  foot: `${COVERAGE.parcels.toLocaleString('en-US')} candidate parcels in the pilot county`,
                 },
               ]).map(o => {
                 const on = zoom === o.id
@@ -238,7 +270,7 @@ export function Setup({
 
 
           {atParcelGrain ? (
-            <Card title="The county" note="Bexar County, Texas">
+            <Card title="The county" note="Bexar County, Texas — pilot county">
               <div className="p-5">
                 <p className="max-w-[70ch] text-[15px] leading-[1.65] text-ink2">
                   San Antonio sits inside ERCOT, where a large load can be energized faster than in
@@ -329,6 +361,18 @@ export function Setup({
                     Pick them on the map instead
                   </button>
                 </div>
+                {/* What the picker holds back, and why. Hiding 64 of 77 entries
+                    silently would leave a reader who saw Singapore last week
+                    unable to find it, with no way to learn where it went. */}
+                {hiddenRegionCount > 0 && (
+                  <p className="border-t border-[var(--line2)] px-5 py-4 text-[13.5px] leading-[1.6] text-mid">
+                    {hiddenRegionCount} of {ALL_REGIONS.length} regions are in the dataset but{' '}
+                    <button onClick={() => go('known-gaps')} className="link-inline">
+                      not yet priced
+                    </button>
+                    . They are hidden here because the engine cannot rank them.
+                  </p>
+                )}
               </div>
             )}
           </Card>
