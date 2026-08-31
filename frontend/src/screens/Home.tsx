@@ -23,6 +23,15 @@ export function Home({ go }: { go: (r: Route) => void }) {
           Leepr automates the site selection process for data centers by weighing common
           constraints against the user preferences.
         </p>
+        <div className="mt-7 flex flex-wrap items-center gap-3">
+          <button className="btn btn-primary" onClick={() => go('setup')}>
+            Start the comparison
+            <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
+          </button>
+          <button className="btn btn-quiet" onClick={() => go('how-to-use')}>
+            Learn more
+          </button>
+        </div>
       </section>
 
       {/* ── Variables ──────────────────────────────────────────────────────── */}
@@ -81,14 +90,6 @@ export function Home({ go }: { go: (r: Route) => void }) {
         <p className="mt-4 text-[13.5px] text-mid">
           Takes about a minute. You do not need an account.
         </p>
-      </section>
-
-      {/* ── Primary action ─────────────────────────────────────────────────── */}
-      <section className="mt-14 mb-2">
-        <button className="btn btn-primary" onClick={() => go('setup')}>
-          Start the comparison
-          <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
-        </button>
       </section>
     </>
   )
