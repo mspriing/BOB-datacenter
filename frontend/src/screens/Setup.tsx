@@ -99,7 +99,6 @@ export function Setup({
   return (
     <section className="setup-flow pt-6 sm:pt-10">
       <div className="mb-8">
-        <p className="label-xs mb-3">Step two of three</p>
         <h1 className="mb-4 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
           font-semibold leading-[1.08] tracking-[-.02em] text-ink">
           Pick how close to look, then describe the build.

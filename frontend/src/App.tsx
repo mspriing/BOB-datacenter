@@ -176,27 +176,27 @@ export default function App() {
     <Tooltip.Provider delayDuration={120} skipDelayDuration={300}>
       <div className="relative z-[1] mx-auto max-w-[1380px] px-4 pb-16 sm:px-7">
         <header className="flex flex-col items-stretch gap-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:py-5">
-          <button className="flex items-center gap-3.5 text-left" onClick={() => go('home')}
+          <button className="flex items-center gap-[11px] text-left" onClick={() => go('home')}
             aria-label="leepr, back to the start">
-            <Logo />
-            <span className="text-[17px] font-semibold tracking-[-.01em] text-ink">
+            <Logo size={46} />
+            <span className="text-[19px] font-semibold tracking-[-.015em] text-ink">
               leepr
             </span>
           </button>
           <div className="flex min-w-0 items-center gap-1.5 sm:gap-3">
-            <div className="rounded-full border border-line bg-[var(--glass-fill)] p-1 shadow-[var(--shadow-sm)]">
-              <button
-                onClick={() => go('how-to-use')}
-                aria-current={route === 'how-to-use' ? 'page' : undefined}
-                className={`relative min-h-[36px] rounded-full px-3 text-[13px] font-medium transition-colors sm:px-4 sm:text-[13.5px]
-                  ${route === 'how-to-use' ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
-                {route === 'how-to-use' && (
-                  <motion.span className="absolute inset-0 rounded-full bg-bluex"
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} />
-                )}
-                <span className="relative">How to use</span>
-              </button>
-            </div>
+            {/* Deliberately outside the step pill. Start / Set up / Results is a
+                sequence; a reference page dropped into it reads as step zero.
+                But it had a pill of its own, identical to the step pill, which
+                made the bar look like two nav groups. Plain text reads as
+                reference rather than as another step. */}
+            <button
+              onClick={() => go('how-to-use')}
+              aria-current={route === 'how-to-use' ? 'page' : undefined}
+              className={`min-h-[36px] shrink-0 px-1.5 text-[13px] font-medium underline-offset-4
+                transition-colors hover:underline sm:px-2 sm:text-[13.5px]
+                ${route === 'how-to-use' ? 'text-blued underline' : 'text-mid hover:text-ink2'}`}>
+              How to use
+            </button>
             <button type="button" onClick={toggleTheme}
               className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full border border-line
                          bg-[var(--glass-fill)] text-mid shadow-[var(--shadow-sm)] transition-colors hover:text-ink"
@@ -217,7 +217,7 @@ export default function App() {
                       <button onClick={() => go(n.id)}
                         aria-current={active ? 'page' : undefined}
                         className={`relative min-h-[36px] flex-1 rounded-full px-2 text-[12.5px] font-medium transition-colors sm:flex-none sm:px-4 sm:text-[13.5px]
-                          ${unavailable ? 'text-dim opacity-55 hover:opacity-75'
+                          ${unavailable ? 'text-mid opacity-70 hover:opacity-100'
                             : active ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
                         {active && !unavailable && (
                           <motion.span layoutId="navpill" className="absolute inset-0 rounded-full bg-bluex"

@@ -32,16 +32,22 @@ function Page({ title, lead, children, go, route, maxW = 'max-w-[820px]', surfac
   const group = route ? groupOf(route) : null
   return (
     <section className={`${surface === 'docs' ? 'docs-surface' : 'app-surface'} pt-6 sm:pt-10`}>
-      <button onClick={() => go('home')}
-        className="mb-5 inline-flex items-center gap-1.5 text-[13.5px] text-mid transition-colors hover:text-blued">
-        <ArrowLeft size={14} strokeWidth={2.2} aria-hidden />Back to the start
-      </button>
-      <div className="mb-8 max-w-[68ch]">
-        <p className="label-xs mb-3">{group ?? 'Reference'}</p>
-        <h1 className="mb-3 text-[clamp(1.875rem,1.5rem+1.6vw,2.75rem)] font-semibold text-ink">{title}</h1>
-        <p className="text-[17px] leading-[1.65] text-mid">{lead}</p>
+      {/* The whole column is centred in the page. The text inside stays left
+          aligned — centred prose is harder to read, and the reason these pages
+          looked wrong was the column sitting hard against the left edge of a
+          1380px shell, not the alignment of the words. */}
+      <div className={`${maxW} mx-auto`}>
+        <button onClick={() => go('home')}
+          className="mb-5 inline-flex items-center gap-1.5 text-[13.5px] text-mid transition-colors hover:text-blued">
+          <ArrowLeft size={14} strokeWidth={2.2} aria-hidden />Back to the start
+        </button>
+        <div className="mb-8 max-w-[68ch]">
+          <p className="label-xs mb-3">{group ?? 'Reference'}</p>
+          <h1 className="mb-3 text-[clamp(1.875rem,1.5rem+1.6vw,2.75rem)] font-semibold text-ink">{title}</h1>
+          <p className="text-[17px] leading-[1.65] text-mid">{lead}</p>
+        </div>
+        <div className="space-y-3.5">{children}</div>
       </div>
-      <div className={`${maxW} space-y-3.5`}>{children}</div>
     </section>
   )
 }
