@@ -179,7 +179,7 @@ export default function App() {
           <button className="flex items-center gap-[11px] text-left" onClick={() => go('home')}
             aria-label="leepr, back to the start">
             <Logo size={46} />
-            <span className="text-[28px] font-semibold leading-none tracking-[-.02em] text-ink">
+            <span className="text-[40px] font-semibold leading-none tracking-[-.025em] text-ink">
               leepr
             </span>
           </button>
