@@ -401,7 +401,7 @@ export function Setup({
 
           </div>
 
-        <Card weave>
+        <Card weave className="sticky bottom-2 z-20 sm:static">
           <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
             <p className="max-w-[52ch] text-[13.5px] leading-[1.55] text-mid">
               {atParcelGrain
@@ -410,7 +410,7 @@ export function Setup({
               The run happens on the server, which is where the sources, the gaps and the wording
               come from.
             </p>
-            <button className="btn btn-primary" onClick={run}
+            <button className="btn btn-primary w-full sm:w-auto" onClick={run}
               disabled={!validProject || (!atParcelGrain && duplicates.length > 0)}
               style={!validProject || (!atParcelGrain && duplicates.length > 0)
                 ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type MouseEvent } from 'react'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import { Pin, PinOff } from 'lucide-react'
 import { MAP_VIEWBOX, STATE_SHAPES } from '../../data/geo'
@@ -95,6 +95,19 @@ export function UsMap({
     return d ? driver.fmt(d.v) : 'no figure yet'
   }
 
+  const pickNearestMetro = (event: MouseEvent<SVGSVGElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    const x = ((event.clientX - rect.left) / rect.width) * 975
+    const y = ((event.clientY - rect.top) / rect.height) * 610
+    const radius = (22 / rect.width) * 975
+    const nearest = US_METROS
+      .map(metro => ({ metro, distance: Math.hypot(metro.x - x, metro.y - y) }))
+      .sort((a, b) => a.distance - b.distance)[0]
+    if (!nearest || nearest.distance > radius) return
+    const isPinned = pinned.includes(nearest.metro.key)
+    if (pinned.length < maxPins || isPinned) onTogglePin(nearest.metro.key)
+  }
+
   return (
     <div>
       {/* driver selector */}
@@ -125,6 +138,7 @@ export function UsMap({
 
         <div className="relative overflow-hidden rounded-[11px] border border-line bg-[var(--soft-surface)]">
           <svg viewBox={MAP_VIEWBOX} className="block h-auto w-full" role="img"
+            onClick={pickNearestMetro}
             aria-label={`Map of the United States shaded by ${driver.name}`}>
             <g>
               {STATE_SHAPES.map(s => {
@@ -168,7 +182,7 @@ export function UsMap({
                 return (
                   <Tooltip.Root key={m.key} delayDuration={60}>
                     <Tooltip.Trigger asChild>
-                      <g className="metro-dot" onClick={() => !full && onTogglePin(m.key)}
+                      <g className="metro-dot"
                         tabIndex={0} role="button"
                         aria-pressed={isPinned}
                         aria-label={`${m.label}, ${readout(m)}${isPinned ? ', pinned' : full ? ', pin list full' : ''}`}

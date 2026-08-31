@@ -178,6 +178,8 @@ export function ParcelMap({
 
     m.scrollZoom.setWheelZoomRate(1 / 900)
     m.scrollZoom.setZoomRate(1 / 140)
+    m.touchZoomRotate.enable()
+    m.dragPan.enable()
 
     const check = () => { if (!m.getLayer(LYR_FILL)) setStyleEpoch(e => e + 1) }
 
@@ -311,9 +313,27 @@ export function ParcelMap({
     if (!wired.current) {
       wired.current = true
       let hoveredId: string | number | null = null
-      const pick = (ev: maplibregl.MapLayerMouseEvent) => {
-        const f = ev.features?.[0]
-        if (f?.properties?.parcel_id) onSelectRef.current(String(f.properties.parcel_id))
+      const pick = (ev: maplibregl.MapMouseEvent) => {
+        const exact = m.queryRenderedFeatures(ev.point, { layers: [LYR_FILL] })[0]
+        if (exact?.properties?.parcel_id) {
+          onSelectRef.current(String(exact.properties.parcel_id))
+          return
+        }
+        const box: [maplibregl.PointLike, maplibregl.PointLike] = [
+          [ev.point.x - 22, ev.point.y - 22],
+          [ev.point.x + 22, ev.point.y + 22],
+        ]
+        const nearest = m.queryRenderedFeatures(box, { layers: [LYR_DOTS] })
+          .map(feature => {
+            if (feature.geometry.type !== 'Point') return null
+            const point = m.project(feature.geometry.coordinates as [number, number])
+            return { feature, distance: Math.hypot(point.x - ev.point.x, point.y - ev.point.y) }
+          })
+          .filter((candidate): candidate is NonNullable<typeof candidate> => candidate !== null)
+          .sort((a, b) => a.distance - b.distance)[0]
+        if (nearest && nearest.distance <= 22 && nearest.feature.properties?.parcel_id) {
+          onSelectRef.current(String(nearest.feature.properties.parcel_id))
+        }
       }
       const hover = (ev: maplibregl.MapLayerMouseEvent) => {
         const f = ev.features?.[0]
@@ -342,8 +362,7 @@ export function ParcelMap({
         setTooltip(null)
         m.getCanvas().style.cursor = ''
       }
-      m.on('click', LYR_FILL, pick)
-      m.on('click', LYR_DOTS, pick)
+      m.on('click', pick)
       for (const lyr of [LYR_FILL, LYR_DOTS]) {
         m.on('mouseenter', lyr, () => { m.getCanvas().style.cursor = 'pointer' })
         m.on('mousemove', lyr, hover)
@@ -403,7 +422,8 @@ export function ParcelMap({
 
   return (
     <div className={`relative ${className}`}>
-      <div ref={holder} className="h-full w-full overflow-hidden rounded-[11px] border border-line" />
+      <div ref={holder}
+        className="h-full w-full touch-none overscroll-contain overflow-hidden rounded-[11px] border border-line" />
       <div className="absolute right-2 top-2 z-10 overflow-hidden rounded-[8px] border border-line bg-card shadow-[var(--shadow-sm)]">
         <button type="button" aria-label="Zoom in" onClick={() => zoomBy(1)}
           className="flex h-9 w-9 items-center justify-center text-ink2 transition-colors hover:bg-card2">

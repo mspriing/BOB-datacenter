@@ -216,8 +216,8 @@ export function ParcelDetail({ parcelId, project, onBack }: {
           explain="A cost-only model has no revenue or investment return, so payback is not applicable." />
       </div>
 
-      <div className="grid gap-3.5 lg:grid-cols-[1fr_380px] lg:items-start">
-        <div className="space-y-3.5">
+      <div className="grid min-w-0 gap-3.5 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
+        <div className="min-w-0 space-y-3.5">
           {est.parcel_note && (
             <div className="flex items-start gap-3 rounded-[12px] border border-line bg-card p-4">
               <span className="mt-[1px] flex h-[26px] w-[26px] shrink-0 items-center justify-center
@@ -289,8 +289,8 @@ export function ParcelDetail({ parcelId, project, onBack }: {
 
           <Card title="Where every figure comes from"
             note={`${est.provenance.length} figures`}>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-[13px]">
+            <div className="max-w-full overflow-x-auto overscroll-x-contain">
+              <table className="min-w-[560px] w-full text-left text-[13px]">
                 <thead>
                   <tr className="border-b border-[var(--line2)] text-mid">
                     <th className="px-5 py-2.5 font-medium">Figure</th>
@@ -332,7 +332,7 @@ export function ParcelDetail({ parcelId, project, onBack }: {
           </Card>
         </div>
 
-        <div className="space-y-3.5 lg:sticky lg:top-4">
+        <div className="min-w-0 space-y-3.5 lg:sticky lg:top-4">
           <Card title="What is missing here"
             note={est.gaps.length === 0 ? 'Nothing flagged' : `${est.gaps.length} gap${est.gaps.length === 1 ? '' : 's'}`}>
             <div className="space-y-3 p-5">

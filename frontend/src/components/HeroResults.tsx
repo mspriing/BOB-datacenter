@@ -79,14 +79,14 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
     <div className="bg-bg p-3 sm:p-4">
       {/* top bar */}
       <div style={step(0)}
-        className="mb-3 flex items-center justify-between rounded-[11px] border border-line bg-card px-4 py-2.5">
+        className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-[11px] border border-line bg-card px-4 py-2.5">
         <span>
           <span className="text-[17px] font-semibold tracking-[-.02em] text-ink">leepr</span>
           <span className="ml-2 rounded-full bg-card2 px-2 py-1 text-[10px] font-bold uppercase tracking-[.07em] text-mid">
             Offline example
           </span>
         </span>
-        <div className="flex gap-1.5">
+        <div className="flex w-full justify-between gap-1.5 sm:w-auto sm:justify-start">
           {/* The same three steps the real bar shows, in the same order. A
               miniature that disagrees with the thing it stands for is worse
               than no miniature. */}

@@ -67,7 +67,7 @@ export function SiteRow({ site, rank, perKw, winner, lifetimeYears = 15 }: {
         </ul>
       </div>
 
-      <div className="lg:text-right">
+      <div className="col-start-2 lg:col-auto lg:text-right">
         <div className="num text-[22px] font-semibold tracking-[-.02em] text-ink">
           {usd(perKw)}<span className="ml-1 text-[13px] font-medium text-mid">per kW</span>
         </div>

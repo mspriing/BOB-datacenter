@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowRight, ArrowLeft, MapPin, AlertTriangle, Info, Loader2 } from 'lucide-react'
+import {
+  ArrowRight, ArrowLeft, MapPin, AlertTriangle, Info, Loader2,
+  SlidersHorizontal, ChevronDown,
+} from 'lucide-react'
 import { Card, Explain, Chip, Rule } from '../components/Primitives'
 import { CriteriaBox } from '../components/CriteriaBox'
 import { ParcelMap, PARCEL_SHADE, type ParcelShadeKey } from '../components/map/ParcelMap'
@@ -76,6 +79,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
   const [query, setQuery] = useState<ParcelQuery>(defaultQuery)
   const [shade, setShade] = useState<ParcelShadeKey>('lifetime_cost_per_kw')
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [previewId, setPreviewId] = useState<string | null>(null)
   const reducedMotion = useReducedMotion()
 
@@ -310,6 +314,18 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
       <div className="grid gap-3.5 lg:grid-cols-[320px_1fr] lg:items-start">
         {/* ── Filter rail ───────────────────────────────────────────────── */}
         <div className="space-y-3.5 lg:sticky lg:top-4">
+          <button type="button" onClick={() => setFiltersOpen(open => !open)}
+            aria-expanded={filtersOpen}
+            className="flex min-h-[44px] w-full items-center justify-between rounded-[11px] border border-line
+                       bg-[var(--glass-fill)] px-4 text-[14px] font-semibold text-ink2 shadow-[var(--shadow-sm)] lg:hidden">
+            <span className="flex items-center gap-2">
+              <SlidersHorizontal size={16} strokeWidth={2.2} aria-hidden />
+              Filters
+            </span>
+            <ChevronDown size={16} strokeWidth={2.2} aria-hidden
+              className={`transition-transform ${filtersOpen ? 'rotate-180' : ''}`} />
+          </button>
+          <div className={`${filtersOpen ? 'block' : 'hidden'} space-y-3.5 lg:block`}>
           {/* Applying merges onto the same `query` the rail writes to, so the
               sentence and the controls can never disagree about what is set. */}
           <CriteriaBox onApply={(filters, weights) => patch({ ...filters, weights, sort_by: 'rank' })} />
@@ -381,6 +397,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
               ))}
             </div>
           </Card>
+          </div>
         </div>
 
         {/* ── Map + list ────────────────────────────────────────────────── */}
@@ -389,7 +406,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
             note={`${mapTotal?.toLocaleString('en-US') ?? '…'} parcels`}>
             <div className="p-4 sm:p-5">
               <ParcelMap parcels={mapParcels} shade={shade} selectedId={previewId ?? selectedId}
-                onSelect={selectParcel} className="h-[440px]" />
+                onSelect={selectParcel} className="h-[320px] sm:h-[440px]" />
               <p className="mt-3 text-[13px] leading-[1.55] text-mid">
                 Showing all {mapTotal?.toLocaleString('en-US') ?? 'matching'} parcels that match
                 your filters. Zoom in to see each plot&apos;s real outline; click one to open it.

@@ -213,7 +213,7 @@ export function Results({ project, server, serverError, go }: {
             const scenario = site.finance.ranges[costCase]
             return (
               <article key={siteId} className={site.rank === 1 ? 'border-l-[3px] border-l-blue' : ''}>
-                <div className="grid gap-4 p-5 sm:grid-cols-[42px_1fr_auto] sm:items-center">
+                <div className="grid grid-cols-[36px_1fr] gap-4 p-5 sm:grid-cols-[42px_1fr_auto] sm:items-center">
                   <span className={`flex h-9 w-9 items-center justify-center rounded-[10px] text-[15px] font-bold
                     ${site.rank === 1 ? 'bg-blue text-onaccent' : 'border border-line bg-card2 text-mid'}`}>
                     {site.rank}
@@ -228,7 +228,7 @@ export function Results({ project, server, serverError, go }: {
                       <Rule />annual OpEx {moneyM(site.opex_annual.total_usd)}
                     </p>
                   </div>
-                  <div className="sm:text-right">
+                  <div className="col-start-2 sm:col-auto sm:text-right">
                     <p className="num text-[22px] font-semibold text-ink">
                       {usd(scenario.lifetime_per_kw)} <span className="text-[13px] font-medium text-mid">per kW</span>
                     </p>
@@ -322,8 +322,8 @@ export function Results({ project, server, serverError, go }: {
 
       <FoldCard title="Where every backend number came from"
         note={`${server.confidence.sourced} sourced, ${server.confidence.modeled} modeled, ${server.confidence.assumed} assumed, ${server.confidence.missing} missing`}>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-[13.5px]">
+        <div className="max-w-full overflow-x-auto overscroll-x-contain">
+          <table className="min-w-[720px] w-full border-collapse text-[13.5px]">
             <thead><tr>
               {['Region', 'Driver', 'Value', 'Basis', 'Source', 'Checked'].map(head => (
                 <th key={head} className="border-y border-[var(--line2)] bg-card2 px-5 py-2.5 text-left label-xs">{head}</th>

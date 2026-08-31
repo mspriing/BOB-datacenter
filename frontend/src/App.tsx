@@ -175,7 +175,7 @@ export default function App() {
   return (
     <Tooltip.Provider delayDuration={120} skipDelayDuration={300}>
       <div className="relative z-[1] mx-auto max-w-[1380px] px-4 pb-16 sm:px-7">
-        <header className="flex flex-wrap items-center justify-between gap-4 py-5">
+        <header className="flex flex-col items-stretch gap-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:py-5">
           <button className="flex items-center gap-3.5 text-left" onClick={() => go('home')}
             aria-label="leepr, back to the start">
             <Logo />
@@ -183,12 +183,12 @@ export default function App() {
               leepr
             </span>
           </button>
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-1.5 sm:gap-3">
             <div className="rounded-full border border-line bg-[var(--glass-fill)] p-1 shadow-[var(--shadow-sm)]">
               <button
                 onClick={() => go('how-to-use')}
                 aria-current={route === 'how-to-use' ? 'page' : undefined}
-                className={`relative min-h-[36px] rounded-full px-4 text-[13.5px] font-medium transition-colors
+                className={`relative min-h-[36px] rounded-full px-3 text-[13px] font-medium transition-colors sm:px-4 sm:text-[13.5px]
                   ${route === 'how-to-use' ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
                 {route === 'how-to-use' && (
                   <motion.span className="absolute inset-0 rounded-full bg-bluex"
@@ -198,7 +198,7 @@ export default function App() {
               </button>
             </div>
             <button type="button" onClick={toggleTheme}
-              className="flex h-[46px] w-[46px] items-center justify-center rounded-full border border-line
+              className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full border border-line
                          bg-[var(--glass-fill)] text-mid shadow-[var(--shadow-sm)] transition-colors hover:text-ink"
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
@@ -207,7 +207,7 @@ export default function App() {
                 : <Moon size={17} strokeWidth={2.2} aria-hidden />}
             </button>
             <nav aria-label="Screens"
-              className="flex items-center gap-1.5 rounded-full border border-line bg-[var(--glass-fill)] p-1 shadow-[var(--shadow-sm)]">
+              className="flex min-w-0 flex-1 items-center gap-0.5 rounded-full border border-line bg-[var(--glass-fill)] p-1 shadow-[var(--shadow-sm)] sm:flex-none sm:gap-1.5">
               {NAV.map(n => {
                 const active = (STEP_OF[route] ?? route) === n.id
                 const unavailable = n.id === 'results' && !server
@@ -216,7 +216,7 @@ export default function App() {
                     <Tooltip.Trigger asChild>
                       <button onClick={() => go(n.id)}
                         aria-current={active ? 'page' : undefined}
-                        className={`relative min-h-[36px] rounded-full px-4 text-[13.5px] font-medium transition-colors
+                        className={`relative min-h-[36px] flex-1 rounded-full px-2 text-[12.5px] font-medium transition-colors sm:flex-none sm:px-4 sm:text-[13.5px]
                           ${unavailable ? 'text-dim opacity-55 hover:opacity-75'
                             : active ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
                         {active && !unavailable && (

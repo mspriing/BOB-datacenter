@@ -61,8 +61,8 @@ function H({ children }: { children: React.ReactNode }) {
 
 function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-[13.5px]">
+    <div className="max-w-full overflow-x-auto overscroll-x-contain">
+      <table className="min-w-[640px] w-full border-collapse text-[13.5px]">
         <thead>
           <tr>{head.map(h => (
             <th key={h} className="border-y border-[var(--line2)] bg-card2 px-5 py-2.5 text-left
