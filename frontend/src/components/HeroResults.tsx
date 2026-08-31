@@ -16,7 +16,7 @@ const P: ProjectParams = {
 }
 
 /** The drivers the fragility panel reports on, most fragile first once measured. */
-const FRAGILITY = ['constructionPerKw', 'powerRate', 'staffIndex', 'landPerAcre'] as const
+const FRAGILITY = PROJECTION_DRIVERS.map(driver => driver.key)
 
 /**
  * The page the pull-back lands on, built as the product rather than drawn as a
@@ -137,7 +137,7 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
         </div>
       )}
 
-      <div className="grid gap-3 lg:grid-cols-[1.55fr_1fr]">
+      <div className="grid items-start gap-3 lg:grid-cols-[1.55fr_1fr]">
         {/* the ranked set, through the real row */}
         <div style={step(3)} className="overflow-hidden rounded-[13px] border border-line bg-white">
           {ranked.map((s, i) => (
@@ -147,7 +147,7 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
         </div>
 
         {/* what would have to change */}
-        <div style={step(4)} className="rounded-[13px] border border-line bg-white p-4">
+        <div style={step(4)} className="self-start rounded-[13px] border border-line bg-white p-4">
           <div className="mb-3 flex items-baseline justify-between">
             <h4 className="text-[15px] font-semibold text-ink">What would have to change</h4>
             <span className="text-[12px] text-mid">Most fragile first</span>
@@ -160,7 +160,14 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
               return (
                 <div key={f.key}>
                   <div className="mb-1 flex items-baseline justify-between gap-3">
-                    <span className="text-[13px] font-medium text-ink2">{f.label}</span>
+                    <span>
+                      <span className="block text-[13px] font-medium text-ink2">{f.label}</span>
+                      {f.at && (
+                        <span className="num mt-0.5 block text-[11.5px] text-mid">
+                          reaches {f.at}
+                        </span>
+                      )}
+                    </span>
                     <span className={`num text-[13px] font-semibold ${
                       pct === null ? 'text-mid' : pct < 5 ? 'text-bad' : pct < 25 ? 'text-warn' : 'text-ok'}`}>
                       {pct === null ? 'holds' : `+${pct.toFixed(1)}%`}
@@ -178,6 +185,9 @@ export function HeroResults({ go, active }: { go: (r: Route) => void; active: bo
               )
             })}
           </div>
+          <p className="mt-3 border-t border-[var(--line2)] pt-3 text-[12px] leading-[1.5] text-mid">
+            The smallest move in a single driver that puts a different site first.
+          </p>
         </div>
       </div>
 
