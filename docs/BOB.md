@@ -1,6 +1,8 @@
 # How IBM Bob was used
 
-Bob wrote this codebase. Every TypeScript file in `backend/src/` and `frontend/src/`, every test in `backend/tests/`, and every commit in the history was produced by directing Bob inside VS Code. This document records how that worked, with the transcripts.
+Bob was the primary development tool on this project. The deterministic cost engine, the Zod schemas, the watsonx integration and its fallback, the backend test suite and the results view were all produced by directing Bob inside VS Code against written work orders. This document records how that worked, with the transcripts.
+
+Bob was not the only assistant that touched the repository, and the git history says so rather than hiding it. Seventeen commits between 24 and 27 August, covering landing-page copy, the parcel map rendering and a data reconciliation pass, are authored under a different assistant and carry their own attribution. They are listed in `git log` under that name. Everything described below, and every commit in the table at the end of this document, was Bob's.
 
 ## Two IBM products, and two different claims
 

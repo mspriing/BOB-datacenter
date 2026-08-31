@@ -4,19 +4,14 @@ export type ColorTheme = 'light' | 'dark'
 
 const STORAGE_KEY = 'leepr-theme'
 const THEME_EVENT = 'leepr-theme-change'
-const DARK_QUERY = '(prefers-color-scheme: dark)'
 
 function savedTheme(): ColorTheme | null {
   const saved = localStorage.getItem(STORAGE_KEY)
   return saved === 'light' || saved === 'dark' ? saved : null
 }
 
-function systemTheme(): ColorTheme {
-  return window.matchMedia(DARK_QUERY).matches ? 'dark' : 'light'
-}
-
 export function currentTheme(): ColorTheme {
-  return savedTheme() ?? systemTheme()
+  return savedTheme() ?? 'light'
 }
 
 function applyTheme(theme: ColorTheme): void {
@@ -32,20 +27,9 @@ export function useTheme(): { theme: ColorTheme; toggleTheme: () => void } {
     document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
 
   useEffect(() => {
-    const media = window.matchMedia(DARK_QUERY)
-    const onSystemChange = () => {
-      if (savedTheme()) return
-      const next = systemTheme()
-      applyTheme(next)
-      setTheme(next)
-    }
     const onThemeChange = () => setTheme(currentTheme())
-    media.addEventListener('change', onSystemChange)
     window.addEventListener(THEME_EVENT, onThemeChange)
-    return () => {
-      media.removeEventListener('change', onSystemChange)
-      window.removeEventListener(THEME_EVENT, onThemeChange)
-    }
+    return () => window.removeEventListener(THEME_EVENT, onThemeChange)
   }, [])
 
   const toggleTheme = useCallback(() => {
