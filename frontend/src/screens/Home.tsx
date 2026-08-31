@@ -7,10 +7,15 @@ export function Home({ go }: { go: (r: Route) => void }) {
     <>
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="pt-6 pb-2 sm:pt-12">
-        <h1 className="mb-6 max-w-[27ch] text-[clamp(2.25rem,1.4rem+3.6vw,4.25rem)]
+        <h1 className="mb-5 max-w-[27ch] text-[clamp(2.25rem,1.4rem+3.6vw,4.25rem)]
           font-semibold leading-[1.06] tracking-[-.02em] text-ink">
-          Leepr — build your next data center
+          Find, price and build your next data center
         </h1>
+        <p className="mb-8 max-w-[70ch] text-[clamp(1.0625rem,1rem+.3vw,1.3125rem)]
+          leading-[1.6] text-mid">
+          Leepr is a cost model and a search tool in one: it prices the whole life of a data
+          center, then ranks every place you could put it.
+        </p>
         <HeroPullback go={go} />
       </section>
 

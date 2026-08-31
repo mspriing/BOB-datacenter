@@ -176,13 +176,8 @@ export default function App() {
           <button className="flex items-center gap-3.5 text-left" onClick={() => go('home')}
             aria-label="leepr, back to the start">
             <Logo />
-            <span>
-              <span className="block text-[15px] font-semibold tracking-[-.01em] text-ink">
-                leepr
-              </span>
-              <span className="block text-[13px] text-mid">
-                Whole life cost for data center sites
-              </span>
+            <span className="text-[17px] font-semibold tracking-[-.01em] text-ink">
+              leepr
             </span>
           </button>
           <div className="flex items-center gap-3">
