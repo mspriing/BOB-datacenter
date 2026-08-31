@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowRight, ArrowLeft, MapPin, AlertTriangle, Loader2 } from 'lucide-react'
+import { ArrowRight, ArrowLeft, MapPin, AlertTriangle, Info, Loader2 } from 'lucide-react'
 import { Card, Explain, Chip, Rule } from '../components/Primitives'
 import { CriteriaBox } from '../components/CriteriaBox'
 import { ParcelMap, PARCEL_SHADE, type ParcelShadeKey } from '../components/map/ParcelMap'
@@ -80,12 +80,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  /**
-   * Set when the parcel service did not answer and the screen is reading the
-   * recorded snapshot instead. It carries the date the snapshot was taken,
-   * which the page prints, because a figure whose age is not stated is a figure
-   * nobody can check.
-   */
+  /** The recorded snapshot's capture date, shown whenever that fallback is in use. */
   const [snapshotDate, setSnapshotDate] = useState<string | null>(null)
 
   /** Unfiltered count, fetched once, so a filter can say what it removed. */
@@ -149,6 +144,15 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
     activeWeightLabel,
   ].filter(Boolean) as string[]
 
+  const recordedDate = snapshotDate
+    ? new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }).format(new Date(`${snapshotDate}T00:00:00Z`))
+    : null
+
   return (
     <section className="pt-6 sm:pt-10">
       <div className="mb-7">
@@ -171,19 +175,27 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
         </p>
 
         {snapshotDate && (
-          <div className="mt-5 flex items-start gap-3 rounded-[11px] border border-[#E4D2A8]
-            bg-[#FBF3E2] px-4 py-3">
-            <AlertTriangle size={16} strokeWidth={2.2} className="mt-[3px] shrink-0 text-gold" aria-hidden />
-            <p className="text-[13.5px] leading-[1.6] text-gold">
-              The parcel service did not answer, so this page is reading a recording of its
-              replies from {snapshotDate}. Those figures are what it returned that day, priced
-              on the default build. The order is the one it gave for the whole county, and the
-              number beside each entry counts down the set your filters left. Open a row and
-              you get the estimate as it stood then rather than a fresh one.
-              {query.weights && Object.keys(query.weights).length > 0
-                ? ' Custom ranking weights are sent to the live API, but cannot be recomputed from this recording.'
-                : ''}
-            </p>
+          <div className="mt-5 rounded-[11px] border border-line bg-card2 px-4 py-3">
+            <div className="flex items-start gap-3">
+              <Info size={16} strokeWidth={2.2} className="mt-[3px] shrink-0 text-mid" aria-hidden />
+              <p className="text-[13.5px] leading-[1.6] text-ink2">
+                Reading the recorded run from {recordedDate}. All{' '}
+                {(baseline ?? total)?.toLocaleString('en-US') ?? 'recorded'} Bexar parcels,
+                priced on the default build, exactly as the server returned them that day.
+                Set your own capacity and lifetime and the live service reprices them.
+              </p>
+            </div>
+            <details className="ml-7 mt-2 text-[12.5px] leading-[1.55] text-mid">
+              <summary className="w-fit cursor-pointer font-medium text-ink2">What this means</summary>
+              <p className="mt-1.5 max-w-[76ch]">
+                The figures use the default build rather than the values currently entered.
+                The ranking keeps the whole county&apos;s recorded order, then renumbers the
+                parcels left by your filters.
+                {query.weights && Object.keys(query.weights).length > 0
+                  ? ' Custom ranking weights require the live service and are not recalculated in this recording.'
+                  : ''}
+              </p>
+            </details>
           </div>
         )}
       </div>
