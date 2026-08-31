@@ -66,14 +66,16 @@ export function Home({ go }: { go: (r: Route) => void }) {
             },
           ]).map(v => (
             <div key={v.head}
-              className="rounded-[13px] border border-line bg-white/70 p-5
+              className="flex items-start gap-3.5 rounded-[13px] border border-line bg-white/70 p-5
                          shadow-[var(--shadow-sm)] transition-colors hover:bg-white">
-              <span className="mb-3 flex h-[38px] w-[38px] items-center justify-center
+              <span className="flex h-[38px] w-[38px] shrink-0 items-center justify-center
                                rounded-[11px] bg-bluex text-blued">
                 {v.icon}
               </span>
-              <p className="mb-1 text-[16px] font-semibold text-ink">{v.head}</p>
-              <p className="text-[14.5px] leading-[1.65] text-mid">{v.body}</p>
+              <div className="min-w-0">
+                <p className="mb-1 text-[16px] font-semibold text-ink">{v.head}</p>
+                <p className="text-[14.5px] leading-[1.65] text-mid">{v.body}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -105,16 +107,18 @@ export function Home({ go }: { go: (r: Route) => void }) {
             },
           ]).map(s => (
             <li key={s.n}
-              className="rounded-[13px] border border-line bg-white/70 p-5
+              className="flex items-start gap-3.5 rounded-[13px] border border-line bg-white/70 p-5
                          shadow-[var(--shadow-sm)] transition-colors hover:bg-white">
-              <span className="num mb-3 flex h-[30px] w-[30px] items-center justify-center
+              <span className="num flex h-[30px] w-[30px] shrink-0 items-center justify-center
                                rounded-[9px] bg-[linear-gradient(135deg,#0F62FE,#0043CE)]
                                text-[14px] font-bold text-white
                                shadow-[0_3px_9px_-3px_rgba(15,98,254,.55)]">
                 {s.n}
               </span>
-              <p className="mb-1.5 text-[15.5px] font-semibold leading-[1.35] text-ink">{s.head}</p>
-              <p className="text-[14.5px] leading-[1.65] text-mid">{s.body}</p>
+              <div className="min-w-0">
+                <p className="mb-1.5 text-[15.5px] font-semibold leading-[1.35] text-ink">{s.head}</p>
+                <p className="text-[14.5px] leading-[1.65] text-mid">{s.body}</p>
+              </div>
             </li>
           ))}
         </ol>
