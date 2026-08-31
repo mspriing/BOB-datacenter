@@ -46,16 +46,9 @@ export function Setup({
   const isPriceable = (key: string) => {
     const r = ALL_REGIONS.find(x => x.key === key)
     if (!r) return false
-    // Truthiness is the test gapsFor already uses: a driver with no figure is
-    // stored as null rather than as a cell with a null value.
     return PRICEABLE_DRIVERS.every(d => Boolean(r.drivers[d]))
   }
 
-  // Only regions the engine can actually rank. The picker used to offer all 77,
-  // of which 64 are missing at least one required driver, so choosing one
-  // produced a site the backend refused to rank and the reader found out after
-  // running. Nothing is removed from the dataset — this is what the picker
-  // offers, not what the tool holds, so a pinned or saved key still resolves.
   const options = useMemo(() => {
     const seen = new Set<string>()
     const out: Array<{ key: string; label: string }> = []
@@ -66,6 +59,7 @@ export function Setup({
       out.push({ key: r.key, label: r.label })
     }
     return out
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const hiddenRegionCount = ALL_REGIONS.length - ALL_REGIONS.filter(r => isPriceable(r.key)).length

@@ -272,6 +272,10 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
           parcel data is ingested.
         </p>
         <p className="max-w-[68ch] text-[17px] leading-[1.65] text-mid">
+          Bexar County, Texas is the pilot county. The same pricing runs on any county once its
+          parcel data is ingested.
+        </p>
+        <p className="mt-3 max-w-[68ch] text-[17px] leading-[1.65] text-mid">
           Candidate parcels are priced on the whole build: land, reaching the transmission
           line, reaching fiber, leveling the ground and getting through entitlement, rather than just
           the asking price. Filter to what you can actually use, then open one to see what
