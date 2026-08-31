@@ -34,9 +34,12 @@ const FinanceSchema = z.object({
   lifetime_cost_per_kw: z.number(),
   npv_usd:              z.number(),
   lifetime_years:       z.number(),
-  // A cost-only model has no positive cash flow from which to calculate
-  // payback. Keep the required field explicit rather than fabricating a ratio.
-  payback_years:        z.null(),
+  // Payback exists only when the reader supplies a revenue assumption. Without
+  // one this stays null and the interface says so, rather than fabricating a
+  // ratio out of a model that knows only costs.
+  payback_years:        z.number().nullable(),
+  annual_revenue_usd:   z.number().nullable(),
+  net_annual_usd:       z.number().nullable(),
   ranges: z.object({
     low:  RangeSchema,
     base: RangeSchema,

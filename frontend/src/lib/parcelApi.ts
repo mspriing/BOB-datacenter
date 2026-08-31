@@ -70,6 +70,9 @@ export interface ParcelQuery extends ParcelFilters {
   design_wue?: number
   lifetime_years?: number
   discount_rate?: number
+  /** The reader's revenue assumption, so parcels pay back on the same basis as regions. */
+  revenue_per_kw_month?: number
+  occupancy_pct?: number
   weights?: ParcelWeights
 }
 
@@ -207,7 +210,7 @@ export function fetchParcelMap(q: ParcelQuery): Promise<ApiResult<ParcelListResp
 
 export async function fetchParcel(
   id: string,
-  query: Pick<ParcelQuery, 'county' | 'capacity_kw' | 'design_pue' | 'design_wue' | 'lifetime_years' | 'discount_rate'> = {},
+  query: Pick<ParcelQuery, 'county' | 'capacity_kw' | 'design_pue' | 'design_wue' | 'lifetime_years' | 'discount_rate' | 'revenue_per_kw_month' | 'occupancy_pct'> = {},
 ): Promise<ApiResult<unknown>> {
   const detailQuery = toQueryString({
     county: query.county ?? 'bexar',
@@ -216,6 +219,8 @@ export async function fetchParcel(
     design_wue: query.design_wue,
     lifetime_years: query.lifetime_years,
     discount_rate: query.discount_rate,
+    revenue_per_kw_month: query.revenue_per_kw_month,
+    occupancy_pct: query.occupancy_pct,
   })
   const r = await get<unknown>(
     `/parcels/${encodeURIComponent(id)}?${detailQuery}`)

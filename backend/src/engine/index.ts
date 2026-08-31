@@ -375,6 +375,8 @@ export async function runEngine(
       lifetime_years:          input.project.lifetime_years,
       discount_rate:           input.project.discount_rate,
       capacity_kw:             input.project.capacity_kw,
+      revenue_per_kw_month:    input.project.revenue_per_kw_month,
+      occupancy_pct:           input.project.occupancy_pct,
       capex,
       opexBase:                opexYear1,
       opexParamsBase:          b.opexParams,

@@ -61,6 +61,7 @@ function loadRows(countyId: string): ParcelRow[] | null {
 function projectFromQuery(q: {
   capacity_kw: number; design_pue: number; design_wue: number;
   lifetime_years: number; discount_rate: number; weights?: unknown
+  revenue_per_kw_month?: number; occupancy_pct?: number
 }): ParcelProject {
   return {
     capacity_kw:    q.capacity_kw,
@@ -68,6 +69,8 @@ function projectFromQuery(q: {
     design_wue:     q.design_wue,
     lifetime_years: q.lifetime_years,
     discount_rate:  q.discount_rate,
+    revenue_per_kw_month: q.revenue_per_kw_month,
+    occupancy_pct:        q.occupancy_pct,
     weights:        q.weights as ParcelProject['weights'],
   }
 }

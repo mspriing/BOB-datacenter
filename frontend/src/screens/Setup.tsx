@@ -265,6 +265,42 @@ export function Setup({
                   Litres of water per kWh of cooling energy. Accepted range: 0–2.5.
                 </p>
               </label>
+              {/* Revenue is the reader's own commercial assumption, not a figure
+                  this project sources, so it is optional and its absence is the
+                  normal case. Left empty, the tool prices cost only, exactly as
+                  it did before these two fields existed. */}
+              <label className="block">
+                <span className="mb-1.5 block text-[15px] font-medium text-ink2">
+                  Expected revenue, per kW per month
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[13px] text-mid">$</span>
+                  <input className="field num" type="number" min={0} max={10000} step={5}
+                    placeholder="optional"
+                    value={project.revenue_per_kw_month ?? ''}
+                    onChange={event => patchProject('revenue_per_kw_month',
+                      event.target.value === '' ? undefined : Number(event.target.value))} />
+                </div>
+                <p className="mt-1.5 text-[13px] leading-[1.5] text-mid">
+                  What you expect to charge per kilowatt of IT capacity each month. Leave it
+                  empty and the tool prices cost only, with no payback figure. Colocation
+                  commonly runs between $100 and $200.
+                </p>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-[15px] font-medium text-ink2">Occupancy</span>
+                <div className="flex items-center gap-2">
+                  <input className="field num" type="number" min={0} max={100} step={1}
+                    value={Math.round((project.occupancy_pct ?? 0.85) * 100)}
+                    onChange={event => patchProject('occupancy_pct',
+                      Number(event.target.value) / 100)} />
+                  <span className="text-[13px] text-mid">%</span>
+                </div>
+                <p className="mt-1.5 text-[13px] leading-[1.5] text-mid">
+                  The share of capacity earning revenue. Capacity that is built but unsold
+                  costs money and earns none.
+                </p>
+              </label>
             </div>
           </FoldCard>
 

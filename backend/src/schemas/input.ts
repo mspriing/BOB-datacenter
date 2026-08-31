@@ -53,6 +53,14 @@ const ProjectSchema = z.object({
   design_wue:     z.number().min(0.0).max(2.5).optional().default(0.4),
   lifetime_years: z.number().int().min(5).max(40),
   discount_rate:  z.number().min(0.01).max(0.30),
+
+  // Revenue is the reader's own commercial assumption, not a figure this
+  // project sources, so both fields are optional and the engine returns no
+  // payback without them. Price per kW per month is the colocation convention;
+  // occupancy is here because capacity built but unsold earns nothing.
+  revenue_per_kw_month: z.number().min(0).max(10_000).optional(),
+  occupancy_pct:        z.number().min(0).max(1).optional().default(0.85),
+
   weights:        WeightsSchema,
 })
 

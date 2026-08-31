@@ -302,3 +302,46 @@ Returns `200 OK` with a small JSON body:
 This endpoint is the **deployment health check** used by Render to decide whether the backend
 service is alive. Do not remove it and do not change the path — removing it will cause Render
 to mark the service as unhealthy and stop routing traffic to it.
+
+---
+
+## Expected revenue and payback
+
+The engine is a cost model. It prices what a site costs to build and run; it
+does not know what one earns, because that is a commercial assumption no public
+dataset carries.
+
+Payback was therefore always `null`, and the interface said "Not applicable".
+A reader can now supply the revenue assumption themselves, and when they do the
+engine returns a payback figure derived from it.
+
+### New project inputs, both optional
+
+| Field | Type | Meaning |
+|---|---|---|
+| `revenue_per_kw_month` | number, 0 to 10000 | Price charged per kW of IT capacity per month, in USD. The colocation convention. |
+| `occupancy_pct` | number, 0 to 1 | Share of capacity earning revenue. Defaults to `0.85`. Capacity built but unsold costs money and earns none. |
+
+### Derived output, per site
+
+```
+annual_revenue_usd = capacity_kw × revenue_per_kw_month × 12 × occupancy_pct
+net_annual_usd     = annual_revenue_usd − opex_annual.total_usd
+payback_years      = capex.total_usd ÷ net_annual_usd
+```
+
+| Field | Type | Meaning |
+|---|---|---|
+| `annual_revenue_usd` | number or null | Null when no revenue was supplied. |
+| `net_annual_usd` | number or null | Revenue less annual operating cost. |
+| `payback_years` | number or null | Was `null` always; now a number when revenue makes one meaningful. |
+
+**`payback_years` stays null** when `revenue_per_kw_month` is absent or zero, or
+when `net_annual_usd` is not positive. A site whose running cost exceeds its
+revenue has no payback, and a negative or infinite one is not a figure to show.
+
+**`npv_usd` is unchanged.** It remains a cost NPV, shown as a positive cost, and
+every label around it says so. Revenue is reported beside it, not folded into it.
+
+Revenue is the reader's own assumption, not a sourced figure, and the interface
+labels it that way wherever a payback figure appears.

@@ -11,9 +11,21 @@
  * CapEx per kW = capex.total_usd / capacity_kw
  *   (construction cost intensity; comparable to published data-center build costs)
  *
- * There is no payback figure here, because a cost model has no positive cash
- * flow. The required output field is therefore null rather than a misleading
- * CapEx/OpEx ratio.
+ * Payback exists only when the caller supplies a revenue assumption. This model
+ * prices costs; what a site earns is a commercial judgement no public dataset
+ * carries, so revenue arrives as an input rather than a lookup:
+ *
+ *   annual_revenue = capacity_kw × revenue_per_kw_month × 12 × occupancy_pct
+ *   net_annual     = annual_revenue − opex year 1
+ *   payback_years  = capex.total_usd ÷ net_annual
+ *
+ * Without revenue, or when net annual cash is not positive, payback stays null
+ * rather than becoming a misleading CapEx/OpEx ratio. A site whose running cost
+ * exceeds its revenue has no payback, and a negative one is not a figure worth
+ * showing anyone.
+ *
+ * npv_usd is untouched by any of this. It remains a cost NPV, and revenue is
+ * reported beside it rather than folded into it.
  *
  * Ranges (low/high) come from the dataset's low/high power-rate and
  * construction-cost bands, recomputed at the scenario boundary.
@@ -47,6 +59,11 @@ export interface FinanceParams {
   staff_cost_index_high?:   number
   tax_rate_low?:            number
   tax_rate_high?:           number
+
+  /** The reader's own revenue assumption. Absent means no payback figure. */
+  revenue_per_kw_month?:    number
+  /** Share of capacity earning revenue, 0 to 1. Defaults to 0.85. */
+  occupancy_pct?:           number
 }
 
 export interface FinanceResult {
@@ -55,7 +72,10 @@ export interface FinanceResult {
   npv_usd:               number
   /** Years the build is priced over, so a reader knows what the NPV covers. */
   lifetime_years:        number
-  payback_years:         null
+  /** Null unless the caller supplied revenue that clears annual operating cost. */
+  payback_years:         number | null
+  annual_revenue_usd:    number | null
+  net_annual_usd:        number | null
   ranges: {
     low:  { npv_usd: number; lifetime_per_kw: number }
     base: { npv_usd: number; lifetime_per_kw: number }
@@ -158,12 +178,30 @@ export function computeFinance(p: FinanceParams): FinanceResult {
   }
   const highNPV = scenarioNPV(highCapexParams, highOpexParams, r, years)
 
+  // ── Revenue, if the caller supplied one ───────────────────────────────────
+  //
+  // Year-1 opex is the basis, matching the year the revenue figure describes.
+  // Payback is withheld rather than approximated whenever it would be negative
+  // or infinite: a site that does not cover its running cost has no payback,
+  // and reporting one would be worse than reporting nothing.
+  const rate = p.revenue_per_kw_month ?? 0
+  const occupancy = p.occupancy_pct ?? 0.85
+  const hasRevenue = rate > 0
+
+  const annualRevenue = hasRevenue ? p.capacity_kw * rate * 12 * occupancy : null
+  const netAnnual = annualRevenue === null ? null : annualRevenue - p.opexBase.total_usd
+  const payback = netAnnual !== null && netAnnual > 0
+    ? round2(p.capex.total_usd / netAnnual)
+    : null
+
   return {
     capex_per_kw:          round2(p.capex.total_usd / p.capacity_kw),
     lifetime_cost_per_kw:  round2(levelized),
     npv_usd:               round2(baseNPV),
     lifetime_years:        years,
-    payback_years:         null,
+    payback_years:         payback,
+    annual_revenue_usd:    annualRevenue === null ? null : round2(annualRevenue),
+    net_annual_usd:        netAnnual === null ? null : round2(netAnnual),
     ranges: {
       low:  { npv_usd: round2(lowNPV),  lifetime_per_kw: round2(Math.abs(lowNPV)  / p.capacity_kw) },
       base: { npv_usd: round2(baseNPV), lifetime_per_kw: round2(levelized) },

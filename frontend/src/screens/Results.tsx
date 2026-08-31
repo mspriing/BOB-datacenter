@@ -165,9 +165,18 @@ export function Results({ project, server, serverError, go }: {
             <StatTile bare label="Cost NPV"
               value={<><Counter to={Math.abs(leaderRange.npv_usd) / 1e6} prefix="$" decimals={1} />M</>}
               foot="Backend cost NPV; shown as a positive cost" />
-            <StatTile bare label="Payback"
-              value={<span className="text-[19px]">Not applicable</span>}
-              foot="A cost-only model has no revenue or investment return" />
+            {/* Payback appears only when the reader supplied revenue. Without it
+                the model knows costs and nothing else, and a ratio invented from
+                cost alone would be worse than saying so. */}
+            {leader.site.finance.payback_years !== null ? (
+              <StatTile bare label="Payback"
+                value={<><Counter to={leader.site.finance.payback_years} decimals={1} /> yrs</>}
+                foot="From revenue you entered, not from sourced data" />
+            ) : (
+              <StatTile bare label="Payback"
+                value={<span className="text-[19px]">Not applicable</span>}
+                foot="Enter expected revenue on the setup screen to see a payback" />
+            )}
           </div>
           {cheapest.siteId !== leader.siteId && (
             <p className="mt-5 border-l-[3px] border-l-blue bg-bluex px-4 py-3 text-[14px] leading-[1.6] text-ink2">
