@@ -149,7 +149,7 @@ const mapRequests = new Map<string, Promise<ApiResult<ParcelListResponse>>>()
  * client-side and the completed request is cached by filters and build inputs.
  */
 export function fetchParcelMap(q: ParcelQuery): Promise<ApiResult<ParcelListResponse>> {
-  const mapQuery = { ...q, page: 1, per_page: 200, sort_by: 'rank' as const }
+  const mapQuery = { ...q, page: 1, per_page: 200 }
   const key = toQueryString(mapQuery)
   const cached = mapRequests.get(key)
   if (cached) return cached

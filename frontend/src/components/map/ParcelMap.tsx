@@ -1,6 +1,7 @@
-import { useEffect, useRef, useMemo, useState } from 'react'
+import { useCallback, useEffect, useRef, useMemo, useState } from 'react'
 import * as maplibregl from 'maplibre-gl'
 import type { Map as MlMap, StyleSpecification, ErrorEvent } from 'maplibre-gl'
+import { Minus, Plus } from 'lucide-react'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { quantileScale, rampColor, NO_DATA } from '../../lib/ramp'
 import { useReducedMotion } from '../../lib/useReducedMotion'
@@ -39,6 +40,7 @@ const POINTS = 'parcel-points'
 const LYR_FILL = 'parcel-fill'
 const LYR_LINE = 'parcel-line'
 const LYR_DOTS = 'parcel-dots'
+const LYR_SEL_HALO = 'parcel-selected-halo'
 const LYR_SEL = 'parcel-selected'
 
 /**
@@ -77,7 +79,16 @@ export function ParcelMap({
   /** The fallback style is swapped in once, however many errors arrive. */
   const swapped = useRef(false)
   const [basemapFailed, setBasemapFailed] = useState(false)
+  const [tooltip, setTooltip] = useState<{
+    x: number
+    y: number
+    parcelId: string
+    acres: string
+    driver: string
+  } | null>(null)
   const reduced = useReducedMotion()
+  const onSelectRef = useRef(onSelect)
+  onSelectRef.current = onSelect
 
   // Color every parcel up front. Doing this in JS rather than a MapLibre
   // expression keeps the quantile logic identical to the state map's.
@@ -86,25 +97,40 @@ export function ParcelMap({
       .map(p => p[shade] as number | null)
       .filter((v): v is number => typeof v === 'number' && Number.isFinite(v))
     const scale = quantileScale(values, true)
+    const shadeDef = PARCEL_SHADE.find(driver => driver.key === shade)!
     const colorOf = (p: ParcelSummary) => {
       const v = p[shade] as number | null
       return typeof v === 'number' && Number.isFinite(v) ? rampColor(scale(v)) : NO_DATA
+    }
+    const propertiesOf = (p: ParcelSummary) => {
+      const value = p[shade] as number | null
+      return {
+        parcel_id: p.parcel_id,
+        color: colorOf(p),
+        acres: p.acres ?? 0,
+        acres_label: p.acres === null ? 'Acreage unknown' : `${Math.round(p.acres)} acres`,
+        shade_value: typeof value === 'number' && Number.isFinite(value)
+          ? `${shadeDef.name}: ${shadeDef.fmt(value)}`
+          : `${shadeDef.name}: no figure`,
+      }
     }
 
     const shapeFeatures = parcels
       .filter(p => p.geometry !== null)
       .map(p => ({
         type: 'Feature' as const,
+        id: p.parcel_id,
         geometry: p.geometry as GeoJSON.Polygon,
-        properties: { parcel_id: p.parcel_id, color: colorOf(p) },
+        properties: propertiesOf(p),
       }))
 
     const pointFeatures = parcels
       .filter(p => p.lng !== null && p.lat !== null)
       .map(p => ({
         type: 'Feature' as const,
+        id: p.parcel_id,
         geometry: { type: 'Point' as const, coordinates: [p.lng as number, p.lat as number] },
-        properties: { parcel_id: p.parcel_id, color: colorOf(p), acres: p.acres ?? 0 },
+        properties: propertiesOf(p),
       }))
 
     // The extent of the matching set, so the view can follow the filters.
@@ -123,6 +149,8 @@ export function ParcelMap({
       bounds: box,
     }
   }, [parcels, shade])
+  const dataRef = useRef({ shapes, points })
+  dataRef.current = { shapes, points }
 
   // ── Create the map once ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -137,7 +165,8 @@ export function ParcelMap({
     })
     map.current = m
 
-    m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
+    m.scrollZoom.setWheelZoomRate(1 / 900)
+    m.scrollZoom.setZoomRate(1 / 140)
 
     const check = () => { if (!m.getLayer(LYR_FILL)) setStyleEpoch(e => e + 1) }
 
@@ -164,23 +193,19 @@ export function ParcelMap({
     return () => { m.remove(); map.current = null }
   }, [])
 
-  // ── Keep the sources in sync ────────────────────────────────────────────────
+  // ── Build layers only when a style load has removed them ───────────────────
   useEffect(() => {
     const m = map.current
     if (!m || !m.style || !m.isStyleLoaded()) return
 
     const shapeSrc = m.getSource(SHAPES) as maplibregl.GeoJSONSource | undefined
     const pointSrc = m.getSource(POINTS) as maplibregl.GeoJSONSource | undefined
-    if (shapeSrc && pointSrc && m.getLayer(LYR_FILL)) {
-      shapeSrc.setData(shapes)
-      pointSrc.setData(points)
-      return
-    }
-    if (shapeSrc) m.removeSource(SHAPES)
-    if (pointSrc) m.removeSource(POINTS)
+    if (!shapeSrc) m.addSource(SHAPES, { type: 'geojson', data: dataRef.current.shapes })
+    if (!pointSrc) m.addSource(POINTS, { type: 'geojson', data: dataRef.current.points })
 
-    m.addSource(SHAPES, { type: 'geojson', data: shapes })
-    m.addSource(POINTS, { type: 'geojson', data: points })
+    // Style events can fire between source creation and the first layer. A
+    // second pass should finish the layer stack, never recreate its sources.
+    if (m.getLayer(LYR_FILL)) return
 
     // The plot itself, shaded by the driver in the rail.
     m.addLayer({
@@ -188,10 +213,12 @@ export function ParcelMap({
       type: 'fill',
       source: SHAPES,
       paint: {
-        'fill-color': ['get', 'color'],
+        'fill-color': ['case', ['boolean', ['feature-state', 'hover'], false],
+          '#E4EEFF', ['get', 'color']],
         // Solid enough to read the ramp, open enough to see the streets under it.
-        'fill-opacity': ['interpolate', ['linear'], ['zoom'],
-          HANDOVER[0], 0.4, HANDOVER[1], 0.62],
+        'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false],
+          0.78, ['interpolate', ['linear'], ['zoom'],
+            HANDOVER[0], 0.4, HANDOVER[1], 0.62]],
       },
     })
 
@@ -202,8 +229,10 @@ export function ParcelMap({
       type: 'line',
       source: SHAPES,
       paint: {
-        'line-color': 'rgba(15,32,64,.55)',
-        'line-width': ['interpolate', ['linear'], ['zoom'], HANDOVER[0], 0.45, 14, 1.2],
+        'line-color': ['case', ['boolean', ['feature-state', 'hover'], false],
+          '#0F62FE', 'rgba(15,32,64,.55)'],
+        'line-width': ['case', ['boolean', ['feature-state', 'hover'], false],
+          1.8, ['interpolate', ['linear'], ['zoom'], HANDOVER[0], 0.45, 14, 1.2]],
         'line-opacity': ['interpolate', ['linear'], ['zoom'],
           HANDOVER[0], 0.55, HANDOVER[1], 0.9],
       },
@@ -231,7 +260,20 @@ export function ParcelMap({
       },
     })
 
-    // The one the reader is pointing at, drawn over everything else.
+    m.addLayer({
+      id: LYR_SEL_HALO,
+      type: 'line',
+      source: SHAPES,
+      filter: ['==', ['get', 'parcel_id'], '__none__'],
+      paint: {
+        'line-color': '#0F62FE',
+        'line-width': 7,
+        'line-blur': 3,
+        'line-opacity': 0.28,
+      },
+    })
+
+    // The selected plot, drawn over everything else.
     m.addLayer({
       id: LYR_SEL,
       type: 'line',
@@ -247,18 +289,57 @@ export function ParcelMap({
     // Layer handlers survive a style swap, so they are attached once.
     if (!wired.current) {
       wired.current = true
+      let hoveredId: string | number | null = null
       const pick = (ev: maplibregl.MapLayerMouseEvent) => {
         const f = ev.features?.[0]
-        if (f?.properties?.parcel_id) onSelect(String(f.properties.parcel_id))
+        if (f?.properties?.parcel_id) onSelectRef.current(String(f.properties.parcel_id))
+      }
+      const hover = (ev: maplibregl.MapLayerMouseEvent) => {
+        const f = ev.features?.[0]
+        if (!f?.properties?.parcel_id) return
+        if (hoveredId !== null && hoveredId !== f.id) {
+          m.setFeatureState({ source: SHAPES, id: hoveredId }, { hover: false })
+        }
+        hoveredId = f.id ?? String(f.properties.parcel_id)
+        if (f.layer.id === LYR_FILL) {
+          m.setFeatureState({ source: SHAPES, id: hoveredId }, { hover: true })
+        }
+        const width = holder.current?.clientWidth ?? 0
+        setTooltip({
+          x: Math.min(ev.point.x + 12, Math.max(8, width - 230)),
+          y: Math.max(8, ev.point.y + 12),
+          parcelId: String(f.properties.parcel_id),
+          acres: String(f.properties.acres_label),
+          driver: String(f.properties.shade_value),
+        })
+      }
+      const leave = () => {
+        if (hoveredId !== null && m.getSource(SHAPES)) {
+          m.setFeatureState({ source: SHAPES, id: hoveredId }, { hover: false })
+        }
+        hoveredId = null
+        setTooltip(null)
+        m.getCanvas().style.cursor = ''
       }
       m.on('click', LYR_FILL, pick)
       m.on('click', LYR_DOTS, pick)
       for (const lyr of [LYR_FILL, LYR_DOTS]) {
         m.on('mouseenter', lyr, () => { m.getCanvas().style.cursor = 'pointer' })
-        m.on('mouseleave', lyr, () => { m.getCanvas().style.cursor = '' })
+        m.on('mousemove', lyr, hover)
+        m.on('mouseleave', lyr, leave)
       }
     }
-  }, [styleEpoch, shapes, points, onSelect])
+  }, [styleEpoch])
+
+  // Data changes update the existing sources without rebuilding layers.
+  useEffect(() => {
+    const m = map.current
+    if (!m || !m.isStyleLoaded()) return
+    const shapeSrc = m.getSource(SHAPES) as maplibregl.GeoJSONSource | undefined
+    const pointSrc = m.getSource(POINTS) as maplibregl.GeoJSONSource | undefined
+    shapeSrc?.setData(shapes)
+    pointSrc?.setData(points)
+  }, [shapes, points, styleEpoch])
 
   // ── Follow the filters ──────────────────────────────────────────────────────
   //
@@ -286,13 +367,41 @@ export function ParcelMap({
   // ── Highlight the selection ─────────────────────────────────────────────────
   useEffect(() => {
     const m = map.current
-    if (!m || !m.getLayer(LYR_SEL)) return
-    m.setFilter(LYR_SEL, ['==', ['get', 'parcel_id'], selectedId ?? '__none__'])
+    if (!m || !m.getLayer(LYR_SEL) || !m.getLayer(LYR_SEL_HALO)) return
+    const filter: maplibregl.FilterSpecification =
+      ['==', ['get', 'parcel_id'], selectedId ?? '__none__']
+    m.setFilter(LYR_SEL_HALO, filter)
+    m.setFilter(LYR_SEL, filter)
   }, [selectedId, styleEpoch])
+
+  const zoomBy = useCallback((delta: number) => {
+    const m = map.current
+    if (!m) return
+    m.easeTo({ zoom: m.getZoom() + delta, duration: reduced ? 0 : 300 })
+  }, [reduced])
 
   return (
     <div className={`relative ${className}`}>
       <div ref={holder} className="h-full w-full overflow-hidden rounded-[11px] border border-line" />
+      <div className="absolute right-2 top-2 z-10 overflow-hidden rounded-[8px] border border-line bg-white shadow-[var(--shadow-sm)]">
+        <button type="button" aria-label="Zoom in" onClick={() => zoomBy(1)}
+          className="flex h-9 w-9 items-center justify-center text-ink2 transition-colors hover:bg-card2">
+          <Plus size={17} strokeWidth={2.2} aria-hidden />
+        </button>
+        <button type="button" aria-label="Zoom out" onClick={() => zoomBy(-1)}
+          className="flex h-9 w-9 items-center justify-center border-t border-line text-ink2 transition-colors hover:bg-card2">
+          <Minus size={17} strokeWidth={2.2} aria-hidden />
+        </button>
+      </div>
+      {tooltip && (
+        <div className="pointer-events-none absolute z-20 w-[218px] rounded-[9px] border border-line
+          bg-white/95 px-3 py-2 shadow-[var(--shadow-md)]"
+          style={{ left: tooltip.x, top: tooltip.y }}>
+          <p className="truncate text-[12.5px] font-semibold text-ink">{tooltip.parcelId}</p>
+          <p className="mt-0.5 text-[12px] text-mid">{tooltip.acres}</p>
+          <p className="text-[12px] text-mid">{tooltip.driver}</p>
+        </div>
+      )}
       {basemapFailed && (
         <p className="absolute bottom-2 left-2 rounded-[7px] bg-white/90 px-2 py-1 text-[12px] text-mid">
           Streets and place names are unavailable here. The parcels are the real shapes.

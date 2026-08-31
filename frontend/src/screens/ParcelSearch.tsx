@@ -6,6 +6,7 @@ import { ParcelMap, PARCEL_SHADE, type ParcelShadeKey } from '../components/map/
 import { fetchParcelMap, fetchParcels, type ParcelSummary, type ParcelQuery, type SortBy } from '../lib/parcelApi'
 import type { EstimateProject } from '../lib/api'
 import { usd } from '../lib/format'
+import { useReducedMotion } from '../lib/useReducedMotion'
 import type { Route } from '../lib/routes'
 
 /**
@@ -74,6 +75,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
   const [query, setQuery] = useState<ParcelQuery>(defaultQuery)
   const [shade, setShade] = useState<ParcelShadeKey>('lifetime_cost_per_kw')
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const reducedMotion = useReducedMotion()
 
   const [parcels, setParcels] = useState<ParcelSummary[]>([])
   const [mapParcels, setMapParcels] = useState<ParcelSummary[]>([])
@@ -126,10 +128,12 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
     lifetime_years: query.lifetime_years,
     discount_rate: query.discount_rate,
     weights: query.weights,
+    sort_by: query.sort_by,
   }), [
     query.county, query.min_acres, query.max_acres, query.max_land_cost_per_acre,
     query.max_dist_tx_m, query.exclude_flood, query.capacity_kw, query.design_pue,
     query.design_wue, query.lifetime_years, query.discount_rate, query.weights,
+    query.sort_by,
   ])
 
   const mapToken = useRef(0)
@@ -183,6 +187,26 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
         timeZone: 'UTC',
       }).format(new Date(`${snapshotDate}T00:00:00Z`))
     : null
+
+  const rowRefs = useRef(new Map<string, HTMLDivElement>())
+  const selectParcel = useCallback((id: string) => {
+    setSelectedId(id)
+    const index = mapParcels.findIndex(parcel => parcel.parcel_id === id)
+    if (index < 0) return
+    const perPage = query.per_page ?? 50
+    const page = Math.floor(index / perPage) + 1
+    if (page !== (query.page ?? 1)) patch({ page })
+  }, [mapParcels, patch, query.page, query.per_page])
+
+  useEffect(() => {
+    if (!selectedId || !parcels.some(parcel => parcel.parcel_id === selectedId)) return
+    requestAnimationFrame(() => {
+      rowRefs.current.get(selectedId)?.scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: 'center',
+      })
+    })
+  }, [parcels, selectedId, reducedMotion])
 
   return (
     <section className="pt-6 sm:pt-10">
@@ -313,7 +337,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
             note={`${mapTotal?.toLocaleString('en-US') ?? '…'} parcels`}>
             <div className="p-4 sm:p-5">
               <ParcelMap parcels={mapParcels} shade={shade} selectedId={selectedId}
-                onSelect={setSelectedId} className="h-[440px]" />
+                onSelect={selectParcel} className="h-[440px]" />
               <p className="mt-3 text-[13px] leading-[1.55] text-mid">
                 Showing all {mapTotal?.toLocaleString('en-US') ?? 'matching'} parcels that match
                 your filters. Zoom in to see each plot&apos;s real outline; click one to open it.
@@ -356,7 +380,11 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
                   const isBestFit = p.rank === 1
                   return (
                     <div key={p.parcel_id}
-                      onMouseEnter={() => setSelectedId(p.parcel_id)}
+                      ref={node => {
+                        if (node) rowRefs.current.set(p.parcel_id, node)
+                        else rowRefs.current.delete(p.parcel_id)
+                      }}
+                      onClick={() => setSelectedId(p.parcel_id)}
                       className={`flex items-start gap-3 p-4 transition-colors ${isSel ? 'bg-bluex' : ''}`}>
                       <span className={`flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[9px]
                                        text-[13.5px] font-bold
