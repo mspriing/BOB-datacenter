@@ -181,11 +181,19 @@ export default function App() {
             </span>
           </button>
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => go('how-to-use')}
-              className="text-[13.5px] font-medium text-mid transition-colors hover:text-ink2 px-2 py-1">
-              How to use
-            </button>
+            <div className="rounded-full border border-line bg-white/80 p-1 shadow-[var(--shadow-sm)]">
+              <button
+                onClick={() => go('how-to-use')}
+                aria-current={route === 'how-to-use' ? 'page' : undefined}
+                className={`relative min-h-[36px] rounded-full px-4 text-[13.5px] font-medium transition-colors
+                  ${route === 'how-to-use' ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
+                {route === 'how-to-use' && (
+                  <motion.span className="absolute inset-0 rounded-full bg-bluex"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} />
+                )}
+                <span className="relative">How to use</span>
+              </button>
+            </div>
             <nav aria-label="Screens"
               className="flex items-center gap-1.5 rounded-full border border-line bg-white/80 p-1 shadow-[var(--shadow-sm)]">
               {NAV.map(n => {
