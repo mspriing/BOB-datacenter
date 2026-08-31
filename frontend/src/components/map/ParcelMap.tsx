@@ -51,7 +51,7 @@ const LYR_SEL = 'parcel-selected'
  * the point: a 25 acre square and a 25 acre roadside ribbon cost the same to
  * buy here and build very differently.
  */
-const HANDOVER = [10.5, 12] as const
+const HANDOVER = [9.2, 10.8] as const
 
 export function ParcelMap({
   parcels, shade, selectedId, onSelect, className = '',
@@ -191,7 +191,7 @@ export function ParcelMap({
         'fill-color': ['get', 'color'],
         // Solid enough to read the ramp, open enough to see the streets under it.
         'fill-opacity': ['interpolate', ['linear'], ['zoom'],
-          HANDOVER[0], 0.25, HANDOVER[1], 0.62],
+          HANDOVER[0], 0.4, HANDOVER[1], 0.62],
       },
     })
 
@@ -203,9 +203,9 @@ export function ParcelMap({
       source: SHAPES,
       paint: {
         'line-color': 'rgba(15,32,64,.55)',
-        'line-width': ['interpolate', ['linear'], ['zoom'], HANDOVER[0], 0.3, 14, 1.2],
+        'line-width': ['interpolate', ['linear'], ['zoom'], HANDOVER[0], 0.45, 14, 1.2],
         'line-opacity': ['interpolate', ['linear'], ['zoom'],
-          HANDOVER[0], 0.2, HANDOVER[1], 0.9],
+          HANDOVER[0], 0.55, HANDOVER[1], 0.9],
       },
     })
 
@@ -225,9 +225,9 @@ export function ParcelMap({
         'circle-stroke-width': 1,
         'circle-stroke-color': 'rgba(15,23,32,.45)',
         'circle-opacity': ['interpolate', ['linear'], ['zoom'],
-          HANDOVER[0], 0.9, HANDOVER[1], 0],
+          8, 0.25, HANDOVER[0], 0.12, HANDOVER[1], 0],
         'circle-stroke-opacity': ['interpolate', ['linear'], ['zoom'],
-          HANDOVER[0], 1, HANDOVER[1], 0],
+          8, 0.35, HANDOVER[0], 0.16, HANDOVER[1], 0],
       },
     })
 
