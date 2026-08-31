@@ -259,13 +259,17 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
             <ArrowLeft size={14} strokeWidth={2.4} aria-hidden />
             Back to the build
           </button>
-          <p className="label-xs">Step two of three<Rule />Bexar County, Texas</p>
+          <p className="label-xs">Step two of three<Rule />Bexar County, Texas — pilot</p>
         </div>
         <h1 className="mb-3 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
           font-semibold leading-[1.08] tracking-[-.02em] text-ink">
-          Bexar County parcels, priced and ranked before you call a broker.
+          Parcels priced and ranked before you call a broker.
         </h1>
         <p className="max-w-[68ch] text-[17px] leading-[1.65] text-mid">
+          Bexar County, Texas is the pilot county. The same pricing runs on any county once its
+          parcel data is ingested.
+        </p>
+        <p className="mt-3 max-w-[68ch] text-[17px] leading-[1.65] text-mid">
           Candidate parcels are priced on the whole build: land, reaching the transmission
           line, reaching fiber, leveling the ground and getting through entitlement, rather than just
           the asking price. Filter to what you can actually use, then open one to see what

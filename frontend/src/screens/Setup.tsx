@@ -133,8 +133,8 @@ export function Setup({
                 {
                   id: 'parcels' as const,
                   head: 'Compare parcels in one county',
-                  body: 'Individual plots in Bexar County, Texas, priced on the whole build: land, reaching the transmission line, reaching fiber, leveling the ground and getting through entitlement. Use this once you know where.',
-                  foot: `${COVERAGE.parcels.toLocaleString('en-US')} candidate parcels of 25 acres and above`,
+                  body: 'Individual plots priced on the whole build: land, reaching the transmission line, reaching fiber, leveling the ground and getting through entitlement. Bexar County, Texas is the pilot county, with more markets to follow. Use this once you know roughly where.',
+                  foot: `${COVERAGE.parcels.toLocaleString('en-US')} candidate parcels in the pilot county`,
                 },
               ]).map(o => {
                 const on = zoom === o.id
@@ -239,7 +239,7 @@ export function Setup({
 
 
           {atParcelGrain ? (
-            <Card title="The county" note="Bexar County, Texas">
+            <Card title="The county" note="Bexar County, Texas — pilot county">
               <div className="p-5">
                 <p className="max-w-[70ch] text-[15px] leading-[1.65] text-ink2">
                   San Antonio sits inside ERCOT, where a large load can be energized faster than in
