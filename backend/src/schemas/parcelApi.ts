@@ -15,6 +15,10 @@ export const ScoringContextSchema = z.object({
   design_wue:     z.coerce.number().min(0).max(2.5).default(0.4),
   lifetime_years: z.coerce.number().int().min(5).max(40).default(20),
   discount_rate:  z.coerce.number().min(0.01).max(0.30).default(0.08),
+  // The reader's own revenue assumption. Optional: without it the parcel path
+  // returns no payback, matching the region path.
+  revenue_per_kw_month: z.coerce.number().min(0).max(10_000).optional(),
+  occupancy_pct:        z.coerce.number().min(0).max(1).optional(),
 })
 
 const WeightsSchema = z.object({

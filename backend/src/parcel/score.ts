@@ -38,6 +38,9 @@ export interface ParcelProject {
   design_wue:     number   // default 0.4
   lifetime_years: number
   discount_rate:  number
+  /** The reader's revenue assumption. Absent means no payback figure. */
+  revenue_per_kw_month?: number
+  occupancy_pct?:        number
   weights?: Partial<Weights>
 }
 
@@ -346,6 +349,8 @@ export function estimateParcel(
     lifetime_years:          project.lifetime_years,
     discount_rate:           project.discount_rate,
     capacity_kw:             project.capacity_kw,
+    revenue_per_kw_month:    project.revenue_per_kw_month,
+    occupancy_pct:           project.occupancy_pct,
     capex,
     opexBase:                opexYear1,
     opexParamsBase:          opexParams,
