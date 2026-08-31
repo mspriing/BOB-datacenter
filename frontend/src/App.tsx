@@ -169,12 +169,16 @@ export default function App() {
             className="flex items-center gap-1.5 rounded-full border border-line bg-white/80 p-1 shadow-[var(--shadow-sm)]">
             {NAV.map(n => {
               const active = (STEP_OF[route] ?? route) === n.id
+              const unavailable = n.id === 'results' && !server
               return (
                 <button key={n.id} onClick={() => go(n.id)}
+                  disabled={unavailable}
+                  aria-disabled={unavailable}
                   aria-current={active ? 'page' : undefined}
                   className={`relative min-h-[36px] rounded-full px-4 text-[13.5px] font-medium transition-colors
-                    ${active ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
-                  {active && (
+                    ${unavailable ? 'cursor-not-allowed text-dim opacity-55'
+                      : active ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
+                  {active && !unavailable && (
                     <motion.span layoutId="navpill" className="absolute inset-0 rounded-full bg-bluex"
                       transition={{ type: 'spring', stiffness: 420, damping: 36 }} />
                   )}

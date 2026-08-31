@@ -83,19 +83,17 @@ export function Results({ project, server, serverError, go }: {
   const [costCase, setCostCase] = useState<CostCase>('base')
 
   if (!server) {
+    const failed = serverError !== null
     return (
       <section className="pt-8">
-        <Card title="No authoritative result is available">
+        <Card title={failed ? 'The comparison did not finish' : 'Nothing to show yet'}>
           <div className="flex items-start gap-3 p-6">
-            <AlertTriangle size={18} className="mt-0.5 shrink-0 text-bad" aria-hidden />
+            {failed && <AlertTriangle size={18} className="mt-0.5 shrink-0 text-bad" aria-hidden />}
             <div>
               <p className="text-[15px] leading-[1.65] text-ink2">
-                {serverError ?? 'Run the comparison before opening results.'}
+                {serverError ?? 'Pick your sites and run the comparison; the results land here.'}
               </p>
-              <p className="mt-2 text-[13.5px] leading-[1.55] text-mid">
-                This screen does not substitute browser-calculated financials for a failed backend run.
-              </p>
-              <button className="pill mt-4 text-[13px]" onClick={() => go('setup')}>
+              <button className="btn btn-primary mt-4" onClick={() => go('setup')}>
                 <ArrowLeft size={14} aria-hidden />Back to setup
               </button>
             </div>
