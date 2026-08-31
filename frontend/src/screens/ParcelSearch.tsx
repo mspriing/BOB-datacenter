@@ -74,6 +74,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
     discount_rate: project.discount_rate,
   }), [project])
   const [query, setQuery] = useState<ParcelQuery>(defaultQuery)
+  const [draft, setDraft] = useState<ParcelQuery>(defaultQuery)
   const [shade, setShade] = useState<ParcelShadeKey>('lifetime_cost_per_kw')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [previewId, setPreviewId] = useState<string | null>(null)
@@ -94,9 +95,14 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
 
   const runToken = useRef(0)
 
+  /** Writes only to draft — filter controls call this. Run copies draft → query. */
+  const patchDraft = useCallback((p: Partial<ParcelQuery>) => {
+    setDraft(d => ({ ...d, ...p }))
+  }, [])
+
+  /** Writes to both draft and query — sort and page apply immediately. */
   const patch = useCallback((p: Partial<ParcelQuery>) => {
-    // Any filter change resets to page 1: staying on page 4 of a filtered list that
-    // no longer has four pages is how a list silently goes blank.
+    setDraft(d => ({ ...d, ...p, page: p.page ?? 1 }))
     setQuery(q => ({ ...q, ...p, page: p.page ?? 1 }))
   }, [])
 
@@ -165,6 +171,15 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
   const removed = useMemo(
     () => (baseline !== null && total !== null ? baseline - total : null),
     [baseline, total])
+
+  /** True when any filter field in draft differs from the applied query. */
+  const filtersChanged =
+    draft.min_acres !== query.min_acres ||
+    draft.max_acres !== query.max_acres ||
+    draft.max_land_cost_per_acre !== query.max_land_cost_per_acre ||
+    draft.max_dist_tx_m !== query.max_dist_tx_m ||
+    draft.exclude_flood !== query.exclude_flood ||
+    JSON.stringify(draft.weights) !== JSON.stringify(query.weights)
 
   const activeWeightLabel = query.weights && Object.keys(query.weights).length > 0
     ? `ranking: ${Object.entries(query.weights)
@@ -310,34 +325,33 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
       <div className="grid gap-3.5 lg:grid-cols-[320px_1fr] lg:items-start">
         {/* ── Filter rail ───────────────────────────────────────────────── */}
         <div className="space-y-3.5 lg:sticky lg:top-4">
-          {/* Applying merges onto the same `query` the rail writes to, so the
-              sentence and the controls can never disagree about what is set. */}
-          <CriteriaBox onApply={(filters, weights) => patch({ ...filters, weights, sort_by: 'rank' })} />
+          {/* CriteriaBox routes into draft so it goes through the Run button. */}
+          <CriteriaBox onApply={(filters, weights) => setDraft(d => ({ ...d, ...filters, weights, sort_by: 'rank' }))} />
 
           <Card title="Narrow the set"
             note={total === null ? 'counting' : `${total.toLocaleString('en-US')} match`}>
             <div className="space-y-4 p-5">
               <NumberFilter label="Smallest site" hint="A 10 MW campus needs roughly 12 acres at 1.2 acres per megawatt, so 25 is a working floor with room for setbacks."
-                value={query.min_acres} onChange={v => patch({ min_acres: v })}
+                value={draft.min_acres} onChange={v => patchDraft({ min_acres: v })}
                 placeholder="25" suffix="acres" />
 
               <NumberFilter label="Largest site" hint="Use this when a maximum parcel size or acquisition envelope matters."
-                value={query.max_acres} onChange={v => patch({ max_acres: v })}
+                value={draft.max_acres} onChange={v => patchDraft({ max_acres: v })}
                 placeholder="any" suffix="acres" />
 
               <NumberFilter label="Most per acre" hint="Land price is modeled from the appraisal district's land value, not a sale price. Texas does not publish sale prices."
-                value={query.max_land_cost_per_acre} onChange={v => patch({ max_land_cost_per_acre: v })}
+                value={draft.max_land_cost_per_acre} onChange={v => patchDraft({ max_land_cost_per_acre: v })}
                 placeholder="any" suffix="$ / acre" />
 
               <NumberFilter label="Furthest from transmission" hint="Straight-line distance to the nearest line of 138 kV or above. Every metre is spur you pay to build."
-                value={query.max_dist_tx_m === undefined ? undefined : query.max_dist_tx_m / 1000}
-                onChange={v => patch({ max_dist_tx_m: v === undefined ? undefined : v * 1000 })}
+                value={draft.max_dist_tx_m === undefined ? undefined : draft.max_dist_tx_m / 1000}
+                onChange={v => patchDraft({ max_dist_tx_m: v === undefined ? undefined : v * 1000 })}
                 placeholder="any" suffix="km" />
 
               <label className="flex items-start gap-2.5">
                 <input type="checkbox" className="mt-[3px]"
-                  checked={query.exclude_flood ?? false}
-                  onChange={e => patch({ exclude_flood: e.target.checked || undefined })} />
+                  checked={draft.exclude_flood ?? false}
+                  onChange={e => patchDraft({ exclude_flood: e.target.checked || undefined })} />
                 <span className="text-[14px] leading-[1.5] text-ink2">
                   <Explain text="Drops parcels with published flood geometry showing any overlap. Parcels without flood coverage remain in the list and are identified as unknown.">
                     Exclude known flood overlap
@@ -363,9 +377,19 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
               )}
 
               {activeFilters.length > 0 && (
-                <button onClick={() => setQuery(defaultQuery)}
+                <button onClick={() => { setDraft(defaultQuery); setQuery(defaultQuery) }}
                   className="link-inline text-[13.5px]">Reset filters</button>
               )}
+
+              {filtersChanged && (
+                <p className="text-[13px] text-mid">
+                  Filters changed. Run the comparison to update these results.
+                </p>
+              )}
+
+              <button className="btn btn-primary w-full" onClick={() => setQuery(draft)}>
+                Run the comparison
+              </button>
             </div>
           </Card>
 
