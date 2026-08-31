@@ -418,14 +418,6 @@ export function Setup({
           </Card>
           )}
 
-          {!atParcelGrain && !fromPins && (
-            <p className="text-[13px] leading-[1.55] text-mid">
-              {total - priceable} of {total} regions are in the dataset but{' '}
-              <button onClick={() => go('known-gaps')} className="link-inline">not yet priced</button>
-              . They are hidden here because the engine cannot rank them.
-            </p>
-          )}
-
           {!atParcelGrain && duplicates.length > 0 && (
             <div className="flex items-start gap-3 rounded-[12px] border border-[var(--error-border)]
                             bg-[var(--error-surface)] p-4">
