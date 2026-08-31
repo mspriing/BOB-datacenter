@@ -6,12 +6,12 @@ export function Home({ go }: { go: (r: Route) => void }) {
   return (
     <>
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="pt-6 pb-2 sm:pt-12">
+      <section className="pt-6 pb-2 text-center sm:pt-12">
         <h1 className="mb-5 text-[clamp(2.25rem,1.4rem+3.6vw,4.25rem)]
           font-semibold leading-[1.06] tracking-[-.02em] text-ink">
           Find it. Price it. Build it.
         </h1>
-        <p className="mb-8 max-w-[70ch] text-[clamp(1.1875rem,1.05rem+.45vw,1.5rem)]
+        <p className="mx-auto mb-8 max-w-[70ch] text-[clamp(1.1875rem,1.05rem+.45vw,1.5rem)]
           leading-[1.6] text-mid">
           The all-in-one tool for data center developers
         </p>
@@ -19,11 +19,11 @@ export function Home({ go }: { go: (r: Route) => void }) {
       </section>
 
       {/* ── Meet leepr ─────────────────────────────────────────────────────── */}
-      <section className="mt-14">
+      <section className="mt-14 text-center">
         <h2 className="mb-3 text-[clamp(1.5rem,1.25rem+1.1vw,2.125rem)] font-semibold text-ink">
           Meet leepr
         </h2>
-        <p className="max-w-[68ch] text-[clamp(1.0625rem,1rem+.3vw,1.3125rem)] leading-[1.6] text-mid">
+        <p className="mx-auto max-w-[68ch] text-[clamp(1.0625rem,1rem+.3vw,1.3125rem)] leading-[1.6] text-mid">
           Leepr automates the site selection process for data centers by weighing common
           constraints against the user preferences. It prices the whole life of a build, not
           only what the ground costs: reaching power and fiber, getting through permitting,
@@ -31,7 +31,7 @@ export function Home({ go }: { go: (r: Route) => void }) {
           shows carries the source it came from, or the formula it was derived with, so a
           number you disagree with is one you can go and check.
         </p>
-        <div className="mt-7 flex flex-wrap items-center gap-3">
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
           <button className="btn btn-primary" onClick={() => go('setup')}>
             Start the comparison
             <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
