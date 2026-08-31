@@ -363,7 +363,7 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
                   <span className="num">{r.drivers.latency_ms_to_hub ? (r.drivers.latency_ms_to_hub.v < 1 ? r.drivers.latency_ms_to_hub.v.toFixed(1) : Math.round(r.drivers.latency_ms_to_hub.v)) + ' ms' : 'no figure'}</span>,
                 ])} />
           </Card>
-          <Card title="International, 14 regions"><Prose>
+          <Card title="International coverage"><Prose>
             <p>Fourteen international regions are priced and can be compared, though they are not drawn on the map. Nordic Hydro in Luleå and Boden is the one carried in the worked example, and it is the site that beats the cheapest option in that run.</p>
             <p>Drawing a world map means sourcing subnational power and labor data for every country in it. That work has not been done, so those regions stay in the comparison engine and out of the map rather than appearing with figures that are thinner than they look.</p>
           </Prose></Card>

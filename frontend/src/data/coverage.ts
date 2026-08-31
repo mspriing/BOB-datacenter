@@ -5,9 +5,9 @@ export const COVERAGE = {
   "drivers": 13,
   "cells": 1001,
   "sourced": 279,
-  "modeled": 288,
-  "assumed": 4,
-  "empty": 430,
-  "priceable": 14,
+  "modeled": 275,
+  "assumed": 0,
+  "empty": 447,
+  "priceable": 13,
   "parcels": 3040
 } as const

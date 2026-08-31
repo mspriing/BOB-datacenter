@@ -17,7 +17,8 @@ const regions = JSON.parse(readFileSync(resolve(here, '../../data/regions.json')
 // A site cannot be ranked without these four. This mirrors the engine's own
 // unevaluable rule, so the number the page shows is the number that can be run.
 const REQUIRED = ['construction_cost_per_kw', 'power_rate_usd_per_kwh',
-                  'land_cost_per_acre_usd', 'staff_cost_index']
+                  'land_cost_per_acre_usd', 'staff_cost_index',
+                  'water_rate_usd_per_kgal']
 
 // construction_cost_per_mw is a legacy duplicate of construction_cost_per_kw and
 // nothing reads it. Counting it would advertise a fourteenth driver that does not
