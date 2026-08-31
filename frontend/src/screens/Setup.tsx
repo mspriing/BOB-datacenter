@@ -265,6 +265,16 @@ export function Setup({
                   Litres of water per kWh of cooling energy. Accepted range: 0–2.5.
                 </p>
               </label>
+            </div>
+          </FoldCard>
+
+          {/* Its own card, not folded in with the assumptions that arrive
+              filled in. Revenue is the one input here the reader must supply
+              themselves, and supplying it changes what the tool returns: the
+              payback figure exists only once this is set. */}
+          <Card title="What it will earn"
+            note="Optional. Fill this in to get a payback figure">
+            <div className="grid gap-5 p-5 sm:grid-cols-2">
               {/* Revenue is the reader's own commercial assumption, not a figure
                   this project sources, so it is optional and its absence is the
                   normal case. Left empty, the tool prices cost only, exactly as
@@ -302,7 +312,7 @@ export function Setup({
                 </p>
               </label>
             </div>
-          </FoldCard>
+          </Card>
 
 
           {atParcelGrain ? (
