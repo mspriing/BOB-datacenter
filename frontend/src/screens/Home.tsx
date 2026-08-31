@@ -15,7 +15,7 @@ export function Home({ go }: { go: (r: Route) => void }) {
           leading-[1.6] text-mid">
           The all-in-one tool for data center developers
         </p>
-        <HeroPullback go={go} />
+        <HeroPullback />
       </section>
 
       {/* ── Meet leepr ─────────────────────────────────────────────────────── */}

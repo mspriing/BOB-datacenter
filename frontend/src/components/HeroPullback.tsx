@@ -1,69 +1,92 @@
 import { useEffect, useRef, useState } from 'react'
 import { Pause, Play } from 'lucide-react'
-import { HeroResults } from './HeroResults'
-import type { Route } from '../lib/routes'
 
 /**
- * The generated flight hands off before its stale dashboard frame to live
- * components backed by the checked example engine output.
+ * The hero is the film, and nothing behind it.
+ *
+ * The flight is a video because no amount of DOM will fly a camera out of a
+ * server rack. It used to hand over to the live results component a beat before
+ * the end; it no longer does. The board the film assembles in its last second
+ * and a half is the only part that shows what the tool produces, so HOLD_MS
+ * keeps that frame on screen just long enough to land as a destination — the
+ * three market names and the four headline figures read in that window, the
+ * eight-pixel labels do not — and a cross-fade covers the jump back so the loop
+ * reads as a decision rather than a stutter.
+ *
+ * There is no frame around the picture. Its edge is a rounded rectangle blurred
+ * to nothing, with the page's carbon weave drawn back across the dissolve, so
+ * the shot surfaces out of the background instead of sitting in a card on top
+ * of it. That work is in .hero-film in styles.css.
+ *
+ * Reduced motion gets the last frame, parked. No flight, no loop, and still the
+ * part of the film worth seeing. Everyone else gets a pause control, because a
+ * sixteen-second loop that cannot be stopped fails WCAG 2.2.2.
  */
-export function HeroPullback({ go }: { go: (r: Route) => void }) {
+
+const HOLD_MS = 800 // rest on the assembled board before starting over
+const DIP_MS = 320 // cross-fade that covers the jump back to frame one
+
+export function HeroPullback() {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const pageRef = useRef<HTMLDivElement>(null)
-  const [landed, setLanded] = useState(false)
   const [reduced, setReduced] = useState(false)
-  const [ready, setReady] = useState(false)
+  const [dim, setDim] = useState(false)
   const [paused, setPaused] = useState(false)
-  const [boxH, setBoxH] = useState<number | null>(null)
-  const [settled, setSettled] = useState(false)
-
-  useEffect(() => {
-    const el = pageRef.current
-    if (!el) return
-    const measure = () => setBoxH(el.offsetHeight)
-    measure()
-    const observer = new ResizeObserver(measure)
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    if (!landed) return
-    const timer = setTimeout(() => setSettled(true), 700)
-    return () => clearTimeout(timer)
-  }, [landed])
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const apply = (matches: boolean) => {
-      setReduced(matches)
-      if (matches) setLanded(true)
-    }
-    apply(query.matches)
-    const onChange = (event: MediaQueryListEvent) => apply(event.matches)
+    setReduced(query.matches)
+    const onChange = (event: MediaQueryListEvent) => setReduced(event.matches)
     query.addEventListener('change', onChange)
     return () => query.removeEventListener('change', onChange)
   }, [])
 
+  // Reduced motion: park on the final frame rather than play toward it.
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !reduced) return
+    const park = () => {
+      if (Number.isFinite(video.duration)) video.currentTime = Math.max(0, video.duration - 0.05)
+    }
+    if (video.readyState >= 1) park()
+    else video.addEventListener('loadedmetadata', park, { once: true })
+    return () => video.removeEventListener('loadedmetadata', park)
+  }, [reduced])
+
+  // The loop. `loop` is deliberately not set on the element: the attribute
+  // suppresses `ended`, and `ended` is what the hold hangs off.
   useEffect(() => {
     const video = videoRef.current
     if (!video || reduced) return
-    const handoff = () => {
-      if (video.duration && video.duration - video.currentTime <= 2.5) setLanded(true)
+    const timers: number[] = []
+    const start = () => {
+      const playback = video.play()
+      if (playback && typeof playback.catch === 'function') playback.catch(() => {})
+    }
+    const onEnded = () => {
+      timers.push(
+        window.setTimeout(() => {
+          setDim(true)
+          timers.push(
+            window.setTimeout(() => {
+              video.currentTime = 0
+              start()
+              setDim(false)
+            }, DIP_MS),
+          )
+        }, HOLD_MS),
+      )
     }
     const onPlay = () => setPaused(false)
     const onPause = () => setPaused(true)
-    video.addEventListener('timeupdate', handoff)
-    video.addEventListener('ended', handoff)
+    video.addEventListener('ended', onEnded)
     video.addEventListener('play', onPlay)
     video.addEventListener('pause', onPause)
-    const playback = video.play()
-    if (playback && typeof playback.catch === 'function') playback.catch(() => setLanded(true))
+    start()
     return () => {
-      video.removeEventListener('timeupdate', handoff)
-      video.removeEventListener('ended', handoff)
+      video.removeEventListener('ended', onEnded)
       video.removeEventListener('play', onPlay)
       video.removeEventListener('pause', onPause)
+      timers.forEach(timer => clearTimeout(timer))
     }
   }, [reduced])
 
@@ -72,71 +95,35 @@ export function HeroPullback({ go }: { go: (r: Route) => void }) {
     if (!video) return
     if (video.paused) {
       const playback = video.play()
-      if (playback && typeof playback.catch === 'function') playback.catch(() => setLanded(true))
+      if (playback && typeof playback.catch === 'function') playback.catch(() => {})
     } else {
       video.pause()
     }
   }
 
   return (
-    <div
-      className="relative isolate overflow-hidden rounded-[14px] border border-line bg-bg shadow-[var(--shadow-lg)]"
-      style={settled || reduced
-        ? undefined
-        : {
-            height: landed && boxH ? boxH : undefined,
-            aspectRatio: landed ? undefined : '16 / 9',
-            transition: 'height .6s cubic-bezier(.16,1,.3,1)',
-          }}>
+    <div className="hero-film">
+      <video
+        ref={videoRef}
+        poster="/hero-poster.webp"
+        muted
+        playsInline
+        preload="auto"
+        aria-hidden
+        style={{ opacity: dim ? 0 : 1, transition: `opacity ${DIP_MS}ms linear` }}>
+        <source src="/hero.mp4" type="video/mp4" />
+      </video>
+
       {!reduced && (
-        <video
-          ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{
-            opacity: landed ? 0 : 1,
-            transition: 'opacity .55s cubic-bezier(.16,1,.3,1)',
-            pointerEvents: 'none',
-          }}
-          poster="/hero-poster.webp"
-          muted
-          playsInline
-          preload="auto"
-          aria-hidden
-          onCanPlay={() => setReady(true)}
-          onError={() => setLanded(true)}>
-          <source src="/hero.mp4" type="video/mp4" />
-        </video>
-      )}
-
-      <div
-        ref={pageRef}
-        className={settled || reduced ? '' : 'absolute inset-x-0 top-0'}
-        style={{
-          opacity: landed ? 1 : 0,
-          transition: 'opacity .55s cubic-bezier(.16,1,.3,1)',
-          pointerEvents: landed ? 'auto' : 'none',
-        }}>
-        <HeroResults go={go} active={landed} />
-      </div>
-
-      {!reduced && !landed && ready && (
-        <div className="absolute bottom-3 right-3 z-10 flex items-center gap-2">
-          <button type="button" onClick={togglePlayback}
-            aria-label={paused ? 'Play the walkthrough' : 'Pause the walkthrough'}
-            className="flex h-[36px] w-[36px] items-center justify-center rounded-full border border-line
-                       bg-[var(--raised-surface)] text-mid shadow-[var(--shadow-sm)] backdrop-blur
-                       transition-colors hover:text-ink">
-            {paused
-              ? <Play size={14} strokeWidth={2.4} aria-hidden />
-              : <Pause size={14} strokeWidth={2.4} aria-hidden />}
-          </button>
-          <button type="button" onClick={() => setLanded(true)}
-            className="min-h-[36px] rounded-full border border-line bg-[var(--raised-surface)] px-3
-                       text-[12px] font-medium text-mid shadow-[var(--shadow-sm)] backdrop-blur
-                       transition-colors hover:text-ink">
-            Skip
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={togglePlayback}
+          aria-label={paused ? 'Play the walkthrough' : 'Pause the walkthrough'}
+          className="hero-film-control">
+          {paused
+            ? <Play size={14} strokeWidth={2.4} aria-hidden />
+            : <Pause size={14} strokeWidth={2.4} aria-hidden />}
+        </button>
       )}
     </div>
   )
