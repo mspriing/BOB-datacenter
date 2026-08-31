@@ -91,7 +91,7 @@ export function Results({ project, server, serverError, go }: {
             {failed && <AlertTriangle size={18} className="mt-0.5 shrink-0 text-bad" aria-hidden />}
             <div>
               <p className="text-[15px] leading-[1.65] text-ink2">
-                {serverError ?? 'Pick your sites and run the comparison; the results land here.'}
+                {serverError ?? 'A comparison has not been run. Pick your sites and run it; the results land here.'}
               </p>
               <button className="btn btn-primary mt-4" onClick={() => go('setup')}>
                 <ArrowLeft size={14} aria-hidden />Back to setup

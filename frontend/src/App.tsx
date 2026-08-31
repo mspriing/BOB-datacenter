@@ -200,19 +200,31 @@ export default function App() {
                 const active = (STEP_OF[route] ?? route) === n.id
                 const unavailable = n.id === 'results' && !server
                 return (
-                  <button key={n.id} onClick={() => go(n.id)}
-                    disabled={unavailable}
-                    aria-disabled={unavailable}
-                    aria-current={active ? 'page' : undefined}
-                    className={`relative min-h-[36px] rounded-full px-4 text-[13.5px] font-medium transition-colors
-                      ${unavailable ? 'cursor-not-allowed text-dim opacity-55'
-                        : active ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
-                    {active && !unavailable && (
-                      <motion.span layoutId="navpill" className="absolute inset-0 rounded-full bg-bluex"
-                        transition={{ type: 'spring', stiffness: 420, damping: 36 }} />
+                  <Tooltip.Root key={n.id} delayDuration={120}>
+                    <Tooltip.Trigger asChild>
+                      <button onClick={() => go(n.id)}
+                        aria-current={active ? 'page' : undefined}
+                        className={`relative min-h-[36px] rounded-full px-4 text-[13.5px] font-medium transition-colors
+                          ${unavailable ? 'text-dim opacity-55 hover:opacity-75'
+                            : active ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
+                        {active && !unavailable && (
+                          <motion.span layoutId="navpill" className="absolute inset-0 rounded-full bg-bluex"
+                            transition={{ type: 'spring', stiffness: 420, damping: 36 }} />
+                        )}
+                        <span className="relative">{n.label}</span>
+                      </button>
+                    </Tooltip.Trigger>
+                    {unavailable && (
+                      <Tooltip.Portal>
+                        <Tooltip.Content sideOffset={8} collisionPadding={14}
+                          className="z-50 rounded-[10px] border border-line bg-white px-3.5 py-2.5
+                                     text-[13.5px] text-ink2 shadow-[var(--shadow-md)]">
+                          Run a comparison and the results land here.
+                          <Tooltip.Arrow className="fill-white" width={11} height={5} />
+                        </Tooltip.Content>
+                      </Tooltip.Portal>
                     )}
-                    <span className="relative">{n.label}</span>
-                  </button>
+                  </Tooltip.Root>
                 )
               })}
             </nav>
