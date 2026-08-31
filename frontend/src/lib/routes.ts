@@ -45,8 +45,11 @@ export const ALL_ROUTES = Object.keys(ROUTE_TITLES) as Route[]
 export const isRoute = (s: string): s is Route => (ALL_ROUTES as string[]).includes(s)
 
 /**
- * Where the contact pages send people. Deliberately a public issue tracker and
- * not a personal mailbox: this interface carries no individual's address.
+ * Where the contact pages send people.
+ *
+ * This was a public issue tracker, chosen so the interface carried no
+ * individual's address. It is now the two mailboxes of the people who run
+ * leepr, at their request, and both addresses are deliberately public.
  * Change in one place.
  */
-export const CONTACT_URL = 'https://github.com/mspriing/BOB-datacenter/issues/new'
+export const CONTACT_URL = 'mailto:efloydemail@gmail.com,mspring823@gmail.com'

@@ -92,10 +92,10 @@ function ContactForm({ subject, fields, blurb }: {
   const [vals, setVals] = useState<Record<string, string>>({})
   const [copied, setCopied] = useState(false)
   const body = fields.map(f => `${f.label}:\n${vals[f.id] ?? ''}`).join('\n\n')
-  const href = `${CONTACT_URL}?title=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  const href = `${CONTACT_URL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 
   return (
-    <Card title={subject} note="Opens a public issue on the repository">
+    <Card title={subject} note="Opens your email app">
       <div className="space-y-4 p-5">
         <p className="text-[14.5px] leading-[1.6] text-mid">{blurb}</p>
         {fields.map(f => (
@@ -109,7 +109,7 @@ function ContactForm({ subject, fields, blurb }: {
           </label>
         ))}
         <div className="flex flex-wrap items-center gap-3 border-t border-[var(--line2)] pt-4">
-          <a className="btn btn-primary" href={href} target="_blank" rel="noreferrer">
+          <a className="btn btn-primary" href={href}>
             <Mail size={16} strokeWidth={2.2} aria-hidden />Send this
           </a>
           <button className="pill text-[13.5px]"

@@ -33,12 +33,16 @@ export function Footer({ go, route }: { go: (r: Route) => void; route: Route }) 
           </div>
         ))}
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line py-6 text-[13px] text-mid">
-        <span>leepr, 2026. Apache 2.0 licensed.</span>
-        <span className="max-w-[62ch]">
-          Figures are estimates drawn from public sources and the assumptions you enter.
-          They are not a valuation, a quote, or investment advice.
-        </span>
+      <div className="border-t border-line py-6">
+        <span className="block text-[13px] text-mid">leepr, 2026. Apache 2.0 licensed.</span>
+        <div className="mt-4 space-y-2 text-[13px] leading-[1.6] text-mid">
+          <p>Everything on this site is for informational purposes only.</p>
+          <p>leepr is a cost model. The figures it shows are estimates built from public data and from the assumptions you enter. They carry error, they can be out of date, and they will not match what a site actually costs.</p>
+          <p>Nothing here is investment, financial, legal, tax or engineering advice. Nothing here is a valuation, an appraisal, a quote, or an offer to buy or sell anything.</p>
+          <p>Land values are modeled, not market prices. In non-disclosure states such as Texas, no sale prices are published, so land figures are derived from appraisal-district values rather than from what anyone paid.</p>
+          <p>Take independent professional advice before committing money to a site.</p>
+          <p>The tool is provided as is, without warranty of any kind. Its authors accept no liability for any decision made using it.</p>
+        </div>
       </div>
     </footer>
   )
