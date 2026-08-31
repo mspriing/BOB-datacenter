@@ -5,6 +5,8 @@ import * as Collapsible from '@radix-ui/react-collapsible'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
 import { ChevronDown, HelpCircle } from 'lucide-react'
 import { useReducedMotion } from '../lib/useReducedMotion'
+import markLight from '../assets/leepr-mark.svg'
+import markDark from '../assets/leepr-mark-dark.svg'
 
 /* ── Card ─────────────────────────────────────────────────────────────────── */
 export function Card({ title, note, children, className = '', weave = false, solid = false }: {
@@ -204,16 +206,21 @@ export function CostCaseToggle({ value, onChange }: { value: string; onChange: (
 }
 
 /* ── Logo ─────────────────────────────────────────────────────────────────── */
+/**
+ * The mark ships as two files, not one. They are the same object lit from the
+ * same place — identical geometry, identical gradient centres — with only the
+ * shadow tails raised in the dark file, because on #12171E the deepest navies
+ * merge into the ground and the mark loses its right side. Swapping them on
+ * [data-theme] keeps that a contrast adjustment rather than a second logo.
+ * If a highlight moves in one file it has to move in the other.
+ */
 export function Logo({ size = 42 }: { size?: number }) {
   return (
-    <span className="carbon relative block shrink-0 overflow-hidden" aria-hidden
-      style={{ width: size, height: size, borderRadius: size * 0.26,
-               boxShadow: '0 3px 12px -3px var(--accent-shadow), var(--inset-highlight)' }}>
-      <span className="absolute inset-0 bg-[linear-gradient(140deg,var(--blue),var(--cyan))] opacity-95" />
-      <span className="absolute inset-0 opacity-[.34]" style={{
-        backgroundImage: 'var(--logo-weave)',
-        backgroundSize: '5px 5px', backgroundPosition: '0 0,2.5px 2.5px' }} />
-      <span className="absolute inset-0 bg-[image:var(--logo-glint)]" />
+    <span className="leepr-mark shrink-0" aria-hidden
+      style={{ width: size, height: Math.round((size * 477) / 492) }}>
+      <img src={markLight} alt="" className="on-light" />
+      <img src={markDark} alt="" className="on-dark" />
     </span>
   )
 }
+
