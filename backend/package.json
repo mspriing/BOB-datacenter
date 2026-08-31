@@ -1,7 +1,7 @@
 {
   "name": "leepr-backend",
   "version": "0.1.0",
-  "description": "Data-center site-decision copilot \u2014 backend",
+  "description": "Data-center site-decision copilot — backend",
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
@@ -13,7 +13,8 @@
     "ingest": "tsx src/scripts/ingest.ts",
     "ingest:parcels": "tsx src/scripts/ingestParcels.ts",
     "ingest:manual": "tsx src/scripts/ingestManual.ts",
-    "resolve:conflicts": "tsx src/scripts/resolveConflicts.ts"
+    "resolve:conflicts": "tsx src/scripts/resolveConflicts.ts",
+    "ingest:eu-staff": "tsx src/scripts/ingestEUStaff.ts"
   },
   "dependencies": {
     "@turf/turf": "^7.4.0",
