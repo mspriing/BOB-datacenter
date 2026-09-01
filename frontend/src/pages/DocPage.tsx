@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ArrowLeft, ArrowRight, Mail, ExternalLink, Check } from 'lucide-react'
 import { Card, Chip } from '../components/Primitives'
+import { MoreInfoJump } from '../components/MoreInfoJump'
 import { US_REGIONS, US_METROS, US_STATES } from '../data/usRegions'
 import { COVERAGE, PROJECT } from '../data/project'
 import { DEFAULT_SITES } from '../data/defaultSites'
@@ -56,9 +57,9 @@ function Prose({ children }: { children: React.ReactNode }) {
   return <div className="space-y-4 p-6 text-[15.5px] leading-[1.72] text-ink2">{children}</div>
 }
 
-function H({ children }: { children: React.ReactNode }) {
+function H({ children, id }: { children: React.ReactNode; id?: string }) {
   return (
-    <h2 className="pt-2 text-[19px] font-semibold text-ink">
+    <h2 id={id} className="scroll-mt-6 pt-2 text-[19px] font-semibold text-ink">
       <span aria-hidden className="mb-3 block h-px w-8 bg-blue" />
       {children}
     </h2>
@@ -85,6 +86,88 @@ function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
           ))}
         </tbody>
       </table>
+    </div>
+  )
+}
+
+/* ── the formulas ─────────────────────────────────────────────────────────
+   A formula is not a sentence, and setting it as one is why this section was
+   hard to read. Each line is now its own card: the figure it produces on the
+   left, the terms it is built from as separate tokens, and a plain sentence
+   underneath. Every token is coloured by where its number comes from, which is
+   the same claim the rest of the tool makes about every figure it shows. */
+type Kind = 'in' | 'reg' | 'calc' | 'k' | 'op'
+
+function Term({ kind, children }: { kind: Kind; children: React.ReactNode }) {
+  if (kind === 'op') return <span className="mi-op">{children}</span>
+  return <span className={`num mi-t ${kind}`}>{children}</span>
+}
+
+function Fml({ out, parts, gloss }: {
+  out: string
+  parts: Array<[Kind, string]>
+  gloss?: string
+}) {
+  return (
+    <div className="mi-fml">
+      <div className="mi-row">
+        <span className="num mi-t out">{out}</span>
+        <span className="mi-op eq">=</span>
+        {parts.map(([kind, text], i) => <Term key={i} kind={kind}>{text}</Term>)}
+      </div>
+      {gloss && <p className="mi-gloss">{gloss}</p>}
+    </div>
+  )
+}
+
+function Legend() {
+  return (
+    <div className="mi-legend">
+      <p>Every term below is one of five things, and the colour says which. Nothing here is estimated by
+        a language model: each line is arithmetic on a figure you gave or a figure the dataset carries.</p>
+      <dl>
+        <div><dt><span className="num mi-t out">capex</span></dt><dd>the figure this line works out</dd></div>
+        <div><dt><span className="num mi-t in">capacity_kW</span></dt><dd>a number <b>you</b> type on the setup screen</dd></div>
+        <div><dt><span className="num mi-t reg">power_price_per_kWh</span></dt><dd>a number the dataset carries for the region you picked, with a published source behind it</dd></div>
+        <div><dt><span className="num mi-t calc">construction</span></dt><dd>worked out on a line further up</dd></div>
+        <div><dt><span className="num mi-t k">8,760 h</span></dt><dd>a constant fixed in the model, identical for every site</dd></div>
+      </dl>
+    </div>
+  )
+}
+
+/* ── the four moves ───────────────────────────────────────────────────────
+   The short version of the whole page. Pressing a move, or any line under it,
+   hands over to MoreInfoJump, which covers the page and lands you on the
+   matching heading rather than scrolling you past everything in between. */
+const MOVES: Array<{ n: string; title: string; note: string; to: string; chips: Array<[string, string]> }> = [
+  { n: '1', title: 'Using the tool', note: 'setup screen', to: 'mi-1', chips: [
+    ['Regions', 'mi-regions'], ['Parcels · beta', 'mi-parcels'], ['Your project', 'mi-project'] ] },
+  { n: '2', title: 'How the ranking works', note: 'four scores', to: 'mi-2', chips: [
+    ['How a score is made', 'mi-2'], ['Normalising, in full', 'mi-normalising'], ['Why the sliders changed', 'mi-sliders'] ] },
+  { n: '3', title: 'Why each variable matters', note: 'the drivers', to: 'mi-3', chips: [
+    ['Land', 'mi-land'], ['Energy', 'mi-energy'], ['Regulations and taxes', 'mi-tax'], ['Other costs', 'mi-other'] ] },
+  { n: '4', title: 'How the cost is calculated', note: 'the engine', to: 'mi-4', chips: [
+    ['What it costs to build', 'mi-capex'], ['What it costs to run', 'mi-opex'], ['Back to today\u2019s money', 'mi-npv'] ] },
+]
+
+function Moves() {
+  return (
+    <div className="mi-stations mb-4">
+      {MOVES.map(m => (
+        <div className="mi-station" key={m.n}>
+          <button className="mi-head" data-jump={m.to}>
+            <span className="num mi-n">{m.n}</span>
+            <span className="mi-title">{m.title}</span>
+            <span className="mi-s">{m.note}</span>
+          </button>
+          <div className="mi-chips">
+            {m.chips.map(([label, to]) => (
+              <button className="mi-chip" data-jump={to} key={label}>{label}</button>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -472,17 +555,20 @@ function HowToUsePage({
       lead="How to run a comparison, how the ranking is built, what each variable measures, how the cost is calculated, and a finished example."
       maxW="max-w-[860px]">
 
+      <MoreInfoJump />
+      <Moves />
+
       {/* ── 1. Using the tool ────────────────────────────────────────────── */}
-      <Card title="Using the tool">
+      <div id="mi-1" className="scroll-mt-6"><Card title="Using the tool">
         <Prose>
-          <H>Step 1 — compare regions inputted on parcel projections</H>
+          <H id="mi-regions">Step 1 — compare regions inputted on parcel projections</H>
           <p>Enter two to four candidate regions on the setup screen. For each one you can type a
             free-text description — the name of a county, a metro, an operator zone, or anything
             else that narrows the region down. The engine prices each candidate across the same
             fifteen-year horizon so the results sit on a common scale, and the narrative names
             the single driver that would put a different site first.</p>
 
-          <H>Step 2 — find parcels in top data center markets (beta)</H>
+          <H id="mi-parcels">Step 2 — find parcels in top data center markets (beta)</H>
           <p>Switch the zoom level to parcels on the setup screen and the tool searches the
             candidate parcel inventory for the markets you are considering. Each parcel carries
             a cost waterfall and a provenance table showing where every figure came from. The
@@ -490,7 +576,7 @@ function HowToUsePage({
             markets, and parcels without a land price or an interconnection estimate are shown
             but excluded from any ranked comparison.</p>
 
-          <H>Step 3 — calculate the TCO for your data center</H>
+          <H id="mi-project">Step 3 — calculate the TCO for your data center</H>
           <p>Enter your project parameters — capacity in kW, design PUE, design WUE, lifetime
             in years, and discount rate — on the setup screen, then run. The engine returns a
             ranked list with an itemized CapEx and OpEx breakdown per site, a lifetime cost per
@@ -498,10 +584,10 @@ function HowToUsePage({
             which assumption the ranking rests on. Nothing here is estimated by a language
             model: the numbers come from the engine and the figures in the dataset.</p>
         </Prose>
-      </Card>
+      </Card></div>
 
       {/* ── 2. How the ranking works ─────────────────────────────────────── */}
-      <Card title="How the ranking works">
+      <div id="mi-2" className="scroll-mt-6"><Card title="How the ranking works">
         <Prose>
           <p>Every candidate is priced across the full fifteen years. That gives one cost figure
             per site. Three more things that cost alone will not tell you are measured alongside
@@ -514,7 +600,7 @@ function HowToUsePage({
             score and the remaining weights are renormalized. A missing figure never counts as a
             zero because a gap in the data is not the same as bad performance.</p>
 
-          <H>Why the percentage sliders are gone</H>
+          <H id="mi-sliders">Why the percentage sliders are gone</H>
           <p>An earlier version asked how much you cared about clean power on a scale of nought
             to a hundred. That question has no honest answer. The number you pick is arbitrary,
             and because it feeds straight into the ranking, the output inherits that
@@ -526,7 +612,7 @@ function HowToUsePage({
             track itself. The sensitivity analysis and the control are now the same object, so
             you can see how much room you have before an assumption starts to matter.</p>
 
-          <H>Normalising, in full</H>
+          <H id="mi-normalising">Normalising, in full</H>
           <p>For a driver where lower is better, such as cost or hazard risk, a site scores{' '}
             <code className="num">1 - (v - min) / (max - min)</code>. For a driver where higher
             is better, such as renewable share, it scores{' '}
@@ -543,23 +629,23 @@ function HowToUsePage({
           <p>It also will not rank a single site. With one candidate there is nothing to
             normalize against.</p>
         </Prose>
-      </Card>
+      </Card></div>
 
       {/* ── 3. Why each variable matters ─────────────────────────────────── */}
-      <Card title="Why each variable matters">
+      <div id="mi-3" className="scroll-mt-6"><Card title="Why each variable matters">
         <Prose>
           <p>Location dominates whole-life cost, and these four categories are why. Each one
             is present across every site from the first day, and each compounds differently
             over fifteen years.</p>
 
-          <H>Land</H>
+          <H id="mi-land">Land</H>
           <p>The one cost paid before anything is built, and the acreage sets a ceiling on how
             much can ever go there. A 10 MW campus is sized at 12 acres and never below 5,
             so a high land price in a constrained market hits the build budget before a single
             kilowatt goes online. Land is not modeled for regions without a published figure,
             because a wrong land price moves the answer more than a missing one does.</p>
 
-          <H>Energy</H>
+          <H id="mi-energy">Energy</H>
           <p>Priced across the whole fifteen years, and the wait to connect can hold a build
             back longer than the price does. The power tariff is the single largest running
             cost for most sites, computed as facility energy at the design PUE times the
@@ -583,7 +669,7 @@ function HowToUsePage({
             />
           )}
 
-          <H>Regulations and taxes</H>
+          <H id="mi-tax">Regulations and taxes</H>
           <p>A rate that repeats every year of the life, and an abatement that moves the total
             more than most single line items. Property tax is computed year by year — not as
             an average — which is what lets a ten-year abatement show up properly instead of
@@ -592,7 +678,7 @@ function HowToUsePage({
             ten-year abatement can outperform one with a low rate and no abatement, depending
             on the discount rate and the life of the build.</p>
 
-          <H>Other costs</H>
+          <H id="mi-other">Other costs</H>
           <p>Construction, staff, water, hazard exposure and distance to users: the lines that
             separate two otherwise similar sites. Construction is the largest single CapEx
             item. Staff cost is the largest variable OpEx item after power. Water consumption
@@ -602,37 +688,50 @@ function HowToUsePage({
             site that wins on cost can still lose on the composite if it sits in a high-hazard
             zone or a long way from the users it will serve.</p>
         </Prose>
-      </Card>
+      </Card></div>
 
       {/* ── 4. How the cost is calculated ─────────────────────────────────── */}
-      <Card title="How the cost is calculated">
+      <div id="mi-4" className="scroll-mt-6"><Card title="How the cost is calculated">
         <Prose>
-          <H>Capital cost</H>
-          <p className="num text-[14px] text-ink">acres = max(5, capacity_MW × 1.2)</p>
-          <p className="num text-[14px] text-ink">land = acres × land_price_per_acre</p>
-          <p className="num text-[14px] text-ink">construction = capacity_kW × cost_to_build_per_kW</p>
-          <p className="num text-[14px] text-ink">capex = max(0, land + construction − user-supplied incentive)</p>
+          <Legend />
+
+          <H id="mi-capex">Capital cost</H>
+          <Fml out="acres" parts={[['k','max(5,'],['in','capacity_MW'],['op','×'],['k','1.2)']]}
+            gloss="A 10 MW campus is sized at 12 acres and never below 5. Acreage sets the ceiling on what can ever go there." />
+          <Fml out="land" parts={[['calc','acres'],['op','×'],['reg','land_price_per_acre']]}
+            gloss="The one cost paid before anything is built. Regions with no published land price are not modelled, because a wrong land price moves the answer further than a missing one." />
+          <Fml out="construction" parts={[['in','capacity_kW'],['op','×'],['reg','cost_to_build_per_kW']]}
+            gloss="The largest single CapEx item, and the one the flip figure most often lands on." />
+          <Fml out="capex" parts={[['k','max(0,'],['calc','land'],['op','+'],['calc','construction'],['op','−'],['in','incentive'],['k',')']]}
+            gloss="A capital incentive is netted off the build rather than spread across the years." />
           <p>Electrical and cooling are not added again: the construction index already includes
             mechanical and electrical fit-out and equipment. IT fit-out is not priced by this
             model.</p>
 
-          <H>Running cost, per year</H>
-          <p className="num text-[14px] text-ink">facility energy = capacity_kW × PUE × 8,760</p>
-          <p className="num text-[14px] text-ink">power = facility energy × power_price_per_kWh</p>
-          <p className="num text-[14px] text-ink">cooling energy = capacity_kW × (PUE − 1) × 8,760</p>
-          <p className="num text-[14px] text-ink">water = cooling energy × WUE ÷ 3,785.4 × water_price_per_kgal</p>
-          <p className="num text-[14px] text-ink">staff = capacity_kW × $280 × staff_cost_index</p>
-          <p className="num text-[14px] text-ink">maintenance = capex × 1.0%</p>
-          <p className="num text-[14px] text-ink">tax = capex × tax_rate, and zero during the abatement years</p>
-          <p className="num text-[14px] text-ink">connectivity = capacity_kW × $60</p>
+          <H id="mi-opex">Running cost, per year</H>
+          <Fml out="facility energy" parts={[['in','capacity_kW'],['op','×'],['in','PUE'],['op','×'],['k','8,760 h']]}
+            gloss="Design PUE, not fleet-average PUE." />
+          <Fml out="power" parts={[['calc','facility energy'],['op','×'],['reg','power_price_per_kWh']]}
+            gloss="The largest running cost for most sites. The wait to connect is priced separately, because a site two cents cheaper and four years slower is not the cheaper site." />
+          <Fml out="cooling energy" parts={[['in','capacity_kW'],['op','×'],['k','('],['in','PUE'],['op','−'],['k','1)'],['op','×'],['k','8,760 h']]} />
+          <Fml out="water" parts={[['calc','cooling energy'],['op','×'],['in','WUE'],['op','÷'],['k','3,785.4'],['op','×'],['reg','water_price_per_kgal']]}
+            gloss="Consumption follows the cooling design, so WUE is yours and the price is the region’s." />
+          <Fml out="staff" parts={[['in','capacity_kW'],['op','×'],['k','$280'],['op','×'],['reg','staff_cost_index']]}
+            gloss="The largest variable OpEx item after power." />
+          <Fml out="maintenance" parts={[['calc','capex'],['op','×'],['k','1.0%']]} />
+          <Fml out="tax" parts={[['calc','capex'],['op','×'],['reg','tax_rate']]}
+            gloss="Zero during the abatement years, and computed year by year — which is the whole point. A ten-year abatement against a high rate can beat a low rate with none." />
+          <Fml out="connectivity" parts={[['in','capacity_kW'],['op','×'],['k','$60']]} />
           <p>Tax is computed year by year rather than as an average, which is what lets a ten
             year abatement show up properly instead of being smeared across the whole life.</p>
 
-          <H>Bringing it back to today</H>
-          <p className="num text-[14px] text-ink">running cost NPV = Σ over each year t of (running cost in year t) ÷ (1 + discount rate)^t</p>
-          <p className="num text-[14px] text-ink">cost NPV = −(capex + running cost NPV)</p>
-          <p className="num text-[14px] text-ink">lifetime cost per kW = |cost NPV| ÷ capacity_kW</p>
-          <p className="num text-[14px] text-ink">build cost per kW = capex ÷ capacity_kW</p>
+          <H id="mi-npv">Bringing it back to today</H>
+          <Fml out="running cost NPV" parts={[['k','Σ'],['calc','running cost in year t'],['op','÷'],['k','(1 +'],['in','discount rate'],['k',')^t']]}
+            gloss="Summed over each year of the life, each year priced on its own before it is discounted." />
+          <Fml out="cost NPV" parts={[['op','−('],['calc','capex'],['op','+'],['calc','running cost NPV'],['op',')']]} />
+          <Fml out="lifetime cost per kW" parts={[['k','|'],['calc','cost NPV'],['k','|'],['op','÷'],['in','capacity_kW']]}
+            gloss="The headline figure the ranking is built on." />
+          <Fml out="build cost per kW" parts={[['calc','capex'],['op','÷'],['in','capacity_kW']]} />
           <p>Each year is priced separately and then discounted, rather than one year being
             repeated across the whole term. That matters where a site has a property tax
             abatement. At {PROJECT.lifetimeYears} years and a{' '}
@@ -650,7 +749,7 @@ function HowToUsePage({
             power-rate and construction-cost bounds. It is an input-supported scenario band,
             not a statistical confidence interval.</p>
         </Prose>
-      </Card>
+      </Card></div>
 
       {/* ── 5. A worked example — live figures ────────────────────────────── */}
       <Card title="A worked example" note={`${PROJECT.capacityMw} MW, ${PROJECT.lifetimeYears} years`}>

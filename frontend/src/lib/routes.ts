@@ -9,7 +9,7 @@ export type Route =
 export const ROUTE_TITLES: Record<Route, string> = {
   home: 'Start', setup: 'Set up', running: 'Working', results: 'Results', map: 'Map',
   parcels: 'Parcels', parcel: 'Parcel',
-  'how-to-use': 'How to use',
+  'how-to-use': 'More info',
   'how-ranking-works': 'How the ranking works',
   'driver-meanings': 'What each driver means',
   'cost-method': 'Cost method and formulas',
@@ -25,7 +25,7 @@ export const ROUTE_TITLES: Record<Route, string> = {
 
 export const FOOTER_GROUPS: Array<{ heading: string; links: Array<{ to: Route; label: string }> }> = [
   { heading: 'The tool', links: [
-    { to: 'how-to-use', label: 'How to use' },
+    { to: 'how-to-use', label: 'More info' },
     { to: 'release-notes', label: 'Release notes' },
   ]},
   { heading: 'Coverage', links: [

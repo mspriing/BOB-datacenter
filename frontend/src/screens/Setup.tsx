@@ -130,12 +130,12 @@ export function Setup({
 
   return (
     <section className="setup-flow pt-6 sm:pt-10">
-      <div className="mb-8">
-        <h1 className="mb-4 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
+      <div className="mb-8 text-center">
+        <h1 className="mx-auto mb-4 max-w-[26ch] text-[clamp(1.875rem,1.4rem+2.2vw,3.25rem)]
           font-semibold leading-[1.08] tracking-[-.02em] text-ink">
           Set up your comparison
         </h1>
-        <p className="max-w-[62ch] text-[17px] leading-[1.65] text-mid">
+        <p className="mx-auto max-w-[62ch] text-[17px] leading-[1.65] text-mid">
           First choose how closely to look: whole markets against each other, or individual
           parcels inside one county. Then describe the build you are pricing. Every field below
           arrives filled in with a figure a mid-size campus would use, so change what you know,

@@ -236,7 +236,7 @@ export default function App() {
               className={`min-h-[36px] shrink-0 px-1.5 text-[13px] font-medium underline-offset-4
                 transition-colors hover:underline sm:px-2 sm:text-[13.5px]
                 ${route === 'how-to-use' ? 'text-blued underline' : 'text-mid hover:text-ink2'}`}>
-              How to use
+              More info
             </button>
             <button type="button" onClick={toggleTheme}
               className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full border border-line
