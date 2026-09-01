@@ -321,10 +321,17 @@
    components/MoreInfoJump.tsx and lands you on the matching heading below. */
 
 .mi-stations { display:grid; gap:14px; grid-template-columns:repeat(4,1fr); position:relative; }
-/* the rail only shows in the gaps between the cards — four stations, three dashes */
+/* The rail links the cards; it does not cross them. The cards are translucent,
+   so a line drawn behind them shows through — it has to not exist there at all.
+   A repeating gradient does it without extra elements: one column's width of
+   nothing, then one gap's width of blue, repeated. Four columns produce exactly
+   the three joins between them. */
 .mi-stations::before {
   content:""; position:absolute; left:0; right:0; top:39px; height:2px; z-index:0;
-  background:color-mix(in srgb,var(--blue) 38%,transparent);
+  --mi-col:calc((100% - 42px) / 4);
+  background:repeating-linear-gradient(90deg,
+    transparent 0 var(--mi-col),
+    color-mix(in srgb,var(--blue) 42%,transparent) var(--mi-col) calc(var(--mi-col) + 14px));
 }
 .mi-station {
   position:relative; z-index:1; display:flex; flex-direction:column;
@@ -466,4 +473,5 @@
 @media (max-width:880px) { .mi-stations { grid-template-columns:repeat(2,1fr); } .mi-stations::before { display:none; } }
 @media (max-width:560px) { .mi-stations { grid-template-columns:1fr; }
   .mi-legend dl > div { grid-template-columns:1fr; gap:3px; } }
-@media (prefers-reduced-motion: reduce) { .mi-veil { display:none !important; } }
+/* Reduce Motion is deliberately not honoured here — see RESPECT_REDUCED_MOTION
+   in components/MoreInfoJump.tsx for the decision and what it costs. */

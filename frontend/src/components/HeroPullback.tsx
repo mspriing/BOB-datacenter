@@ -39,6 +39,21 @@ import { Pause, Play } from 'lucide-react'
  * hidden.
  */
 
+/**
+ * Michael's call, made twice: the site has to look the same for everyone who
+ * opens the link, not only for people whose machine has not asked for less
+ * motion. So Reduce Motion is read but not acted on.
+ *
+ * The honest cost, recorded here rather than argued again: that setting is
+ * usually on because animation makes someone ill, and a 16-second loop and a
+ * four-second transition are the kind of thing it exists to stop. What is kept
+ * on both sides of this is the pause control, which is what WCAG 2.2.2 actually
+ * requires of anything that plays for more than five seconds.
+ *
+ * Setting this to true restores the reduced paths; both are still written.
+ */
+const RESPECT_REDUCED_MOTION = false
+
 const HOLD_MS = 800 // rest on the assembled board before starting over
 const DIP_MS = 320 // cross-fade that covers the jump back to frame one
 
@@ -51,8 +66,9 @@ export function HeroPullback() {
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(query.matches)
-    const onChange = (event: MediaQueryListEvent) => setReduced(event.matches)
+    const honour = (m: boolean) => setReduced(RESPECT_REDUCED_MOTION && m)
+    honour(query.matches)
+    const onChange = (event: MediaQueryListEvent) => honour(event.matches)
     query.addEventListener('change', onChange)
     return () => query.removeEventListener('change', onChange)
   }, [])
@@ -66,13 +82,18 @@ export function HeroPullback() {
     if (playback && typeof playback.catch === 'function') playback.catch(() => {})
   }, [])
 
-  // Reduced motion: park on the final frame rather than play toward it.
+  // Reduced motion: park on the final frame rather than play toward it. The
+  // `autoplay` attribute is on the element for everyone else, so this has to
+  // stop it as well as seek — otherwise a slow load lets the film start before
+  // the seek lands, which is the one thing the setting asks us not to do.
   useEffect(() => {
     const video = videoRef.current
     if (!video || !reduced) return
     const park = () => {
+      video.pause()
       if (Number.isFinite(video.duration)) video.currentTime = Math.max(0, video.duration - 0.05)
     }
+    video.pause()
     if (video.readyState >= 1) park()
     else video.addEventListener('loadedmetadata', park, { once: true })
     return () => video.removeEventListener('loadedmetadata', park)

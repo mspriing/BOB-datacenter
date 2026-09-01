@@ -28,6 +28,21 @@ import { createPortal } from 'react-dom'
  * Dimming the far side would be cheaper and would make the parts see-through.
  */
 
+/**
+ * Michael's call, made twice: the site has to look the same for everyone who
+ * opens the link, not only for people whose machine has not asked for less
+ * motion. So Reduce Motion is read but not acted on.
+ *
+ * The honest cost, recorded here rather than argued again: that setting is
+ * usually on because animation makes someone ill, and a 16-second loop and a
+ * four-second transition are the kind of thing it exists to stop. What is kept
+ * on both sides of this is the pause control, which is what WCAG 2.2.2 actually
+ * requires of anything that plays for more than five seconds.
+ *
+ * Setting this to true restores the reduced paths; both are still written.
+ */
+const RESPECT_REDUCED_MOTION = false
+
 const PERIOD = 1150            // ms for one full turn
 const RX = 0.32                // orbit radii, as fractions of the viewport
 const RY = 0.20
@@ -37,14 +52,12 @@ const TAU = Math.PI * 2
 const angle = (i: number, t: number) => Math.PI / 2 + (t / PERIOD) * TAU - i * (TAU / 3)
 
 /**
- * Each part leaves at a north crossing, and we take whichever one falls inside
- * two laps: 1.75, 2.08 and 1.42 turns for the three of them. Nothing circles
- * for longer than twice.
+ * Every part completes two orbits and then leaves at the north point — its
+ * SECOND crossing of it, which for a part starting at east is three quarters of
+ * a lap in and one full lap after that. They go in order, a third of a lap
+ * apart, because that is how far apart they are on the ellipse.
  */
-const releaseAt = (i: number) => {
-  const base = 0.75 + i / 3
-  return PERIOD * (base + Math.max(0, Math.ceil(1.4 - base)))
-}
+const releaseAt = (i: number) => PERIOD * (1.75 + i / 3)
 
 export function MoreInfoJump() {
   const veilRef = useRef<HTMLDivElement>(null)
@@ -106,7 +119,34 @@ export function MoreInfoJump() {
     const jump = (id: string) => {
       const target = document.getElementById(id)
       if (!target || busy) return
-      if (reduced.matches) { target.scrollIntoView({ behavior: 'auto', block: 'start' }); return }
+      /**
+       * Reduce Motion does not mean no transition — it means no large-scale
+       * movement. So the page is still covered and still handed over rather
+       * than yanked, but nothing orbits, nothing flies and nothing splits: the
+       * campus is simply there, and the cover cross-fades away.
+       */
+      if (RESPECT_REDUCED_MOTION && reduced.matches) {
+        busy = true
+        veil.classList.add('run')
+        pieces.forEach(el => { el.style.opacity = '0' })
+        campus.style.zIndex = '2'
+        campus.animate([{ opacity: 0 }, { opacity: 1 }],
+          { duration: 220, easing: 'ease-out', fill: 'both' })
+        window.setTimeout(() => target.scrollIntoView({ behavior: 'auto', block: 'start' }), 420)
+        const out = veil.animate([{ opacity: 1 }, { opacity: 0 }],
+          { duration: 320, delay: 460, easing: 'ease-in', fill: 'forwards' })
+        out.onfinish = () => {
+          veil.classList.remove('run')
+          veil.getAnimations().forEach(a => a.cancel())
+          ;[...pieces, campus].forEach(el => {
+            el.getAnimations().forEach(a => a.cancel())
+            el.style.opacity = ''
+            el.style.zIndex = ''
+          })
+          busy = false
+        }
+        return
+      }
 
       busy = true
       released[0] = released[1] = released[2] = false
@@ -137,7 +177,10 @@ export function MoreInfoJump() {
         const t = now - t0
         for (let i = 0; i < 3; i++) if (!released[i] && t >= releaseAt(i)) shootUp(i)
         orbit(t)
-        if (!released[2]) raf = requestAnimationFrame(tick)
+        // keep going until every part has left. Stopping at any one of them
+        // freezes the others mid-orbit, which is what happened when this
+        // watched released[2] and released[2] happened to be the first to go.
+        if (released.some(done => !done)) raf = requestAnimationFrame(tick)
       }
       raf = requestAnimationFrame(tick)
 

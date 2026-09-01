@@ -233,7 +233,7 @@ export default function App() {
             <button
               onClick={() => go('how-to-use')}
               aria-current={route === 'how-to-use' ? 'page' : undefined}
-              className={`min-h-[36px] shrink-0 px-1.5 text-[13px] font-medium underline-offset-4
+              className={`min-h-[36px] shrink-0 px-1.5 text-[13px] font-bold underline-offset-4
                 transition-colors hover:underline sm:px-2 sm:text-[13.5px]
                 ${route === 'how-to-use' ? 'text-blued underline' : 'text-mid hover:text-ink2'}`}>
               More info
@@ -244,8 +244,8 @@ export default function App() {
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
               {theme === 'dark'
-                ? <Sun size={17} strokeWidth={2.2} aria-hidden />
-                : <Moon size={17} strokeWidth={2.2} aria-hidden />}
+                ? <Sun size={17} strokeWidth={2.8} aria-hidden />
+                : <Moon size={17} strokeWidth={2.8} aria-hidden />}
             </button>
             <nav aria-label="Screens"
               className="flex min-w-0 flex-1 items-center gap-0.5 rounded-full border border-line bg-[var(--glass-fill)] p-1 shadow-[var(--shadow-sm)] sm:flex-none sm:gap-1.5">
@@ -257,7 +257,7 @@ export default function App() {
                     <Tooltip.Trigger asChild>
                       <button onClick={() => go(n.id)}
                         aria-current={active ? 'page' : undefined}
-                        className={`relative min-h-[36px] flex-1 rounded-full px-2 text-[12.5px] font-medium transition-colors sm:flex-none sm:px-4 sm:text-[13.5px]
+                        className={`relative min-h-[36px] flex-1 rounded-full px-2 text-[12.5px] font-bold transition-colors sm:flex-none sm:px-4 sm:text-[13.5px]
                           ${unavailable ? 'text-mid opacity-70 hover:opacity-100'
                             : active ? 'text-blued' : 'text-mid hover:text-ink2'}`}>
                         {active && !unavailable && (
