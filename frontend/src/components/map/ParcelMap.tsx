@@ -276,10 +276,16 @@ export function ParcelMap({
         'circle-color': ['get', 'color'],
         'circle-stroke-width': 1,
         'circle-stroke-color': cssColor('--map-dot-line'),
+        // These dots are the only thing on screen at the county view the map
+        // opens on, since the polygons do not begin until zoom HANDOVER[0].
+        // At 0.12 falling to 0.04 they were invisible, so the opening view read
+        // as an empty basemap next to a header claiming 3,040 parcels, and
+        // there was nothing a reader could tell was clickable. They now carry
+        // the view until the shapes take over.
         'circle-opacity': ['interpolate', ['linear'], ['zoom'],
-          8, 0.12, 8.7, 0.04, HANDOVER[0], 0],
+          8, 0.8, 8.7, 0.62, HANDOVER[0], 0],
         'circle-stroke-opacity': ['interpolate', ['linear'], ['zoom'],
-          8, 0.16, 8.7, 0.05, HANDOVER[0], 0],
+          8, 0.9, 8.7, 0.7, HANDOVER[0], 0],
       },
     })
 

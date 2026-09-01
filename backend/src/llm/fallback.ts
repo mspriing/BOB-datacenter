@@ -83,8 +83,8 @@ export function buildFallbackNarrative(
     `with a weighted composite score of ${rank1.weighted_score.toFixed(3)}, ` +
     `a total capital outlay of ${usd(rank1.capex.total_usd)}, and annual operating costs of ${usd(rank1.opex_annual.total_usd)}. ` +
     `Over ${rank1.finance.lifetime_years} years the total in today's money is ${usd(rank1.finance.npv_usd)}, ` +
-    `yielding a lifetime cost of ${usd(rank1.finance.lifetime_cost_per_kw)}/kW ` +
-    (pricedBetter ? `— the most competitive figure among the evaluated candidates. ` : `— `) +
+    `yielding a lifetime cost of ${usd(rank1.finance.lifetime_cost_per_kw)}/kW` +
+    (pricedBetter ? `, the most competitive figure among the evaluated candidates. ` : `. `) +
     `Under low and high cost scenarios this spans ${usd(rank1.finance.ranges.low.lifetime_per_kw)}/kW to ` +
     `${usd(rank1.finance.ranges.high.lifetime_per_kw)}/kW. ` +
     `${output.flip_sentence} ` +

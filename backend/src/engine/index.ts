@@ -510,10 +510,10 @@ export async function runEngine(
     } else if (topFlip.driver === 'construction_cost_per_kw') {
       const change = topFlip.pct_change === null
         ? `an absolute increase of ${topFlip.absolute_change ?? topFlip.flip_value} from zero`
-        : `+${topFlip.pct_change.toFixed(1)}% vs. current $${topFlip.current_value.toFixed(0)}/kW`
+        : `+${topFlip.pct_change.toFixed(1)}% vs. current $${Math.round(topFlip.current_value).toLocaleString('en-US')}/kW`
       flip_sentence =
         `This ranking flips if ${rank1Label} construction costs exceed ` +
-        `$${topFlip.flip_value.toFixed(0)}/kW ` +
+        `$${Math.round(topFlip.flip_value).toLocaleString('en-US')}/kW ` +
         `(${change}).`
     } else {
       const driverLabel = topFlip.driver.replace(/_/g, ' ')

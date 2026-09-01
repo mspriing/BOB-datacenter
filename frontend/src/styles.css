@@ -15,7 +15,13 @@
     background:var(--ground); color:var(--ink);
     font-family:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
     -webkit-font-smoothing:antialiased;
-    font-size:16px; line-height:1.55; position:relative; overflow-x:hidden;
+    font-size:16px; line-height:1.55; position:relative;
+    /* `overflow-x:hidden` computes overflow-y to `auto`, which makes body a
+       scroll container. Body then becomes the sticky containing block for every
+       descendant while <html> is what actually scrolls, so `position:sticky`
+       silently never engages anywhere in the app. `clip` suppresses the same
+       horizontal overflow without creating a scrollport. */
+    overflow-x:clip;
   }
 
   /* the carbon weave over the whole page, carried over from mock 3 unchanged */
