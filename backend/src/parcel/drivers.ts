@@ -206,7 +206,7 @@ export function driversForParcel(row: ParcelRow, county: CountyConfig): DriversR
     driver: 'tax_abatement_years',
     value: 0,
     basis: 'assumed',
-    source_url: 'https://github.com/mspriing/BOB-datacenter/blob/main/docs/SCHEMA.md',
+    source_url: 'https://github.com/mspriing/leepr/blob/main/docs/SCHEMA.md',
     last_verified: '2026-08',
     method: 'No negotiated parcel-specific property-tax abatement was supplied; regional incentive programs are not treated as property-tax holidays.',
   })
