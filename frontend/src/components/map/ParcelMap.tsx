@@ -49,6 +49,11 @@ const LYR_DOTS = 'parcel-dots'
 const LYR_SEL_HALO = 'parcel-selected-halo'
 const LYR_SEL = 'parcel-selected'
 
+function styleIsReady(map: MlMap): boolean {
+  const style = map.style as (MlMap['style'] & { _loaded?: boolean }) | undefined
+  return Boolean(style && (map.isStyleLoaded() || style._loaded))
+}
+
 /**
  * Zoom band over which the far view hands over to the near view.
  *
@@ -81,6 +86,8 @@ export function ParcelMap({
    * runs where the basemap had failed, which is when the parcels matter most.
    */
   const [styleEpoch, setStyleEpoch] = useState(0)
+  /** Prevent a rejected layer from turning styledata into an infinite retry loop. */
+  const builtStyle = useRef<MlMap['style'] | null>(null)
   const wired = useRef(false)
   /** The fallback style is swapped in once, however many errors arrive. */
   const swapped = useRef(false)
@@ -96,6 +103,7 @@ export function ParcelMap({
   const { theme } = useTheme()
   const themeRef = useRef(theme)
   themeRef.current = theme
+  const styleTheme = useRef(theme)
   const onSelectRef = useRef(onSelect)
   onSelectRef.current = onSelect
 
@@ -165,23 +173,35 @@ export function ParcelMap({
 
   // ── Create the map once ─────────────────────────────────────────────────────
   useEffect(() => {
-    if (!holder.current || map.current) return
+    const container = holder.current
+    if (!container) return
+
+    const existing = map.current
+    if (existing) {
+      const live = container.classList.contains('maplibregl-map')
+        && existing.getContainer() === container
+      if (live) return
+      map.current = null
+    }
 
     const m = new maplibregl.Map({
-      container: holder.current,
+      container,
       style: BASEMAP_STYLE[themeRef.current],
       center: [-98.6, 29.45],   // Bexar County
       zoom: 8.4,
       attributionControl: { compact: true },
     })
     map.current = m
-
     m.scrollZoom.setWheelZoomRate(1 / 900)
     m.scrollZoom.setZoomRate(1 / 140)
     m.touchZoomRotate.enable()
     m.dragPan.enable()
 
-    const check = () => { if (!m.getLayer(LYR_FILL)) setStyleEpoch(e => e + 1) }
+    const check = () => {
+      if (styleIsReady(m) && builtStyle.current !== m.style) {
+        setStyleEpoch(e => e + 1)
+      }
+    }
 
     // A style that fails to load leaves the map blank and silent, so swap in the
     // plain ground and carry on rather than leaving the reader staring at grey.
@@ -189,49 +209,61 @@ export function ParcelMap({
     // The swap happens once. An unreachable tile host keeps raising the same
     // error, and calling setStyle on each one wiped the parcel layer as fast as
     // it was added, which left the pane empty for the whole session.
-    m.on('error', (e: ErrorEvent) => {
+    const onError = (e: ErrorEvent) => {
       const msg = String(e?.error?.message ?? '')
       if (!(msg.includes('style') || msg.includes('Failed to fetch'))) return
       setBasemapFailed(true)
       if (swapped.current) return
       swapped.current = true
+      builtStyle.current = null
       try { m.setStyle(fallbackStyle()) } catch { /* already gone */ }
-    })
+    }
+    m.on('error', onError)
 
     m.on('load', check)
+    m.on('style.load', check)
     // setStyle re-fires styledata; that is where a wiped layer is noticed.
     m.on('styledata', check)
     m.on('idle', check)
 
-    return () => { m.remove(); map.current = null }
+    return () => {
+      m.off('error', onError)
+      m.off('load', check)
+      m.off('style.load', check)
+      m.off('styledata', check)
+      m.off('idle', check)
+      if (map.current === m) map.current = null
+      if (container.classList.contains('maplibregl-map')) m.remove()
+    }
   }, [])
 
   useEffect(() => {
+    if (styleTheme.current === theme) return
+    styleTheme.current = theme
     const m = map.current
     if (!m) return
     setBasemapFailed(false)
     swapped.current = false
+    builtStyle.current = null
     try { m.setStyle(BASEMAP_STYLE[theme]) } catch { /* map is being removed */ }
   }, [theme])
 
   // ── Build layers only when a style load has removed them ───────────────────
   useEffect(() => {
     const m = map.current
-    if (!m || !m.style || !m.isStyleLoaded()) return
+    if (!m || !m.style || !styleIsReady(m)) return
+    if (builtStyle.current === m.style) return
+    builtStyle.current = m.style
 
     const shapeSrc = m.getSource(SHAPES) as maplibregl.GeoJSONSource | undefined
     const pointSrc = m.getSource(POINTS) as maplibregl.GeoJSONSource | undefined
     if (!shapeSrc) m.addSource(SHAPES, { type: 'geojson', data: dataRef.current.shapes })
     if (!pointSrc) m.addSource(POINTS, { type: 'geojson', data: dataRef.current.points })
 
-    // Style events can fire between source creation and the first layer. A
-    // second pass should finish the layer stack, never recreate its sources.
-    if (m.getLayer(LYR_FILL)) return
-
     // The plot itself, shaded by the driver in the rail.
     const accent = cssColor('--blue')
     const accentWash = cssColor('--blue-x')
-    m.addLayer({
+    if (!m.getLayer(LYR_FILL)) m.addLayer({
       id: LYR_FILL,
       type: 'fill',
       source: SHAPES,
@@ -239,23 +271,24 @@ export function ParcelMap({
         'fill-color': ['case', ['boolean', ['feature-state', 'hover'], false],
           accentWash, ['get', 'color']],
         // Solid enough to read the ramp, open enough to see the streets under it.
-        'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false],
-          0.78, ['interpolate', ['linear'], ['zoom'],
-            HANDOVER[0], 0.4, HANDOVER[1], 0.62]],
+        'fill-opacity': ['interpolate', ['linear'], ['zoom'],
+          HANDOVER[0], ['case', ['boolean', ['feature-state', 'hover'], false], 0.78, 0.4],
+          HANDOVER[1], ['case', ['boolean', ['feature-state', 'hover'], false], 0.78, 0.62]],
       },
     })
 
     // A boundary, so neighbouring plots stay separate rather than merging into
     // one blob wherever the county subdivided a block.
-    m.addLayer({
+    if (!m.getLayer(LYR_LINE)) m.addLayer({
       id: LYR_LINE,
       type: 'line',
       source: SHAPES,
       paint: {
         'line-color': ['case', ['boolean', ['feature-state', 'hover'], false],
           accent, cssColor('--map-line')],
-        'line-width': ['case', ['boolean', ['feature-state', 'hover'], false],
-          1.8, ['interpolate', ['linear'], ['zoom'], HANDOVER[0], 0.45, 14, 1.2]],
+        'line-width': ['interpolate', ['linear'], ['zoom'],
+          HANDOVER[0], ['case', ['boolean', ['feature-state', 'hover'], false], 1.8, 0.45],
+          14, ['case', ['boolean', ['feature-state', 'hover'], false], 1.8, 1.2]],
         'line-opacity': ['interpolate', ['linear'], ['zoom'],
           HANDOVER[0], 0.55, HANDOVER[1], 0.9],
       },
@@ -263,7 +296,7 @@ export function ParcelMap({
 
     // The far view. A 25 acre plot is under a pixel with the county in frame,
     // so the dots carry the map until the shapes are big enough to read.
-    m.addLayer({
+    if (!m.getLayer(LYR_DOTS)) m.addLayer({
       id: LYR_DOTS,
       type: 'circle',
       source: POINTS,
@@ -289,7 +322,7 @@ export function ParcelMap({
       },
     })
 
-    m.addLayer({
+    if (!m.getLayer(LYR_SEL_HALO)) m.addLayer({
       id: LYR_SEL_HALO,
       type: 'line',
       source: SHAPES,
@@ -303,7 +336,7 @@ export function ParcelMap({
     })
 
     // The selected plot, drawn over everything else.
-    m.addLayer({
+    if (!m.getLayer(LYR_SEL)) m.addLayer({
       id: LYR_SEL,
       type: 'line',
       source: SHAPES,
@@ -380,7 +413,7 @@ export function ParcelMap({
   // Data changes update the existing sources without rebuilding layers.
   useEffect(() => {
     const m = map.current
-    if (!m || !m.isStyleLoaded()) return
+    if (!m) return
     const shapeSrc = m.getSource(SHAPES) as maplibregl.GeoJSONSource | undefined
     const pointSrc = m.getSource(POINTS) as maplibregl.GeoJSONSource | undefined
     shapeSrc?.setData(shapes)
@@ -396,7 +429,7 @@ export function ParcelMap({
   const lastFit = useRef<string>('')
   useEffect(() => {
     const m = map.current
-    if (!m || !bounds || !m.isStyleLoaded()) return
+    if (!m || !bounds || !styleIsReady(m)) return
     const key = bounds.map(n => n.toFixed(3)).join(',')
     if (key === lastFit.current) return
     lastFit.current = key
