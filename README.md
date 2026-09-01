@@ -1,279 +1,358 @@
 # leepr
 
-leepr: land, evaluation, environment, pricing.
+**leepr: land, evaluation, environment, pricing.**
 
-A site-decision copilot for data centers, built for the **IBM AI Builders Challenge** (Wildcard track: Intelligent Systems for the Future of Work).
+A decision-support system for data center siting, built for the **IBM AI Builders Challenge — Wildcard track: Build Intelligent Systems for the Future of Work.**
 
-Give it two to four candidate locations. It prices the land, the power, the people and the natural hazard risk at each one, ranks them against priorities you set, and writes a recommendation that cites its own numbers.
+Live: **https://leepr-frontend.onrender.com**
+
+Describe a build. leepr prices its whole fifteen-year life across candidate markets, ranks them against what you care about, drops to individual parcels inside a county, and writes a recommendation that cites its own arithmetic. Every figure carries the URL it came from and the date it was checked.
+
+---
+
+## Contents
+
+- [The problem](#the-problem)
+- [Challenge fit](#challenge-fit-intelligent-systems-for-the-future-of-work)
+- [What it does](#what-it-does)
+- [The rule the project is built on](#the-rule-the-project-is-built-on)
+- [Architecture](#architecture)
+- [The AI layer](#the-ai-layer)
+- [Data and provenance](#data-and-provenance)
+- [The parcel tool](#the-parcel-tool)
+- [Running it](#running-it)
+- [API](#api)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Judging criteria](#against-the-judging-criteria)
+- [Known gaps](#known-gaps)
+- [How this was built](#how-this-was-built)
 
 ---
 
 ## The problem
 
-A data center runs for fifteen years or longer. By the time the first rack is installed, most of what it will cost has already been decided by the choice of plot: the price of a kilowatt hour, how many years the utility takes to energize the site, what an electrician earns in that county, whether the ground floods, and what the local authority charges in property tax.
+A data center runs for fifteen years or longer. By the time the first rack is installed, most of what it will cost has already been decided by the choice of ground: the price of a kilowatt hour, how many years the utility takes to energize the site, what an electrician earns in that county, whether the plot floods, and what the local authority charges in property tax.
 
-Those figures live in five different public datasets, in five different formats, and they move every quarter. A team choosing a site either guesses, or pays a consultancy six figures and waits a month for a spreadsheet nobody outside the engagement can audit.
+Those figures live in half a dozen public datasets, in half a dozen formats, and they move every quarter. A team choosing a site either guesses, or pays a consultancy six figures and waits a month for a spreadsheet nobody outside the engagement can audit.
 
-Site selection is also not a pure cost question. The cheapest site is frequently the wrong one. In the worked example shipped with this repo, a Texas site builds for 22.5 percent less than a Swedish one and still loses, because its natural hazard score is 5.8 against 1.2 and its grid runs at 42 percent renewable against 97 percent. Any tool that answers "which is cheapest" has answered the wrong question.
+Site selection is also not a pure cost question. **The cheapest site is frequently the wrong one.** In the worked example shipped with this repo, a Texas site builds for materially less than a Swedish one and still loses, because its natural hazard exposure and its grid mix are worse. Any tool that answers "which is cheapest" has answered the wrong question.
 
-This tool does the arithmetic in the open. Every input is visible, every figure carries the URL it came from and the date it was checked, and the ranking changes as you change what you care about.
-
----
-
-## Technical approach
-
-The design rule the whole project is built around: **the language model never generates a number.**
-
-Cost and financial math lives in `backend/src/engine/` as deterministic TypeScript under test. The build cost, the running cost, the total in today's money, the low and high scenarios, the weighted ranking and the sensitivity flip points are all plain code. 212 tests cover it. Running the same input twice returns the same answer, and any figure in the output can be traced to a line of arithmetic.
-
-The figures that come from outside the regional dataset are published too. Cooling overhead, the maintenance rate, the staffing baseline and the rest live in `backend/src/engine/assumptions.ts`, each carrying its basis, its source, the date it was last checked and the working behind it. Every estimate returns them. They move the answer as much as the regional data does, and until August 2026 they sat in the code as bare constants with a comment at best.
-
-IBM watsonx with the Granite 3 8B Instruct model does two jobs, neither of which involves inventing figures:
-
-1. **Reading messy input.** A user can paste a broker's note instead of filling in fields. Granite extracts the values it recognizes and maps them to the schema's override fields. When it is unavailable, a regex extractor takes over, so the feature never hard-fails. Anything pulled out of typed text is marked `user-supplied description` and `unverified` in the provenance table so it is never confused with a sourced figure.
-
-2. **Writing the recommendation.** Granite receives the engine's computed output and writes the ranked narrative and the sensitivity callouts. The prompt forbids introducing figures that are not in the engine output. When credentials are absent or the call fails, a deterministic template produces the same paragraph from the same numbers, and the interface shows which of the two produced what you are reading.
-
-**What the hosted demo is running.** The two jobs above describe how the language layer is wired rather than promising it is switched on. Credentials are set per deployment, and the IBM Cloud account behind this project closed in August 2026, so read the hosted demo as running the deterministic path unless the badge on screen says otherwise. The analysis is identical in either case. Every figure comes from the engine, and the interface names which of the two wrote the words beside them. The free-text box falls back to a regular expression extractor on the same terms.
-
-The ranking itself is min-max normalization across four drivers, so each is scored 0 to 1 with 1 always best, then weighted by four user-set sliders and summed. Sensitivity works backwards from that: each cost driver is moved on its own, holding everything else still, until the top two sites swap, which yields the "this ranking flips if" sentence and tells you which input is worth verifying before you commit money.
-
-Every value in `data/regions.json` carries a `source_url` and a `last_verified` date. Electricity rates come from the EIA, wages from the BLS, hazard scores from FEMA's National Risk Index, and tax rates from county filings.
+leepr does the arithmetic in the open. Every input is visible, every figure carries its source, and the ranking changes as you change what you weigh.
 
 ---
 
-## How IBM Bob was used
+## Challenge fit: Intelligent Systems for the Future of Work
 
-Bob wrote this codebase. Every file in `backend/src/` and `frontend/src/`, every test, and every commit came from directing Bob inside VS Code.
+The wildcard brief asks for AI that helps people **plan, coordinate, decide and execute** — a collaborator rather than a productivity gadget. Site selection is a good test of that, because it is a decision that is expensive, slow, evidence-heavy, and currently made behind a consultancy's closed door.
 
-The approach that worked was written work orders rather than conversation: name the file, the line, the symptom and the acceptance test, then have Bob commit each task separately. Bob plans the change, edits the files, runs `npm test` itself, and stops if the suite fails. The backend suite grew from 66 tests to 72 across the last two work orders, with Bob writing the new tests as part of each task.
+**How AI reduces repetitive work here.** The unglamorous majority of a siting study is gathering: pulling industrial power rates out of the EIA, wage indices out of the BLS, hazard scores out of FEMA and ThinkHazard, appraisal rolls out of a county district, transmission geometry out of a federal layer, and normalizing all of it into one comparable table. `backend/src/scripts/` and `backend/src/ingest/` do that work and re-run it on demand, each figure landing with its source URL and verification date attached. What a junior analyst spends three weeks assembling, the ingest assembles reproducibly.
 
-**[`docs/BOB.md`](docs/BOB.md) has the full record**, including session transcripts, the exact instructions given, the commit table, and two changes worth reading: wiring an orphaned free-text parser with correct provenance handling, and a twelve-file rename that fixed a cost figure which was arithmetically correct but named in a way that made it look wrong to anyone who has priced a data center.
+**How AI improves decision-making here.** Not by producing a number — deliberately never that. It improves the decision in three ways the deterministic engine cannot:
 
----
+1. **It reads intent.** A developer writes *"at least 200 acres within 3 km of transmission, under $25k an acre, no flood risk"* and gets structured filters back, with anything it could not express listed as ignored rather than silently dropped.
+2. **It explains the answer in the reader's terms**, quoting only figures the engine produced, and saying plainly when a driver behind that answer is assumed rather than sourced.
+3. **It surfaces fragility.** The engine computes the point at which each input would flip the ranking; the narrative names the one worth checking before anyone commits money.
 
-## Prerequisites
+**How teams reach outcomes faster.** The output is a shareable, auditable comparison rather than an opinion: a ranked set, an itemized cost breakdown per site, a low/base/high band, an explicit list of what could not be priced, and a provenance table naming every source. A colleague who disagrees with the answer can find the figure they disagree with and check it — which is the part that usually takes the longest.
 
-- **Node.js 20+** (check with `node --version`)
-- **npm 10+**
-
----
-
-## Quick start
-
-### 1. Clone and install
-
-```bash
-# Install backend dependencies
-cd backend
-npm install
-
-# Install frontend dependencies
-cd ../frontend
-npm install
-```
-
-### 2. Environment variables (backend)
-
-Copy `.env.example` to `backend/.env` and fill in your credentials:
-
-```bash
-cp .env.example backend/.env
-```
-
-| Variable | Description |
-|---|---|
-| `WATSONX_API_KEY` | IBM watsonx API key (not required for the stub; required for narrative generation) |
-| `WATSONX_PROJECT_ID` | IBM watsonx project ID |
-| `PORT` | Port for the backend server (default: `3001`) |
-
-### 3. Run both servers
-
-Open **two terminals**:
-
-**Terminal 1, backend**
-```bash
-cd backend
-npm run dev
-# → Listening on http://localhost:3001
-```
-
-**Terminal 2, frontend**
-```bash
-cd frontend
-npm run dev
-# → http://localhost:5173
-```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+**Decision support, not decision replacement.** The tool refuses to guess. A region missing a required driver is kept out of the ranking and named. A parcel with no land value is published in a separate list rather than ranked first for being free. Payback is "not applicable" until a human supplies a revenue assumption. Those refusals are the feature.
 
 ---
 
-## Deployment
+## What it does
 
-The app deploys to **[Render](https://render.com)** from the `render.yaml` blueprint in the repo root.
-One `git push` provisions both services automatically.
+leepr is one engine seen at two grains, plus an AI layer around it.
 
-### Services
+### 1. Compare markets
 
-| Service | Type | Render name |
-|---|---|---|
-| Backend | Node web service | `leepr-backend` |
-| Frontend | Static site | `leepr-frontend` |
+Pick two to four candidate markets — from a list, or by pinning them on a US map shaded by any cost driver. Describe the build: capacity, cooling overhead, water use, planning life, discount rate, and optionally what you expect to earn.
 
-Render injects the backend host into `VITE_API_URL` at frontend build time.
-`CORS_ORIGIN` may be set to the deployed frontend URL after provisioning; when
-it is unset, the backend accepts all origins.
+You get back a ranked set with, for each site:
 
-### Secrets, entered in the Render dashboard
+- **Itemized CapEx** — land, construction, electrical, cooling, IT fit-out
+- **Itemized annual OpEx** — power, water, staff, maintenance, property tax, connectivity
+- **Whole-life cost in today's money**, discounted year by year, and lifetime cost per kW
+- **A low / base / high band** recomputed at the scenario boundary, not scaled
+- **Payback**, once you supply expected revenue
+- **The flip point** — how far each input would have to move to change the ranking
+- **A written recommendation** citing the engine's figures
+- **A provenance table** naming the source and date behind every input
 
-Three secrets must be set manually in the Render dashboard (they are marked
-`sync: false` in `render.yaml` so they are never stored in the file):
+### 2. Compare parcels
 
-| Variable | Where to get it |
-|---|---|
-| `WATSONX_API_KEY` | IBM Cloud API key for your watsonx.ai instance |
-| `WATSONX_PROJECT_ID` | IBM watsonx.ai project UUID |
-| `EIA_API_KEY` | [eia.gov/opendata](https://www.eia.gov/opendata/), free registration |
+The same question, closer in. Individual plots inside the pilot county — Bexar County, Texas — priced on the whole build rather than the asking price: the land, reaching the transmission line, reaching fiber, leveling the ground, and carrying cost through entitlement.
 
-### Free-tier cold start
+Filter by acreage, land price, distance to transmission and flood exposure, or describe what you want in a sentence. Open any parcel for its cost waterfall and provenance.
 
-Both services run on Render's free tier. The backend sleeps after roughly
-15 minutes of inactivity and takes up to about 50 seconds to wake on the
-first request. The frontend shows a notice after 3 seconds of waiting
-and the request times out cleanly after 90 seconds with a message to retry.
+### 3. Read the working
 
-### Live URL
+Every screen is auditable. `#/how-to-use` explains the ranking, why each variable matters, the cost formulas, and the worked example. `#/sources`, `#/the-drivers` and `#/known-gaps` publish the dataset's own coverage — including what is missing.
 
-> **TODO:** replace this placeholder once the first deploy completes.
->
-> Frontend: `https://leepr-frontend.onrender.com`
+---
+
+## The rule the project is built on
+
+> **The language model never generates a number.**
+
+Every cost and financial figure is deterministic TypeScript in `backend/src/engine/`, under test. Build cost, running cost, discounting, the scenario bands, the weighted ranking and the sensitivity flip points are plain code. Run the same input twice and you get the same answer; any figure in the output traces to a line of arithmetic.
+
+The model's job is language: reading messy input, and explaining output it is not allowed to invent. This is enforced, not merely intended — the per-parcel note is validated so that **every numeric token in the prose must appear in the estimate**, and the note is discarded in favour of deterministic text if it does not.
+
+The rule extends to honesty about gaps:
+
+- A site missing a required driver is **excluded from the ranking and named**, rather than treated as costing zero. A cost the data never captured would otherwise read as a cost that is not there — and since cost carries half the ranking weight, the site with the least data behind it would win.
+- Assumptions that are not regional lookups — cooling overhead, maintenance rate, staffing baseline — live in `backend/src/engine/assumptions.ts` with their basis, source, date and working, and are returned with every estimate.
+- `grid_interconnection_years` is `null` everywhere, because nobody publishes the large-load queue. It says so rather than modelling a guess.
 
 ---
 
 ## Architecture
 
 ```
-leepr/
-├── data/regions.json        ← cost-driver database (source_url + last_verified on every value)
-├── docs/SCHEMA.md           ← canonical input/output schema (source of truth)
-├── docs/BOB.md              ← how IBM Bob was used, with session transcripts
-├── backend/                 ← Node 20 + TypeScript + Express
-│   └── src/
-│       ├── engine/          ← deterministic cost/ranking math (NO LLM calls)
-│       ├── llm/             ← watsonx/Granite input parsing + narrative (no new numbers)
-│       ├── routes/          ← POST /estimate, GET /health
-│       └── schemas/         ← Zod input + output validation
-└── frontend/                ← React 18 + Vite + Tailwind + Recharts
-    └── src/
-        ├── components/      ← SiteForm, RankingTable, CostBreakdownChart, SensitivityChart, …
-        ├── hooks/           ← useEstimate (API client)
-        └── types/schema.ts  ← TypeScript types mirroring docs/SCHEMA.md
+backend/
+  src/
+    engine/            deterministic cost math — no I/O, no LLM
+      capex.ts         land, construction, electrical, cooling, fit-out
+      opex.ts          power, water, staff, maintenance, tax, connectivity
+      finance.ts       discounting, NPV, bands, payback
+      rank.ts          weighted ranking across cost, risk, sustainability, latency
+      sensitivity.ts   the point at which each driver flips the order
+      assumptions.ts   every non-regional constant, with its source
+      index.ts         orchestration + the unevaluable rule
+    parcel/            the same engine at parcel grain
+      drivers.ts       parcel row → driver bundle, with basis preserved
+      cost.ts          interconnect, fiber, entitlement, sitework
+      score.ts         per-parcel estimate + cached batch scoring
+      repository.ts    the ONLY reader of parcel files (PostGIS swaps in here)
+      spatialIndex.ts  Flatbush index for bbox queries
+      geometry.ts      WKT handling
+    ingest/            re-runnable data pipeline
+      pipeline.ts      paged ArcGIS fetch, spatial joins, provenance, coverage
+      countyConfig.ts  the contract a county must satisfy
+      counties/        one file per county — Bexar today
+    llm/               language only, never arithmetic
+      narrative.ts     the recommendation
+      parseInput.ts    free text → typed overrides
+      parseCriteria.ts a sentence → parcel filters and weights
+      parcelNote.ts    per-parcel explanation, number-guarded
+      fallback.ts      deterministic text when watsonx is unreachable
+    routes/            estimate, parcels, health
+    schemas/           Zod in and out — docs/SCHEMA.md is the source of truth
+frontend/
+  src/
+    screens/           Home, Setup, Running, Results, MapScreen,
+                       ParcelSearch, ParcelDetail
+    components/map/    UsMap (SVG choropleth), ParcelMap (MapLibre)
+    lib/               api clients, client-side engine mirror, ramp, theme
+    pages/DocPage.tsx  every reference page
+data/
+  regions.json         77 regions × 13 drivers, each with source and date
+  parcels/             the ingested parcel layer, plus a coverage meta file
+docs/
+  SCHEMA.md            API contract — written before any schema change
+  DATA-SOURCES.md      every source, its licence and its retrieval date
+  work-orders/         the written briefs this was built from
 ```
 
-**Core rule:** The LLM layer never generates numbers. All cost and financial math is in `backend/src/engine/` as deterministic, tested, plain code.
+**Stack.** TypeScript throughout. Express + Zod on the backend; React 18 + Vite + Tailwind on the frontend, with Radix primitives, Framer Motion, MapLibre GL for parcel geography and a hand-built SVG choropleth for the national view. Turf for spatial joins, Flatbush for spatial indexing, Vitest for tests.
 
-**Second rule:** `docs/SCHEMA.md` is the source of truth. Any API shape change is written there first, then into the Zod schema, then into the frontend type.
+**No paid dependencies and no map API key.** The basemap is OpenFreeMap; the tile layer needs no account and cannot expire mid-demo.
+
+---
+
+## The AI layer
+
+IBM **watsonx** with **Granite** (`ibm/granite-3-3-8b-instruct`), used in three bounded places:
+
+| Where | What it does | Guard |
+|---|---|---|
+| `parseInput.ts` | Free-text site description → typed overrides | Hallucinated region keys are dropped; parsed values are stamped `source_url: "user-supplied description"` so a typed figure can never inherit a dataset's citation |
+| `parseCriteria.ts` | A sentence → parcel filters and ranking weights | Every proposed filter is validated against the real vocabulary; anything outside it is dropped and reported. The interpretation is shown as editable chips **before** it changes any result |
+| `parcelNote.ts` | Two or three sentences on what drives a parcel's cost | Every numeric token must appear in the estimate or the note is discarded. Generated on demand for the parcel being viewed, never batched |
+| `narrative.ts` | The ranked recommendation | Quotes engine figures; names the fragile input |
+
+**Every path has a deterministic fallback.** With no credentials, the criteria parser is a keyword-and-unit matcher, and the narrative is assembled from the same engine figures. The interface says which produced the words — a `wx` badge for Granite, `≡` for the template — so a reader always knows. The tool is fully usable with the model switched off, which is also how it behaves during a credential outage.
+
+---
+
+## Data and provenance
+
+**77 regions × 13 drivers = 1,001 cells.** 279 sourced, 275 modeled, **447 empty and shown as empty**. 13 regions carry everything the engine requires to rank a site.
+
+Every cell records `value`, `basis` (`sourced` / `modeled` / `assumed`), `source_url`, `last_verified`, and — when modeled — the derivation.
+
+| Source | What it provides |
+|---|---|
+| **US EIA** | Industrial retail electricity rates |
+| **US BLS OES** | Wage indices for the relevant occupations |
+| **FEMA National Risk Index** | Natural hazard exposure, US |
+| **ThinkHazard** (GFDRR) | Natural hazard exposure, international |
+| **Eurostat** + **ECB** | European rates and currency conversion |
+| **Our World in Data** | International generation mix |
+| **PeeringDB** | Interconnection facility locations |
+| **Texas Comptroller** | Appraisal ratios for the parcel land model |
+| **Bexar CAD** | Parcel geometry, acreage, land value, use codes |
+
+The interface never overstates this. `#/known-gaps` publishes what is missing, `#/sources` publishes every URL and date, and coverage counts are generated from the data by `frontend/scripts/gen-coverage.mjs` rather than typed by hand — so the page cannot drift from the dataset.
+
+**Land values are modeled, not market prices.** Texas is a non-disclosure state: no sale prices are published, so parcel land figures are appraisal-district values divided by the Comptroller's appraisal ratio. The tool says so wherever the figure appears.
+
+---
+
+## The parcel tool
+
+**3,040 candidate parcels** in Bexar County, from **3,516** at 25 acres and above, after filtering on land value, land-use code and distance to transmission. The ingest publishes its funnel and per-driver basis counts to `data/parcels/bexar.meta.json`, so the count on screen is one you can audit.
+
+The funnel ends at 3,046 rows and the interface says 3,040, because a handful of rows are parts of the same multi-part parcel. The backend hands out one row per id and the coverage generator counts unique ids, so the two agree on what a parcel is.
+
+Per parcel, beyond the regional drivers:
+
+| Driver | Derivation |
+|---|---|
+| `land_cost_usd` | Appraised land value ÷ appraisal ratio × acres — **modeled** |
+| `interconnect_capex_usd` | Distance to nearest ≥138 kV line × $/mile + substation allowance |
+| `fiber_capex_usd` | Distance to nearest interconnection facility × $/mile conduit |
+| `entitlement_cost_usd` | Carrying cost over the entitlement period |
+| `sitework_usd` | Earthwork from terrain |
+| `flood_buildable_pct` | Share of the parcel outside the mapped flood zone |
+
+The map draws real parcel outlines. Below the handover zoom it falls back to dots, because a 25-acre plot with the whole county in frame is smaller than a pixel — and a 25-acre square and a 25-acre roadside ribbon cost the same to buy and build very differently.
+
+**Bexar is the pilot county.** The pipeline is county-parameterised: `backend/src/ingest/counties/` holds one config per county, and `pipeline.ts` contains no county literals, enforced by test.
+
+---
+
+## Running it
+
+**Requirements:** Node 20+.
+
+```bash
+git clone https://github.com/mspriing/BOB-datacenter.git
+cd BOB-datacenter
+```
+
+Backend, in one terminal:
+
+```bash
+npm --prefix backend install && npm --prefix backend run dev
+```
+
+Frontend, in another:
+
+```bash
+npm --prefix frontend install && npm --prefix frontend run dev
+```
+
+Then open **http://localhost:5173**. The frontend proxies `/api` to `localhost:3001`, so start the backend first.
+
+**There is no root `package.json`** — install and run each side with `--prefix`, or `cd` into it.
+
+**watsonx is optional.** With no credentials the tool runs its deterministic paths and says so on screen. To enable Granite, copy `.env.example` to `backend/.env` and fill in `WATSONX_API_KEY` and `WATSONX_PROJECT_ID`, then:
+
+```bash
+npm --prefix backend run watsonx:smoke
+```
+
+Re-running the data pipelines:
+
+```bash
+npm --prefix backend run ingest          # regional dataset
+npm --prefix backend run ingest:parcels  # the parcel layer
+```
+
+Both cache raw responses under `data/raw/` and produce byte-identical output from a warm cache.
 
 ---
 
 ## API
 
-### `POST /estimate`
+Documented in full in [`docs/SCHEMA.md`](docs/SCHEMA.md), which is written **before** any schema change, per `AGENTS.md`.
 
-Submit 2 to 4 candidate sites and receive a full cost analysis.
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/health` | Liveness, and which narrative path is active |
+| `POST` | `/estimate` | Price and rank 2–4 sites |
+| `GET` | `/parcels` | Paged, filtered, ranked parcel list |
+| `GET` | `/parcels/:id` | One parcel's full estimate |
+| `POST` | `/parcels/search` | The same, with criteria in a JSON body |
+| `POST` | `/parcels/criteria` | A sentence → filters and weights. **Interprets only; runs nothing** |
 
-Request and response shapes are documented in [`docs/SCHEMA.md`](docs/SCHEMA.md).
-
-**Quick test with curl:**
-```bash
-curl -s -X POST http://localhost:3001/estimate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "project": {
-      "name": "Test",
-      "capacity_kw": 10000,
-      "design_pue": 1.4,
-      "lifetime_years": 20,
-      "discount_rate": 0.08
-    },
-    "sites": [
-      { "site_id": "site-A", "label": "Phoenix AZ",   "region_key": "us-az-phoenix" },
-      { "site_id": "site-B", "label": "Columbus OH",  "region_key": "us-oh-columbus" }
-    ]
-  }' | jq .
-```
-
-### `GET /health`
-
-```bash
-curl http://localhost:3001/health
-```
+Every route is mounted at both `/x` and `/api/x`. Production adds rate limiting and an origin allow-list.
 
 ---
 
-## Reading the output
+## Testing
 
-Two cost figures are reported per site and they are not the same thing.
+```bash
+npm --prefix backend test
+```
 
-`capex_per_kw` is total construction capital divided by capacity. This is the number comparable to published data center build costs, typically $9,000 to $12,000 per kW.
+**264 tests across 23 files.** They cover the arithmetic, and also the project's own rules:
 
-`lifetime_cost_per_kw` is everything the site costs over the full NPV horizon, construction plus running costs, divided by capacity. It is necessarily larger. It is the figure that decides the ranking, because a cheap site to build with expensive power is not a cheap site.
+- Capex, opex, discounting, ranking and sensitivity against worked examples
+- The unevaluable rule — a site with a missing driver stays out of the ranking
+- Revenue and payback, including that payback is **withheld** rather than negative, and that adding revenue moves neither the NPV nor the lifetime cost per kW
+- Criteria parsing, including that an invented filter key is dropped and named
+- The parcel note's number guard, and that notes are never batch-generated
+- Ingest determinism, spatial math, and county-config invariants enforced by grep
+- Repository path validation against traversal
 
 ---
 
-## Development
+## Deployment
 
-### Run backend tests
-```bash
-cd backend
-npm test
-```
+Both services deploy from `render.yaml`:
 
-### Build for production
-```bash
-# Backend
-cd backend && npm run build
+- **leepr-backend** — Node web service, health-checked at `/health`
+- **leepr-frontend** — static site, SPA-rewritten, built with `VITE_API_URL` compiled in
 
-# Frontend
-cd frontend && npm run build
-```
+Pushing to `main` rebuilds both. A failed build leaves the previous version serving, so the deployed JS bundle — content-hashed, and therefore impossible to serve stale — is the thing to check when confirming a release, not the page.
 
 ---
 
-## Build status
+## Against the judging criteria
 
-> **Current state:** End to end working. `/estimate` runs the deterministic
-> engine and returns a full analysis. The closing paragraph comes from
-> watsonx/Granite where credentials are configured and from the deterministic
-> template otherwise, and the interface says which. 212 backend tests passing.
+**Technical execution.** A deterministic engine under 264 tests, a re-runnable ingest pipeline with provenance on every cell, a repository interface that makes the PostGIS migration a loader rather than a rewrite, an LLM layer whose output is validated against the engine's own numbers, and a frontend that degrades correctly when the API, the basemap or the model is unavailable.
 
-| Module | Status |
-|---|---|
-| `/estimate` endpoint (engine + narrative) | ✅ Working |
-| Zod input/output validation | ✅ Done |
-| `data/regions.json` | ✅ Done |
-| `docs/SCHEMA.md` | ✅ Done |
-| Deterministic cost engine (CapEx/OpEx/NPV/rank/sensitivity) | ✅ Done + tested |
-| watsonx/Granite narrative + offline fallback | ✅ Done + tested (the hosted demo runs the fallback) |
-| Free-text site parsing into overrides | ✅ Done + tested |
-| User-set decision weights | ✅ Done |
-| React results dashboard | ✅ Done |
-| Parcel-grain comparison for Bexar County, Texas | ✅ Done + tested |
+**Innovation.** The interesting choice is what the AI is *not* allowed to do. Putting a hard wall between the model and the arithmetic — and enforcing it with a token-level guard on generated prose — produces something a developer can take to an investment committee. Most AI tools in this space are the inverse: a model that produces figures and a UI that hopes.
 
-### Verifying the watsonx (live) path
+**Feasibility.** It is running. Public data, no paid APIs, no map key, free-tier hosting, and a deterministic path for every AI feature so nothing depends on a credential holding.
 
-The app silently uses the deterministic fallback whenever `WATSONX_*` credentials
-are missing or the call fails, so a working UI alone does **not** prove watsonx is
-in the loop. To confirm the live path:
+**Challenge fit.** Decision support for a decision that is expensive, slow and evidence-heavy — with the AI doing the gathering, the reading and the explaining, and a human keeping the judgement.
 
-```bash
-cd backend
-cp ../.env.example .env      # then paste your IBM Cloud API key + project UUID
-npm install                  # picks up dotenv (new dependency)
-npm run watsonx:smoke        # one live Granite call, prints source = "watsonx" on success
-```
+**Real-world impact.** Data center siting is a live constraint on AI infrastructure buildout, and the interconnection queue has become its binding one. A tool that prices whole-life cost from public data, refuses to invent what it does not know, and shows its working, is useful to a developer, a county assessing an application, and anyone checking a claim made about either.
 
-`backend/.env` is loaded automatically by `npm run dev` (via `dotenv`). The
-Recommendation card in the UI shows the source badge ("IBM watsonx, Granite" vs
-"Deterministic template") so the demo makes the watsonx call visible on screen.
+---
+
+## Known gaps
+
+Published here for the same reason they are published in the interface.
+
+- **Interconnection wait is not modelled.** `grid_interconnection_years` is null everywhere. ERCOT publishes the large-load queue only as PDFs, and in 2026 that wait dominates siting economics more than land price does. A fabricated figure would be the most misleading number this tool could produce.
+- **Flood data is incomplete.** The FEMA layer fails at deep pagination offsets, so `flood_buildable_pct` is unpopulated for the current parcel run.
+- **Zoning is unavailable for Bexar.** San Antonio's service requires a token. Texas counties have no general zoning authority outside city limits, so unincorporated parcels are tagged accordingly rather than guessed.
+- **One county.** Bexar is the pilot. The pipeline is parameterised for more.
+- **Land prices are modeled**, not transactions — see above.
+- **Payback depends on a revenue figure you supply.** It is labelled as your input wherever it appears.
+
+`#/known-gaps` carries the same list, kept in step with the data.
+
+---
+
+## How this was built
+
+Development was directed through written work orders rather than conversation — each naming the file, the symptom, the fix and the acceptance test, with one commit per task. [`docs/BOB.md`](docs/BOB.md) records how IBM Bob was used and what that produced; [`docs/work-orders/`](docs/work-orders/) holds the briefs themselves, including the ones that repaired an ingest that had never successfully run, and the plan behind the parcel tool.
+
+Two rules from [`AGENTS.md`](AGENTS.md) shaped everything above:
+
+1. All cost and financial math lives in the backend as deterministic, tested code. **The LLM never generates numbers.**
+2. `docs/SCHEMA.md` is the source of truth. An API change is written there first, then into the Zod schema, then into the frontend type.
+
+---
+
+## Licence
+
+Apache 2.0. See [`NOTICE`](NOTICE) for third-party data attributions and their terms — several sources require the source to be named, and it is.
+
+**leepr is not investment advice.** Everything it produces is for informational purposes only, is an estimate built from public data and assumptions you enter, and is not a valuation, appraisal, quote or offer. Take independent professional advice before committing money to a site.
