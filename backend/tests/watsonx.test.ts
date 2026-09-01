@@ -132,6 +132,19 @@ describe('watsonx live path', () => {
     expect(result.recommendation).not.toContain('$999M')
   })
 
+  it('does not authorize a numeric claim injected through a site label', async () => {
+    const out = await engineOutput()
+    installFetch([() => response(200, graniteBody('Renewable availability is 47.3%.'))])
+
+    const result = await generateNarrative(out, {
+      ...labels,
+      nova: 'Northern Virginia 47.3%',
+    }, { skipCache: true })
+
+    expect(result.source).toBe('fallback')
+    expect(result.recommendation).not.toContain('47.3%')
+  })
+
   it('does not authorize a dollar claim from an unrelated project-year number', async () => {
     const out = await engineOutput()
     installFetch([() => response(200, graniteBody('This choice saves $15M.'))])

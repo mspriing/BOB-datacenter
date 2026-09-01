@@ -119,6 +119,10 @@ export function Setup({
     && project.design_pue >= 1 && project.design_pue <= 3
     && (project.design_wue ?? 0.4) >= 0 && (project.design_wue ?? 0.4) <= 2.5
     && project.discount_rate >= 0.01 && project.discount_rate <= 0.30
+    && (project.revenue_per_kw_month === undefined
+      || (project.revenue_per_kw_month >= 0 && project.revenue_per_kw_month <= 10_000))
+    && (project.occupancy_pct === undefined
+      || (project.occupancy_pct >= 0 && project.occupancy_pct <= 1))
     && sites.every(site => (siteSetup[site.key]?.label ?? site.label).trim().length > 0)
 
   return (

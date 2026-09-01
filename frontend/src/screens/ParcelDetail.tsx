@@ -81,6 +81,7 @@ export function ParcelDetail({ parcelId, project, onBack }: {
 
   useEffect(() => {
     let live = true
+    const controller = new AbortController()
     setEst(null); setError(null); setSnapshotDate(null)
     fetchParcel(parcelId, {
       capacity_kw: project.capacity_kw,
@@ -90,12 +91,15 @@ export function ParcelDetail({ parcelId, project, onBack }: {
       discount_rate: project.discount_rate,
       revenue_per_kw_month: project.revenue_per_kw_month,
       occupancy_pct: project.occupancy_pct,
-    }).then(r => {
+    }, controller.signal).then(r => {
       if (!live) return
       if (r.error || !r.data) setError(r.error ?? 'No response')
       else { setEst(r.data as ParcelEstimate); setSnapshotDate(r.offline ? r.capturedAt ?? 'an earlier run' : null) }
     })
-    return () => { live = false }
+    return () => {
+      live = false
+      controller.abort()
+    }
   }, [parcelId, project])
 
   if (error) {
@@ -300,13 +304,14 @@ export function ParcelDetail({ parcelId, project, onBack }: {
           <Card title="Where every figure comes from"
             note={`${est.provenance.length} figures`}>
             <div className="max-w-full overflow-x-auto overscroll-x-contain">
-              <table className="min-w-[560px] w-full text-left text-[13px]">
+              <table className="min-w-[720px] w-full text-left text-[13px]">
                 <thead>
                   <tr className="border-b border-[var(--line2)] text-mid">
                     <th className="px-5 py-2.5 font-medium">Figure</th>
                     <th className="px-3 py-2.5 font-medium">Value</th>
                     <th className="px-3 py-2.5 font-medium">Basis</th>
                     <th className="px-5 py-2.5 font-medium">Checked</th>
+                    <th className="px-5 py-2.5 font-medium">Source</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -333,6 +338,12 @@ export function ParcelDetail({ parcelId, project, onBack }: {
                             : <span className="text-[12.5px] text-mid">none</span>}
                         </td>
                         <td className="px-5 py-2.5 text-mid">{p.last_verified || 'not dated'}</td>
+                        <td className="px-5 py-2.5">
+                          {p.source_url
+                            ? <a href={p.source_url} target="_blank" rel="noreferrer"
+                                className="link-inline whitespace-nowrap">Open source</a>
+                            : <span className="text-mid">not provided</span>}
+                        </td>
                       </tr>
                     )
                   })}

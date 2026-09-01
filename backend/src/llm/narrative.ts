@@ -22,6 +22,10 @@ import { z } from 'zod'
 /** Granite returns the narrative body WITHOUT a `source` field — we add it. */
 const NarrativeModelSchema = NarrativeSchema.omit({ source: true })
 
+function neutralizeLabelNumbers(label: string): string {
+  return label.replace(/-?\d[\d,]*(?:\.\d+)?%?/g, '[number]')
+}
+
 function numericTokens(text: string): string[] {
   return (text.match(/-?\d[\d,]*(?:\.\d+)?/g) ?? [])
     .map((token) => token.replace(/,/g, '').replace(/^-/, ''))
@@ -80,7 +84,10 @@ export async function generateNarrative(
   siteLabels: Record<string, string>,
   opts: NarrativeOptions = {},
 ): Promise<NarrativeResult> {
-  const prompt = buildNarrativePrompt(output, siteLabels)
+  const promptLabels = Object.fromEntries(
+    Object.entries(siteLabels).map(([siteId, label]) => [siteId, neutralizeLabelNumbers(label)]),
+  )
+  const prompt = buildNarrativePrompt(output, promptLabels)
 
   // ── 1. Cache ────────────────────────────────────────────────────────────────
   if (!opts.skipCache) {

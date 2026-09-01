@@ -88,6 +88,9 @@ export function rankSites(sites: RankInput[], weights?: Partial<Weights>): RankR
 
     const totalWeight = dims.reduce((s, d) => s + d.weight, 0)
     const rawScore    = dims.reduce((s, d) => s + d.weight * d.score, 0)
+    if (totalWeight === 0) {
+      throw new Error(`No weighted ranking dimensions are available for site "${site.site_id}"`)
+    }
     // Renormalise to keep the score on [0,1]
     const score = rawScore / totalWeight
 

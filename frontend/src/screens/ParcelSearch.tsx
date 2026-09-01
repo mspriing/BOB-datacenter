@@ -89,6 +89,7 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
   const [parcels, setParcels] = useState<ParcelSummary[]>([])
   const [mapParcels, setMapParcels] = useState<ParcelSummary[]>([])
   const [mapTotal, setMapTotal] = useState<number | null>(null)
+  const [mapError, setMapError] = useState<string | null>(null)
   const [total, setTotal] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -115,10 +116,12 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
   // Debounced fetch — typing in a number field should not fire a request per keystroke.
   useEffect(() => {
     const token = ++runToken.current
+    const controller = new AbortController()
+    let active = true
     setLoading(true)
     const t = setTimeout(async () => {
-      const r = await fetchParcels(query)
-      if (token !== runToken.current) return
+      const r = await fetchParcels(query, controller.signal)
+      if (!active || token !== runToken.current) return
       setLoading(false)
       if (r.error || !r.data) { setError(r.error ?? 'No response'); setParcels([]); setTotal(0); return }
       setError(null)
@@ -126,7 +129,11 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
       setParcels(r.data.parcels)
       setTotal(r.data.total)
     }, 250)
-    return () => clearTimeout(t)
+    return () => {
+      active = false
+      clearTimeout(t)
+      controller.abort()
+    }
   }, [query])
 
   const mapQuery = useMemo<ParcelQuery>(() => ({
@@ -153,14 +160,30 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
   const mapToken = useRef(0)
   useEffect(() => {
     const token = ++mapToken.current
-    fetchParcelMap(mapQuery).then(r => {
-      if (token !== mapToken.current || r.error || !r.data) return
+    const controller = new AbortController()
+    let active = true
+    setMapError(null)
+    setMapParcels([])
+    setMapTotal(null)
+    fetchParcelMap(mapQuery, controller.signal).then(r => {
+      if (!active || token !== mapToken.current) return
+      if (r.error || !r.data) {
+        setMapError(r.error ?? 'No response')
+        setMapParcels([])
+        setMapTotal(0)
+        return
+      }
       setMapParcels(r.data.parcels)
       setMapTotal(r.data.total)
     })
+    return () => {
+      active = false
+      controller.abort()
+    }
   }, [mapQuery])
 
   useEffect(() => {
+    const controller = new AbortController()
     fetchParcels({
       county: 'bexar',
       per_page: 1,
@@ -169,9 +192,10 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
       design_wue: project.design_wue,
       lifetime_years: project.lifetime_years,
       discount_rate: project.discount_rate,
-    }).then(r => {
+    }, controller.signal).then(r => {
       if (r.data) setBaseline(r.data.total)
     })
+    return () => controller.abort()
   }, [project])
 
   const removed = useMemo(
@@ -413,7 +437,11 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
                 </p>
               )}
 
-              <button className="btn btn-primary w-full" onClick={() => setQuery(draft)}>
+              <button className="btn btn-primary w-full" onClick={() => {
+                const next = { ...draft, page: 1 }
+                setDraft(next)
+                setQuery(next)
+              }}>
                 Run the comparison
               </button>
             </div>
@@ -439,12 +467,26 @@ export function ParcelSearch({ project, onOpenParcel, go }: {
           <Card weave title="Parcel map"
             note={`${mapTotal?.toLocaleString('en-US') ?? '…'} parcels`}>
             <div className="p-4 sm:p-5">
-              <ParcelMap parcels={mapParcels} shade={shade} selectedId={previewId ?? selectedId}
-                onSelect={selectParcel} className="h-[320px] sm:h-[440px]" />
-              <p className="mt-3 text-[13px] leading-[1.55] text-mid">
-                Showing all {mapTotal?.toLocaleString('en-US') ?? 'matching'} parcels that match
-                your filters. Zoom in to see each plot&apos;s real outline; click one to open it.
-              </p>
+              {mapError ? (
+                <div className="flex min-h-[320px] items-center justify-center sm:min-h-[440px]">
+                  <div className="flex max-w-[42ch] items-start gap-3 text-[14px] leading-[1.6] text-mid">
+                    <AlertTriangle size={17} strokeWidth={2.2} className="mt-[2px] shrink-0 text-bad" aria-hidden />
+                    <div>
+                      <p className="font-semibold text-ink2">Could not refresh the parcel map</p>
+                      <p>{mapError}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <ParcelMap parcels={mapParcels} shade={shade} selectedId={previewId ?? selectedId}
+                    onSelect={selectParcel} className="h-[320px] sm:h-[440px]" />
+                  <p className="mt-3 text-[13px] leading-[1.55] text-mid">
+                    Showing all {mapTotal?.toLocaleString('en-US') ?? 'matching'} parcels that match
+                    your filters. Zoom in to see each plot&apos;s real outline; click one to open it.
+                  </p>
+                </>
+              )}
             </div>
           </Card>
 

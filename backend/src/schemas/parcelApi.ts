@@ -34,17 +34,25 @@ const WeightsSchema = z.object({
 // ── Filter vocabulary (shared by GET query params and POST body) ──────────────
 
 export const FiltersSchema = z.object({
-  min_acres:               z.coerce.number().optional(),
-  max_acres:               z.coerce.number().optional(),
-  max_land_cost_per_acre:  z.coerce.number().optional(),
-  max_dist_tx_m:           z.coerce.number().optional(),
+  min_acres:               z.coerce.number().min(0).optional(),
+  max_acres:               z.coerce.number().min(0).optional(),
+  max_land_cost_per_acre:  z.coerce.number().min(0).optional(),
+  max_dist_tx_m:           z.coerce.number().min(0).optional(),
   exclude_flood:           z.coerce.boolean().optional(),
   zoning:                  z.array(z.string()).optional(),
   bbox: z.object({
     minLng: z.number(), minLat: z.number(),
     maxLng: z.number(), maxLat: z.number(),
-  }).optional(),
-})
+  }).refine(
+    bbox => bbox.minLng <= bbox.maxLng && bbox.minLat <= bbox.maxLat,
+    { message: 'bbox minimum coordinates must not exceed maximum coordinates' },
+  ).optional(),
+}).refine(
+  filters => filters.min_acres === undefined
+    || filters.max_acres === undefined
+    || filters.min_acres <= filters.max_acres,
+  { message: 'min_acres must not exceed max_acres' },
+)
 
 export type ParcelFilters = z.infer<typeof FiltersSchema>
 
@@ -63,13 +71,17 @@ export const ListQuerySchema = ScoringContextSchema.extend({
       ctx.addIssue({ code: 'custom', message: 'bbox must be minLng,minLat,maxLng,maxLat' })
       return z.NEVER
     }
+    if (parts[0] > parts[2] || parts[1] > parts[3]) {
+      ctx.addIssue({ code: 'custom', message: 'bbox minimum coordinates must not exceed maximum coordinates' })
+      return z.NEVER
+    }
     return { minLng: parts[0], minLat: parts[1], maxLng: parts[2], maxLat: parts[3] }
   }),
 
-  min_acres:               z.coerce.number().optional(),
-  max_acres:               z.coerce.number().optional(),
-  max_land_cost_per_acre:  z.coerce.number().optional(),
-  max_dist_tx_m:           z.coerce.number().optional(),
+  min_acres:               z.coerce.number().min(0).optional(),
+  max_acres:               z.coerce.number().min(0).optional(),
+  max_land_cost_per_acre:  z.coerce.number().min(0).optional(),
+  max_dist_tx_m:           z.coerce.number().min(0).optional(),
   exclude_flood:           z.string().optional().transform(s => s === 'true' ? true : s === 'false' ? false : undefined),
 
   // Comma-separated zoning tags
@@ -92,7 +104,12 @@ export const ListQuerySchema = ScoringContextSchema.extend({
       return z.NEVER
     }
   }),
-})
+}).refine(
+  query => query.min_acres === undefined
+    || query.max_acres === undefined
+    || query.min_acres <= query.max_acres,
+  { message: 'min_acres must not exceed max_acres' },
+)
 
 // ── GET /parcels/:id query params ─────────────────────────────────────────────
 

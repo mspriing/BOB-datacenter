@@ -17,8 +17,8 @@ services:
         value: ibm/granite-3-3-8b-instruct
       - key: EIA_API_KEY
         sync: false
-      # Leave blank on first deploy: the server allows all origins when this is
-      # unset. After the frontend is live, paste its URL here to lock CORS down.
+      # Optional override for the production frontend origin. When blank, the
+      # server allows only https://leepr-frontend.onrender.com.
       - key: CORS_ORIGIN
         sync: false
 

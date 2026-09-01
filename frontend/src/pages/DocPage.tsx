@@ -181,13 +181,20 @@ const SOURCES = [
 ]
 
 /* ── page bodies ─────────────────────────────────────────────────────────── */
-export function DocPage({ route, go }: { route: Route; go: (r: Route) => void }) {
+export function DocPage({ route, go, openWorkedExample, openingWorkedExample = false }: {
+  route: Route
+  go: (r: Route) => void
+  openWorkedExample: () => void
+  openingWorkedExample?: boolean
+}) {
   switch (route) {
     /* ── The tool ────────────────────────────────────────────────────────── */
     case 'how-ranking-works':
     case 'driver-meanings':
     case 'cost-method':
-      return <HowToUsePage go={go} route={route} />
+      return <HowToUsePage go={go} route={route}
+        openWorkedExample={openWorkedExample}
+        openingWorkedExample={openingWorkedExample} />
 
     case 'release-notes':
       return (
@@ -253,7 +260,9 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
       )
 
     case 'the-drivers':
-      return <HowToUsePage go={go} route={route} />
+      return <HowToUsePage go={go} route={route}
+        openWorkedExample={openWorkedExample}
+        openingWorkedExample={openingWorkedExample} />
 
     case 'sources':
       return (
@@ -398,7 +407,9 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
 
     /* ── How to use ────────────────────────────────────────────────────────── */
     case 'how-to-use':
-      return <HowToUsePage go={go} route={route} surface="app" />
+      return <HowToUsePage go={go} route={route} surface="app"
+        openWorkedExample={openWorkedExample}
+        openingWorkedExample={openingWorkedExample} />
 
     default:
       return null
@@ -406,10 +417,18 @@ export function DocPage({ route, go }: { route: Route; go: (r: Route) => void })
 }
 
 /* ── how-to-use page — one place for everything ─────────────────────────── */
-function HowToUsePage({ go, route = 'how-to-use', surface = 'docs' }: {
+function HowToUsePage({
+  go,
+  route = 'how-to-use',
+  surface = 'docs',
+  openWorkedExample,
+  openingWorkedExample,
+}: {
   go: (r: Route) => void
   route?: Route
   surface?: 'docs' | 'app'
+  openWorkedExample: () => void
+  openingWorkedExample: boolean
 }) {
   const [showExample, setShowExample] = useState(false)
 
@@ -679,8 +698,9 @@ function HowToUsePage({ go, route = 'how-to-use', surface = 'docs' }: {
               </p>
             </div>
             <div className="mt-5 flex flex-wrap gap-3">
-              <button className="btn btn-primary" onClick={() => go('setup')}>
-                Run your own comparison
+              <button className="btn btn-primary" onClick={openWorkedExample}
+                disabled={openingWorkedExample}>
+                {openingWorkedExample ? 'Loading the comparison…' : 'Open the full comparison'}
                 <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
               </button>
               <button className="btn btn-quiet" onClick={() => setShowExample(false)}>

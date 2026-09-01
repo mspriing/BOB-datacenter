@@ -156,6 +156,47 @@ export default function App() {
     })()
   }, [candidateSites, project, siteSetup, go])
 
+  const openWorkedExample = useCallback(() => {
+    const token = ++runToken.current
+    const exampleProject: EstimateProject = {
+      name: PROJECT.name,
+      capacity_kw: PROJECT.capacityMw * 1000,
+      design_pue: PROJECT.pue,
+      design_wue: 0.4,
+      lifetime_years: PROJECT.lifetimeYears,
+      discount_rate: PROJECT.discountRate,
+    }
+    setServer(null)
+    setServerError(null)
+    setServerPending(true)
+    setSubmittedProject(exampleProject)
+
+    void (async () => {
+      const result = await fetchEstimate({
+        project: {
+          ...exampleProject,
+          weights: {
+            total_cost: 0.50,
+            risk: 0.20,
+            sustainability: 0.15,
+            latency: 0.15,
+          },
+        },
+        sites: DEFAULT_SITES.map((site, index) => ({
+          site_id: `site-${String.fromCharCode(65 + index)}`,
+          label: site.label,
+          region_key: site.key,
+        })),
+      })
+      if (token !== runToken.current) return
+
+      setServer(result.data)
+      setServerError(result.error)
+      setServerPending(false)
+      go('results')
+    })()
+  }, [go])
+
   useEffect(() => { warmApi() }, [])
 
   useEffect(() => {
@@ -288,7 +329,11 @@ export default function App() {
                 <ParcelSearch project={project} go={go}
                   onOpenParcel={id => { setOpenParcel(id); go('parcel') }} />
               )}
-              {isDoc && <DocPage route={route} go={go} />}
+              {isDoc && (
+                <DocPage route={route} go={go}
+                  openWorkedExample={openWorkedExample}
+                  openingWorkedExample={serverPending} />
+              )}
           </div>
         </main>
 

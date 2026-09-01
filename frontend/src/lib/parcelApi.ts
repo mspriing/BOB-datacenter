@@ -104,13 +104,35 @@ export interface ApiResult<T> {
  * with older data would hide a real fault.
  */
 interface Unreachable { unreachable: true; message: string }
-function unreachable(e: unknown): Unreachable {
-  return { unreachable: true, message: e instanceof Error ? e.message : 'Network error' }
+const TIMEOUT_MS = 120_000
+
+function unreachable(e: unknown, cancelled = false): Unreachable & { cancelled?: boolean } {
+  return {
+    unreachable: true,
+    message: e instanceof Error ? e.message : 'Network error',
+    ...(cancelled ? { cancelled: true } : {}),
+  }
 }
 
-async function get<T>(path: string): Promise<ApiResult<T> | Unreachable> {
+async function get<T>(
+  path: string,
+  externalSignal?: AbortSignal,
+): Promise<ApiResult<T> | (Unreachable & { cancelled?: boolean })> {
+  const controller = new AbortController()
+  let timedOut = false
+  const killer = setTimeout(() => {
+    timedOut = true
+    controller.abort()
+  }, TIMEOUT_MS)
+  const cancel = () => controller.abort()
+  if (externalSignal?.aborted) controller.abort()
+  else externalSignal?.addEventListener('abort', cancel, { once: true })
+
   try {
-    const res = await fetch(`${API_BASE}/api${path}`, { headers: { Accept: 'application/json' } })
+    const res = await fetch(`${API_BASE}/api${path}`, {
+      headers: { Accept: 'application/json' },
+      signal: controller.signal,
+    })
     if (!res.ok) {
       // The parcel service answers an error in JSON, as { error } or
       // { error: { message } }. Anything else on this path came from a static
@@ -133,13 +155,26 @@ async function get<T>(path: string): Promise<ApiResult<T> | Unreachable> {
       return unreachable(e)
     }
   } catch (e) {
+    if (controller.signal.aborted) {
+      return unreachable(
+        new Error(timedOut ? 'The parcel request timed out.' : 'The parcel request was cancelled.'),
+        !timedOut,
+      )
+    }
     return unreachable(e)
+  } finally {
+    clearTimeout(killer)
+    externalSignal?.removeEventListener('abort', cancel)
   }
 }
 
-export async function fetchParcels(q: ParcelQuery): Promise<ApiResult<ParcelListResponse>> {
-  const r = await get<ParcelListResponse>(`/parcels?${toQueryString(q)}`)
+export async function fetchParcels(
+  q: ParcelQuery,
+  signal?: AbortSignal,
+): Promise<ApiResult<ParcelListResponse>> {
+  const r = await get<ParcelListResponse>(`/parcels?${toQueryString(q)}`, signal)
   if (!('unreachable' in r)) return r
+  if (r.cancelled) return { data: null, error: r.message }
   const { offlineParcels, SNAPSHOT_DATE } = await import('./parcelOffline')
   return { data: offlineParcels(q), error: null, offline: true, capturedAt: SNAPSHOT_DATE }
 }
@@ -151,14 +186,17 @@ const mapRequests = new Map<string, Promise<ApiResult<ParcelListResponse>>>()
  * The live API caps a response at 200 rows, so the remaining pages are joined
  * client-side and the completed request is cached by filters and build inputs.
  */
-export function fetchParcelMap(q: ParcelQuery): Promise<ApiResult<ParcelListResponse>> {
+export function fetchParcelMap(
+  q: ParcelQuery,
+  signal?: AbortSignal,
+): Promise<ApiResult<ParcelListResponse>> {
   const mapQuery = { ...q, page: 1, per_page: 200 }
   const key = toQueryString(mapQuery)
-  const cached = mapRequests.get(key)
+  const cached = signal ? undefined : mapRequests.get(key)
   if (cached) return cached
 
   const request = (async () => {
-    const first = await fetchParcels(mapQuery)
+    const first = await fetchParcels(mapQuery, signal)
     if (first.error || !first.data) return first
     if (first.offline) {
       const { offlineParcelMap, SNAPSHOT_DATE } = await import('./parcelOffline')
@@ -180,7 +218,7 @@ export function fetchParcelMap(q: ParcelQuery): Promise<ApiResult<ParcelListResp
     const pageCount = Math.ceil(first.data.total / mapQuery.per_page)
     const rest = await Promise.all(
       Array.from({ length: Math.max(0, pageCount - 1) }, (_, index) =>
-        fetchParcels({ ...mapQuery, page: index + 2 })),
+        fetchParcels({ ...mapQuery, page: index + 2 }, signal)),
     )
     const failed = rest.find(result => result.error || !result.data)
     if (failed) return {
@@ -201,16 +239,19 @@ export function fetchParcelMap(q: ParcelQuery): Promise<ApiResult<ParcelListResp
     }
   })()
 
-  mapRequests.set(key, request)
-  request.then(result => {
-    if (result.error) mapRequests.delete(key)
-  })
+  if (!signal) {
+    mapRequests.set(key, request)
+    request.then(result => {
+      if (result.error) mapRequests.delete(key)
+    })
+  }
   return request
 }
 
 export async function fetchParcel(
   id: string,
   query: Pick<ParcelQuery, 'county' | 'capacity_kw' | 'design_pue' | 'design_wue' | 'lifetime_years' | 'discount_rate' | 'revenue_per_kw_month' | 'occupancy_pct'> = {},
+  signal?: AbortSignal,
 ): Promise<ApiResult<unknown>> {
   const detailQuery = toQueryString({
     county: query.county ?? 'bexar',
@@ -223,8 +264,10 @@ export async function fetchParcel(
     occupancy_pct: query.occupancy_pct,
   })
   const r = await get<unknown>(
-    `/parcels/${encodeURIComponent(id)}?${detailQuery}`)
+    `/parcels/${encodeURIComponent(id)}?${detailQuery}`,
+    signal)
   if (!('unreachable' in r)) return r
+  if (r.cancelled) return { data: null, error: r.message }
   const { offlineParcel, SNAPSHOT_DATE } = await import('./parcelOffline')
   const hit = offlineParcel(id)
   if (!hit) {
@@ -247,12 +290,26 @@ export interface CriteriaResult {
   source: 'watsonx' | 'fallback'
 }
 
-export async function parseCriteria(text: string): Promise<ApiResult<CriteriaResult>> {
+export async function parseCriteria(
+  text: string,
+  externalSignal?: AbortSignal,
+): Promise<ApiResult<CriteriaResult>> {
+  const controller = new AbortController()
+  let timedOut = false
+  const killer = setTimeout(() => {
+    timedOut = true
+    controller.abort()
+  }, TIMEOUT_MS)
+  const cancel = () => controller.abort()
+  if (externalSignal?.aborted) controller.abort()
+  else externalSignal?.addEventListener('abort', cancel, { once: true })
+
   try {
     const res = await fetch(`${API_BASE}/api/parcels/criteria`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({ text }),
+      signal: controller.signal,
     })
     if (!res.ok) {
       let message = `Request failed (${res.status})`
@@ -261,6 +318,15 @@ export async function parseCriteria(text: string): Promise<ApiResult<CriteriaRes
     }
     return { data: (await res.json()) as CriteriaResult, error: null }
   } catch (e) {
+    if (controller.signal.aborted) {
+      return {
+        data: null,
+        error: timedOut ? 'The criteria request timed out.' : 'The criteria request was cancelled.',
+      }
+    }
     return { data: null, error: e instanceof Error ? e.message : 'Network error' }
+  } finally {
+    clearTimeout(killer)
+    externalSignal?.removeEventListener('abort', cancel)
   }
 }

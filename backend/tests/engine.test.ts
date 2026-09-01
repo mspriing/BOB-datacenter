@@ -226,6 +226,18 @@ describe('rankSites', () => {
       latency: 0,
     })).toThrow('At least one ranking weight must be greater than zero')
   })
+
+  it('rejects a site when every positively weighted dimension is missing', () => {
+    expect(() => rankSites([
+      { site_id: 'A', npv_usd: -100, risk_score: null, renewable_pct: 0.8, latency_ms: 10 },
+      { site_id: 'B', npv_usd: -200, risk_score: null, renewable_pct: 0.4, latency_ms: 20 },
+    ], {
+      total_cost: 0,
+      risk: 1,
+      sustainability: 0,
+      latency: 0,
+    })).toThrow('No weighted ranking dimensions are available for site "A"')
+  })
 })
 
 // ── sensitivity.ts ────────────────────────────────────────────────────────────

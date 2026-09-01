@@ -137,7 +137,7 @@ export function UsMap({
         </div>
 
         <div className="relative overflow-hidden rounded-[11px] border border-line bg-[var(--soft-surface)]">
-          <svg viewBox={MAP_VIEWBOX} className="block h-auto w-full" role="img"
+          <svg viewBox={MAP_VIEWBOX} className="block h-auto w-full" role="group"
             onClick={pickNearestMetro}
             aria-label={`Map of the United States shaded by ${driver.name}`}>
             <g>
@@ -151,7 +151,6 @@ export function UsMap({
                         fill={isHover ? 'var(--blue)' : fillFor(s.regionKey)}
                         onMouseEnter={() => setHover(s.regionKey)}
                         onMouseLeave={() => setHover(null)}
-                        tabIndex={0}
                         aria-label={`${s.name}, ${r ? readout(r) : 'no figure yet'}`} />
                     </Tooltip.Trigger>
                     <Tooltip.Portal>

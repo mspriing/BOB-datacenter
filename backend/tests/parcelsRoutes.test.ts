@@ -177,6 +177,17 @@ describe('GET /parcels', () => {
     expect(status).toBe(400)
   })
 
+  it('returns 400 for negative or reversed GET filters', async () => {
+    const [negative, reversed, bbox] = await Promise.all([
+      get('/parcels?min_acres=-1'),
+      get('/parcels?min_acres=100&max_acres=50'),
+      get('/parcels?bbox=-98.3,29.6,-98.6,29.3'),
+    ])
+    expect(negative.status).toBe(400)
+    expect(reversed.status).toBe(400)
+    expect(bbox.status).toBe(400)
+  })
+
   it('returns 400 with a useful message for malformed weights JSON', async () => {
     const { status, json } = await get('/parcels?weights=%7Bbad')
     expect(status).toBe(400)
@@ -274,6 +285,19 @@ describe('POST /parcels/search', () => {
     })
     expect(status).toBe(400)
     expect(JSON.stringify(json)).toContain('At least one ranking weight must be greater than zero')
+  })
+
+  it('returns 400 for negative or reversed POST filters', async () => {
+    const [negative, reversed, bbox] = await Promise.all([
+      post('/parcels/search', { filters: { max_dist_tx_m: -1 } }),
+      post('/parcels/search', { filters: { min_acres: 100, max_acres: 50 } }),
+      post('/parcels/search', {
+        filters: { bbox: { minLng: -98.3, minLat: 29.6, maxLng: -98.6, maxLat: 29.3 } },
+      }),
+    ])
+    expect(negative.status).toBe(400)
+    expect(reversed.status).toBe(400)
+    expect(bbox.status).toBe(400)
   })
 })
 

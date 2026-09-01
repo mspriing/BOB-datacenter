@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Sparkles, X, Loader2, AlertTriangle } from 'lucide-react'
 import { Card, Chip } from './Primitives'
 import {
@@ -41,11 +41,22 @@ export function CriteriaBox({ onApply }: {
   const [result, setResult] = useState<CriteriaResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [dropped, setDropped] = useState<Set<string>>(new Set())
+  const request = useRef<AbortController | null>(null)
+
+  useEffect(() => () => {
+    request.current?.abort()
+    request.current = null
+  }, [])
 
   const run = async () => {
     if (!text.trim()) return
+    request.current?.abort()
+    const controller = new AbortController()
+    request.current = controller
     setBusy(true); setError(null); setResult(null); setDropped(new Set())
-    const r = await parseCriteria(text)
+    const r = await parseCriteria(text, controller.signal)
+    if (request.current !== controller) return
+    request.current = null
     setBusy(false)
     if (r.error || !r.data) { setError(r.error ?? 'No response'); return }
     setResult(r.data)
@@ -60,6 +71,7 @@ export function CriteriaBox({ onApply }: {
     <Card title="Describe your criteria" note="Optional">
       <div className="space-y-3.5 p-5">
         <label className="block">
+          <span className="label-xs mb-1.5 block">What should the parcel match?</span>
           <textarea
             className="field font-normal"
             rows={2}

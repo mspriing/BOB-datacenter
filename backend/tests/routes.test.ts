@@ -42,9 +42,9 @@ async function post(path: string, body: unknown): Promise<{ status: number; json
   return { status: res.status, json }
 }
 
-async function get(path: string): Promise<{ status: number }> {
+async function get(path: string): Promise<{ status: number; json: unknown }> {
   const res = await fetch(`${baseUrl}${path}`)
-  return { status: res.status }
+  return { status: res.status, json: await res.json() }
 }
 
 // ── Minimal valid estimate input ──────────────────────────────────────────────
@@ -71,6 +71,8 @@ describe('route equivalence: /api prefix', () => {
     const api  = await get('/api/health')
     expect(bare.status).toBe(200)
     expect(api.status).toBe(200)
+    expect((bare.json as { regions: number }).regions).toBeGreaterThan(0)
+    expect((api.json as { regions: number }).regions).toBeGreaterThan(0)
   })
 
   it('POST /api/estimate returns 200 with the same ranking as POST /estimate', async () => {
