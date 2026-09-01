@@ -104,7 +104,10 @@
     opacity:0; transition:opacity .18s ease,color .18s ease;
   }
   .hero-film:hover .hero-film-control,
-  .hero-film-control:focus-visible { opacity:1; }
+  .hero-film-control:focus-visible,
+  /* and whenever the film is not running — a still with no control reads as
+     a broken page rather than as a film waiting to be started */
+  .hero-film-control.is-shown { opacity:1; }
   .hero-film-control:hover { color:var(--ink); }
 
   /* On a phone there is no hover for the control to appear on, and
