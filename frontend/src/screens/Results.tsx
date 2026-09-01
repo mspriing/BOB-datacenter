@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AlertTriangle, ArrowLeft, Leaf, Shield, Gauge } from 'lucide-react'
 import {
   Card, FoldCard, StatTile, Counter, CostCaseToggle, Rule, Chip,
@@ -24,6 +24,23 @@ function moneyM(value: number) {
   return `$${(Math.abs(value) / 1e6).toFixed(2)}M`
 }
 
+/**
+ * The recommendation arrives as one block of prose with its figures buried in
+ * it, which reads as a wall next to the stat tiles above. The numbers are the
+ * content, so they take the same treatment figures get everywhere else in the
+ * product. The string itself is never altered, only wrapped.
+ */
+function Figures({ text }: { text: string }) {
+  const parts = text.split(/(\$[\d,]+(?:\.\d+)?[KMB]?(?:\/kWh|\/kW)?|\d+(?:\.\d+)?%|\b\d\.\d{3}\b)/g)
+  return (
+    <>
+      {parts.map((part, i) => (i % 2 === 1
+        ? <b key={i} className="num font-semibold text-ink">{part}</b>
+        : part))}
+    </>
+  )
+}
+
 function Breakdown({ site }: { site: SiteOutput }) {
   const capex = [
     ['Land', site.capex.land_usd],
@@ -43,29 +60,47 @@ function Breakdown({ site }: { site: SiteOutput }) {
     ['Connectivity', site.opex_annual.connectivity_usd],
   ] as const
 
-  const rows = (items: ReadonlyArray<readonly [string, number]>) => items.map(([label, value]) => (
-    <div key={label} className="flex items-center justify-between gap-4 text-[13.5px]">
-      <span className="text-mid">{label}</span>
-      <span className="num font-medium text-ink2">{moneyM(value)}</span>
-    </div>
-  ))
+  // Every line used to carry identical weight, so a $0.00M line that is only
+  // there for completeness took the same room as the number that decides the
+  // build. The hairline is drawn in proportion to the largest line in its own
+  // column, with no track behind it, so the absence of a bar IS the zero and
+  // the eye lands on the figures that move the total.
+  const rows = (items: ReadonlyArray<readonly [string, number]>) => {
+    const max = Math.max(...items.map(([, value]) => value), 0)
+    return items.map(([label, value]) => {
+      const empty = value === 0
+      return (
+        <div key={label} className="space-y-[3px]">
+          <div className="flex items-center justify-between gap-4 text-[13.5px]">
+            <span className={empty ? 'text-dim' : 'text-mid'}>{label}</span>
+            <span className={`num font-medium ${empty ? 'text-dim' : 'text-ink2'}`}>{moneyM(value)}</span>
+          </div>
+          {!empty && (
+            <div aria-hidden className="h-[2px] rounded-full"
+              style={{ width: `${max > 0 ? (value / max) * 100 : 0}%`,
+                       backgroundColor: 'var(--blue)', opacity: 0.38 }} />
+          )}
+        </div>
+      )
+    })
+  }
 
   return (
     <div className="grid gap-4 border-t border-[var(--line2)] p-5 md:grid-cols-3">
       <div>
         <p className="label-xs mb-2.5">CapEx · fixed upfront</p>
-        <div className="space-y-1.5">{rows(capex)}</div>
+        <div className="space-y-2">{rows(capex)}</div>
         <div className="mt-2 flex items-center justify-between border-t border-[var(--line2)] pt-2 text-[13.5px] font-semibold">
           <span>Total CapEx</span><span className="num">{moneyM(site.capex.total_usd)}</span>
         </div>
       </div>
       <div>
         <p className="label-xs mb-2.5">OpEx · usage-linked annual</p>
-        <div className="space-y-1.5">{rows(usage)}</div>
+        <div className="space-y-2">{rows(usage)}</div>
       </div>
       <div>
         <p className="label-xs mb-2.5">OpEx · fixed/modelled annual</p>
-        <div className="space-y-1.5">{rows(fixed)}</div>
+        <div className="space-y-2">{rows(fixed)}</div>
         <div className="mt-2 flex items-center justify-between border-t border-[var(--line2)] pt-2 text-[13.5px] font-semibold">
           <span>Total annual OpEx</span><span className="num">{moneyM(site.opex_annual.total_usd)}</span>
         </div>
@@ -81,6 +116,23 @@ export function Results({ project, server, serverError, go }: {
   go: (route: Route) => void
 }) {
   const [costCase, setCostCase] = useState<CostCase>('base')
+
+  // The scenario control follows the reader down the page, but a full glass bar
+  // sitting there on arrival reads as an unexplained strip rather than a
+  // control. A 1px sentinel directly above it tells us when it has actually
+  // stuck to the top; only then does it take on the bar treatment.
+  const scenarioSentinel = useRef<HTMLDivElement>(null)
+  const [scenarioStuck, setScenarioStuck] = useState(false)
+  useEffect(() => {
+    const el = scenarioSentinel.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(
+      ([entry]) => setScenarioStuck(!entry.isIntersecting),
+      { threshold: 0 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   if (!server) {
     const failed = serverError !== null
@@ -190,13 +242,20 @@ export function Results({ project, server, serverError, go }: {
         </div>
       </Card>
 
-      <div className="sticky top-0 z-30 -mx-4 border-b border-[var(--glass-border)] bg-[var(--glass-fill)] px-4 py-3 backdrop-blur-[18px] sm:-mx-7 sm:px-7">
-        <CostCaseToggle value={costCase} onChange={value => setCostCase(value as CostCase)} />
+      <div ref={scenarioSentinel} aria-hidden className="h-px" />
+      <div className={`sticky top-0 z-30 -mx-4 px-4 py-3 transition-colors duration-200 sm:-mx-7 sm:px-7
+        ${scenarioStuck
+          ? 'border-b border-[var(--glass-border)] bg-[var(--glass-fill)] backdrop-blur-[18px]'
+          : 'border-b border-transparent'}`}>
+        <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-2">
+          <span className="label-xs">Cost scenario</span>
+          <CostCaseToggle value={costCase} onChange={value => setCostCase(value as CostCase)} />
+        </div>
       </div>
 
       <Card weave title="Why this ranks first" note={narrativeSource}>
         <div className="space-y-4 p-6 text-[15.5px] leading-[1.7] text-ink2">
-          <p>{server.narrative.recommendation}</p>
+          <p><Figures text={server.narrative.recommendation} /></p>
           <p className="border-l-[3px] border-l-blue bg-bluex px-4 py-3 font-medium text-ink">
             {server.flip_sentence}
           </p>

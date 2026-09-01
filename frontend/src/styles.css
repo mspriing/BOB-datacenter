@@ -140,6 +140,10 @@
     display:inline-flex; align-items:center; justify-content:center; gap:9px;
     min-height:44px; padding:0 22px; border-radius:99px;
     font-size:15px; font-weight:600; border:1px solid transparent; cursor:pointer;
+    /* A pill with a min-height and no wrap rule turns into a tall three-line
+       blob the moment a flex parent squeezes it, and the icon then reads as
+       tiny beside the stacked label. A button label belongs on one line. */
+    white-space:nowrap; flex-shrink:0;
     transition:transform .15s ease-out,box-shadow .15s ease-out,background-color .15s ease-out,border-color .15s ease-out;
   }
   .btn-primary {
@@ -307,3 +311,156 @@
 @keyframes spin { to { transform:rotate(360deg); } }
 @keyframes drawerSlideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 @keyframes drawerSlideOut { from { transform: translateX(0); } to { transform: translateX(100%); } }
+
+/* ── More info: the four moves, the formulas, and the jump ─────────────────
+   The short version at the top of the More info page is four stations, each
+   with three lines under it. Pressing any of them runs the jump in
+   components/MoreInfoJump.tsx and lands you on the matching heading below. */
+
+.mi-stations { display:grid; gap:14px; grid-template-columns:repeat(4,1fr); position:relative; }
+/* the rail only shows in the gaps between the cards — four stations, three dashes */
+.mi-stations::before {
+  content:""; position:absolute; left:0; right:0; top:39px; height:2px; z-index:0;
+  background:color-mix(in srgb,var(--blue) 38%,transparent);
+}
+.mi-station {
+  position:relative; z-index:1; display:flex; flex-direction:column;
+  background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:14px;
+  box-shadow:var(--shadow-lg),var(--inset-highlight); overflow:hidden;
+  backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
+  transition:transform .15s ease-out,box-shadow .15s ease-out,border-color .15s ease-out;
+}
+.mi-station:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); border-color:var(--hover-line); }
+.mi-head {
+  appearance:none; border:0; background:transparent; text-align:left; cursor:pointer;
+  padding:14px 15px 12px; display:flex; flex-direction:column; gap:7px;
+  font:inherit; color:inherit; border-bottom:1px solid var(--line2);
+  transition:background .16s;
+}
+.mi-head:hover, .mi-head:active { background:var(--blue-x); }
+/* the number badge is .btn-primary: same gradient, same shadow, same sweep */
+.mi-n {
+  position:relative; overflow:hidden; width:26px; height:26px; border-radius:8px; color:var(--on-accent);
+  background:linear-gradient(135deg,var(--blue),var(--blue-d));
+  font-size:12.5px; font-weight:600; display:grid; place-items:center;
+  box-shadow:0 3px 12px -3px var(--accent-shadow);
+}
+.mi-n::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.34) 50%,transparent 60%);
+  transform:translateX(-100%); animation:shimmer 3.5s ease-in-out infinite;
+}
+.mi-t { font-size:15.5px; font-weight:600; letter-spacing:-.008em; line-height:1.25; color:var(--ink); }
+.mi-s { font-size:13px; color:var(--mid); line-height:1.45; }
+.mi-chips { display:flex; flex-direction:column; padding:7px; gap:4px; }
+
+/* a chip is the site's .pill, plus a hover that fades the inset weave up over a
+   blue ground and runs one highlight across it. The overlay is isolated to a
+   negative layer so it sits above the fill and below the label. */
+.mi-chip {
+  position:relative; overflow:hidden; isolation:isolate;
+  appearance:none; border:1px solid var(--glass-border); background:var(--soft-surface); cursor:pointer;
+  border-radius:99px; padding:7px 13px; text-align:left; font:inherit; font-weight:500;
+  font-size:12.5px; color:var(--ink2); display:flex; align-items:center; gap:8px;
+  box-shadow:var(--shadow-sm),0 4px 14px -8px rgba(15,23,32,.2);
+  transition:transform .15s ease-out,box-shadow .15s ease-out,border-color .15s ease-out,
+             color .15s ease-out,background-color .15s ease-out;
+}
+.mi-chip::before {
+  content:""; width:5px; height:5px; border-radius:50%; background:var(--marker); flex:none;
+  position:relative; z-index:1; transition:background .16s;
+}
+.mi-chip::after {
+  content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none;
+  opacity:0; transition:opacity .18s ease;
+  background-image:
+    linear-gradient(105deg,transparent 40%,rgba(255,255,255,.8) 50%,transparent 60%),
+    var(--inset-weave);
+  background-size:180% 100%, 6px 6px, 6px 6px;
+  background-position:-70% 0, 0 0, 3px 3px;
+  background-repeat:no-repeat, repeat, repeat;
+}
+.mi-chip:hover {
+  transform:translateY(-2px); box-shadow:var(--shadow-md); color:var(--ink);
+  background-color:var(--blue-x); border-color:color-mix(in srgb,var(--blue) 34%,transparent);
+}
+.mi-chip:hover::before { background:var(--blue); }
+.mi-chip:hover::after { opacity:1; animation:miSweep .9s cubic-bezier(.35,0,.2,1) forwards; }
+.mi-chip:active { transform:translateY(0); box-shadow:var(--shadow-sm); }
+@keyframes miSweep {
+  from { background-position:-70% 0, 0 0, 3px 3px; }
+  to   { background-position:170% 0, 0 0, 3px 3px; }
+}
+
+/* ── the formulas ─────────────────────────────────────────────────────────
+   Every term is coloured by where its number comes from, which is the same
+   claim the rest of the tool makes about every figure it shows. */
+.mi-legend {
+  display:flex; flex-direction:column; gap:12px; padding:16px 17px; border-radius:12px;
+  background:var(--card2); border:1px solid var(--line);
+}
+.mi-legend p { margin:0; font-size:14.5px; line-height:1.6; color:var(--ink2); max-width:74ch; }
+.mi-legend dl { margin:0; display:flex; flex-direction:column; gap:7px; }
+.mi-legend dl > div { display:grid; grid-template-columns:minmax(0,200px) 1fr; gap:12px; align-items:baseline; }
+.mi-legend dt { margin:0; }
+.mi-legend dd { margin:0; font-size:13.5px; line-height:1.5; color:var(--mid); }
+.mi-legend dd b { color:var(--ink); font-weight:600; }
+
+.mi-fml {
+  display:flex; flex-direction:column; gap:9px; padding:13px 14px 12px;
+  background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow-sm);
+}
+.mi-row { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.mi-gloss { margin:0; font-size:13px; line-height:1.5; color:var(--mid); max-width:70ch; }
+.mi-t {
+  display:inline-flex; align-items:center; border-radius:7px; padding:4px 9px;
+  font-size:12.5px; line-height:1.25; white-space:nowrap; border:1px solid transparent;
+  font-variant-numeric:tabular-nums;
+}
+.mi-t.out  { background:var(--blue); color:var(--on-accent); font-weight:600; box-shadow:0 2px 7px -3px var(--accent-shadow); }
+.mi-t.in   { background:var(--blue-x); color:var(--blue-d); border-color:color-mix(in srgb,var(--blue) 30%,transparent); }
+.mi-t.reg  { background:var(--card2); color:var(--mid); border-color:var(--line); }
+.mi-t.calc { background:transparent; color:var(--ink2); border:1px dashed var(--marker); }
+.mi-t.k    { background:var(--line2); color:var(--mid); }
+.mi-op { color:var(--dim); padding:0 1px; font-size:13px; }
+.mi-op.eq { color:var(--ink); font-weight:600; padding:0 4px; }
+
+.mi-links { display:flex; flex-wrap:wrap; gap:8px; }
+
+/* ── the jump ─────────────────────────────────────────────────────────────
+   An opaque plane over the page while it moves. It has no entrance: it is
+   there on the first frame, so the page behind is never half-visible. It
+   leaves by splitting down the middle, and the two edges of that split are
+   feathered over a fixed 430px, the same soft edge .hero-film has. */
+.mi-veil {
+  position:fixed; inset:0; z-index:60; display:none; overflow:hidden; background:var(--ground);
+  -webkit-mask-image:
+    linear-gradient(to right,#000 0,#000 calc(100% - 430px),rgba(0,0,0,.97) calc(100% - 382px),rgba(0,0,0,.91) calc(100% - 332px),rgba(0,0,0,.8) calc(100% - 282px),rgba(0,0,0,.66) calc(100% - 232px),rgba(0,0,0,.5) calc(100% - 184px),rgba(0,0,0,.35) calc(100% - 140px),rgba(0,0,0,.21) calc(100% - 100px),rgba(0,0,0,.1) calc(100% - 64px),rgba(0,0,0,.03) calc(100% - 30px),transparent 100%),
+    linear-gradient(to left, #000 0,#000 calc(100% - 430px),rgba(0,0,0,.97) calc(100% - 382px),rgba(0,0,0,.91) calc(100% - 332px),rgba(0,0,0,.8) calc(100% - 282px),rgba(0,0,0,.66) calc(100% - 232px),rgba(0,0,0,.5) calc(100% - 184px),rgba(0,0,0,.35) calc(100% - 140px),rgba(0,0,0,.21) calc(100% - 100px),rgba(0,0,0,.1) calc(100% - 64px),rgba(0,0,0,.03) calc(100% - 30px),transparent 100%);
+          mask-image:
+    linear-gradient(to right,#000 0,#000 calc(100% - 430px),rgba(0,0,0,.97) calc(100% - 382px),rgba(0,0,0,.91) calc(100% - 332px),rgba(0,0,0,.8) calc(100% - 282px),rgba(0,0,0,.66) calc(100% - 232px),rgba(0,0,0,.5) calc(100% - 184px),rgba(0,0,0,.35) calc(100% - 140px),rgba(0,0,0,.21) calc(100% - 100px),rgba(0,0,0,.1) calc(100% - 64px),rgba(0,0,0,.03) calc(100% - 30px),transparent 100%),
+    linear-gradient(to left, #000 0,#000 calc(100% - 430px),rgba(0,0,0,.97) calc(100% - 382px),rgba(0,0,0,.91) calc(100% - 332px),rgba(0,0,0,.8) calc(100% - 282px),rgba(0,0,0,.66) calc(100% - 232px),rgba(0,0,0,.5) calc(100% - 184px),rgba(0,0,0,.35) calc(100% - 140px),rgba(0,0,0,.21) calc(100% - 100px),rgba(0,0,0,.1) calc(100% - 64px),rgba(0,0,0,.03) calc(100% - 30px),transparent 100%);
+  -webkit-mask-repeat:no-repeat,no-repeat; mask-repeat:no-repeat,no-repeat;
+  -webkit-mask-position:left center,right center; mask-position:left center,right center;
+  -webkit-mask-size:100% 100%,100% 100%; mask-size:100% 100%,100% 100%;
+}
+.mi-veil.run { display:block; }
+.mi-veil .weave {
+  position:absolute; inset:0; z-index:0; pointer-events:none; opacity:var(--page-weave-opacity);
+  background-image:var(--page-weave); background-size:5px 5px; background-position:0 0,2.5px 2.5px;
+}
+.mi-veil .wash { position:absolute; inset:0; z-index:0; pointer-events:none; background:var(--corner-washes); }
+.mi-veil img {
+  position:absolute; left:50%; top:50%; opacity:0; z-index:2;
+  will-change:transform,opacity; user-select:none; -webkit-user-drag:none;
+}
+/* each asset is anchored by its centre of mass, not by its bounding box */
+.mi-veil .p1 { width:min(24vw,260px); --ox:0.1%;  --oy:-3.5%; }
+.mi-veil .p2 { width:min(26vw,280px); --ox:0.5%;  --oy:-0.8%; }
+.mi-veil .p3 { width:min(27vw,290px); --ox:-2.4%; --oy:-2.6%; }
+.mi-veil .p4 { width:min(45vw,570px); --ox:-1.8%; --oy:0.9%;  }
+
+@media (max-width:880px) { .mi-stations { grid-template-columns:repeat(2,1fr); } .mi-stations::before { display:none; } }
+@media (max-width:560px) { .mi-stations { grid-template-columns:1fr; }
+  .mi-legend dl > div { grid-template-columns:1fr; gap:3px; } }
+@media (prefers-reduced-motion: reduce) { .mi-veil { display:none !important; } }

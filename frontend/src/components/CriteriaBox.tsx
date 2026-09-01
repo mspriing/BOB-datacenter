@@ -80,13 +80,15 @@ export function CriteriaBox({ onApply }: {
             placeholder="At least 200 acres within 3 km of transmission, under $25k per acre, no flood risk." />
         </label>
 
-        <div className="flex items-center gap-3">
+        {/* Side by side, the helper text and the button fight for a column this
+            narrow and one of them loses. Stacked, neither has to. */}
+        <div className="space-y-2">
           <button className="btn btn-primary" onClick={run} disabled={busy || !text.trim()}>
             {busy ? <Loader2 size={15} className="animate-spin" aria-hidden />
                   : <Sparkles size={15} strokeWidth={2.2} aria-hidden />}
             Turn into filters
           </button>
-          <span className="text-[13px] text-mid">Review the interpretation before applying it.</span>
+          <p className="text-[13px] leading-[1.5] text-mid">Review the interpretation before applying it.</p>
         </div>
 
         {error && (

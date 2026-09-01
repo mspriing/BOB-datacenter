@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { ArrowRight, MapPin, AlertTriangle } from 'lucide-react'
 import { Card, FoldCard, Field } from '../components/Primitives'
 import { COVERAGE } from '../data/project'
@@ -6,18 +6,20 @@ import { ALL_REGIONS } from '../lib/useSites'
 import { gapsFor } from '../lib/engine'
 import { DEFAULT_SITES } from '../data/defaultSites'
 import { useSites } from '../lib/useSites'
+import { UsMap, type ShadeKey } from '../components/map/UsMap'
 import type { EstimateProject, SiteSetup } from '../lib/api'
 import type { Route } from '../lib/routes'
 
 export function Setup({
   project, setProject, siteSetup, setSiteSetup,
-  pinned, chosen, setChosen, zoom, setZoom, run, go,
+  pinned, onTogglePin, chosen, setChosen, zoom, setZoom, run, go,
 }: {
   project: EstimateProject
   setProject: React.Dispatch<React.SetStateAction<EstimateProject>>
   siteSetup: SiteSetup
   setSiteSetup: React.Dispatch<React.SetStateAction<SiteSetup>>
   pinned: string[]
+  onTogglePin: (key: string) => void
   chosen: string[]
   setChosen: (f: (c: string[]) => string[]) => void
   zoom: 'regions' | 'parcels'
@@ -26,6 +28,7 @@ export function Setup({
   go: (r: Route) => void
 }) {
   const atParcelGrain = zoom === 'parcels'
+  const [shade, setShade] = useState<ShadeKey>('power_rate_usd_per_kwh')
   const { sites, source } = useSites(pinned, chosen)
   const fromPins = source === 'pins'
 
@@ -388,9 +391,6 @@ export function Setup({
                     )}
                   </div>
                 ))}
-                {/* The map is reached from here rather than from the top bar.
-                    Without this link a reader with nothing pinned had no way to
-                    open it at all once it stopped being a tab. */}
                 <div className="flex flex-wrap items-center gap-3 p-5">
                   {chosen.length < 4 && (
                     <button className="pill text-[13.5px]"
@@ -402,8 +402,24 @@ export function Setup({
                     </button>
                   )}
                   <button onClick={() => go('map')} className="link-inline text-[14px]">
-                    Pick them on the map instead
+                    Open the map full screen
                   </button>
+                </div>
+
+                {/* The map used to be a text link buried between two form rows,
+                    which made the country the one thing this tool knows best
+                    into its least discoverable feature, and left the setup
+                    screen as an unbroken column of fields. It reads and pins
+                    here, and the full-screen view stays for focused work. */}
+                <div className="border-t border-[var(--line2)] p-5">
+                  <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                    <p className="label-xs">Or pick them on the map</p>
+                    <p className="text-[13px] text-mid">
+                      Click a marked metro to pin it. Pins replace the list above.
+                    </p>
+                  </div>
+                  <UsMap shade={shade} onShadeChange={setShade}
+                    pinned={pinned} onTogglePin={onTogglePin} maxPins={4} />
                 </div>
                 {/* What the picker holds back, and why. Hiding 64 of 77 entries
                     silently would leave a reader who saw Singapore last week
@@ -490,18 +506,28 @@ export function Setup({
 
         <Card weave className="sticky bottom-2 z-20 sm:static">
           <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
-            <p className="max-w-[52ch] text-[13.5px] leading-[1.55] text-mid">
-              {atParcelGrain
-                ? `Bexar County parcels, priced across ${project.lifetime_years} years.`
-                : `${active.length} regions, priced across ${project.lifetime_years} years.`}{' '}
-              The run happens on the server, which is where the sources, the gaps and the wording
-              come from.
-            </p>
+            {/* The two grains ran the same engine but announced themselves with
+                different verbs, so "Run the comparison" and "Look at the
+                parcels" read as two unrelated tools rather than one tool at two
+                zoom levels. The grain is now named next to the button, and both
+                labels take the same verb. */}
+            <div className="max-w-[56ch]">
+              <p className="label-xs mb-1.5">
+                {atParcelGrain ? 'Parcels in one county' : 'Regions against each other'}
+              </p>
+              <p className="text-[13.5px] leading-[1.55] text-mid">
+                {atParcelGrain
+                  ? `Bexar County parcels, priced across ${project.lifetime_years} years.`
+                  : `${active.length} regions, priced across ${project.lifetime_years} years.`}{' '}
+                The run happens on the server, which is where the sources, the gaps and the wording
+                come from.
+              </p>
+            </div>
             <button className="btn btn-primary w-full sm:w-auto" onClick={run}
               disabled={!validProject || (!atParcelGrain && duplicates.length > 0)}
               style={!validProject || (!atParcelGrain && duplicates.length > 0)
                 ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}>
-              {atParcelGrain ? 'Look at the parcels' : 'Run the comparison'}
+              {atParcelGrain ? 'Run the parcel search' : 'Run the comparison'}
               <ArrowRight size={17} strokeWidth={2.4} aria-hidden />
             </button>
           </div>

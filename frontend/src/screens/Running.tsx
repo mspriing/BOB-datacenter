@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { AlertTriangle, Check, Loader2 } from 'lucide-react'
-import { Card } from '../components/Primitives'
+import { Brand, Card } from '../components/Primitives'
 import { useReducedMotion } from '../lib/useReducedMotion'
 
 export function Running({ done, pending, slow, retrying, error, retry, lifetimeYears }: {
@@ -42,7 +42,11 @@ export function Running({ done, pending, slow, retrying, error, retry, lifetimeY
     <section className="flex min-h-[68vh] items-center justify-center py-14">
       <Card className="w-full max-w-[560px]" weave>
         <div className="p-7 sm:p-8">
-          <p className="label-xs mb-3">Step three of three</p>
+          {/* A step counter belongs on the form. By the time a reader is here
+              they have left it, and what they want is to know what is running. */}
+          <p className="mb-3 text-[13.5px] font-medium text-mid">
+            <Brand /> is pricing your candidates
+          </p>
           <h1 className="mb-1.5 text-[26px] font-semibold text-ink">Working through the numbers</h1>
           <p className="mb-7 text-[15px] text-mid">
             Every figure below is calculated, not estimated by a language model.

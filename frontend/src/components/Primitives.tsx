@@ -205,6 +205,16 @@ export function CostCaseToggle({ value, onChange }: { value: string; onChange: (
   )
 }
 
+/**
+ * The product name is lowercase everywhere, which is correct, but inside a
+ * running sentence a lowercase word at the start of a clause reads as a typo
+ * rather than a brand. Italic marks it as a name and keeps the casing intact.
+ * Body prose only: headings, the wordmark and the legal text stay plain.
+ */
+export function Brand() {
+  return <i className="italic">leepr</i>
+}
+
 /* ── Logo ─────────────────────────────────────────────────────────────────── */
 /**
  * The mark ships as two files, not one. They are the same object lit from the

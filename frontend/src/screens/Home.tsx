@@ -1,5 +1,6 @@
 import { ArrowRight, TreePine, Zap, Landmark, Layers } from 'lucide-react'
 import { HeroPullback } from '../components/HeroPullback'
+import { Brand } from '../components/Primitives'
 import type { Route } from '../lib/routes'
 
 export function Home({ go }: { go: (r: Route) => void }) {
@@ -24,7 +25,7 @@ export function Home({ go }: { go: (r: Route) => void }) {
           Meet leepr
         </h2>
         <p className="mx-auto max-w-[68ch] text-[clamp(1.0625rem,1rem+.3vw,1.3125rem)] leading-[1.6] text-mid">
-          leepr automates the site selection process for data centers by weighing common
+          <Brand /> automates the site selection process for data centers by weighing common
           constraints against the user preferences. It prices the whole life of a build, not
           only what the ground costs: reaching power and fiber, getting through permitting,
           and fifteen years of running the place all land in the same total. Every figure it

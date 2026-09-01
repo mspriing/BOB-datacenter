@@ -303,7 +303,8 @@ export default function App() {
               {route === 'setup' && (
                 <Setup project={project} setProject={setProject}
                   siteSetup={siteSetup} setSiteSetup={setSiteSetup}
-                  pinned={pinned} chosen={chosen} setChosen={setChosen}
+                  pinned={pinned} onTogglePin={togglePin}
+                  chosen={chosen} setChosen={setChosen}
                   zoom={zoom} setZoom={setZoom}
                   run={() => (zoom === 'parcels' ? go('parcels') : run())} go={go} />
               )}
